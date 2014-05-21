@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>  
+  Options +FollowSymlinks -MultiViews
+  RewriteEngine On
+
+  RewriteBase /sig/
+
+  RewriteRule ^([0-9]+)\.png$ index.php?aid=$1 [QSA,NC,L]
+
+  RewriteCond %{REQUEST_URI} !=/dotaroot [NC]
+  RewriteRule ^dotaroot/([0-9]+)\.png$ dotaroot.php?aid=$1 [QSA,NC,L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*) / [NC,L]
+
+</IfModule>
