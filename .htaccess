@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>  
+  RewriteEngine on 
+  RewriteCond %{HTTP_HOST} ^www\.getdotastats\.com$ [NC] 
+  RewriteRule ^(.*)$ http://getdotastats.com/$1 [R=301,L] 
+
+  RewriteCond %{REQUEST_FILENAME} !-f  
+  RewriteCond %{REQUEST_FILENAME} !-d  
+  RewriteRule .* custom_404.html [L]
+</IfModule>
