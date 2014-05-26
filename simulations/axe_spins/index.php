@@ -27,15 +27,9 @@ if (
 
 include('./chart.php');
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>Axe Helix Simulation</title>
-    <script type="text/javascript" src="//www.google.com/jsapi"></script>
-</head>
 
-<body>
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
+
 <?php
 $rd = 0.15;
 $prd_c = 0.03221;
@@ -101,8 +95,6 @@ $optionsDataTable = array(
     'pageSize' => 6);
 ?>
 <div id="about" style="width: 600px;">
-    <h2>About</h2>
-
     <p>This page simulates the number of spins Axe would get under the old flat Random Distribution and under the new
         Pseudo Random distribution. It uses the same probability seed for the two scenarios. Unfortunately there is no
         readily available C constant for 17%, so this simulation assumes 20% helix chance as it has a known C constant
@@ -347,5 +339,3 @@ echo $chart->draw('damage_chart', $options, true, $optionsDataTable);
 <div id="pagerendertime" style="font-size: 12px;"><?= '<hr />Page generated in ' . (time() - $start) . 'secs' ?> || <a
         href="">Link ME</a> || Lovingly crafted by <a href="http://reddit.com/u/jimmydorry" target="__new">jimmydorry</a> || <a href="https://github.com/jimmydorry/axe_spins_sim/issues" target="__new">Issues/Feature Requests here</a>
 </div>
-</body>
-</html>
