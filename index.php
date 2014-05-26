@@ -39,7 +39,7 @@
                         </li>
                     </ul>
                 </li>
-                <li><a href="#steamtracks/">Signature Generator</a></li>
+                <li><a href="./steamtracks/">Signature Generator</a></li>
                 <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simulations <b class="caret"></b></a>
@@ -53,8 +53,10 @@
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#replays/">Replay Archive</a></li>
                         <li><a class="nav-clickable" href="#economy_analysis/">Economy Analysis</a></li>
+                        <li>D2Ware</li>
                     </ul>
                 </li>
+                <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
                 <li><a class="nav-clickable" href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -94,7 +96,7 @@
 <div id="footer">
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
-            Steam.</p>
+            Steam. <a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests here</a></p>
     </div>
 </div>
 

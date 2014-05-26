@@ -337,5 +337,5 @@ echo $chart->draw('damage_chart', $options, true, $optionsDataTable);
 </div>
 
 <div id="pagerendertime" style="font-size: 12px;"><?= '<hr />Page generated in ' . (time() - $start) . 'secs' ?> || <a
-        href="">Link ME</a> || Lovingly crafted by <a href="http://reddit.com/u/jimmydorry" target="__new">jimmydorry</a> || <a href="https://github.com/jimmydorry/axe_spins_sim/issues" target="__new">Issues/Feature Requests here</a>
+        href="">Link ME</a>
 </div>
