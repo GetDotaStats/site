@@ -41,9 +41,6 @@ try{
 			ORDER BY `range_end`;",
 		30);
 
-		echo generate_header($match_db_details); //GENERATE THE CONSISTANT HEADER
-		
-		
 		echo '<strong>Winrate by Duration per Date:</strong><br />';
 
 		$big_array = array();

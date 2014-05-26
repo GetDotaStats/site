@@ -76,8 +76,6 @@ try{
 				$region);
 		}
 
-		echo generate_header($match_db_details); //GENERATE THE CONSISTANT HEADER
-
 		echo '<ul><li>NF = No fun modes like diretide and frostivus.</li>
 <li>GHP = Global Hero Picks - The hero picks for that game mode world wide.</li></ul>';
 		

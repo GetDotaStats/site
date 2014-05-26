@@ -85,8 +85,6 @@ try{
 			}
 		}
 		
-		echo generate_header($match_db_details); //GENERATE THE CONSISTANT HEADER
-
 		echo '<strong>Game Modes:</strong><br />';
 		echo '<table border="1">';
 		echo '
