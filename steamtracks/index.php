@@ -27,23 +27,22 @@ require_once('./connections/parameters.php');
     <div class="container">
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a class="nav-clickable" href="../">Home</a></li>
+                <li class="active"><a class="nav-clickable" href="../#home">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="../match_analysis/">Home</a></li>
-                        <li><a class="nav-clickable" href="../match_analysis/general_stats.php">General Stats</a></li>
-                        <li><a class="nav-clickable" href="../match_analysis/game_modes.php">Game Modes</a></li>
-                        <li><a class="nav-clickable" href="../match_analysis/clusters.php">Region Breakdown</a></li>
+                        <li><a class="nav-clickable" href="../#match_analysis/">Home</a></li>
+                        <li><a class="nav-clickable" href="../#match_analysis__general_stats">General Stats</a></li>
+                        <li><a class="nav-clickable" href="../#match_analysis__game_modes">Game Modes</a></li>
+                        <li><a class="nav-clickable" href="../#match_analysis__clusters">Region Breakdown</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
-                        <li><a class="nav-clickable" href="../match_analysis/worker_progress.php">Data Collector
-                                Status</a>
+                        <li><a class="nav-clickable" href="../#match_analysis__worker_progress">Data Collector Status</a>
                         </li>
                     </ul>
                 </li>
-                <li><a href="../steamtracks/">Signature Generator</a></li>
-                <li><a class="nav-clickable" href="../dbe/">Dotabuff Extended</a></li>
+                <li><a href="./steamtracks/">Signature Generator</a></li>
+                <li><a class="nav-clickable" href="../#dbe/">Dotabuff Extended</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simulations <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -54,13 +53,12 @@ require_once('./connections/parameters.php');
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dead Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="../replays/">Replay Archive</a></li>
-                        <li><a class="nav-clickable" href="../economy_analysis/">Economy Analysis</a></li>
-                        <li>D2Ware</li>
+                        <li><a class="nav-clickable" href="../#replays/">Replay Archive</a></li>
+                        <li><a class="nav-clickable" href="../#economy_analysis/">Economy Analysis</a></li>
                     </ul>
                 </li>
-                <li><a class="nav-clickable" href="../game_servers.php">Game Servers</a></li>
-                <li><a class="nav-clickable" href="../contact.php">Contact</a></li>
+                <li><a class="nav-clickable" href="../#game_servers">Game Servers</a></li>
+                <li><a class="nav-clickable" href="../#contact">Contact</a></li>
             </ul>
         </div>
     </div>
