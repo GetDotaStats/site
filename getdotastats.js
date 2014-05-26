@@ -31,21 +31,25 @@ function loadPage(url) {
         url = url + '.php';
     }
 
-    //alert(url);
-
-    $('#loading').show("medium", function () {
+    $('#loading').show({complete: function () {
         $.ajax({
             type: "GET",
             url: url,
             dataType: "html",
             success: function (msg) {
-                if (parseInt(msg) != 0) {
-                    $('#main_content').html(msg);
-                    $('#loading').hide("medium");
-                }
+                $('#loading').hide({
+                    complete: function () {
+                        if (parseInt(msg) != 0) {
+                            $('#main_content').html(msg);
+                        }
+                    }
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $('#loading').hide();
             }
         });
-    });
 
+    }});
 
 }

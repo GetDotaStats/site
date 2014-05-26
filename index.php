@@ -66,9 +66,10 @@
 <div class="container">
     <div class="jumbotron">
         <h1>Welcome to GetDotaStats!</h1>
-    </div>
-    <div id="loading">
-        <img src="./images/ajax_load.gif" alt="loading"/>
+
+        <div id="loading">
+            <img id="loading_spinner" src="./images/ajax_load2.gif" alt="loading"/>
+        </div>
     </div>
 </div>
 <div class="clear"></div>
@@ -95,7 +96,8 @@
 <div id="footer">
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
-            Steam. <a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests here</a></p>
+            Steam. <a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests
+                here</a></p>
     </div>
 </div>
 
