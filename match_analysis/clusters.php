@@ -102,8 +102,8 @@ try{
 		echo '
 			<tr>
 				<td>-1</td>
-				<td'.$css_class1.'><a href="./clusters.php?r=-1">Aggregate</a></td>
-				<td'.$css_class2.'><a href="./clusters.php?r=-1&nofun=1">NF</a></td>
+				<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__clusters?r=-1">Aggregate</a></td>
+				<td'.$css_class2.'><a class="nav-clickable" href="#match_analysis__clusters?r=-1&nofun=1">NF</a></td>
 				<td colspan="3">&nbsp;</td>
 			</tr>';
 		foreach($match_cluster_breakdown as $key => $value){
@@ -124,8 +124,8 @@ try{
 			echo '
 				<tr>
 					<td>'. ($key + 1) .'</td>
-					<td'.$css_class1.'><a href="./clusters.php?r='.$value['region'].'">'. $value['region_name'] .'</a></td>
-					<td'.$css_class2.'><a href="./clusters.php?r='.$value['region'].'&nofun=1">NF</a></td>
+					<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__clusters?r='.$value['region'].'">'. $value['region_name'] .'</a></td>
+					<td'.$css_class2.'><a class="nav-clickable" href="#match_analysis__clusters?r='.$value['region'].'&nofun=1">NF</a></td>
 					<td>'. $value['clusters'] .'</td>
 					<td>'. number_format($value['games']) .'</td>
 					<td>'. number_format($value['games'] / $match_db_details['match_count'] * 100, 2) .'%</td>
@@ -155,7 +155,7 @@ try{
 					<tr>
 						<td>' . ($key + 1) . '</td>
 						<td>'.$value['nice_name'].'</td>
-						<td><a href="./game_modes.php?gm='.$value['game_mode'].'">GHP</a></td>
+						<td><a class="nav-clickable" href="#match_analysis__game_modes?gm='.$value['game_mode'].'">GHP</a></td>
 						<td>'. number_format($value['games']) .'</td>
 						<td>'. number_format($value['games'] / $total_games_mode * 100, 2) .'%</td>
 					</tr>';

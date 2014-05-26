@@ -101,7 +101,7 @@ try{
 		echo '
 			<tr>
 				<td>&nbsp;</td>
-				<td'.$css_class1.'><a href="./game_modes.php?gm=-1">Aggregate</a></td>
+				<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__game_modes?gm=-1">Aggregate</a></td>
 				<td>'. number_format($match_db_details['match_count']) .'</td>
 			</tr>';
 		foreach($game_modes as $key => $value){
@@ -112,7 +112,7 @@ try{
 			
 			$link_p1 = $link_p2 = '';
 			if($value['total'] > 0){
-				$link_p1 = '<a href="./game_modes.php?gm='.$value['game_mode'].'">';
+				$link_p1 = '<a class="nav-clickable" href="#match_analysis__game_modes?gm='.$value['game_mode'].'">';
 				$link_p2 = '</a>';
 			}
 	

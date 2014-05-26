@@ -1,35 +1,43 @@
 $(document).ready(function () {
 
-    checkURL();
+    checkURL(window.location.hash);
 
-    $('ul li a.nav-clickable').click(function (e) {
+    //$('a').click(function (e) {
+    /*$('ul li a.nav-clickable').click(function (e) {
+        //event.preventDefault();
+        checkURL(this.hash);
+    });*/
+
+    $(document).on("click", 'a.nav-clickable', function(e) {
         checkURL(this.hash);
     });
 
-    setInterval("checkURL(window.location.hash)", 1 * 60 * 1000); //refresh every minute
+        //setInterval("checkURL(window.location.hash)", 15 * 60 * 1000); //refresh every 15minutes
 });
 
 var lasturl = "";
 function checkURL(hash) {
     if (!hash) {
-        hash = window.location.hash;
         loadPage('home');
     }
-
-    if (hash != lasturl) {
-        lasturl = hash;
-        if (hash != "") loadPage(hash);
+    else if (hash != lasturl) {
+        //alert('new');
+        //lasturl = hash;
+        loadPage(hash);
     }
 }
 
 function loadPage(url) {
     url = url.replace('#', '').split('__').join('/');
 
-    //alert(url.substr(url.length - 1));
-
-    if (url.slice(-1) != '/') {
+    if (url.indexOf('?') > -1) {
+        url = url.replace('?', '.php?');
+    }
+    else if (url.slice(-1) != '/') {
         url = url + '.php';
     }
+
+    //alert(url);
 
     $('#loading').show({complete: function () {
         $.ajax({
@@ -45,7 +53,7 @@ function loadPage(url) {
                     }
                 });
             },
-            error: function(jqXHR, textStatus, errorThrown){
+            error: function (jqXHR, textStatus, errorThrown) {
                 $('#loading').hide();
             }
         });

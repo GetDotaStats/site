@@ -1,5 +1,3 @@
-<h1>Game Servers</h1>
-
 <p>GetDotaStats is proud to be part of the community. As part of giving back to the community, we host game servers in an attempt to support the fledgling custom maps community.</p>
 
 <h3>Current Servers</h3>
