@@ -53,7 +53,6 @@
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#replays/">Replay Archive</a></li>
                         <li><a class="nav-clickable" href="#economy_analysis/">Economy Analysis</a></li>
-                        <li>D2Ware</li>
                     </ul>
                 </li>
                 <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
