@@ -1,0 +1,136 @@
+/* CSS Document */
+
+table{
+	/*width:400px;*/
+	table-layout:fixed; 
+	word-break:break-all; 
+	word-wrap:break-word;
+	
+    border-collapse: collapse;
+    border: 1px solid black;
+	border-spacing:1;
+	padding:15;
+}
+
+table td, table th {
+    border: 1px solid black;
+	padding: 3px;
+}
+
+.clear{
+	clear:both;
+	visibility:hidden;
+}
+
+#header{
+	width:100%;
+	position:relative;
+	display:block;
+	/*border:1px solid red;*/
+	padding: 0px;
+	text-align:center;
+}
+
+#menu_navigation{
+	display: inline-block;
+	width:200px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:0px;
+	padding: 0px;
+	text-align:left;
+	vertical-align:top;
+}
+
+#player_db_summary{
+	display: inline-block;
+	width:200px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:0px;
+	padding: 0px;
+	text-align:center;
+	vertical-align:top;
+}
+
+#player_db_summary table{
+	table-layout:auto;
+	margin:auto;
+}
+
+#player_db_summary th {
+	text-align:left;
+}
+
+#player_db_summary td {
+	text-align:right;
+}
+
+#match_db_summary{
+	display: inline-block;
+	width: 450px;
+	margin-left:auto;
+	margin-right:auto;
+	padding: 0px;
+	text-align: center;
+	vertical-align:top;
+	/*border: 1px solid red;*/
+}
+
+#match_db_summary table{
+	table-layout:auto;
+	margin:auto;
+}
+
+.div_test{
+	width:400px;
+	display:inline-block;
+	border:1px solid black;
+	
+	margin: 1px;
+	
+	text-align:center;
+}
+
+.div_test span{
+	/*display:block;
+	/*border: 1px solid black;
+	margin-top:0px;*/
+}
+
+#main_table{
+	text-align:center;
+}
+
+#div_quality{
+}
+
+#div_attribute{
+}
+
+.rare {
+	background-color:#063 !important;
+}
+
+.header1{
+	font-weight:bold;
+	font-size:24px;
+}
+
+.header2{
+	font-weight:bold;
+	font-size:18px;
+}
+
+.header3{
+	font-weight:bold;
+	font-size:16px;
+}
+
+.header4{
+	font-weight:bold;
+}
+
+.selected_back{
+	background: #09F;
+}

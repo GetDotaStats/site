@@ -39,13 +39,13 @@
                         </li>
                     </ul>
                 </li>
-                <li><a class="nav-clickable" href="#steamtracks/">Signature Generator</a></li>
+                <li><a href="#steamtracks/">Signature Generator</a></li>
                 <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simulations <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#simulations__axe_spins/">Axe Spins</a></li>
-                        </li>
+                        <li><a>Axe Spins</a></li>
+                        <li><a>Shield Block</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

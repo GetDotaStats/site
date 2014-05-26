@@ -6,7 +6,10 @@ dbe/backpack
 dbe/connections/parameters.php
 steamtracks/connections/parameters.php
 steamtracks/testing
+match_analysis/connections/parameters.php
+match_analysis/lobby_types
+match_analysis/db
+match_analysis/routine
 economy_analysis
-match_analysis
 replays
 testing
