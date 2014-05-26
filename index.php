@@ -35,7 +35,8 @@
                         <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
-                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a></li>
+                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
+                        </li>
                     </ul>
                 </li>
                 <li><a class="nav-clickable" href="#steamtracks/">Signature Generator</a></li>
@@ -54,13 +55,12 @@
 </div>
 <div class="clear"></div>
 
-<div id="loading">
-    <img src="./images/ajax_load.gif" alt="loading"/>
-</div>
-
 <div class="container">
     <div class="jumbotron">
         <h1>Welcome to GetDotaStats!</h1>
+    </div>
+    <div id="loading">
+        <img src="./images/ajax_load.gif" alt="loading"/>
     </div>
 </div>
 <div class="clear"></div>
