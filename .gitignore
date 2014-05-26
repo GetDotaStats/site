@@ -1,6 +1,8 @@
 .idea
-testing
-match_analysis
 connections/parameters.php
 sig/connections/parameters.php
-images/generated/*
+sig/images/generated/*
+dbe/backpack
+dbe/connections/parameters.php
+match_analysis
+testing
