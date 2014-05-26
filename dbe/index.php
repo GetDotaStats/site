@@ -1,4 +1,3 @@
-<h2>About</h2>
 <p>The DotaBuff thread can be found here: <a
         href="http://dotabuff.com/topics/2013-03-05-dotabuff-extended-mozilla-addon">http://dotabuff.com/topics/2013-03-05-dotabuff-extended-mozilla-addon</a>
 </p>

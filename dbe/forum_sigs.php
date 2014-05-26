@@ -1,4 +1,3 @@
-<h2>About</h2>
 <p>The latest feature in the DBE Chrome Extension places each user's Dota 2 signature below their posts on the Dotabuff
     forums.</p>
 <p>Feel free to leave comments in the chatbox on the side, or ping me on Reddit (u/jimmydorry). If users support this
