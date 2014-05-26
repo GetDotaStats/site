@@ -4,5 +4,9 @@ sig/connections/parameters.php
 sig/images/generated/*
 dbe/backpack
 dbe/connections/parameters.php
+steamtracks/connections/parameters.php
+steamtracks/testing
+economy_analysis
 match_analysis
+replays
 testing

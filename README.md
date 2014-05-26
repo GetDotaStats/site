@@ -14,3 +14,6 @@ A huge mess of broken code, with most of it sitting on a server without any vers
 Don't even bother yet. Feel free to submit pull requests, but nothing here has any guarentee of working, and hardly any of it has been cleaned up enough to be published.
 
 * Duplicate each parametersSAMPLE.php as parameters.php, and ensure it is updated with the relevant parameters.
+
+#Sources
+* OpenID - Mewp

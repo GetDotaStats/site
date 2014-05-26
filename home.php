@@ -1,0 +1,1 @@
+A collection of Dota2 related projects. This template was hastily constructed, so expect improvements soon~

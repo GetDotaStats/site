@@ -22,3 +22,15 @@ body {
 #footer .container .text-muted {
   margin: 20px;
 }
+
+.clear{
+    clear:both;
+}
+
+#loading{
+    /*visibility:hidden;*/
+    display: none;
+    align-content: center;
+    text-align: center;
+    width: 100%;
+}
