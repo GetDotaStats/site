@@ -66,7 +66,6 @@
 <div class="container">
     <div class="jumbotron">
         <h1>Welcome to GetDotaStats!</h1>
-
         <div id="loading">
             <img id="loading_spinner" src="./images/ajax_load2.gif" alt="loading"/>
         </div>
@@ -76,11 +75,11 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-8 blog-main">
+        <div class="col-sm-9">
             <div id="main_content" class="blog-post"></div>
         </div>
 
-        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+        <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <!-- Begin chatwing.com chatbox -->
                 <iframe src="http://chatwing.com/chatbox/f220203c-c1fa-4ce9-a840-c90a3a2edb9d" width="100%" height="600"
@@ -96,8 +95,8 @@
 <div id="footer">
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
-            Steam. <a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests
-                here</a></p>
+            Steam. <small><a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests
+                here</a></small></p>
     </div>
 </div>
 

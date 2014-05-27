@@ -76,45 +76,36 @@ try{
 				$region);
 		}
 
-		echo '<ul><li>NF = No fun modes like diretide and frostivus.</li>
-<li>GHP = Global Hero Picks - The hero picks for that game mode world wide.</li></ul>';
-		
-		echo '<strong>Clusters:</strong><br />';
-		echo '<table border="1">';
+        $nofun_abbr = '<abbr title="No fun modes like diretide and frostivus" class="initialism">NF</abbr>';
+
+		echo '<h1>Clusters</h1>';
+		echo '<table class="table table-bordered table-hover table-condensed">';
 		echo '
 			<tr>
 				<th colspan="3">Region</th>
 				<th>Clusters</th>
+				<th>Percentage</th>
 				<th>Games</th>
-				<th>%</th>
 			</tr>';
 
-		$css_class1 = '';
-		if($region == -1 && !$nofun){
-			$css_class1 = ' class="selected_back"';
-		}
+        $total_games = 0;
+        $total_clusters = 0;
+        $active_region_name = 'World Wide';
 
-		$css_class2 = '';
-		if($region == -1 && $nofun){
-			$css_class2 = ' class="selected_back"';
-		}
-
-		echo '
-			<tr>
-				<td>-1</td>
-				<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__clusters?r=-1">Aggregate</a></td>
-				<td'.$css_class2.'><a class="nav-clickable" href="#match_analysis__clusters?r=-1&nofun=1">NF</a></td>
-				<td colspan="3">&nbsp;</td>
-			</tr>';
 		foreach($match_cluster_breakdown as $key => $value){
+            $total_games += $value['games'];
+            $total_clusters += $value['clusters'];
+
 			$css_class1 = '';
 			if($region == $value['region'] && !$nofun){
-				$css_class1 = ' class="selected_back"';
+                $active_region_name = $value['region_name'];
+				$css_class1 = ' class="active"';
 			}
 
 			$css_class2 = '';
 			if($region == $value['region'] && $nofun){
-				$css_class2 = ' class="selected_back"';
+                $active_region_name = $value['region_name'];
+				$css_class2 = ' class="active"';
 			}
 			
 			empty($value['region_name']) 
@@ -125,42 +116,65 @@ try{
 				<tr>
 					<td>'. ($key + 1) .'</td>
 					<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__clusters?r='.$value['region'].'">'. $value['region_name'] .'</a></td>
-					<td'.$css_class2.'><a class="nav-clickable" href="#match_analysis__clusters?r='.$value['region'].'&nofun=1">NF</a></td>
+					<td'.$css_class2.'><a class="nav-clickable" href="#match_analysis__clusters?r='.$value['region'].'&nofun=1">'.$nofun_abbr.'</a></td>
 					<td>'. $value['clusters'] .'</td>
-					<td>'. number_format($value['games']) .'</td>
 					<td>'. number_format($value['games'] / $match_db_details['match_count'] * 100, 2) .'%</td>
+					<td>'. number_format($value['games']) .'</td>
 				</tr>';
 		}
-		echo '</table>';
-		
-		echo '<hr />';
-		
-		echo '<strong>Game Modes:</strong><br />';
+
+
+        $css_class1 = '';
+        if($region == -1 && !$nofun){
+            $css_class1 = ' class="active"';
+        }
+
+        $css_class2 = '';
+        if($region == -1 && $nofun){
+            $css_class2 = ' class="active"';
+        }
+
+        echo '
+			<tr>
+				<td>&nbsp;</td>
+				<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__clusters?r=-1">Aggregate</a></td>
+				<td'.$css_class2.'><a class="nav-clickable" href="#match_analysis__clusters?r=-1&nofun=1">'.$nofun_abbr.'</a></td>
+				<td>'.number_format($total_clusters).'</td>
+				<td>100%</td>
+                <td>'.number_format($total_games).'</td>
+			</tr>';
+
+        echo '</table>';
+
+        //////////////////////////////////////////////////
+        $game_mode_name = 'test';
+		echo '<h1>Game Modes <small>' . $active_region_name . '</small></h1>';
 		if(!empty($match_cluster_breakdown_gamemode)){
 			$total_games_mode = 0;
 			foreach($match_cluster_breakdown_gamemode as $key => $value){
 				$total_games_mode += $value['games'];
 			}
 			
-			echo '<table border="1">';
+			echo '<div class="table-responsive">
+		        <table class="table table-striped">';
 			echo '
 				<tr>
 					<th>#</th>
-					<th colspan="2">Mode</th>
+					<th>Mode</th>
+					<th>Percentage</th>
 					<th>Games</th>
-					<th>%</th>
 				</tr>';
 			foreach($match_cluster_breakdown_gamemode as $key => $value){
 				echo '
 					<tr>
 						<td>' . ($key + 1) . '</td>
-						<td>'.$value['nice_name'].'</td>
-						<td><a class="nav-clickable" href="#match_analysis__game_modes?gm='.$value['game_mode'].'">GHP</a></td>
-						<td>'. number_format($value['games']) .'</td>
+						<td><a class="nav-clickable" href="#match_analysis__game_modes?gm='.$value['game_mode'].'">'.$value['nice_name'].'</a></td>
 						<td>'. number_format($value['games'] / $total_games_mode * 100, 2) .'%</td>
+						<td>'. number_format($value['games']) .'</td>
 					</tr>';
 			}
-			echo '</table>';
+			echo '</table>
+			    </div>';
 		}
 		else{
 			echo 'Hang on! The stats must be regenerating or there are no stats to show!';

@@ -41,7 +41,7 @@ try{
 			ORDER BY `range_end`;",
 		30);
 
-		echo '<strong>Winrate by Duration per Date:</strong><br />';
+		echo '<h1>Winrate by Duration per Date</h1>';
 
 		$big_array = array();
 		foreach($match_radiant_wins_date_duration as $key => $value){
@@ -60,7 +60,7 @@ try{
 		}
 		
 		if(!empty($big_array)){
-			echo '<table>';
+			echo '<table class="table table-bordered table-hover table-condensed">';
 				echo '<tr>';
 					echo '<th>&nbsp;</th>';
 					echo '<th colspan="'.$biggest_sub.'">Duration (Radiant - Dire)</th>';
@@ -90,9 +90,10 @@ try{
 
 		/////////////////////////////////////////
 		
-		echo '<strong>Aggregate Winrate Analysis:</strong><br />';
+		echo '<h1>Aggregate Winrate Analysis</h1>';
 		if(!empty($match_radiant_wins_aggregate)){
-			echo '<table border="1">';
+			echo '<div class="table-responsive">
+		        <table class="table table-striped">';
 				echo '
 				<tr>
 					<th>Game Length (mins)</th>
@@ -103,12 +104,13 @@ try{
 			foreach($match_radiant_wins_aggregate as $key => $value){
 				echo '<tr>
 					<td>'.number_format($value['range_start']/60).' - '.number_format($value['range_end']/60).'</td>
-					<td>'.$value['total_games'].'</td>
+					<td>'.number_format($value['total_games']).'</td>
 					<td>'.number_format($value['radiant_percentage'] * 100, 2).'%</td>
 					<td>'.number_format($value['dire_percentage'] * 100, 2).'%</td>
 				</tr>';
 			}
-			echo '</table>';
+			echo '</table>
+			</div>';
 		}
 		else{
 			echo 'Hang on! The stats must be regenerating!<br /><br />';

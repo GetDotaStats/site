@@ -85,52 +85,58 @@ try{
 			}
 		}
 		
-		echo '<strong>Game Modes:</strong><br />';
-		echo '<table border="1">';
+		echo '<h1>Game Modes <small>World Wide</small></h1>';
+		echo '<table class="table table-bordered table-hover table-condensed">';
 		echo '
 			<tr>
 				<th colspan="2">Mode</th>
+				<th>Percentage</th>
 				<th>Games</th>
 			</tr>';
 
-		$css_class1 = '';
-		if($game_mode == -1){
-			$css_class1 = ' class="selected_back"';
-		}
-
-		echo '
-			<tr>
-				<td>&nbsp;</td>
-				<td'.$css_class1.'><a class="nav-clickable" href="#match_analysis__game_modes?gm=-1">Aggregate</a></td>
-				<td>'. number_format($match_db_details['match_count']) .'</td>
-			</tr>';
 		foreach($game_modes as $key => $value){
 			$css_class1 = '';
 			if($value['game_mode'] == $game_mode){
-				$css_class1 = ' class="selected_back"';
+				$css_class1 = ' class="active"';
 			}
 			
-			$link_p1 = $link_p2 = '';
 			if($value['total'] > 0){
-				$link_p1 = '<a class="nav-clickable" href="#match_analysis__game_modes?gm='.$value['game_mode'].'">';
-				$link_p2 = '</a>';
+				$link = '<a class="nav-clickable" href="#match_analysis__game_modes?gm='.$value['game_mode'].'">' . $value['nice_name'] . '</a>';
 			}
+            else{
+                $link = $value['nice_name'];
+            }
 	
 			echo '
-				<tr>
+				<tr'.$css_class1.'>
 					<td>'. $key .'</td>
-					<td'.$css_class1.'>'.$link_p1.$value['nice_name'].$link_p2.'</td>
+					<td>'.$link.'</td>
+					<td>'. number_format($value['total'] / $match_db_details['match_count'] * 100, 2) .'%</td>
 					<td>'. number_format($value['total']) .'</td>
 				</tr>';
 		}
+
+        $css_class1 = '';
+        if($game_mode == -1){
+            $css_class1 = ' class="active"';
+        }
+
+        echo '
+			<tr'.$css_class1.'>
+				<td>&nbsp;</td>
+				<td><a class="nav-clickable" href="#match_analysis__game_modes?gm=-1">Aggregate</a></td>
+				<td>100%</td>
+				<td>'. number_format($match_db_details['match_count']) .'</td>
+			</tr>';
+
 		echo '</table>';
 		
-		echo '<hr />';
 		/////////////////////////////////////////
-		
-		echo '<strong>Hero Picks:</strong><br />';
+
+        echo '<h1>Hero Picks</h1>';
 		if(!empty($heroes_played)){
-			echo '<table border="1">';
+			echo '<div class="table-responsive">
+		        <table class="table table-striped">';
 				echo '
 				<tr>
 					<td></td>
@@ -146,7 +152,8 @@ try{
 					<td>'.number_format($value['total_percentage'], 2).'%</td>
 				</tr>';
 			}
-			echo '</table>';
+			echo '</table>
+		    </div>';
 		}
 		else{
 			echo 'Hang on! The stats must be regenerating or there are no stats to show!';
