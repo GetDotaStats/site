@@ -141,15 +141,15 @@ try{
 				<tr>
 					<td></td>
 					<th>Hero</th>
+					<th>Percentage</th>
 					<th>Games Played</th>
-					<th>% of Total</th>
 				</tr>';
 			foreach($heroes_played as $key => $value){
 				echo '<tr>
 					<td>'. ($key + 1) .'</td>
 					<td>'.$value['localized_name'].'</td>
-					<td>'.number_format($value['games_total']).'</td>
 					<td>'.number_format($value['total_percentage'], 2).'%</td>
+					<td>'.number_format($value['games_total']).'</td>
 				</tr>';
 			}
 			echo '</table>
