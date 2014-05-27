@@ -14,7 +14,7 @@ try {
         if (!empty($match_db_details)) {
             $header .= '<div id="player_db_summary">
                 <h1>Player DB Details</h1>';
-            $header .= '<table class="table table-bordered table-hover table-condensed">';
+            $header .= '<table class="table table-bordered table-condensed">';
             $header .= '<tr>
 						<th>Players</th>
 						<td>' . number_format($match_db_details['player_count_total']) . '</td>
@@ -42,7 +42,7 @@ try {
 
             $header .= '<div id="match_db_summary">
                 <h1>Match DB Details</h1>';
-            $header .= '<table class="table table-bordered table-hover table-condensed">';
+            $header .= '<table class="table table-bordered table-condensed">';
             $header .= '<tr>
 						<th>Matches</th>
 						<td colspan="3">' . number_format($match_db_details['match_count']) . '</td>
