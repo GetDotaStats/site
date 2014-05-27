@@ -60,7 +60,7 @@ try {
 				<th>Worker</th>
 				<th>Job ID</th>
 				<th>Completion</th>
-				<th>Range</th>
+				<th>Match ID Range</th>
 				<th>Last Update</th>
 			</tr>';
             foreach ($d2_workers as $key => $value) {
@@ -91,7 +91,7 @@ try {
 			<tr>
 				<th>Job ID</th>
 				<th>Priority</th>
-				<th>Range</th>
+				<th>Match ID Range</th>
 			</tr>';
             foreach ($d2_worker_task_queue as $key => $value) {
                 echo '
@@ -117,7 +117,7 @@ try {
 				<th>Job ID</th>
 				<th>Worker</th>
 				<th>Priority</th>
-				<th>Range</th>
+				<th>Match ID Range</th>
 				<th>Completed</th>
 			</tr>';
             foreach ($d2_worker_task_completed as $key => $value) {
