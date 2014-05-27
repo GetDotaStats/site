@@ -44,6 +44,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simulations <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <!--<li><a class="nav-clickable" href="#simulations__axespins/">Axe Spins</a></li>-->
                         <li><a>Axe Spins</a></li>
                         <li><a>Shield Block</a></li>
                     </ul>

@@ -3,7 +3,7 @@ $start = time();
 
 $max_r = 200000;
 $max_h = $max_g = 100;
-
+$param_error = false;
 if (
     !isset($_GET['h']) || !is_numeric($_GET['h'])
     || !isset($_GET['r']) || !is_numeric($_GET['r'])
@@ -22,7 +22,16 @@ if (
     || ($_GET['t_min'] > $_GET['t_max'])
     || ($_GET['r'] > ($max_r / 2) && $_GET['h'] > ($max_h / 2))
 ) {
-    header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
+    //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
+
+    $param_error = true;
+
+    $_GET['h'] = ($max_h / 4);
+    $_GET['r'] = ($max_r / 4);
+    $_GET['g'] = 5;
+    $_GET['asl'] = 1;
+    $_GET['t_min'] = 0.01;
+    $_GET['t_max'] = 0.03;
 }
 
 include('./chart.php');
@@ -100,28 +109,39 @@ $optionsDataTable = array(
         readily available C constant for 17%, so this simulation assumes 20% helix chance as it has a known C constant
         defined.</p>
 </div>
+<?php
+if($param_error){
+    echo '<p class="h4 bg-danger">One or more of the parameters used is above the limit.</p>';
+}
+?>
 <form action="" method="get">
     <table border="1" cellspacing="1">
         <tr>
             <th align="left">Hits</th>
-            <td colspan="2"><input name="h" type="number" min="1" max="<?= $max_h ?>" value="<?= $_GET['h'] ?>" required></td>
+            <td colspan="2"><input name="h" type="number" min="1" max="<?= $max_h ?>" value="<?= $_GET['h'] ?>"
+                                   required></td>
         </tr>
         <tr>
             <th align="left">Time Between (secs)</th>
-            <td><input name="t_min" type="number" min="0.01" max="1" value="<?= $_GET['t_min'] ?>" step="0.01" required>min</td>
-            <td><input name="t_max" type="number" min="0.01" max="1" value="<?= $_GET['t_max'] ?>" step="0.01" required>max</td>
+            <td><input name="t_min" type="number" min="0.01" max="1" value="<?= $_GET['t_min'] ?>" step="0.01" required>min
+            </td>
+            <td><input name="t_max" type="number" min="0.01" max="1" value="<?= $_GET['t_max'] ?>" step="0.01" required>max
+            </td>
         </tr>
         <tr>
             <th align="left">Repetitions</th>
-            <td colspan="2"><input name="r" type="number" min="1" max="<?= $max_r ?>" value="<?= $_GET['r'] ?>" required></td>
+            <td colspan="2"><input name="r" type="number" min="1" max="<?= $max_r ?>" value="<?= $_GET['r'] ?>"
+                                   required></td>
         </tr>
         <tr>
             <th align="left">Groups</th>
-            <td colspan="2"><input name="g" type="number" min="1" max="<?= $max_g ?>" value="<?= $_GET['g'] ?>" required></td>
+            <td colspan="2"><input name="g" type="number" min="1" max="<?= $max_g ?>" value="<?= $_GET['g'] ?>"
+                                   required></td>
         </tr>
         <tr>
             <th align="left">Counter Helix</th>
-            <td colspan="2"><input name="asl" type="number" min="1" max="4" value="<?= $_GET['asl'] ?>" required>level</td>
+            <td colspan="2"><input name="asl" type="number" min="1" max="4" value="<?= $_GET['asl'] ?>" required>level
+            </td>
         </tr>
         <tr>
             <td colspan="4" align="center"><input type="submit" value="Simulate"></td>
@@ -162,7 +182,7 @@ for ($o = 0; $o < $reps; $o++) {
     $time_since_spin_prd = 0;
     for ($i = 1; $i <= $hits; $i++) {
         $rand = rand(0, 100) / 100; //ROLLING DICE TO SEE IF SPIN
-        $rand_spin_time = rand($time_since_last_spin_min*1000, $time_since_last_spin_max*1000)/1000; //TIME SINCE LAST HIT
+        $rand_spin_time = rand($time_since_last_spin_min * 1000, $time_since_last_spin_max * 1000) / 1000; //TIME SINCE LAST HIT
 
         //DO THE RANDOM DISTRIBUTION CHECK
         if ($rand < $rd && $time_since_spin_rd >= $axe_spin_cd) {
@@ -183,12 +203,10 @@ for ($o = 0; $o < $reps; $o++) {
 
             $damage_temp_prd += $axe_spin_damage;
             $time_since_spin_prd = 0;
-        }
-        else if($time_since_spin_prd >= $axe_spin_cd){
+        } else if ($time_since_spin_prd >= $axe_spin_cd) {
             $prd += $prd_c;
             $time_since_spin_prd += $rand_spin_time;
-        }
-        else {
+        } else {
             $time_since_spin_prd += $rand_spin_time;
         }
 
@@ -233,7 +251,7 @@ for ($o = 0; $o < $reps; $o++) {
 ksort($array_damage_graph);
 ksort($array_spins_graph);
 
-echo '<h2>Spins in ' . $hits . 'hits taken ('.number_format($reps,0).'reps)</h2>';
+echo '<h2>Spins in ' . $hits . 'hits taken (' . number_format($reps, 0) . 'reps)</h2>';
 echo '<div id="about_spins" style="width: 600px;font-size: 12px;">Averaged over the repetitions. The total number of spins was recorded for every repetition, and the frequency of that number of spins occuring was recorded below.</div>';
 echo '
 <table border="1">
@@ -247,15 +265,17 @@ echo '
         <th>Random (RD)</th>
         <td>' . number_format($successes_rd, 0) . '</td>
         <td>' . number_format(($successes_rd / $reps), 1) . '</td>
-        <td>'.number_format(($successes_rd / $reps * $axe_spin_damage),0).'</td>
+        <td>' . number_format(($successes_rd / $reps * $axe_spin_damage), 0) . '</td>
     </tr>
     <tr align="center">
         <th>Pseudo (PRD)</th>
          <td>' . number_format($successes_prd, 0) . '</td>
        <td>' . number_format(($successes_prd / $reps), 1) . ' </td>
-        <td>'.number_format(($successes_prd / $reps * $axe_spin_damage),0).'</td>
+        <td>' . number_format(($successes_prd / $reps * $axe_spin_damage), 0) . '</td>
     </tr>
 </table>';
+
+//exit();////////////////////////////////////////////////////////////////////////////////
 
 $super_array = array();
 foreach ($array_spins_graph as $key => $value) {
@@ -287,7 +307,7 @@ foreach ($array_damage_graph as $key => $value) {
     $total_damage_prd += $key * $value['prd'];
 }
 
-echo '<h2>Damage dealt in groups of ' . $groups_hits . 'hits from ' . $hits . 'hits ('.number_format($reps,0).'reps)</h2>';
+echo '<h2>Damage dealt in groups of ' . $groups_hits . 'hits from ' . $hits . 'hits (' . number_format($reps, 0) . 'reps)</h2>';
 echo '<div id="about_spins" style="width: 600px;font-size: 12px;">Averaged over the repetitions. The damage dealt was tallied over every group of hits, and the frequency of that damage occuring was tallied below.</div>';
 echo '
 <table border="1">
@@ -301,7 +321,7 @@ echo '
     </tr>
     <tr align="center">
         <th>Pseudo (PRD)</th>
-        <td>'.number_format(($total_damage_prd / ($reps * ($hits / $groups_hits))), 1).'</td>
+        <td>' . number_format(($total_damage_prd / ($reps * ($hits / $groups_hits))), 1) . '</td>
     </tr>
 </table>';
 
@@ -336,6 +356,6 @@ echo $chart->draw('damage_chart', $options, true, $optionsDataTable);
     http://dev.dota2.com/showthread.php?t=72983
 </div>
 
-<div id="pagerendertime" style="font-size: 12px;"><?= '<hr />Page generated in ' . (time() - $start) . 'secs' ?> || <a
-        href="">Link ME</a>
+<div id="pagerendertime" style="font-size: 12px;">
+    <?= '<hr />Page generated in ' . (time() - $start) . 'secs' ?>
 </div>
