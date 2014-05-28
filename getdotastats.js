@@ -4,15 +4,15 @@ $(document).ready(function () {
 
     //$('a').click(function (e) {
     /*$('ul li a.nav-clickable').click(function (e) {
-        //event.preventDefault();
-        checkURL(this.hash);
-    });*/
+     //event.preventDefault();
+     checkURL(this.hash);
+     });*/
 
-    $(document).on("click", 'a.nav-clickable', function(e) {
+    $(document).on("click", 'a.nav-clickable', function (e) {
         checkURL(this.hash);
     });
 
-        //setInterval("checkURL(window.location.hash)", 15 * 60 * 1000); //refresh every 15minutes
+    //setInterval("checkURL(window.location.hash)", 15 * 60 * 1000); //refresh every 15minutes
 });
 
 var lasturl = "";
@@ -39,25 +39,38 @@ function loadPage(url) {
 
     //alert(url);
 
-    $('#loading').show({complete: function () {
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "html",
-            success: function (msg) {
-                $('#loading').hide({
-                    complete: function () {
-                        if (parseInt(msg) != 0) {
-                            $('#main_content').html(msg);
-                        }
-                    }
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#loading').hide();
-            }
-        });
+    $('#loading').show({
+        start: function () {
+            $('#loading_spinner1').show();
+            $('#loading_spinner2').hide();
+        },
+        complete: function () {
+            $('#loading_spinner1').hide();
+            $('#loading_spinner2').show();
 
-    }});
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "html",
+                success: function (msg) {
+                    setTimeout(function () {
+                        $('#loading_spinner1').show();
+                        $('#loading_spinner2').hide();
+
+                        $('#loading').hide({
+                            complete: function () {
+                                if (parseInt(msg) != 0) {
+                                    $('#main_content').html(msg);
+                                }
+                            }
+                        });
+                    }, 500);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#loading').hide();
+                }
+            });
+
+        }});
 
 }

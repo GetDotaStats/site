@@ -31,6 +31,17 @@ body {
     width: 100%;
 }
 
+#loading_spinner1{
+    /*visibility:hidden;*/
+    display: none;
+}
+
+#loading_spinner2{
+    /*visibility:hidden;*/
+    display: none;
+}
+
+
 /*table{
     /*width:400px;
     table-layout:fixed;
