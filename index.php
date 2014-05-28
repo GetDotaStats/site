@@ -68,7 +68,7 @@
     <div class="jumbotron">
         <h1>Welcome to GetDotaStats!</h1>
         <div id="loading">
-            <img id="loading_spinner" src="./images/timbresaw.gif" alt="loading"/>
+            <img id="loading_spinner" src="./images/timbresaw2.gif" alt="loading"/>
         </div>
     </div>
 </div>
