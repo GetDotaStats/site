@@ -53,7 +53,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dead Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#replays/">Replay Archive</a></li>
-                        <li><a class="nav-clickable" href="#economy_analysis/">Economy Analysis</a></li>
+                        <li><a href="./economy_analysis/">Economy Analysis</a></li>
                     </ul>
                 </li>
                 <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
