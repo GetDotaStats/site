@@ -5,7 +5,7 @@
 <ul>
     <li>Signature generator tab on user profiles</li>
     <li>Tower & Barracks Status tab on match detail pages</a></li>
-    <li>A signature under each post on Dotabuff forums</a></li>
+    <li>A signature under each post on the forums</a></li>
 </ul>
 <p>
     <a href="./dbe/images/1.png" target="__new"><img src="./dbe/images/thumbnails/1.png"/></a>
