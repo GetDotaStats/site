@@ -32,6 +32,10 @@
     <li>v 0.2 - Added Tower and Barracks Status</li>
     <li>v 0.1 - First release</li>
 </ul>
+<h2>Bugs and Features Requests</h2>
+<p>
+    Can be left on our Github, which can be found <a href="https://github.com/jimmydorry/dotabuff-enhanced/issues">here</a>.
+</p>
 <h2>Credits</h2>
 <p>Originally developed by gmilanche (gmilanche.gm AT gmail DOT com). Proudly hosted by GetDotaStats. Chrome plugin
     maintained and improved by GetDotaStats</p>
