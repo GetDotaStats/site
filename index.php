@@ -30,7 +30,6 @@ if (!isset($_SESSION)) {
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
-                <li><a class="nav-clickable" href="#d2moddin/">D2Moddin</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
                     <ul class="dropdown-menu">
