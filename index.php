@@ -19,13 +19,18 @@
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="./getdotastats.js"></script>
 </head>
-
+<?php
+if (!isset($_SESSION)) {
+    session_start();
+}
+?>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
+                <li><a class="nav-clickable" href="#d2moddin/">D2Moddin</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -67,6 +72,7 @@
 <div class="container">
     <div class="jumbotron text-center">
         <h1>Welcome to GetDotaStats!</h1>
+
         <div id="loading">
             <img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
             <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>
@@ -97,8 +103,10 @@
 <div id="footer">
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
-            Steam. <small><a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests
-                here</a></small></p>
+            Steam.
+            <small><a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests
+                    here</a></small>
+        </p>
     </div>
 </div>
 

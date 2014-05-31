@@ -10,6 +10,7 @@ match_analysis/connections/parameters.php
 match_analysis/lobby_types
 match_analysis/db
 match_analysis/routine
+d2moddin/connections/parameters.php
 economy_analysis
 replays
 testing

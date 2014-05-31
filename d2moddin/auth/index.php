@@ -15,11 +15,11 @@ try{
 	
 	if(isset($_GET['login']))
 	{
-		$user->signIn('../');
+		$user->signIn('../../#d2moddin/');
 	}
 	if (isset($_GET['logout']))
 	{
-		$user->signOut('../');
+		$user->signOut('../../#d2moddin/');
 	}
 	
 	
