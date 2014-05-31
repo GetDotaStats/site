@@ -333,3 +333,21 @@ if(!class_exists('SteamID')){
         }
     }
 }
+
+if (!function_exists("simple_cached_query")) {
+    function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600){
+        global $memcache, $db;
+
+        $variable = $memcache->get($memcached_name);
+        if(!$variable){
+            if($sql){
+                $variable = $db->q($sql);
+                $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
+            }
+            else{
+                return 'No sql provided!!!';
+            }
+        }
+        return $variable;
+    }
+}

@@ -29,25 +29,21 @@ try {
             echo '<strong>User ID:</strong> ' . $steamid64 . '<br />';
             echo '<a href="./d2moddin/auth/?logout">Logout</a><br /><br />';
 
-            $gotDBstats = $db->q(
-                'SELECT * FROM `invite_key` WHERE `steam_id` = ? LIMIT 0,1;',
-                'i',
-                $steamid64
-            );
+            $gotDBstats = simple_cached_query('d2moddin_user'.$steamid64,
+                "SELECT * FROM `invite_key` WHERE `steam_id` = " . $steamid64 . " LIMIT 0,1;",
+                30);
             if (empty($gotDBstats)) {
                 $gotDBstats = $db->q(
                     'INSERT INTO `invite_key` (`steam_id`) VALUES (?);',
                     'i',
                     $steamid64
                 );
-            }
 
-            $gotDBstats = $db->q(
-                'SELECT * FROM `invite_key` WHERE `steam_id` = ? LIMIT 0,1;',
-                'i',
-                $steamid64
-            );
-            $gotDBstats = $gotDBstats[0];
+                $memcache->delete('d2moddin_user'.$steamid64);
+                $gotDBstats = simple_cached_query('d2moddin_user'.$steamid64,
+                    "SELECT * FROM `invite_key` WHERE `steam_id` = " . $steamid64 . " LIMIT 0,1;",
+                    30);
+            }
 
             print_r($gotDBstats);
 
