@@ -15,21 +15,21 @@ try{
 	
 	if(isset($_GET['login']))
 	{
-		$user->signIn('../../#d2moddin/');
-
         $gotDBstats = $db->q(
             'SELECT * FROM `invite_key` WHERE `steam_id` = ? LIMIT 0,1;',
             'i',
             $_SESSION['user_id']
         );
 
-        if(empty($gotDBstats)){
+        if(empty($gotDBstats) && !empty($_SESSION['user_id'])){
             $gotDBstats = $db->q(
                 'INSERT INTO `invite_key` (`steam_id`) VALUES (?);',
                 'i',
                 $_SESSION['user_id']
             );
         }
+
+        $user->signIn('../../#d2moddin/');
 	}
 
 	if (isset($_GET['logout']))
