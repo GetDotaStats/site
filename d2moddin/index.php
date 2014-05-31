@@ -50,7 +50,7 @@ try {
                 30);
             $d2moddin_stats = $d2moddin_stats[0];
 
-            print_r($gotDBstats);
+            print_r($d2moddin_user);
 
             echo '<h1>You are #'.$d2moddin_user['queue_id'].' in the queue.</h1><br />';
 
