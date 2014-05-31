@@ -21,13 +21,11 @@ try {
             ? $_SESSION['user_details']
             : NULL;
 
-        if (empty($steamid32)) {
+        if (empty($steamid64)) {
             echo 'To sign-up for your invite to D2Modd.in, login via steam. Logging in does not grant us access to your private stats, like MMR. After logging in, you will be entered into the queue for an invite.<br /><br />';
             echo '<a href="./d2moddin/auth/?login"><img src="./d2moddin/assets/images/steam_small.png" alt="Sign in with Steam"/></a><br /><br />';
-
         } else {
             echo '<strong>Logged in as:</strong> ' . $user_details->personaname . '<br />';
-
             echo '<a href="./d2moddin/auth/?logout">Logout</a><br /><br />';
         }
 
@@ -36,12 +34,11 @@ try {
             'i',
             $steamid64
         );
-
         if (!empty($gotDBstats)) {
             $gotDBstats = $gotDBstats[0];
+            print_r($gotDBstats);
         }
 
-        print_r($gotDBstats);
         exit();
 
         if (((!isset($_GET['status']) && empty($gotDBstats)) || $_GET['status'] == 'readd') && !empty($steamid32)) {
