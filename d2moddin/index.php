@@ -26,6 +26,7 @@ try {
             echo '<a href="./d2moddin/auth/?login"><img src="./d2moddin/assets/images/steam_small.png" alt="Sign in with Steam"/></a><br /><br />';
         } else {
             echo '<strong>Logged in as:</strong> ' . $user_details->personaname . '<br />';
+            echo '<strong>User ID:</strong> ' . $steamid64 . '<br />';
             echo '<a href="./d2moddin/auth/?logout">Logout</a><br /><br />';
 
             $gotDBstats = $db->q(
