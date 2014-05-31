@@ -44,6 +44,7 @@ try {
                     "SELECT * FROM `invite_key` WHERE `steam_id` = " . $steamid64 . " LIMIT 0,1;",
                     30);
             }
+            $d2moddin_user = $d2moddin_user[0];
 
             $d2moddin_stats = simple_cached_query('d2moddin_stats',
                 "SELECT COUNT(*) as total_users FROM `invite_key`;",
