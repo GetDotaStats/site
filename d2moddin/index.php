@@ -29,23 +29,39 @@ try {
             echo '<strong>User ID:</strong> ' . $steamid64 . '<br />';
             echo '<a href="./d2moddin/auth/?logout">Logout</a><br /><br />';
 
-            $gotDBstats = simple_cached_query('d2moddin_user'.$steamid64,
+            $d2moddin_user = simple_cached_query('d2moddin_user'.$steamid64,
                 "SELECT * FROM `invite_key` WHERE `steam_id` = " . $steamid64 . " LIMIT 0,1;",
                 30);
-            if (empty($gotDBstats)) {
-                $gotDBstats = $db->q(
+            if (empty($d2moddin_user)) {
+                $d2moddin_user = $db->q(
                     'INSERT INTO `invite_key` (`steam_id`) VALUES (?);',
                     'i',
                     $steamid64
                 );
 
                 $memcache->delete('d2moddin_user'.$steamid64);
-                $gotDBstats = simple_cached_query('d2moddin_user'.$steamid64,
+                $d2moddin_user = simple_cached_query('d2moddin_user'.$steamid64,
                     "SELECT * FROM `invite_key` WHERE `steam_id` = " . $steamid64 . " LIMIT 0,1;",
                     30);
             }
 
+            $d2moddin_stats = simple_cached_query('d2moddin_stats',
+                "SELECT COUNT(*) as total_users FROM `invite_key`;",
+                30);
+            $d2moddin_stats = $d2moddin_stats[0];
+
             print_r($gotDBstats);
+
+            echo '<h1>You are #'.$d2moddin_user['queue_id'].' in the queue.</h1><br />';
+
+            if($d2moddin_user['invited']){
+                echo 'You have received an invite! <a href="http://d2modd.in/" target="_new">You can now login via d2moddin vai this link.</a>';
+            }
+            else{
+                echo 'You have not been invited yet. There are '.$d2moddin_stats['total_users'].' in the queue.';
+            }
+
+
 
         }
     } else {
