@@ -49,7 +49,7 @@ if (!isset($_SESSION)) {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simulations <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#simulations__axespins/">Axe Spins</a></li>
-                        <li><a>Shield Block</a></li>
+                        <li><a>Shield Block - Soon™</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
