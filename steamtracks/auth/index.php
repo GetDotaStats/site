@@ -15,11 +15,11 @@ try{
 	
 	if(isset($_GET['login']))
 	{
-		$user->signIn('../');
+		$user->signIn('../../#steamtracks/');
 	}
 	if (isset($_GET['logout']))
 	{
-		$user->signOut('../');
+		$user->signOut('../../#steamtracks/');
 	}
 	
 	
