@@ -33,7 +33,7 @@ function loadPage(url) {
     if (url.indexOf('?') > -1 && url.indexOf('/?') < 0) {
         url = url.replace('?', '.php?');
     }
-    else if (url.slice(-1) != '/') {
+    else if (url.slice(-1) != '/' && url.indexOf('?') < 0) {
         url = url + '.php';
     }
 
