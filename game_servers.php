@@ -2,7 +2,7 @@
 
 <h3>Current Servers</h3>
 <h4><a href="http://d2modd.in">D2Moddin</a></h4>
-<p>We currently host servers in North American and Australia for D2Moddin.</p>
+<p>We currently host servers in North American and Australia for D2Moddin. We also created and host the queue for entering the closed Beta.</p>
 <p>Support is provided via the Official <a target="_blank" href="http://steamcommunity.com/groups/D2Moddin/discussions">Steam Community group</a>.</p>
 
 <h3>Previous Servers</h3>
