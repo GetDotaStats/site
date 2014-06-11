@@ -31,7 +31,7 @@ try {
 
 
     if (isset($_GET['status'])) {
-        echo '<span class="warning">';
+        echo '<div class="alert alert-danger">';
         switch ($_GET['status']) {
             case 'success':
                 echo 'Sucessfully enrolled as new user!';
@@ -49,7 +49,7 @@ try {
                 echo 'Bad Steam ID given via SteamTracks. Report this error in the chatbox or github';
                 break;
         }
-        echo '</span><br />';
+        echo '</div><br />';
     }
 
     if (empty($steamid32)) {
