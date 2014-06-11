@@ -43,7 +43,7 @@ try {
                 echo 'Failure receiving account stats. If you signed up correctly, we will retry grabbing your stats automatically at a later date.';
                 break;
             case 'missingidtoken':
-                echo 'Missing steam_id or token. <a href="./">Please try again.</a>';
+                echo 'Missing steam_id or token. <a class="nav-clickable" href="#steamtracks/?status=apifailure">Please try again.</a>';
                 break;
             case 'sidfailure':
                 echo 'Bad Steam ID given via SteamTracks. Report this error in the chatbox or github';
