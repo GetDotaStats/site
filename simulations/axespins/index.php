@@ -117,7 +117,7 @@ if ($param_error) {
     echo '</div>';
 }
 ?>
-<form action="./#simulations__axespins" method="POST">
+<form action="./#simulations__axespins/" method="POST">
     <table border="1" cellspacing="1">
         <tr>
             <th align="left">Hits</th>
