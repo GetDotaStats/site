@@ -19,7 +19,7 @@ try{
 	}
 	if (isset($_GET['logout']))
 	{
-		$user->signOut('#home/');
+		$user->signOut('../');
 	}
 	
 	
