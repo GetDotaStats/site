@@ -5,32 +5,32 @@ $max_r = 200000;
 $max_h = $max_g = 100;
 $param_error = false;
 if (
-    !isset($_GET['h']) || !is_numeric($_GET['h'])
-    || !isset($_GET['r']) || !is_numeric($_GET['r'])
-    || !isset($_GET['g']) || !is_numeric($_GET['g'])
-    || !isset($_GET['asl']) || !is_numeric($_GET['asl'])
-    || !isset($_GET['t_min']) || !is_numeric($_GET['t_min'])
-    || !isset($_GET['t_max']) || !is_numeric($_GET['t_max'])
+    !isset($_POST['h']) || !is_numeric($_POST['h'])
+    || !isset($_POST['r']) || !is_numeric($_POST['r'])
+    || !isset($_POST['g']) || !is_numeric($_POST['g'])
+    || !isset($_POST['asl']) || !is_numeric($_POST['asl'])
+    || !isset($_POST['t_min']) || !is_numeric($_POST['t_min'])
+    || !isset($_POST['t_max']) || !is_numeric($_POST['t_max'])
 ) {
     //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
-    $_GET['h'] = ($max_h / 4);
-    $_GET['r'] = ($max_r / 4);
-    $_GET['g'] = 5;
-    $_GET['asl'] = 1;
-    $_GET['t_min'] = 0.01;
-    $_GET['t_max'] = 0.03;
+    $_POST['h'] = ($max_h / 4);
+    $_POST['r'] = ($max_r / 4);
+    $_POST['g'] = 5;
+    $_POST['asl'] = 1;
+    $_POST['t_min'] = 0.01;
+    $_POST['t_max'] = 0.03;
 }
 
 if (
-    ($_GET['h'] > $max_h || $_GET['h'] < 1)
-    || ($_GET['r'] > $max_r || $_GET['r'] < 1)
-    || ($_GET['g'] > $max_g || $_GET['g'] < 1)
-    || ($_GET['asl'] > 4 || $_GET['asl'] < 1)
-    || ($_GET['t_min'] > 1 || $_GET['t_min'] < 0.01)
-    || ($_GET['t_max'] > 1 || $_GET['t_max'] < 0.01)
+    ($_POST['h'] > $max_h || $_POST['h'] < 1)
+    || ($_POST['r'] > $max_r || $_POST['r'] < 1)
+    || ($_POST['g'] > $max_g || $_POST['g'] < 1)
+    || ($_POST['asl'] > 4 || $_POST['asl'] < 1)
+    || ($_POST['t_min'] > 1 || $_POST['t_min'] < 0.01)
+    || ($_POST['t_max'] > 1 || $_POST['t_max'] < 0.01)
 
-    || ($_GET['t_min'] > $_GET['t_max'])
-    || ($_GET['r'] > ($max_r / 2) && $_GET['h'] > ($max_h / 2))
+    || ($_POST['t_min'] > $_POST['t_max'])
+    || ($_POST['r'] > ($max_r / 2) && $_POST['h'] > ($max_h / 2))
 ) {
     $param_error = true;
 }
@@ -44,12 +44,12 @@ include('./chart.php');
 $rd = 0.15;
 $prd_c = 0.03221;
 
-$hits = $_GET['h'];
-$reps = $_GET['r'];
-$groups_hits = $_GET['g'];
-$axe_spin_level = $_GET['asl'];
-$time_since_last_spin_min = $_GET['t_min'];
-$time_since_last_spin_max = $_GET['t_max'];
+$hits = $_POST['h'];
+$reps = $_POST['r'];
+$groups_hits = $_POST['g'];
+$axe_spin_level = $_POST['asl'];
+$time_since_last_spin_min = $_POST['t_min'];
+$time_since_last_spin_max = $_POST['t_max'];
 
 $axe_spin_dmg_array = array(
     1 => 100,
@@ -117,33 +117,33 @@ if ($param_error) {
     echo '</div>';
 }
 ?>
-<form action="./#simulations__axespins" method="get">
+<form action="./#simulations__axespins" method="POST">
     <table border="1" cellspacing="1">
         <tr>
             <th align="left">Hits</th>
-            <td colspan="2"><input name="h" type="number" min="1" max="<?= $max_h ?>" value="<?= $_GET['h'] ?>"
+            <td colspan="2"><input name="h" type="number" min="1" max="<?= $max_h ?>" value="<?= $_POST['h'] ?>"
                                    required></td>
         </tr>
         <tr>
             <th align="left">Time Between (secs)</th>
-            <td><input name="t_min" type="number" min="0.01" max="1" value="<?= $_GET['t_min'] ?>" step="0.01" required>min
+            <td><input name="t_min" type="number" min="0.01" max="1" value="<?= $_POST['t_min'] ?>" step="0.01" required>min
             </td>
-            <td><input name="t_max" type="number" min="0.01" max="1" value="<?= $_GET['t_max'] ?>" step="0.01" required>max
+            <td><input name="t_max" type="number" min="0.01" max="1" value="<?= $_POST['t_max'] ?>" step="0.01" required>max
             </td>
         </tr>
         <tr>
             <th align="left">Repetitions</th>
-            <td colspan="2"><input name="r" type="number" min="1" max="<?= $max_r ?>" value="<?= $_GET['r'] ?>"
+            <td colspan="2"><input name="r" type="number" min="1" max="<?= $max_r ?>" value="<?= $_POST['r'] ?>"
                                    required></td>
         </tr>
         <tr>
             <th align="left">Groups</th>
-            <td colspan="2"><input name="g" type="number" min="1" max="<?= $max_g ?>" value="<?= $_GET['g'] ?>"
+            <td colspan="2"><input name="g" type="number" min="1" max="<?= $max_g ?>" value="<?= $_POST['g'] ?>"
                                    required></td>
         </tr>
         <tr>
             <th align="left">Counter Helix</th>
-            <td colspan="2"><input name="asl" type="number" min="1" max="4" value="<?= $_GET['asl'] ?>" required>level
+            <td colspan="2"><input name="asl" type="number" min="1" max="4" value="<?= $_POST['asl'] ?>" required>level
             </td>
         </tr>
         <tr>
