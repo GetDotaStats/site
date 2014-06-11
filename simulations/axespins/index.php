@@ -11,8 +11,18 @@ if (
     || !isset($_GET['asl']) || !is_numeric($_GET['asl'])
     || !isset($_GET['t_min']) || !is_numeric($_GET['t_min'])
     || !isset($_GET['t_max']) || !is_numeric($_GET['t_max'])
+) {
+    //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
+    $_GET['h'] = ($max_h / 4);
+    $_GET['r'] = ($max_r / 4);
+    $_GET['g'] = 5;
+    $_GET['asl'] = 1;
+    $_GET['t_min'] = 0.01;
+    $_GET['t_max'] = 0.03;
+}
 
-    || ($_GET['h'] > $max_h || $_GET['h'] < 1)
+if (
+    ($_GET['h'] > $max_h || $_GET['h'] < 1)
     || ($_GET['r'] > $max_r || $_GET['r'] < 1)
     || ($_GET['g'] > $max_g || $_GET['g'] < 1)
     || ($_GET['asl'] > 4 || $_GET['asl'] < 1)
@@ -22,16 +32,7 @@ if (
     || ($_GET['t_min'] > $_GET['t_max'])
     || ($_GET['r'] > ($max_r / 2) && $_GET['h'] > ($max_h / 2))
 ) {
-    //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
-
     $param_error = true;
-
-    $_GET['h'] = ($max_h / 4);
-    $_GET['r'] = ($max_r / 4);
-    $_GET['g'] = 5;
-    $_GET['asl'] = 1;
-    $_GET['t_min'] = 0.01;
-    $_GET['t_max'] = 0.03;
 }
 
 include('./chart.php');
@@ -110,8 +111,10 @@ $optionsDataTable = array(
         defined.</p>
 </div>
 <?php
-if($param_error){
-    echo '<p class="h4 bg-danger">One or more of the parameters used is above the limit.</p>';
+if ($param_error) {
+    echo '<div class="alert alert-danger">';
+    echo 'One or more of the parameters is set to a value outside of the acceptable bounds. Will use defaults.';
+    echo '</div>';
 }
 ?>
 <form action="./#simulations__axespins" method="get">
