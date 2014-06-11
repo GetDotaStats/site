@@ -1,13 +1,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <?php
 require_once('./functions.php');
-require_once('./connections/parameters.php');
+require_once('../connections/parameters.php');
 try{
 	if (!isset($_SESSION)) {
 		session_start();
 	}
 
-	$db = new dbWrapper($hostname, $username, $password, $database, false);
+	$db = new dbWrapper($hostname_steamtracks, $username_steamtracks, $password_steamtracks, $database_steamtracks, false);
 	
 	switch($_GET['orderby']){
 		case '0-0':

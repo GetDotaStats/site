@@ -1,6 +1,6 @@
 <?php
 require_once('./functions.php');
-require_once('./connections/parameters.php');
+require_once('../connections/parameters.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -75,7 +75,7 @@ require_once('./connections/parameters.php');
                         session_start();
                     }
 
-                    $db = new dbWrapper($hostname, $username, $password, $database, false);
+                    $db = new dbWrapper($hostname_steamtracks, $username_steamtracks, $password_steamtracks, $database_steamtracks, false);
                     $steamtracks = new steamtracks($steamtracks_api_key, $steamtracks_api_secret, false);
 
                     if (!empty($_SESSION['user_id'])) {

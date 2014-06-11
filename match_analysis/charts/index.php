@@ -11,9 +11,9 @@
 <pre>
 <?php
 require_once('./functions.php');
-require_once('../connections/parameters.php');
+require_once('../../connections/parameters.php');
 
-$db = new dbWrapper($hostname, $username, $password, $database, true);
+$db = new dbWrapper($hostname_match_analysis, $username_match_analysis, $password_match_analysis, $database_match_analysis, true);
 
 $memcache = new Memcache;
 $memcache->connect("localhost",11211); # You might need to set "localhost" to "127.0.0.1"

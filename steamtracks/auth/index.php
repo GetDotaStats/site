@@ -1,6 +1,6 @@
 <?php
 require_once("../functions.php");
-require_once("../connections/parameters.php");
+require_once("../../connections/parameters.php");
 
 try{
 	if (!isset($_SESSION)) {

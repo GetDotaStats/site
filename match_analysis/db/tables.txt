@@ -1,0 +1,190 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.2.2
+-- http://www.phpmyadmin.net
+--
+-- Host: 127.0.0.1
+-- Generation Time: Dec 05, 2013 at 10:19 AM
+-- Server version: 5.5.27
+-- PHP Version: 5.4.7
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `dota2_skill`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `game_modes`
+--
+
+CREATE TABLE IF NOT EXISTS `game_modes` (
+  `game_mode` tinyint(2) NOT NULL,
+  `nice_name` varchar(30) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  PRIMARY KEY (`game_mode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `game_modes`
+--
+
+INSERT INTO `game_modes` (`game_mode`, `nice_name`, `name`) VALUES
+(0, 'None', 'DOTA_GAMEMODE_NONE'),
+(1, 'All Pick', 'DOTA_GAMEMODE_AP '),
+(2, 'Captains Draft', 'DOTA_GAMEMODE_CM '),
+(3, 'Random Draft', 'DOTA_GAMEMODE_RD '),
+(4, 'Single Draft', 'DOTA_GAMEMODE_SD '),
+(5, 'All Random', 'DOTA_GAMEMODE_AR '),
+(6, 'Introduction', 'DOTA_GAMEMODE_INTRO '),
+(7, 'Dire Tide', 'DOTA_GAMEMODE_HW '),
+(8, 'Reverse Captains Mode', 'DOTA_GAMEMODE_REVERSE_CM '),
+(9, 'Frostivus', 'DOTA_GAMEMODE_XMAS '),
+(10, 'Tutorial', 'DOTA_GAMEMODE_TUTORIAL '),
+(11, 'Mid Only', 'DOTA_GAMEMODE_MO '),
+(12, 'Least Played', 'DOTA_GAMEMODE_LP '),
+(13, 'Newb Pool', 'DOTA_GAMEMODE_POOL1 '),
+(14, 'Limited Heroes', 'DOTA_GAMEMODE_FH '),
+(15, 'Custom Game', 'DOTA_GAMEMODE_CUSTOM '),
+(16, 'Captains Draft', 'DOTA_GAMEMODE_CD '),
+(17, 'Auto Draft', 'DOTA_GAMEMODE_AD ');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `leaver_status`
+--
+
+CREATE TABLE IF NOT EXISTS `leaver_status` (
+  `leaver_status_id` tinyint(2) NOT NULL,
+  `nice_name` varchar(30) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`leaver_status_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `leaver_status`
+--
+
+INSERT INTO `leaver_status` (`leaver_status_id`, `nice_name`, `name`) VALUES
+(0, 'None', 'DOTA_LEAVER_NONE'),
+(1, 'Disconnected', 'DOTA_LEAVER_DISCONNECTED'),
+(2, 'Disconnected Timeout', 'DOTA_LEAVER_DISCONNECTED_TOO_LONG'),
+(3, 'Abandoned', 'DOTA_LEAVER_ABANDONED'),
+(4, 'AFK', 'DOTA_LEAVER_AFK'),
+(5, 'Not Connected', 'DOTA_LEAVER_NEVER_CONNECTED'),
+(6, 'Not Connected Timeout', 'DOTA_LEAVER_NEVER_CONNECTED_TOO_LONG'),
+(7, 'Not Readied', 'DOTA_LEAVER_FAILED_TO_READY_UP'),
+(8, 'Declined Match', 'DOTA_LEAVER_DECLINED');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ability_upgrades`
+--
+
+CREATE TABLE IF NOT EXISTS `ability_upgrades` (
+  `match_id` int(12) NOT NULL,
+  `hero_id` int(12) NOT NULL,
+  `level` tinyint(2) NOT NULL,
+  `ability` int(12) NOT NULL,
+  `time` int(12) NOT NULL,
+  PRIMARY KEY (`match_id`,`hero_id`,`level`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `additional_units`
+--
+
+CREATE TABLE IF NOT EXISTS `additional_units` (
+  `match_id` int(12) NOT NULL,
+  `hero_id` int(10) NOT NULL,
+  `unitname` varchar(50) NOT NULL,
+  `item_0` int(5) NOT NULL,
+  `item_1` int(5) NOT NULL,
+  `item_2` int(5) NOT NULL,
+  `item_3` int(5) NOT NULL,
+  `item_4` int(5) NOT NULL,
+  `item_5` int(5) NOT NULL,
+  PRIMARY KEY (`match_id`,`hero_id`,`unitname`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `matches`
+--
+
+CREATE TABLE IF NOT EXISTS `matches` (
+  `match_id` int(12) NOT NULL,
+  `match_seq_num` int(12) NOT NULL,
+  `lobby_type` tinyint(2) NOT NULL DEFAULT '0',
+  `game_mode` tinyint(2) NOT NULL,
+  `radiant_win` tinyint(1) NOT NULL DEFAULT '0',
+  `duration` int(12) NOT NULL,
+  `start_time` int(12) NOT NULL,
+  `cluster` int(10) NOT NULL,
+  `first_blood_time` int(10) NOT NULL,
+  `league_id` int(10) DEFAULT NULL,
+  `series_id` int(12) DEFAULT NULL,
+  `series_type` tinyint(1) DEFAULT NULL,
+  `tower_status_radiant` int(10) NOT NULL,
+  `tower_status_dire` int(10) NOT NULL,
+  `barracks_status_radiant` int(10) NOT NULL,
+  `barracks_status_dire` int(10) NOT NULL,
+  PRIMARY KEY (`match_id`),
+  UNIQUE KEY `match_seq_num` (`match_seq_num`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `picks_bans`
+--
+
+CREATE TABLE IF NOT EXISTS `picks_bans` (
+  `match_id` int(12) NOT NULL,
+  `order` tinyint(2) NOT NULL,
+  `team` tinyint(1) NOT NULL,
+  `is_pick` tinyint(1) NOT NULL,
+  `hero_id` int(5) NOT NULL,
+  PRIMARY KEY (`match_id`,`order`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `players`
+--
+
+CREATE TABLE IF NOT EXISTS `players` (
+  `match_id` int(20) NOT NULL,
+  `account_id` bigint(255) DEFAULT NULL,
+  `player_slot` smallint(3) NOT NULL,
+  `hero_id` smallint(3) NOT NULL DEFAULT '0',
+  `item_0` int(10) NOT NULL DEFAULT '0',
+  `item_1` int(10) NOT NULL DEFAULT '0',
+  `item_2` int(10) NOT NULL DEFAULT '0',
+  `item_3` int(10) NOT NULL DEFAULT '0',
+  `item_4` int(10) NOT NULL DEFAULT '0',
+  `item_5` int(10) NOT NULL DEFAULT '0',
+  `kills` int(10) NOT NULL,
+  `deaths` int(10) NOT NULL,
+  `assists` int(10) NOT NULL,
+  `leaver_status` tinyint(2) NOT NULL,
+  `gold` int(10) NOT NULL,
+  `last_hits` int(10) NOT NULL,
+  `denies` int(10) NOT NULL,
+  `gold_per_min` int(10) NOT NULL,
+  `xp_per_min` int(10) NOT NULL,
+  `gold_spent` int(10) NOT NULL,
+  `hero_damage` int(10) NOT NULL,
+  `tower_damage` int(10) NOT NULL,
+  `hero_healing` int(10) NOT NULL,
+  `level` tinyint(2) NOT NULL,
+  PRIMARY KEY (`match_id`,`player_slot`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

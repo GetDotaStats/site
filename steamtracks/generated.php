@@ -1,12 +1,12 @@
 <?php
 require_once('./functions.php');
-require_once('./connections/parameters.php');
+require_once('../connections/parameters.php');
 try{
 	if (!isset($_SESSION)) {
 		session_start();
 	}
 
-	$db = new dbWrapper($hostname, $username, $password, $database, false);
+	$db = new dbWrapper($hostname_steamtracks, $username_steamtracks, $password_steamtracks, $database_steamtracks, false);
 	$steamtracks = new steamtracks($steamtracks_api_key, $steamtracks_api_secret, false);
 	
 	if(isset($_GET['token'])){
