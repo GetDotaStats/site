@@ -34,12 +34,12 @@ try {
 
     if (empty($steamid32)) {
         echo 'To get your own Dota2 signature, login via steam. Logging in does not grant us access to your private stats, like MMR. After logging in, you will be presented with your signature and also have the option of adding your MMR to your signature via SteamTracks OAuth.<br /><br />';
-        echo '<a href="./auth/?login"><img src="./assets/images/steam_small.png" alt="Sign in with Steam"/></a><br /><br />';
+        echo '<a href="./steamtracks/auth/?login"><img src="./steamtracks/assets/images/steam_small.png" alt="Sign in with Steam"/></a><br /><br />';
 
     } else {
         echo '<strong>Logged in as:</strong> ' . $user_name . '<br />';
 
-        echo '<a href="./auth/?logout">Logout</a><br /><br />';
+        echo '<a href="./steamtracks/auth/?logout">Logout</a><br /><br />';
 
         echo '<img src="http://getdotastats.com/sig/' . $steamid32 . '.png" /><br />';
         echo '<strong>Your signature link:</strong> <a target="__new" href="http://getdotastats.com/sig/' . $steamid32 . '.png">http://getdotastats.com/sig/' . $steamid32 . '.png</a><br /><br />';
