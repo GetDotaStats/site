@@ -15,9 +15,7 @@ try {
         $steamid32 = convert_steamid($steamid64);
     }
 
-    $user_details = !empty($_SESSION['user_details'])
-        ? $_SESSION['user_details']
-        : NULL;
+    $user_details = $_SESSION['user_details'];
 
     $user_name = !empty($user_details->personaname)
         ? $user_details->personaname
@@ -32,10 +30,31 @@ try {
     }
 
 
+    if (isset($_GET['status'])) {
+        echo '<span class="warning">';
+        switch ($_GET['status']) {
+            case 'success':
+                echo 'Sucessfully enrolled as new user!';
+                break;
+            case 'sqlfailure':
+                echo 'Could not insert your stats into database. This means that we may already have stats for you. If you can see the app listed under your steamtracks apps list, and you have the bot added, then we will automatically grab your stats later.';
+                break;
+            case 'apifailure':
+                echo 'Failure receiving account stats. If you signed up correctly, we will retry grabbing your stats automatically at a later date.';
+                break;
+            case 'missingidtoken':
+                echo 'Missing steam_id or token. <a href="./">Please try again.</a>';
+                break;
+            case 'sidfailure':
+                echo 'Bad Steam ID given via SteamTracks. Report this error in the chatbox or github';
+                break;
+        }
+        echo '</span><br />';
+    }
+
     if (empty($steamid32)) {
         echo 'To get your own Dota2 signature, login via steam. Logging in does not grant us access to your private stats, like MMR. After logging in, you will be presented with your signature and also have the option of adding your MMR to your signature via SteamTracks OAuth.<br /><br />';
         echo '<a href="./steamtracks/auth/?login"><img src="./steamtracks/assets/images/steam_small.png" alt="Sign in with Steam"/></a><br /><br />';
-
     } else {
         echo '<strong>Logged in as:</strong> ' . $user_name . '<br />';
 
@@ -66,25 +85,6 @@ try {
         }
     } else if (!empty($gotDBstats)) {
         echo 'We already have stats for you. If you removed yourself from the app, you can <a class="nav-clickable" href="#steamtracks/?status=readd">re-add yourself here</a>.<br />';
-    } else if (isset($_GET['status'])) {
-        switch ($_GET['status']) {
-            case 'success':
-                echo 'Sucessfully enrolled as new user!';
-                break;
-            case 'sqlfailure':
-                echo 'Could not insert your stats into database. This means that we may already have stats for you. If you can see the app listed under your steamtracks apps list, and you have the bot added, then we will automatically grab your stats later.';
-                break;
-            case 'apifailure':
-                echo 'Failure receiving account stats. If you signed up correctly, we will retry grabbing your stats automatically at a later date.';
-                break;
-            case 'missingidtoken':
-                echo 'Missing steam_id or token. <a href="./">Please try again.</a>';
-                break;
-            case 'sidfailure':
-                echo 'Bad Steam ID given via SteamTracks. Report this error in the chatbox or github';
-                break;
-        }
-        echo '<br />';
     }
 } catch (Exception $e) {
     echo $e->getMessage();
