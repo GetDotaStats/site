@@ -58,7 +58,7 @@ try {
     } else {
         echo '<strong>Logged in as:</strong> ' . $user_name . '<br />';
 
-        echo '<a href="./steamtracks/auth/?logout">Logout</a><br /><br />';
+        echo '<a class="nav-clickable" href="#steamtracks__auth/?logout">Logout</a><br /><br />';
 
         echo '<img src="http://getdotastats.com/sig/' . $steamid32 . '.png" /><br />';
         echo '<strong>Your signature link:</strong> <a target="__new" href="http://getdotastats.com/sig/' . $steamid32 . '.png">http://getdotastats.com/sig/' . $steamid32 . '.png</a><br /><br />';
