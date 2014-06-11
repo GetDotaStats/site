@@ -114,7 +114,7 @@ if($param_error){
     echo '<p class="h4 bg-danger">One or more of the parameters used is above the limit.</p>';
 }
 ?>
-<form action="" method="get">
+<form action="./#simulations__axespins" method="get">
     <table border="1" cellspacing="1">
         <tr>
             <th align="left">Hits</th>
