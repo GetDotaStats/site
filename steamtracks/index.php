@@ -65,7 +65,7 @@ try {
             var_dump($token_response);
         }
     } else if (!empty($gotDBstats)) {
-        echo 'We already have stats for you. If you removed yourself from the app, you can <a href="./?status=readd">re-add yourself here</a>.<br />';
+        echo 'We already have stats for you. If you removed yourself from the app, you can <a class="nav-clickable" href="#steamtracks/?status=readd">re-add yourself here</a>.<br />';
     } else if (isset($_GET['status'])) {
         switch ($_GET['status']) {
             case 'success':
