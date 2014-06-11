@@ -9,33 +9,11 @@ try{
 	$db = new dbWrapper($hostname_steamtracks, $username_steamtracks, $password_steamtracks, $database_steamtracks, false);
 	$steamtracks = new steamtracks($steamtracks_api_key, $steamtracks_api_secret, false);
 	
-	if(isset($_GET['token'])){
-		$token = $_GET['token'];
-	}
-	else{
-		echo 'No token in callback!';
-		exit();
-	}
-	
-	if(isset($_GET['steamid32']) && is_numeric($_GET['steamid32'])){
-		$steam_id = $_GET['steamid32'];
-	}
-	else{
-		//the callback is not returning the steam_id, so dirty hack added here
-		echo 'Using hack to get steamID that should have been a callback parameter.<br />';
-		
-		$status_request = $steamtracks->signup_status($token);//GET TOKEN STATUS
+	$token = $_GET['token'];
+    $steam_id = $_GET['steamid32'];
 
-		if(!empty($status_request['result']['status']) && $status_request['result']['status'] == 'accepted'){
-			$steam_id = $status_request['result']['user'];
-		}
-		else{
-			echo 'Failed to get steam ID!!<br />';
-			exit();
-		}
-	}
-
-	if(!empty($token) && !empty($steam_id)){
+	if(!empty($token)){
+        if(!empty($steam_id) && is_numeric($_GET['steamid32'])){
 		$accept_request = $steamtracks->signup_ack($token, $steam_id);
 		
 		if($accept_request['result']['status'] == 'OK'){
@@ -108,11 +86,11 @@ try{
 
 				if($insert_sql){
 					//echo 'Sucessfully stored your data!';
-					header('./index.php?status=success');
+					header('../#steamtracks/?status=success');
 				}
 				else{
 					//echo 'Failed to store your data! We will try again later.';
-					header('./index.php?status=sqlfailure');
+					header('../#steamtracks/?status=sqlfailure');
 				}
 			}
 			else{
@@ -121,16 +99,21 @@ try{
 		}
 		else{
 			//echo 'Failure receiving account stats. If you signed up correctly, we will retry grabbing your stats automatically at a later date.<br />';
-			header('./index.php?status=apifailure');
+			header('../#steamtracks/?status=apifailure');
 		}
+        }
+        else{
+            //echo 'Bad steam id.<br />';
+            header('../#steamtracks/?status=sidfailure');
+        }
 	}
 	else{
 		//echo 'Missing steam_id or token!!<br />';
-		header('./index.php?status=missingidtoken');
+		header('../#steamtracks/?status=missingidtoken');
 	}
 }
 catch (Exception $e){
-	header('./index.php?status=apifailure');
+	header('../#steamtracks/?status=apifailure');
 	//echo $e->getMessage();
 }
 ?>

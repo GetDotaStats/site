@@ -37,7 +37,7 @@ function loadPage(url) {
         url = url + '.php';
     }
 
-    alert(url);
+    //alert(url);
 
     $('#loading').show({
         start: function () {

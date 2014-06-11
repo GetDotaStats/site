@@ -80,6 +80,9 @@ try {
             case 'missingidtoken':
                 echo 'Missing steam_id or token. <a href="./">Please try again.</a>';
                 break;
+            case 'sidfailure':
+                echo 'Bad Steam ID given via SteamTracks. Report this error in the chatbox or github';
+                break;
         }
         echo '<br />';
     }
