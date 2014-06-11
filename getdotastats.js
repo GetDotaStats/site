@@ -30,7 +30,7 @@ function checkURL(hash) {
 function loadPage(url) {
     url = url.replace('#', '').split('__').join('/');
 
-    if (url.indexOf('?') > -1) {
+    if (url.indexOf('?') > -1 && url.indexOf('/?') < 0) {
         url = url.replace('?', '.php?');
     }
     else if (url.slice(-1) != '/') {
