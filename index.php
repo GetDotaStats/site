@@ -33,7 +33,7 @@ if (!isset($_SESSION)) {
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#match_analysis/">Home</a></li>
+                        <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>
                         <li><a class="nav-clickable" href="#match_analysis__general_stats">General Stats</a></li>
                         <li><a class="nav-clickable" href="#match_analysis__game_modes">Game Modes</a></li>
                         <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
