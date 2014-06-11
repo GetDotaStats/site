@@ -379,11 +379,13 @@ echo $chart->draw('damage_chart', $options, true, $optionsDataTable);
 
 <div id="resources">
     <h2>Resources</h2>
-    <a href="http://www.playdota.com/forums/showthread.php?t=7993">http://www.playdota.com/forums/showthread.php?t=7993</a>
+    <a class="nav-clickable" href="http://www.playdota.com/forums/showthread.php?t=7993">PlayDota Forums</a>
     <br/>
-    <a href="http://dota2.gamepedia.com/Pseudo-random_distribution">http://dota2.gamepedia.com/Pseudo-random_distribution</a>
-    http://www.playdota.com/forums/showthread.php?t=1386680
-    http://dev.dota2.com/showthread.php?t=72983
+    <a class="nav-clickable" href="http://dota2.gamepedia.com/Pseudo-random_distribution">Dota2 Gamepedia</a>
+    <br/>
+    <a class="nav-clickable" href="http://www.playdota.com/forums/showthread.php?t=1386680">PlayDota Forums</a>
+    <br/>
+    <a class="nav-clickable" href="http://dev.dota2.com/showthread.php?t=72983">Dota 2 Developer Forums</a>
 </div>
 
 <div id="pagerendertime" style="font-size: 12px;">
