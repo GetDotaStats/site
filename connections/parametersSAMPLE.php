@@ -35,6 +35,12 @@ $steamtracks_api_secret = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 $steam_api_key = $api_key6;
 $steam_api_domain = "getdotastats.com";
 
+//BACKPACKS
+$hostname_backpacks = "localhost";
+$database_backpacks = "DB_NAME";
+$username_backpacks = "DB_USERNAME";
+$password_backpacks = "DB_PASS";
+
 //STEAM API KEYS
 $api_key1 = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 $api_key2 = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
