@@ -19,7 +19,7 @@ ob_flush();
 flush();
 
 $dotabuff_start = time();
-$dotabuff = curl('http://dotabuff.com');
+$dotabuff = curl('http://dotabuff.com', NULL, NULL, NULL, NULL, 20);
 $dotabuff_end = time();
 echo 'Dotabuff: ' . ($dotabuff_end - $dotabuff_start) . 's<br />';
 

@@ -1,6 +1,8 @@
 <?php
 require_once('../connections/parameters.php');
 require_once('./functions.php');
+set_time_limit(60);
+
 header("Content-type: image/png");
 header("Pragma: public");
 header("Cache-Control: maxage=7200");

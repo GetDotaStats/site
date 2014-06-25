@@ -151,7 +151,7 @@ if (!function_exists("get_account_char_winrate")) {
         if (!$big_array) {
             $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=winning&date=&game_mode=&match_type=real', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
-            if($page === false){
+            if($page == false){
                 return 'Timeout';
             }
             else if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
@@ -226,7 +226,7 @@ if (!function_exists("get_account_char_mostplayed")) {
         if (!$big_array) {
             $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
-            if($page === false){
+            if($page == false){
                 return 'Timeout';
             }
             else if (stristr($page, '<h2 id="status">Not Found</h2>') || !$page) {
