@@ -13,11 +13,11 @@ $sig_stats_most_played = get_account_char_mostplayed($account_id, 4, $required_h
 /////////////////////////////
 //ACCOUNT WIN %
 /////////////////////////////
-$mmr_stats = $db->q(
+/*$mmr_stats = $db->q(
     'SELECT `rank_solo`, `rank_team`, `dota_wins` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
     'i',
     $account_id
-);
+);*/
 
 echo '<h1>sig_stats_winrate</h1>';
 print_r($sig_stats_winrate);
@@ -27,7 +27,7 @@ echo '<hr />';
 echo '<h1>sig_stats_most_played</h1>';
 print_r($sig_stats_most_played);
 
-echo '<hr />';
+/*echo '<hr />';
 
 echo '<h1>mmr_stats</h1>';
-print_r($mmr_stats);
+print_r($mmr_stats);*/
