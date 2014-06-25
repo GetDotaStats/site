@@ -317,7 +317,7 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
             //////////////////////////
             //VALVE MMR LOGO
             //////////////////////////
-            $image_file_src = './images/bases/mmr_logo.png';
+            $image_file_src = './images/bases/mmr_logo_v2.png';
             $image_file = imagecreatefrompng($image_file_src);
 
             list($overlay_width, $overlay_height) = getimagesize($image_file_src);
