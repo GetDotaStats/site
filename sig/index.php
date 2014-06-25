@@ -402,12 +402,12 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
     header('Content-Length: ' . filesize($file_name_location));
 }
 
-/*$headers = apache_request_headers(); //<=================== TURN OFF ON LOCALHOST
+$headers = apache_request_headers(); //<=================== TURN OFF ON LOCALHOST
 if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($file_name_location))) {
 	// Client's cache IS current, so we just respond '304 Not Modified'.
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file_name_location)).' GMT', true, 304);
 	header('Content-Length: '.filesize($file_name_location));
-}*/
+}
 
 readfile($file_name_location);
 
