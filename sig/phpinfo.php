@@ -1,0 +1,2 @@
+<?php
+php_info();
