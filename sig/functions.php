@@ -149,11 +149,13 @@ if (!function_exists("get_account_char_winrate")) {
 
             $page_stats = cut_str($page, '<div id="content-header-secondary">', '</div><div id="content-interactive">');
 
-            $page_stats = explode('<div', $page_stats);
+            $page_stats = explode('<dl', $page_stats);
 
             $big_array['last_match'] = cut_str($page_stats[1], 'datetime="', '"');
-            $big_array['acount_win'] = cut_str($page_stats[2], '"won">', '</span>');
-            $big_array['account_percent'] = cut_str($page_stats[3], '>', '</div>');
+            $big_array['account_win'] = cut_str($page_stats[2], '<span class="wins">', '</span>');
+            $big_array['account_loss'] = cut_str($page_stats[2], '<span class="losses">', '</span>');
+            $big_array['account_abandons'] = cut_str($page_stats[2], '<span class="abandons">', '</span>');
+            $big_array['account_percent'] = cut_str($page_stats[3], '<dd>', '</dd>');
 
             $page = cut_str($page, '<tbody>', '</tbody>');
 
@@ -166,12 +168,12 @@ if (!function_exists("get_account_char_winrate")) {
                 if ($key > 0 && $i < $limit_result) {
                     $page_array_test = explode('<td', $value);
 
-                    $games_played = cut_str($page_array_test[4], '<div>', '</div>');
+                    $games_played = cut_str($page_array_test[4], '>', '<div');
 
                     if ($games_played > $min_games) {
                         $big_array['heroes'][$i]['name'] = cut_str($page_array_test[1], '<img alt="', '"');
                         $big_array['heroes'][$i]['pic'] = cut_str($page_array_test[2], '<a href="', '"');
-                        $big_array['heroes'][$i]['winrate'] = cut_str($page_array_test[3], '<div>', '</div>');
+                        $big_array['heroes'][$i]['winrate'] = cut_str($page_array_test[3], '>', '<div');
                         $big_array['heroes'][$i]['gamesplayed'] = $games_played;
 
                         $i++;
@@ -218,11 +220,14 @@ if (!function_exists("get_account_char_mostplayed")) {
             $big_array['username'] = cut_str($page, '<h1>', '<small>');
 
             $page_stats = cut_str($page, '<div id="content-header-secondary">', '</div><div id="content-interactive">');
-            $page_stats = explode('<div', $page_stats);
+
+            $page_stats = explode('<dl', $page_stats);
 
             $big_array['last_match'] = cut_str($page_stats[1], 'datetime="', '"');
-            $big_array['acount_win'] = cut_str($page_stats[2], '"won">', '</span>');
-            $big_array['account_percent'] = cut_str($page_stats[3], '>', '</div>');
+            $big_array['account_win'] = cut_str($page_stats[2], '<span class="wins">', '</span>');
+            $big_array['account_loss'] = cut_str($page_stats[2], '<span class="losses">', '</span>');
+            $big_array['account_abandons'] = cut_str($page_stats[2], '<span class="abandons">', '</span>');
+            $big_array['account_percent'] = cut_str($page_stats[3], '<dd>', '</dd>');
 
             $page = cut_str($page, '<tbody>', '</tbody>');
 
@@ -235,11 +240,11 @@ if (!function_exists("get_account_char_mostplayed")) {
                 if ($key > 0 && $i < $limit_result) {
                     $page_array_test = explode('<td', $value);
 
-                    $games_played = cut_str($page_array_test[3], '<div>', '</div>');
+                    $games_played = cut_str($page_array_test[3], '>', '<div');
 
                     $big_array['heroes'][$i]['name'] = cut_str($page_array_test[1], '<img alt="', '"');
                     $big_array['heroes'][$i]['pic'] = cut_str($page_array_test[2], '<a href="', '"');
-                    $big_array['heroes'][$i]['winrate'] = cut_str($page_array_test[4], '<div>', '</div>');
+                    $big_array['heroes'][$i]['winrate'] = cut_str($page_array_test[4], '>', '<div');
                     $big_array['heroes'][$i]['gamesplayed'] = $games_played;
 
                     $i++;

@@ -254,8 +254,8 @@ if(!file_exists($file_name_location) || (filemtime($file_name_location) <= strto
 			if(!empty($mmr_stats[0]['dota_wins'])){
 				$dota_wins = $mmr_stats[0]['dota_wins'];
 			}
-			else if(!empty($sig_stats_winrate['acount_win'])){
-				$dota_wins = $sig_stats_winrate['acount_win'];
+			else if(!empty($sig_stats_winrate['account_win'])){
+				$dota_wins = $sig_stats_winrate['account_win'];
 			}
 			else{
 				$dota_wins = '???';
@@ -301,7 +301,7 @@ if(!file_exists($file_name_location) || (filemtime($file_name_location) <= strto
 			}
 
 			$text_colour = imagecolorallocate( $base_img, 78, 213, 84 );
-			//$overlay_text = $sig_stats_winrate['acount_win'] . ' wins';
+			//$overlay_text = $sig_stats_winrate['account_win'] . ' wins';
 			$tb = imagettfbbox($font_size, 0, $font, $overlay_text);
 
 			$overlay_text_offset_x = 10;
