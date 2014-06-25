@@ -84,8 +84,12 @@ if (!class_exists("dbWrapper")) {
 }
 
 if (!function_exists("curl")) {
-    function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1')
+    function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeout = false)
     {
+        empty($user_agent)
+            ? $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1'
+            : null;
+
         $ch = curl_init($link);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
@@ -94,6 +98,10 @@ if (!function_exists("curl")) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
+        if($timeout){
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT , $timeout);
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); //timeout in seconds
+        }
         if ($refer) {
             curl_setopt($ch, CURLOPT_REFERER, $refer);
         }
@@ -105,7 +113,13 @@ if (!function_exists("curl")) {
             curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
         }
+
         $page = curl_exec($ch);
+
+        if(!$page){
+            $page = false;
+        }
+
         curl_close($ch);
         return $page;
     }
@@ -135,9 +149,12 @@ if (!function_exists("get_account_char_winrate")) {
 
         $big_array = $memcache->get("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
         if (!$big_array) {
-            $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=winning&date=&game_mode=&match_type=real');
+            $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=winning&date=&game_mode=&match_type=real', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
-            if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
+            if($page === false){
+                return 'Timeout';
+            }
+            else if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
                 return false;
             }
 
@@ -207,9 +224,12 @@ if (!function_exists("get_account_char_mostplayed")) {
 
         $big_array = $memcache->get("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
         if (!$big_array) {
-            $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes');
+            $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
-            if (stristr($page, '<h2 id="status">Not Found</h2>') || !$page) {
+            if($page === false){
+                return 'Timeout';
+            }
+            else if (stristr($page, '<h2 id="status">Not Found</h2>') || !$page) {
                 return false;
             }
 
