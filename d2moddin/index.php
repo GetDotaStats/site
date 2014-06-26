@@ -4,7 +4,6 @@ require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
 $start = time();
-include('./chart.php');
 
 if (!isset($_SESSION)) {
     session_start();
