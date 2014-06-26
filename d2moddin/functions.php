@@ -141,3 +141,53 @@ if (!function_exists("cut_str")) {
         return $str;
     }
 }
+
+//GIVEN A UNIX TIMESTAMP RETURNS A RELATIVE DISTANCE TO DATE (23.4 days ago)
+//PUTTING ANY VALUE IN 2ND VARIABLE MAKES IT RETURN RAW HOURS APART
+if (!function_exists('relative_time')) {
+    function relative_time($time, $output = 'default')
+    {
+        if (!is_numeric($time)) {
+            if (strtotime($time)) {
+                $time = strtotime($time);
+            } else {
+                return FALSE;
+            }
+        }
+
+        if ($output == 'default') {
+            if ((time() - $time) >= 2592000) {
+                $time_adj = round(((time() - $time) / 2592000), 1) . ' months ago';
+            } else if ((time() - $time) >= 86400) {
+                $time_adj = round(((time() - $time) / 86400), 1) . ' days ago';
+            } else if ((time() - $time) >= 3600) {
+                $time_adj = round(((time() - $time) / 3600), 1) . ' hours ago';
+            } else {
+                $time_adj = round(((time() - $time) / 60), 0) . ' mins ago';
+            }
+        } else {
+            $time_adj = round(((time() - $time) / 3600), 1);
+        }
+
+        return $time_adj;
+    }
+}
+
+
+if (!function_exists("simple_cached_query")) {
+    function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600){
+        global $memcache, $db;
+
+        $variable = $memcache->get($memcached_name);
+        if(!$variable){
+            if($sql){
+                $variable = $db->q($sql);
+                $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
+            }
+            else{
+                return 'No sql provided!!!';
+            }
+        }
+        return $variable;
+    }
+}
