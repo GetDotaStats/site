@@ -1,6 +1,7 @@
+#!/usr/bin/php -q
 <?php
-require_once('../connections/parameters.php');
-require_once('./functions.php');
+require_once('../../../connections/parameters.php');
+require_once('../../functions.php');
 
 try {
     $db = new dbWrapper($hostname_d2moddin, $username_d2moddin, $password_d2moddin, $database_d2moddin, true);

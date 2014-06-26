@@ -1,0 +1,34 @@
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+CREATE DATABASE `dota2_d2moddin` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `dota2_d2moddin`;
+
+CREATE TABLE IF NOT EXISTS `stats_production` (
+  `production_id` int(255) NOT NULL AUTO_INCREMENT,
+  `lobby_total` int(255) NOT NULL,
+  `lobby_wait` int(255) NOT NULL,
+  `lobby_play` int(255) NOT NULL,
+  `lobby_queue` int(255) NOT NULL,
+  `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`production_id`),
+  KEY `date_recorded` (`date_recorded`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `stats_production_regions` (
+  `region_name` varchar(255) NOT NULL,
+  `region_id` int(255) NOT NULL,
+  `region_servercount` int(255) NOT NULL,
+  `region_playing` int(255) NOT NULL,
+  `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`date_recorded`,`region_name`),
+  KEY `rn_dc` (`region_name`,`date_recorded`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `stats_production_servers` (
+  `region_id` int(255) NOT NULL,
+  `server_name` varchar(255) NOT NULL,
+  `server_ip` varchar(255) NOT NULL,
+  `server_activeinstances` int(255) NOT NULL,
+  `server_maxinstances` int(255) NOT NULL,
+  `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`date_recorded`,`region_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
