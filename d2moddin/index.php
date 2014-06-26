@@ -1,5 +1,6 @@
 <?php
 require_once('./functions.php');
+require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
 $start = time();
@@ -17,7 +18,7 @@ try {
 
         echo '<script type="text/javascript" src="//www.google.com/jsapi"></script>';
 
-        $chart = new Chart('ColumnChart');
+        $chart = new chart('ColumnChart');
 
         $options = array(
             //'title' => 'Average spins in ' . $hits . ' attacks',

@@ -1,193 +1,125 @@
 <?php
-if (!class_exists("dbWrapper")) {
-    Class dbWrapper
-    {
-        protected $_mysqli;
-        protected $_debug;
+if(!class_exists('chart')){
+class chart {
 
-        public function __construct($host, $username, $password, $database, $debug)
-        {
-            $this->_mysqli = new mysqli($host, $username, $password, $database);
-            $this->_debug = (bool)$debug;
-            if (mysqli_connect_errno()) {
-                if ($this->_debug) {
-                    echo mysqli_connect_error();
-                    debug_print_backtrace();
-                }
-                return false;
-            }
-            return true;
+    private static $_first = true;
+    private static $_count = 0;
+
+    private $_chartType;
+
+    private $_data;
+    private $_dataType;
+    private $_skipFirstRow;
+
+    /**
+     * sets the chart type and updates the chart counter
+     */
+    public function __construct($chartType, $skipFirstRow = false){
+        $this->_chartType = $chartType;
+        $this->_skipFirstRow = $skipFirstRow;
+        self::$_count++;
+    }
+
+    /**
+     * loads the dataset and converts it to the correct format
+     */
+    public function load($data, $dataType = 'json'){
+        $this->_data = ($dataType != 'json') ? $this->dataToJson($data) : $data;
+    }
+
+    /**
+     * load jsapi
+     */
+    private function initChart(){
+        self::$_first = false;
+
+        $output = '';
+        // start a code block
+        $output .= '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'."\n";
+        $output .= '<script type="text/javascript">google.load(\'visualization\', \'1.0\', {\'packages\':[\'corechart\', \'table\']});</script>'."\n";
+
+        return $output;
+    }
+
+    /**
+     * draws the chart
+     */
+
+    public function draw($div, Array $options = array(), $dataTable = false, Array $options_dataTable = array()){
+        $output = '';
+
+        if(self::$_first)$output .= $this->initChart();
+
+        // start a code block
+        $output .= '<script type="text/javascript">';
+
+        // set callback function
+        $output .= 'google.setOnLoadCallback(drawChart' . self::$_count . ');';
+
+        // create callback function
+        $output .= 'function drawChart' . self::$_count . '(){';
+
+        $output .= 'var data = new google.visualization.DataTable(' . $this->_data . ');';
+
+        // set the options
+        $output .= 'var options = ' . json_encode($options) . ';';
+
+        // create and draw the chart
+        $output .= 'new google.visualization.' . $this->_chartType . '(document.getElementById(\'' . $div . '\')).draw(data, options);';
+
+        if($dataTable){
+            $output .= 'var optionsDataTable = ' . json_encode($options_dataTable) . ';';
+            $output .= 'new google.visualization.Table(document.getElementById(\'' . $div . '_dataTable\')).draw(data, optionsDataTable);';
         }
 
-        public function escape($query)
-        {
-            return $this->_mysqli->real_escape_string($query);
-        }
+        $output .= '} </script>' . "\n";
+        return $output;
+    }
 
-        public function q($query)
-        {
-            if ($query = $this->_mysqli->prepare($query)) {
-                if (func_num_args() > 1) {
-                    $x = func_get_args();
-                    $args = array_merge(array(func_get_arg(1)),
-                        array_slice($x, 2));
-                    $args_ref = array();
-                    foreach ($args as $k => &$arg) {
-                        $args_ref[$k] = & $arg;
-                    }
-                    call_user_func_array(array($query, 'bind_param'), $args_ref);
+    /**
+     * substracts the column names from the first and second row in the dataset
+     */
+    private function getColumns($data){
+        $cols = array();
+        foreach($data[0] as $key => $value){
+            if(is_numeric($key)){
+                if(is_string($data[1][$key])){
+                    $cols[] = array('id' => '', 'label' => $value, 'type' => 'string');
+                } else {
+                    $cols[] = array('id' => '', 'label' => $value, 'type' => 'number');
                 }
-                $query->execute();
-
-                if ($query->errno) {
-                    if ($this->_debug) {
-                        echo mysqli_error($this->_mysqli);
-                        debug_print_backtrace();
-                    }
-                    return false;
-                }
-
-                if ($query->affected_rows > -1) {
-                    return $query->affected_rows;
-                }
-                $params = array();
-                $meta = $query->result_metadata();
-                while ($field = $meta->fetch_field()) {
-                    $params[] = & $row[$field->name];
-                }
-                call_user_func_array(array($query, 'bind_result'), $params);
-
-                $result = array();
-                while ($query->fetch()) {
-                    $r = array();
-                    foreach ($row as $key => $val) {
-                        $r[$key] = $val;
-                    }
-                    $result[] = $r;
-                }
-                $query->close();
-                return $result;
+                $this->_skipFirstRow = true;
             } else {
-                if ($this->_debug) {
-                    echo $this->_mysqli->error;
-                    debug_print_backtrace();
+                if(is_string($value)){
+                    $cols[] = array('id' => '', 'label' => $key, 'type' => 'string');
+                } else {
+                    $cols[] = array('id' => '', 'label' => $key, 'type' => 'number');
                 }
-                return false;
+            }
+        }
+        return $cols;
+    }
+
+    /**
+     * convert array data to json
+     * info: http://code.google.com/intl/nl-NL/apis/chart/interactive/docs/datatables_dataviews.html#javascriptliteral
+     */
+    private function dataToJson($data){
+        $cols = $this->getColumns($data);
+
+        $rows = array();
+        foreach($data as $key => $row){
+            if($key != 0 || !$this->_skipFirstRow){
+                $c = array();
+                foreach($row as $v){
+                    $c[] = array('v' => $v);
+                }
+                $rows[] = array('c' => $c);
             }
         }
 
-        public function handle()
-        {
-            return $this->_mysqli;
-        }
-
-        public function last_index()
-        {
-            return $this->_mysqli->insert_id;
-        }
+        return json_encode(array('cols' => $cols, 'rows' => $rows));
     }
+
 }
-
-if (!function_exists("curl")) {
-    function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeout = false)
-    {
-        empty($user_agent)
-            ? $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1'
-            : null;
-
-        $ch = curl_init($link);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-        curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
-        if($timeout){
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT , $timeout);
-            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); //timeout in seconds
-        }
-        if ($refer) {
-            curl_setopt($ch, CURLOPT_REFERER, $refer);
-        }
-        if ($postfields) {
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
-        }
-        if ($cookie) {
-            curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-            curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
-        }
-
-        $page = curl_exec($ch);
-
-        if(!$page){
-            $page = false;
-        }
-
-        curl_close($ch);
-        return $page;
-    }
-}
-
-if (!function_exists("cut_str")) {
-    function cut_str($str, $left, $right)
-    {
-        $str = substr(stristr($str, $left), strlen($left));
-        $leftLen = strlen(stristr($str, $right));
-        $leftLen = $leftLen ? -($leftLen) : strlen($str);
-        $str = substr($str, 0, $leftLen);
-
-        return $str;
-    }
-}
-
-//GIVEN A UNIX TIMESTAMP RETURNS A RELATIVE DISTANCE TO DATE (23.4 days ago)
-//PUTTING ANY VALUE IN 2ND VARIABLE MAKES IT RETURN RAW HOURS APART
-if (!function_exists('relative_time')) {
-    function relative_time($time, $output = 'default')
-    {
-        if (!is_numeric($time)) {
-            if (strtotime($time)) {
-                $time = strtotime($time);
-            } else {
-                return FALSE;
-            }
-        }
-
-        if ($output == 'default') {
-            if ((time() - $time) >= 2592000) {
-                $time_adj = round(((time() - $time) / 2592000), 1) . ' months ago';
-            } else if ((time() - $time) >= 86400) {
-                $time_adj = round(((time() - $time) / 86400), 1) . ' days ago';
-            } else if ((time() - $time) >= 3600) {
-                $time_adj = round(((time() - $time) / 3600), 1) . ' hours ago';
-            } else {
-                $time_adj = round(((time() - $time) / 60), 0) . ' mins ago';
-            }
-        } else {
-            $time_adj = round(((time() - $time) / 3600), 1);
-        }
-
-        return $time_adj;
-    }
-}
-
-
-if (!function_exists("simple_cached_query")) {
-    function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600){
-        global $memcache, $db;
-
-        $variable = $memcache->get($memcached_name);
-        if(!$variable){
-            if($sql){
-                $variable = $db->q($sql);
-                $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
-            }
-            else{
-                return 'No sql provided!!!';
-            }
-        }
-        return $variable;
-    }
 }
