@@ -1,6 +1,11 @@
 //MAKE BOTH THE PHP AND BASH SCRIPT EXECUTABLE
 ` chmod +x script_name
 
+//MAKE THE php AND scripts DIRS NOT PUBLIC
+//logs are written and viewed in this directory, so make sure routine is readable
+` chmod -R 750 php
+` chmod -R 750 scripts
+
 //OPEN CRONTAB EDITOR
 ` crontab -e
 
