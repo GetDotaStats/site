@@ -56,6 +56,7 @@ try {
 
         echo '<div id="about" style="width: 600px;">';
         echo '<h2>Plot of people joining the queue over time</h2>';
+        echo '<p>No longer kept up-to-date as the queue system was later merged into the existing systems and out of my control.</p>';
         echo '</div>';
 
         $signup_stats = simple_cached_query('d2moddin_stats_queue_joins',
