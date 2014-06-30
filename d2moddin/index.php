@@ -93,7 +93,8 @@ try {
         echo 'No DB';
     }
 
-    $stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
+    $stats = json_decode(curl('http://net1.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
+    //old: http://ddp2.d2modd.in/stats/general
 
     echo '<pre>';
     print_r($stats);
