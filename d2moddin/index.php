@@ -15,6 +15,7 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+/*
         echo '<script type="text/javascript" src="//www.google.com/jsapi"></script>';
 
         $chart = new chart('ColumnChart');
@@ -86,20 +87,94 @@ try {
         echo '<div id="pagerendertime" style="font-size: 12px;">';
         echo '<hr />Page generated in ' . (time() - $start) . 'secs';
         echo '</div>';
+*/
+
+        ////////////////////////////////////////////////////////
+        // PRODUCTION STATS
+        ////////////////////////////////////////////////////////
+
+        $chart = new chart('ColumnChart');
+        echo '<script type="text/javascript" src="//www.google.com/jsapi"></script>';
+
+        $options = array(
+            //'title' => 'Average spins in ' . $hits . ' attacks',
+            //'theme' => 'maximized',
+            'axisTitlesPosition' => 'in',
+            'width' => 800,
+            'height' => 400,
+            'chartArea' => array(
+                'width' => '100%',
+                'left' => 60
+            ),
+            'hAxis' => array(
+                'title' => 'Date',
+                'maxAlternation' => 1,
+                //'textPosition' => 'in',
+                //'viewWindowMode' => 'maximized'
+            ),
+            'vAxis' => array(
+                'title' => 'Users',
+                //'textPosition' => 'in',
+            ),
+            'legend' => array(
+                'position' => 'bottom',
+                'textStyle' => array(
+                    'fontSize' => 10
+                )
+            ));
+
+        $optionsDataTable = array(
+            'width' => 600,
+            'sortColumn' => 0,
+            'sortAscending' => true,
+            'alternatingRowStyle' => true,
+            'page' => 'enable',
+            'pageSize' => 6);
+
+        echo '<div id="about" style="width: 600px;">';
+        echo '<h2>Plot of people joining the queue over time</h2>';
+        echo '<p>No longer kept up-to-date as the queue system was later merged into the existing systems and out of my control.</p>';
+        echo '</div>';
+
+
+        //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
+        $production_stats = simple_cached_query('d2moddin_production_stats',
+            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` GROUP BY 5,4,3,2,1 ORDER BY 5,4,3,2,1;',
+            60);
+
+        $super_array = array();
+        foreach ($production_stats as $key => $value) {
+            $date = $value['year'].'-'.$value['month'].'-'.$value['day'].' '.str_pad($value['hour'], 2, '0', STR_PAD_LEFT).':'.' '.str_pad($value['minute'], 2, '0', STR_PAD_LEFT);
+            $super_array[] = array('c' => array(array('v' => $date), array('v' => $value['count'])));
+        }
+
+        $data = array(
+            'cols' => array(
+                array('id' => '', 'label' => 'Date', 'type' => 'string'),
+                array('id' => '', 'label' => 'Joins', 'type' => 'number'),
+            ),
+            'rows' => $super_array
+        );
+        $chart->load(json_encode($data));
+        echo $chart->draw('queue_count', $options, true, $optionsDataTable);
+
+
+        echo '<div id="queue_count"></div>';
+        echo '<div id="queue_count_dataTable"></div>';
+
+        echo '<div id="pagerendertime" style="font-size: 12px;">';
+        echo '<hr />Page generated in ' . (time() - $start) . 'secs';
+        echo '</div>';
+
+        echo '<pre>';
+        print_r($production_stats);
+        echo '</pre>';
 
 
         $memcache->close();
     } else {
         echo 'No DB';
     }
-
-    $stats = json_decode(curl('http://net1.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
-    //old: http://ddp2.d2modd.in/stats/general
-
-    echo '<pre>';
-    print_r($stats);
-    echo '</pre>';
-
 } catch (Exception $e) {
     echo $e->getMessage();
 }
