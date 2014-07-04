@@ -20,16 +20,43 @@ try {
         ////////////////////////////////////////////////////////
 
         $chart = new chart2('ComboChart');
+
+        echo '<h2>Plot of lobbies created over time</h2>';
+
+        //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
+        $production_stats = simple_cached_query('d2moddin_production_stats',
+            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` GROUP BY 5,4,3,2,1 ORDER BY 5,4,3,2,1;',
+            60);
+
+        $super_array = array();
+        foreach ($production_stats as $key => $value) {
+            $date = $value['year'].'-'.$value['month'].'-'.$value['day'].' '.str_pad($value['hour'], 2, '0', STR_PAD_LEFT).':'.' '.str_pad($value['minute'], 2, '0', STR_PAD_LEFT);
+            $super_array[] = array('c' => array(array('v' => $date), array('v' => $value['lobby_wait']), array('v' => $value['lobby_play']), array('v' => $value['lobby_queue'])));
+        }
+
+        $data = array(
+            'cols' => array(
+                array('id' => '', 'label' => 'Date', 'type' => 'string'),
+                array('id' => '', 'label' => 'Waiting', 'type' => 'number'),
+                array('id' => '', 'label' => 'Playing', 'type' => 'number'),
+                array('id' => '', 'label' => 'Queueing', 'type' => 'number'),
+            ),
+            'rows' => $super_array
+        );
+
         $options = array(
             //'title' => 'Average spins in ' . $hits . ' attacks',
             //'theme' => 'maximized',
             'axisTitlesPosition' => 'in',
-            'width' => 750,
+            'width' => count($production_stats) * 4,
+            'bar' => array(
+                'groupWidth' => 2,
+            ),
             'height' => 300,
             'chartArea' => array(
                 'width' => '100%',
                 'height' => '90%',
-                'left' => 60,
+                'left' => 40,
                 'top' => 10,
             ),
             'hAxis' => array(
@@ -59,37 +86,14 @@ try {
         );
 
         $optionsDataTable = array(
-            'width' => 750,
+            'width' => 800,
             'sortColumn' => 0,
             'sortAscending' => true,
             'alternatingRowStyle' => true,
             'page' => 'enable',
             'pageSize' => 6);
 
-        echo '<h2>Plot of lobbies created over time</h2>';
-
-        //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
-        $production_stats = simple_cached_query('d2moddin_production_stats',
-            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` GROUP BY 5,4,3,2,1 ORDER BY 5,4,3,2,1;',
-            60);
-
-        $super_array = array();
-        foreach ($production_stats as $key => $value) {
-            $date = $value['year'].'-'.$value['month'].'-'.$value['day'].' '.str_pad($value['hour'], 2, '0', STR_PAD_LEFT).':'.' '.str_pad($value['minute'], 2, '0', STR_PAD_LEFT);
-            $super_array[] = array('c' => array(array('v' => $date), array('v' => $value['lobby_wait']), array('v' => $value['lobby_play']), array('v' => $value['lobby_queue'])));
-        }
-
-        $data = array(
-            'cols' => array(
-                array('id' => '', 'label' => 'Date', 'type' => 'string'),
-                array('id' => '', 'label' => 'Waiting', 'type' => 'number'),
-                array('id' => '', 'label' => 'Playing', 'type' => 'number'),
-                array('id' => '', 'label' => 'Queueing', 'type' => 'number'),
-            ),
-            'rows' => $super_array
-        );
-
-        echo '<div id="lobby_count"></div>';
+        echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
         echo '<div id="lobby_count_dataTable"></div>';
 
         $chart->load(json_encode($data));
@@ -99,8 +103,6 @@ try {
         //echo '<div id="lobby_count"></div>';
         //echo '<div id="lobby_count_dataTable"></div>';
 
-
-        echo '<hr />';
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';
         echo '<hr />Page generated in ' . (time() - $start) . 'secs';
