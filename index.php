@@ -31,6 +31,14 @@ if (!isset($_SESSION)) {
             <ul class="nav navbar-nav">
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in Stats <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobbies Created</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>

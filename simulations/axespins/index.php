@@ -13,27 +13,27 @@ if (
     || !isset($_GET['t_max']) || !is_numeric($_GET['t_max'])
 ) {
     //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
-    ($_GET['h'] > $max_h || $_GET['h'] < 1)
+    (!isset($_GET['h']) || $_GET['h'] > $max_h || $_GET['h'] < 1)
         ? $_GET['h'] = ($max_h / 4)
         : NULL;
 
-    ($_GET['r'] > $max_r || $_GET['r'] < 1)
+    (!isset($_GET['r']) || $_GET['r'] > $max_r || $_GET['r'] < 1)
         ? $_GET['r'] = ($max_r / 4)
         : NULL;
 
-    ($_GET['g'] > $max_g || $_GET['g'] < 1)
+    (!isset($_GET['g']) || $_GET['g'] > $max_g || $_GET['g'] < 1)
         ? $_GET['g'] = 5
         : NULL;
 
-    ($_GET['asl'] > 4 || $_GET['asl'] < 1)
+    (!isset($_GET['asl']) || $_GET['asl'] > 4 || $_GET['asl'] < 1)
         ? $_GET['asl'] = 1
         : NULL;
 
-    ($_GET['t_min'] > 1 || $_GET['t_min'] < 0.01)
+    (!isset($_GET['t_min']) || $_GET['t_min'] > 1 || $_GET['t_min'] < 0.01)
         ? $_GET['t_min'] = 0.01
         : NULL;
 
-    ($_GET['t_max'] > 1 || $_GET['t_max'] < 0.01)
+    (!isset($_GET['t_max']) || $_GET['t_max'] > 1 || $_GET['t_max'] < 0.01)
         ? $_GET['t_max'] = 0.03
         : NULL;
 
@@ -65,8 +65,6 @@ if (
 include('./chart.php');
 ?>
 
-<script type="text/javascript" src="//www.google.com/jsapi"></script>
-
 <?php
 $rd = 0.15;
 $prd_c = 0.03221;
@@ -94,7 +92,7 @@ $axe_spin_cd_array = array(
 );
 $axe_spin_cd = $axe_spin_cd_array[$axe_spin_level];
 
-$chart = new Chart('ColumnChart');
+$chart = new Chart2('ColumnChart');
 
 $options = array(
     //'title' => 'Average spins in ' . $hits . ' attacks',
