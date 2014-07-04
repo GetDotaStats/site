@@ -404,7 +404,7 @@ if (!class_exists('steamtracks')) {
                 if (!empty($broadcast)) $parameters['broadcast'] = (string)$broadcast;
                 if (!empty($exclude_offline)) $parameters['exclude_offline'] = (string)$exclude_offline;
 
-                $data = $this->curl_do('GET', 'signup/token', json_encode($parameters));
+                $data = $this->curl_do('POST', 'notify', json_encode($parameters));
             } else {
                 $data = 'Must have either a "to" set or "brodcast" set to true.<br />';
             }
@@ -419,6 +419,7 @@ if (!class_exists('steamtracks')) {
             if (!empty($return_steamid32)) $parameters['return_steamid32'] = (string)$return_steamid32;
 
             $data = $this->curl_do('GET', 'signup/token', json_encode($parameters));
+            //echo '<br />'.json_encode($parameters).'<br />';
             return $data;
         }
 
@@ -606,4 +607,3 @@ if (!function_exists("steamtracks_curl")) {
         return $data;
     }
 }
-?>

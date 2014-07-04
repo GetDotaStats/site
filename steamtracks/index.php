@@ -48,6 +48,9 @@ try {
             case 'sidfailure':
                 echo 'Bad Steam ID given via SteamTracks. Report this error in the chatbox or github';
                 break;
+            case 'readd':
+                echo 'Re-doing SteamTrack authentication';
+                break;
         }
         echo '</div><br />';
     }
