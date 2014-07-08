@@ -1,4 +1,11 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
 
 CREATE TABLE IF NOT EXISTS `economy_attributes` (
   `attribute_id` int(255) NOT NULL,
@@ -11,6 +18,14 @@ CREATE TABLE IF NOT EXISTS `economy_attributes` (
   `attribute_description_string` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `economy_attribute_cap` (
+  `attribute_particles_id` int(255) NOT NULL,
+  `system` varchar(255) NOT NULL,
+  `attach_to_rootbone` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`attribute_particles_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='attribute_controlled_attached_particles';
 
 CREATE TABLE IF NOT EXISTS `economy_items` (
   `item_id` int(255) NOT NULL,
@@ -76,6 +91,14 @@ CREATE TABLE IF NOT EXISTS `economy_items_tools_usage` (
   PRIMARY KEY (`item_id`,`usage_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `economy_item_levels` (
+  `item_level_name` varchar(255) NOT NULL,
+  `level` int(255) NOT NULL,
+  `required_score` int(255) NOT NULL,
+  `level_name` text NOT NULL,
+  PRIMARY KEY (`item_level_name`,`level`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE IF NOT EXISTS `economy_item_sets` (
   `item_set_identifier` varchar(255) NOT NULL,
   `item_set_name` varchar(255) NOT NULL,
@@ -98,6 +121,12 @@ CREATE TABLE IF NOT EXISTS `economy_item_sets_items` (
   PRIMARY KEY (`item_set_identifier`,`item_set_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `economy_kill_est` (
+  `kest_type` int(255) NOT NULL,
+  `kest_type_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`kest_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='kill_eater_score_types';
+
 CREATE TABLE IF NOT EXISTS `economy_origins` (
   `origin_id` int(255) NOT NULL,
   `origin_nice_name` varchar(255) NOT NULL,
@@ -111,3 +140,7 @@ CREATE TABLE IF NOT EXISTS `economy_qualities` (
   PRIMARY KEY (`quality_id`),
   UNIQUE KEY `identifier` (`quality_identifier`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

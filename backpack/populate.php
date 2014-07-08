@@ -12,13 +12,9 @@ try {
         set_time_limit(0);
 
         $schema = get_d2_item_schema(0, $api_key6);
-        echo '<pre>';
-        /*echo '<pre>';
-        print_r($schema);
-        echo '</pre>';*/
 
         if ($schema['result']['status'] == 1) {
-            unset($schema['result']['status']);
+            /*unset($schema['result']['status']);
             unset($schema['result']['items_game_url']);
             unset($schema['result']['qualities']);
             unset($schema['result']['qualityNames']);
@@ -26,9 +22,14 @@ try {
             unset($schema['result']['items']);
             unset($schema['result']['attributes']);
             unset($schema['result']['item_sets']);
-            //unset($schema['result']['items']);
+            unset($schema['result']['attribute_controlled_attached_particles']);
+            unset($schema['result']['item_levels']);
+            unset($schema['result']['kill_eater_score_types']);*/
 
 
+            $times = array();
+
+            $times['start']['qualities'] = time();
             ///////////////////////////////
             //ADD QUALITIES
             ///////////////////////////////
@@ -57,7 +58,9 @@ try {
             } else {
                 echo '[qualities] No qualities available!!<br />';
             }
+            $times['end']['qualities'] = time();
 
+            $times['start']['originNames'] = time();
             ///////////////////////////////
             //ADD ORIGIN NAMES
             ///////////////////////////////
@@ -325,13 +328,134 @@ try {
                 echo '[itemSets] No item_sets available!!<br />';
             }
 
+            ///////////////////////////////
+            // ADD `attribute_controlled_attached_particles`
+            ///////////////////////////////
+            if (isset($schema['result']['attribute_controlled_attached_particles']) && !empty($schema['result']['attribute_controlled_attached_particles'])) {
+                foreach ($schema['result']['attribute_controlled_attached_particles'] as $key => $value) {
+                    if (isset($value['id']) && !empty($value['id']) && isset($value['system']) && !empty($value['system']) && isset($value['name']) && !empty($value['name'])) {
+                        $identifier = $value['id'];
+
+                        isset($value['system']) && !empty($value['system'])
+                            ? NULL
+                            : $value['system'] = NULL;
+                        isset($value['attach_to_rootbone']) && !empty($value['attach_to_rootbone'])
+                            ? NULL
+                            : $value['attach_to_rootbone'] = NULL;
+                        isset($value['name']) && !empty($value['name'])
+                            ? NULL
+                            : $value['name'] = NULL;
+
+                        $sql = $db->q('INSERT INTO `economy_attribute_cap` (`attribute_particles_id`, `system`, `attach_to_rootbone`, `name`)
+                                      VALUES (?, ?, ?, ?)
+                                      ON DUPLICATE KEY UPDATE `system` = VALUES(`system`), `attach_to_rootbone` = VALUES(`attach_to_rootbone`), `name` = VALUES(`name`)',
+                            'isss',
+                            $identifier, $value['system'], $value['attach_to_rootbone'], $value['name']);
+                    } else {
+                        echo '[attribute_controlled_attached_particles] Failed to update ' . $value['id'] . ' | ' . $value['name'] . '<br />';
+                    }
+                }
+                echo '[attribute_controlled_attached_particles] Completed<br />';
+            } else {
+                echo '[attribute_controlled_attached_particles] Nothing available!!<br />';
+            }
+
+
+            ///////////////////////////////
+            // ADD `item_levels`
+            ///////////////////////////////
+            if (isset($schema['result']['item_levels']) && !empty($schema['result']['item_levels'])) {
+                foreach ($schema['result']['item_levels'] as $key => $value) {
+                    if (isset($value['name']) && !empty($value['name']) && isset($value['levels']) && !empty($value['levels'])) {
+                        $identifier = $value['name'];
+
+                        foreach ($value['levels'] as $key2 => $value2) {
+                            isset($value2['level'])
+                                ? NULL
+                                : $value2['level'] = NULL;
+                            isset($value2['required_score']) && !empty($value2['required_score'])
+                                ? NULL
+                                : $value2['required_score'] = NULL;
+                            isset($value2['name']) && !empty($value2['name'])
+                                ? NULL
+                                : $value2['name'] = NULL;
+
+                            if (isset($value2['level']) && !empty($value2['required_score']) && !empty($value2['name'])) {
+                                $sql = $db->q('INSERT INTO `economy_item_levels` (`item_level_name`, `level`, `required_score`, `level_name`)
+                                      VALUES (?, ?, ?, ?)
+                                      ON DUPLICATE KEY UPDATE `level` = VALUES(`level`), `required_score` = VALUES(`required_score`), `level_name` = VALUES(`level_name`)',
+                                    'siis',
+                                    $identifier, $value2['level'], $value2['required_score'], $value2['name']);
+                            } else {
+                                echo '[item_levels] Failed to update ' . $value2['name'] . ' | ' . $value2['level'] . ' | ' . $value2['required_score'] . ' | ' . $value2['name'] . '<br />';
+                            }
+                        }
+                    } else {
+                        echo '[item_levels] Failed to update<br />';
+                    }
+                }
+                echo '[attributes] Completed<br />';
+            } else {
+                echo '[attributes] No attributes available!!<br />';
+            }
+
+            ///////////////////////////////
+            // ADD `kill_eater_score_types`
+            ///////////////////////////////
+            if (isset($schema['result']['kill_eater_score_types']) && !empty($schema['result']['kill_eater_score_types'])) {
+                foreach ($schema['result']['kill_eater_score_types'] as $key => $value) {
+                    if (isset($value['type']) && isset($value['type_name']) && !empty($value['type_name'])) {
+                        isset($value['type'])
+                            ? NULL
+                            : $value['type'] = NULL;
+                        isset($value['type_name']) && !empty($value['type_name'])
+                            ? NULL
+                            : $value['type_name'] = NULL;
+
+
+                        $sql = $db->q('INSERT INTO `economy_kill_est` (`kest_type`, `kest_type_name`)
+                                      VALUES (?, ?)
+                                      ON DUPLICATE KEY UPDATE `kest_type_name` = VALUES(`kest_type_name`)',
+                            'is',
+                            $value['type'], $value['type_name']);
+                    } else {
+                        echo '[kill_eater_score_types] Failed to update ' . $value['type'] . ' | ' . $value['type_name'] . '<br />';
+                    }
+                }
+                echo '[kill_eater_score_types] Completed<br />';
+            } else {
+                echo '[kill_eater_score_types] Nothing available!!<br />';
+            }
+
             /*
-             //DUMMY
+            ///////////////////////////////
+            //DUMMY
+            ///////////////////////////////
              if (isset($schema['result']['attributes']) && !empty($schema['result']['attributes'])) {
                 $attributes_values = array();
 
                 foreach ($schema['result']['attributes'] as $key => $value) {
+                    if (isset($value['id']) && !empty($value['id']) && isset($value['system']) && !empty($value['system']) && isset($value['name']) && !empty($value['name'])) {
+                        $identifier = $value['id'];
 
+                        isset($value['system']) && !empty($value['system'])
+                            ? NULL
+                            : $value['system'] = NULL;
+                        isset($value['attach_to_rootbone']) && !empty($value['attach_to_rootbone'])
+                            ? NULL
+                            : $value['attach_to_rootbone'] = NULL;
+                        isset($value['name']) && !empty($value['name'])
+                            ? NULL
+                            : $value['name'] = NULL;
+
+                        $sql = $db->q('INSERT INTO `economy_attribute_cap` (`attribute_particles_id`, `system`, `attach_to_rootbone`, `name`)
+                                      VALUES (?, ?, ?, ?)
+                                      ON DUPLICATE KEY UPDATE `system` = VALUES(`system`), `attach_to_rootbone` = VALUES(`attach_to_rootbone`), `name` = VALUES(`name`)',
+                            'isss',
+                            $identifier, $value['system'], $value['attach_to_rootbone'], $value['name']);
+                    } else {
+                        echo '[attribute_controlled_attached_particles] Failed to update ' . $value['id'] . ' | ' . $value['name'] . '<br />';
+                    }
 
                     //COMPILE LIST OF ITEM KEYS
                     foreach ($value as $key2 => $value2) {
@@ -351,10 +475,6 @@ try {
         } else {
             echo 'Schema status is not 1';
         }
-
-
-        print_r($schema);
-        echo '</pre>';
 
 
         $memcache->close();
