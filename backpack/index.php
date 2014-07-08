@@ -2,6 +2,22 @@
 require_once("./functions.php");
 require_once("../connections/parameters.php");
 
+?>
+    <p>You can lookup your 64bit steam ID <a href="http://steamidfinder.ru/" target="_blank">here</a> OR <a href="http://steamidconverter.com/" target="_blank">here</a></p>
+
+    <form action="./backpack/dummy.php" method="POST">
+        <table cellspacing="1" cellpadding="5" border="1">
+            <tr>
+                <th align="left">Steam ID</th>
+                <td colspan="2"><input name="uid" type="number" min="0" required></td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center"><input type="submit" value="Lookup"></td>
+            </tr>
+        </table>
+    </form>
+<br />
+<?php
 if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
     $user_id = $_GET["uid"];
 
@@ -59,8 +75,7 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
     unset($player_items_filtered['errors']);
 
     echo '<h2>TI4 card summary for your inventory</h2>';
-    echo '<p>Backpack and item schema cached for 15mins.</p>';
-    echo '<p><a class="nav-clickable" href="#backpack/">Look up another backpack</a> </p>';
+    echo '<p>Backpack and item schema cached for 15mins. This will not show which cards you have stamped, as there is no public API for that.</p>';
 
     foreach ($card_schema_arranged as $key => $value) {
         $row1 = $row2 = $row3 = '';
@@ -113,21 +128,4 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
     print_r($errors);*/
 } else {
     echo '<div class="alert alert-danger">No user_id provided <b>OR</b> user_id provided is invalid.</div>';
-    ?>
-
-    <p>You can lookup your 64bit steam ID <a href="http://steamidfinder.ru/" target="_blank">here</a></p>
-
-    <form action="./backpack/dummy.php" method="POST">
-        <table cellspacing="1" cellpadding="5" border="1">
-            <tr>
-                <th align="left">Steam ID</th>
-                <td colspan="2"><input name="uid" type="number" min="0" required></td>
-            </tr>
-            <tr>
-                <td colspan="4" align="center"><input type="submit" value="Lookup"></td>
-            </tr>
-        </table>
-    </form>
-
-<?php
 }
