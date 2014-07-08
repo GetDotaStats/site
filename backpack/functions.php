@@ -575,4 +575,56 @@ if (!function_exists("quality2colour")) {
         return $colour;
     }
 }
-?>
+
+if (!function_exists('sortCardsFromInventory')) {
+    function sortCardsFromInventory($player_items, $cardLookup)
+    {
+        $final_array = array();
+        $aggregate_count = array();
+
+        if ($player_items['result']['status'] == '1' && !empty($player_items['result']['items'])) {
+            foreach ($player_items['result']['items'] as $key => $value) {
+                if (array_key_exists($value['defindex'], $cardLookup)) {
+                    $item_id = $value['defindex'];
+
+                    $final_array[$key]['item_id'] = $value['id'];
+                    $final_array[$key]['original_id'] = $value['original_id'];
+                    $final_array[$key]['defindex'] = $value['defindex'];
+                    $final_array[$key]['quality'] = $value['quality'];
+                    $final_array[$key]['slot'] = $value['inventory'] & 65535;
+
+                    $final_array[$key]['item_name'] = $cardLookup[$item_id]['name'];
+                    $final_array[$key]['image_url'] = $cardLookup[$item_id]['image_url'];
+                    $final_array[$key]['image_url_large'] = $cardLookup[$item_id]['image_url_large'];
+
+
+                    ////////////////////////
+                    // FORMATTED VERSION
+                    ////////////////////////
+                    $team_name = $cardLookup[$item_id]['team'];
+                    $card_count = isset($aggregate_count[$value['defindex']]['count'])
+                        ? $aggregate_count[$value['defindex']]['count'] + 1
+                        : 1;
+
+                    $aggregate_count['teams'][$team_name][$value['defindex']]['name'] = $cardLookup[$item_id]['name'];
+                    $aggregate_count['teams'][$team_name][$value['defindex']]['count'] = $card_count;
+
+                    $aggregate_count[$value['defindex']]['name'] = $cardLookup[$item_id]['name'];
+                    $aggregate_count[$value['defindex']]['team'] = $team_name;
+                    $aggregate_count[$value['defindex']]['count'] = $card_count;
+
+                } else {
+                    $final_array['errors'][] = 'Couldn\'t add: ' . $value['defindex'];
+                    $aggregate_count['errors'][] = 'Couldn\'t add: ' . $value['defindex'];
+                }
+            }
+        } else {
+            $final_array['errors'] = 'Nothing in inventory';
+            $aggregate_count['errors'] = 'Nothing in inventory';
+        }
+
+        $final_array = json_encode($aggregate_count);
+
+        return $final_array;
+    }
+}
