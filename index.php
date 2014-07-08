@@ -30,7 +30,7 @@ if (!isset($_SESSION)) {
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
-                <li><a class="nav-clickable" href="#backpack/">Your Card Summary</a></li>
+                <li><a class="nav-clickable" href="#backpack/">Card Summary <span class="label label-default">NEW</span></a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in Stats <b class="caret"></b></a>
                     <ul class="dropdown-menu">
