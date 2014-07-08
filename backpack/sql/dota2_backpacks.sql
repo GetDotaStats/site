@@ -6,6 +6,16 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
+CREATE DATABASE `dota2_backpacks` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `dota2_backpacks`;
+
+CREATE TABLE IF NOT EXISTS `economy_attribute_cap` (
+  `attribute_particles_id` int(255) NOT NULL,
+  `system` varchar(255) NOT NULL,
+  `attach_to_rootbone` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`attribute_particles_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='attribute_controlled_attached_particles';
 
 CREATE TABLE IF NOT EXISTS `economy_attributes` (
   `attribute_id` int(255) NOT NULL,
@@ -19,13 +29,35 @@ CREATE TABLE IF NOT EXISTS `economy_attributes` (
   PRIMARY KEY (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS `economy_attribute_cap` (
-  `attribute_particles_id` int(255) NOT NULL,
-  `system` varchar(255) NOT NULL,
-  `attach_to_rootbone` varchar(255) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`attribute_particles_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='attribute_controlled_attached_particles';
+CREATE TABLE IF NOT EXISTS `economy_item_levels` (
+  `item_level_name` varchar(255) NOT NULL,
+  `level` int(255) NOT NULL,
+  `required_score` int(255) NOT NULL,
+  `level_name` text NOT NULL,
+  PRIMARY KEY (`item_level_name`,`level`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `economy_item_sets` (
+  `item_set_identifier` varchar(255) NOT NULL,
+  `item_set_name` varchar(255) NOT NULL,
+  `item_set_store_bundle` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`item_set_identifier`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `economy_item_sets_attributes` (
+  `item_set_identifier` varchar(255) NOT NULL,
+  `item_set_attribute_name` varchar(255) NOT NULL,
+  `item_set_attribute_class` varchar(255) NOT NULL,
+  `item_set_attribute_value` int(255) NOT NULL,
+  UNIQUE KEY `item_set_identifier` (`item_set_identifier`,`item_set_attribute_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `economy_item_sets_items` (
+  `item_set_identifier` varchar(255) NOT NULL,
+  `item_set_item_id` int(255) NOT NULL,
+  `item_set_item_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`item_set_identifier`,`item_set_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `economy_items` (
   `item_id` int(255) NOT NULL,
@@ -89,36 +121,6 @@ CREATE TABLE IF NOT EXISTS `economy_items_tools_usage` (
   `usage_type` varchar(255) NOT NULL,
   `usage_value` tinyint(1) NOT NULL,
   PRIMARY KEY (`item_id`,`usage_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE IF NOT EXISTS `economy_item_levels` (
-  `item_level_name` varchar(255) NOT NULL,
-  `level` int(255) NOT NULL,
-  `required_score` int(255) NOT NULL,
-  `level_name` text NOT NULL,
-  PRIMARY KEY (`item_level_name`,`level`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE IF NOT EXISTS `economy_item_sets` (
-  `item_set_identifier` varchar(255) NOT NULL,
-  `item_set_name` varchar(255) NOT NULL,
-  `item_set_store_bundle` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`item_set_identifier`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE IF NOT EXISTS `economy_item_sets_attributes` (
-  `item_set_identifier` varchar(255) NOT NULL,
-  `item_set_attribute_name` varchar(255) NOT NULL,
-  `item_set_attribute_class` varchar(255) NOT NULL,
-  `item_set_attribute_value` int(255) NOT NULL,
-  UNIQUE KEY `item_set_identifier` (`item_set_identifier`,`item_set_attribute_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE IF NOT EXISTS `economy_item_sets_items` (
-  `item_set_identifier` varchar(255) NOT NULL,
-  `item_set_item_id` int(255) NOT NULL,
-  `item_set_item_name` varchar(255) NOT NULL,
-  PRIMARY KEY (`item_set_identifier`,`item_set_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `economy_kill_est` (

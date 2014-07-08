@@ -39,7 +39,7 @@ if (!$economy_cards) {
     $memcache->set("d2_economy_cards", $economy_cards, 0, 15 * 60);
 }
 
-//$player_items_filtered = $memcache->get("d2_player_items_formatted" . $user_id);
+$player_items_filtered = $memcache->get("d2_player_items_formatted" . $user_id);
 if (empty($player_items_filtered)) {
     $player_items_filtered = sortCardsFromInventory($player_items, $economy_cards);
     $memcache->set("d2_player_items_formatted" . $user_id, $player_items_filtered, 0, 15 * 60);
