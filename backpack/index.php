@@ -99,7 +99,9 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
                 $card_colour = 'label-danger';
             }
 
-            $row1 .= '<td>' . cut_str($value2['name'] . '||', 'Card: ', '||') . '</td>';
+            $card_name = cut_str($value2['name'] . '||', 'Card: ', '||');
+
+            $row1 .= '<td align="center"><a href="http://steamcommunity.com/market/search?category_570_Hero%5B%5D=any&category_570_Slot%5B%5D=any&category_570_Type%5B%5D=any&appid=570&q=player+card+'.$card_name.'" target="_blank">' . $card_name . '</a></td>';
             $row2 .= '<td><img width="100px" src="' . $value2['image_url'] . '" /></td>';
             $row3 .= '<td align="center"><span class="label '.$card_colour.'">' . $card_count . '</span></td>';
 
