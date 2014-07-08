@@ -87,9 +87,9 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
                 : 0;
             //$card_count = $player_items_filtered['item_id']['count'];
 
-            if (isset($min_card) && $card_count < $min_card) {
+            if($min_card === NULL){
                 $min_card = $card_count;
-            } else {
+            } else if($card_count < $min_card) {
                 $min_card = $card_count;
             }
 
