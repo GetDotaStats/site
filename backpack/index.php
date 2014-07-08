@@ -78,9 +78,15 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
                 $min_card = $card_count;
             }
 
+            if($card_count > 0){
+                $card_colour = 'label-success';
+            } else{
+                $card_colour = 'label-danger';
+            }
+
             $row1 .= '<td>' . cut_str($value2['name'] . '||', 'Card: ', '||') . '</td>';
             $row2 .= '<td><img width="100px" src="' . $value2['image_url'] . '" /></td>';
-            $row3 .= '<td align="center"><span style="font-size:20px;font-weight:bold;">' . $card_count . '</span></td>';
+            $row3 .= '<td align="center"><span class="label '.$card_colour.'">' . $card_count . '</span></td>';
 
             $colspan++;
         }
@@ -89,8 +95,15 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
         echo '<tr>' . $row1 . '</tr>';
         echo '<tr>' . $row2 . '</tr>';
         echo '<tr>' . $row3 . '</tr>';
-        echo '<tr><td colspan="' . $colspan . '"><em>Enough cards for ' . $min_card . ' levels</em></td></tr>';
-        echo '</table>';
+        echo '</table><br />';
+
+        if($min_card <= 0){
+            echo '<div><h4>Enough cards for <span class="label label-danger">' . $min_card . '</span> levels</h4></div>';
+        }
+        else if($min_card > 0){
+            echo '<div><h4>Enough cards for <span class="label label-success">' . $min_card . '</span> levels</h4></div>';
+        }
+        echo '<hr />';
 
     }
 
