@@ -21,19 +21,25 @@ require_once("../connections/parameters.php");
 if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
     $user_id = $_GET["uid"];
 
+    if(!empty($_GET["flush"]) && $_GET["flush"] == 1){
+        $flush = 1;
+    } else{
+        $flush = 0;
+    }
+
     $db = new dbWrapper($hostname_backpacks, $username_backpacks, $password_backpacks, $database_backpacks, true);
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     $player_items = $memcache->get("d2_player_items" . $user_id);
-    if (!$player_items) {
+    if (empty($player_items) || $flush) {
         $player_items = get_d2_player_backpack($user_id, 1, $api_key_dbe);
         $memcache->set("d2_player_items" . $user_id, $player_items, 0, 15 * 60);
     }
 
     $economy_cards = $memcache->get("d2_economy_cards");
-    if (!$economy_cards) {
+    if (empty($economy_cards) || $flush) {
         $economy_cards_sql = $db->q("SELECT * FROM `economy_items` WHERE `item_id` IN (SELECT `item_id` FROM `economy_items_attributes` WHERE `attribute_name` = 'international tag' AND `attribute_value` = 2014) AND (`item_type_name` = 'Player Card' OR `item_type_name` = 'Tool') ORDER BY `economy_items`.`item_image_inventory` DESC");
         //`item_id`, `item_nice_name`, `item_class`, `item_type_name`, `item_set`, `item_description`, `item_quality`, `item_image_inventory`, `item_min_ilevel`, `item_max_ilevel`, `item_image_url`, `item_image_url_large`, `tool_type`, `tool_use_string`, `tool_restriction`
 
@@ -53,7 +59,7 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
     }
 
     $player_items_filtered = $memcache->get("d2_player_items_formatted" . $user_id);
-    if (empty($player_items_filtered)) {
+    if (empty($player_items_filtered) || $flush) {
         $player_items_filtered = sortCardsFromInventory($player_items, $economy_cards);
         $memcache->set("d2_player_items_formatted" . $user_id, $player_items_filtered, 0, 15 * 60);
     }
