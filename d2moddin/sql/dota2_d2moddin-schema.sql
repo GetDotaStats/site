@@ -1,6 +1,11 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-CREATE DATABASE `dota2_d2moddin` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `dota2_d2moddin`;
+SET time_zone = "+00:00";
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
 
 CREATE TABLE IF NOT EXISTS `stats_production` (
   `production_id` int(255) NOT NULL AUTO_INCREMENT,
@@ -11,7 +16,17 @@ CREATE TABLE IF NOT EXISTS `stats_production` (
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`production_id`),
   KEY `date_recorded` (`date_recorded`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=93 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=403 ;
+
+CREATE TABLE IF NOT EXISTS `stats_production_mods` (
+  `mod_id` int(255) NOT NULL AUTO_INCREMENT,
+  `mod_name` varchar(255) NOT NULL,
+  `mod_version` varchar(255) NOT NULL,
+  `mod_lobbies` int(255) NOT NULL,
+  `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`mod_id`),
+  UNIQUE KEY `index_date_name` (`date_recorded`,`mod_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
 
 CREATE TABLE IF NOT EXISTS `stats_production_regions` (
   `region_name` varchar(255) NOT NULL,
@@ -30,5 +45,9 @@ CREATE TABLE IF NOT EXISTS `stats_production_servers` (
   `server_activeinstances` int(255) NOT NULL,
   `server_maxinstances` int(255) NOT NULL,
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`date_recorded`,`server_name`)
+  PRIMARY KEY (`date_recorded`,`server_name`,`region_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
