@@ -1,30 +1,11 @@
--- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Jul 10, 2014 at 01:32 AM
--- Server version: 5.5.31
--- PHP Version: 5.3.10-1ubuntu3.6
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Database: `dota2_d2moddin`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `stats_production`
---
 
 CREATE TABLE IF NOT EXISTS `stats_production` (
   `lobby_total` int(255) NOT NULL DEFAULT '0',
@@ -34,10 +15,6 @@ CREATE TABLE IF NOT EXISTS `stats_production` (
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`date_recorded`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `stats_production`
---
 
 INSERT INTO `stats_production` (`lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue`, `date_recorded`) VALUES
 (27, 8, 19, 0, '2014-06-26 01:00:01'),
@@ -1001,13 +978,10 @@ INSERT INTO `stats_production` (`lobby_total`, `lobby_wait`, `lobby_play`, `lobb
 (49, 4, 45, 0, '2014-07-09 22:45:01'),
 (47, 11, 36, 0, '2014-07-09 23:00:01'),
 (52, 11, 40, 1, '2014-07-09 23:15:01'),
-(55, 13, 42, 0, '2014-07-09 23:30:01');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `stats_production_mods`
---
+(55, 13, 42, 0, '2014-07-09 23:30:01'),
+(46, 9, 36, 0, '2014-07-09 23:45:02'),
+(46, 14, 32, 0, '2014-07-10 00:00:02'),
+(48, 14, 33, 0, '2014-07-10 00:15:02');
 
 CREATE TABLE IF NOT EXISTS `stats_production_mods` (
   `mod_id` int(255) NOT NULL AUTO_INCREMENT,
@@ -1017,13 +991,30 @@ CREATE TABLE IF NOT EXISTS `stats_production_mods` (
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`mod_id`),
   UNIQUE KEY `index_date_name` (`date_recorded`,`mod_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `stats_production_regions`
---
+INSERT INTO `stats_production_mods` (`mod_id`, `mod_name`, `mod_version`, `mod_lobbies`, `date_recorded`) VALUES
+(1, 'hlw', '0.15', 11, '2014-07-09 23:45:02'),
+(2, 'fof', '0.35.46', 2, '2014-07-09 23:45:02'),
+(3, 'reflex', '0.05.09', 4, '2014-07-09 23:45:02'),
+(4, 'checker', '0.02.00', 2, '2014-07-09 23:45:02'),
+(5, 'dash', '0.04.00', 2, '2014-07-09 23:45:02'),
+(6, 'pudgewars', '0.50.01', 16, '2014-07-09 23:45:02'),
+(7, 'runkittyrun', '0.01.07', 9, '2014-07-09 23:45:02'),
+(8, 'hlw', '0.15', 9, '2014-07-10 00:00:02'),
+(9, 'fof', '0.35.46', 1, '2014-07-10 00:00:02'),
+(10, 'reflex', '0.05.09', 3, '2014-07-10 00:00:02'),
+(11, 'checker', '0.02.00', 2, '2014-07-10 00:00:02'),
+(12, 'dash', '0.04.00', 1, '2014-07-10 00:00:02'),
+(13, 'pudgewars', '0.50.01', 22, '2014-07-10 00:00:02'),
+(14, 'runkittyrun', '0.01.07', 8, '2014-07-10 00:00:02'),
+(15, 'hlw', '0.15', 11, '2014-07-10 00:15:02'),
+(16, 'fof', '0.35.46', 0, '2014-07-10 00:15:02'),
+(17, 'reflex', '0.05.09', 4, '2014-07-10 00:15:02'),
+(18, 'checker', '0.02.00', 2, '2014-07-10 00:15:02'),
+(19, 'dash', '0.04.00', 2, '2014-07-10 00:15:02'),
+(20, 'pudgewars', '0.50.01', 24, '2014-07-10 00:15:02'),
+(21, 'runkittyrun', '0.01.07', 6, '2014-07-10 00:15:02');
 
 CREATE TABLE IF NOT EXISTS `stats_production_regions` (
   `region_name` varchar(255) NOT NULL,
@@ -1034,10 +1025,6 @@ CREATE TABLE IF NOT EXISTS `stats_production_regions` (
   PRIMARY KEY (`date_recorded`,`region_name`),
   KEY `rn_dc` (`region_name`,`date_recorded`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `stats_production_regions`
---
 
 INSERT INTO `stats_production_regions` (`region_name`, `region_id`, `region_servercount`, `region_playing`, `date_recorded`) VALUES
 ('AUS', 3, 1, 1, '2014-06-26 01:00:01'),
@@ -3889,13 +3876,22 @@ INSERT INTO `stats_production_regions` (`region_name`, `region_id`, `region_serv
 ('NA', 1, 2, 18, '2014-07-09 23:15:01'),
 ('CN', 4, 1, 15, '2014-07-09 23:30:01'),
 ('EU', 2, 2, 24, '2014-07-09 23:30:01'),
-('NA', 1, 2, 21, '2014-07-09 23:30:01');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `stats_production_servers`
---
+('NA', 1, 2, 21, '2014-07-09 23:30:01'),
+('AUS', 3, 0, 0, '2014-07-09 23:45:02'),
+('CN', 4, 1, 12, '2014-07-09 23:45:02'),
+('EU', 2, 2, 22, '2014-07-09 23:45:02'),
+('NA', 1, 2, 17, '2014-07-09 23:45:02'),
+('UNKNOWN', 0, 3, 27, '2014-07-09 23:45:02'),
+('AUS', 3, 0, 0, '2014-07-10 00:00:02'),
+('CN', 4, 1, 9, '2014-07-10 00:00:02'),
+('EU', 2, 2, 17, '2014-07-10 00:00:02'),
+('NA', 1, 2, 18, '2014-07-10 00:00:02'),
+('UNKNOWN', 0, 3, 26, '2014-07-10 00:00:02'),
+('AUS', 3, 0, 0, '2014-07-10 00:15:02'),
+('CN', 4, 1, 9, '2014-07-10 00:15:02'),
+('EU', 2, 2, 18, '2014-07-10 00:15:02'),
+('NA', 1, 2, 18, '2014-07-10 00:15:02'),
+('UNKNOWN', 0, 3, 27, '2014-07-10 00:15:02');
 
 CREATE TABLE IF NOT EXISTS `stats_production_servers` (
   `region_id` int(255) NOT NULL,
@@ -3906,10 +3902,6 @@ CREATE TABLE IF NOT EXISTS `stats_production_servers` (
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`date_recorded`,`server_name`,`region_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `stats_production_servers`
---
 
 INSERT INTO `stats_production_servers` (`region_id`, `server_name`, `server_ip`, `server_activeinstances`, `server_maxinstances`, `date_recorded`) VALUES
 (1, 'BMD Server', '96.244.208.108', 11, 28, '2014-06-26 01:00:01'),
@@ -7316,7 +7308,31 @@ INSERT INTO `stats_production_servers` (`region_id`, `server_name`, `server_ip`,
 (2, 'Medowar EU #1', '188.138.0.14', 33, 65, '2014-07-09 15:15:01'),
 (2, 'Medowar EU #2', '188.138.16.110', 33, 50, '2014-07-09 15:15:01'),
 (4, 'SEA #1', '103.247.133.233', 11, 11, '2014-07-09 15:15:01'),
-(1, 'US OVH #1', '192.99.201.73', 28, 100, '2014-07-09 15:15:01');
+(1, 'US OVH #1', '192.99.201.73', 28, 100, '2014-07-09 15:15:01'),
+(0, 'BMD Server', '96.244.208.108', 8, 22, '2014-07-09 23:45:02'),
+(1, 'BMD Server', '96.244.208.108', 8, 22, '2014-07-09 23:45:02'),
+(2, 'Medowar EU #1', '188.138.0.14', 12, 65, '2014-07-09 23:45:02'),
+(4, 'Medowar EU #1', '188.138.0.14', 12, 65, '2014-07-09 23:45:02'),
+(0, 'Medowar EU #2', '188.138.16.110', 10, 10, '2014-07-09 23:45:02'),
+(2, 'Medowar EU #2', '188.138.16.110', 10, 10, '2014-07-09 23:45:02'),
+(0, 'US OVH #1', '192.99.201.73', 9, 100, '2014-07-09 23:45:02'),
+(1, 'US OVH #1', '192.99.201.73', 9, 100, '2014-07-09 23:45:02'),
+(0, 'BMD Server', '96.244.208.108', 9, 22, '2014-07-10 00:00:02'),
+(1, 'BMD Server', '96.244.208.108', 9, 22, '2014-07-10 00:00:02'),
+(2, 'Medowar EU #1', '188.138.0.14', 9, 65, '2014-07-10 00:00:02'),
+(4, 'Medowar EU #1', '188.138.0.14', 9, 65, '2014-07-10 00:00:02'),
+(0, 'Medowar EU #2', '188.138.16.110', 8, 10, '2014-07-10 00:00:02'),
+(2, 'Medowar EU #2', '188.138.16.110', 8, 10, '2014-07-10 00:00:02'),
+(0, 'US OVH #1', '192.99.201.73', 9, 100, '2014-07-10 00:00:02'),
+(1, 'US OVH #1', '192.99.201.73', 9, 100, '2014-07-10 00:00:02'),
+(0, 'BMD Server', '96.244.208.108', 9, 22, '2014-07-10 00:15:02'),
+(1, 'BMD Server', '96.244.208.108', 9, 22, '2014-07-10 00:15:02'),
+(2, 'Medowar EU #1', '188.138.0.14', 9, 65, '2014-07-10 00:15:02'),
+(4, 'Medowar EU #1', '188.138.0.14', 9, 65, '2014-07-10 00:15:02'),
+(0, 'Medowar EU #2', '188.138.16.110', 9, 10, '2014-07-10 00:15:02'),
+(2, 'Medowar EU #2', '188.138.16.110', 9, 10, '2014-07-10 00:15:02'),
+(0, 'US OVH #1', '192.99.201.73', 9, 100, '2014-07-10 00:15:02'),
+(1, 'US OVH #1', '192.99.201.73', 9, 100, '2014-07-10 00:15:02');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
