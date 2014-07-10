@@ -27,7 +27,7 @@ try {
         $mod_stats = simple_cached_query('d2moddin_production_mods',
             'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `mod_lobbies`, `mod_version`, `mod_name` FROM `stats_production_mods` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
             60);
-        $mod_list = simple_cached_query('d2moddin_production_mods',
+        $mod_list = simple_cached_query('d2moddin_production_mod_list',
             'SELECT DISTINCT  `mod_name` as mod_name FROM `stats_production_mods`;',
             60);
 
