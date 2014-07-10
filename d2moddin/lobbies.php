@@ -72,6 +72,7 @@ try {
             ),
             'legend' => array(
                 'position' => 'bottom',
+                'alignment' => 'start',
                 'textStyle' => array(
                     'fontSize' => 10
                 )
