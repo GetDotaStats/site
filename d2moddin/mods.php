@@ -73,7 +73,7 @@ try {
             'axisTitlesPosition' => 'in',
             'width' => $chart_width,
             'bar' => array(
-                'groupWidth' => 2,
+                'groupWidth' => 4,
             ),
             'height' => 300,
             'chartArea' => array(
