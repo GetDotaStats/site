@@ -25,7 +25,7 @@ try {
 
         //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
         $production_stats = simple_cached_query('d2moddin_production_stats',
-            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` GROUP BY 5,4,3,2,1 ORDER BY 5,4,3,2,1;',
+            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` GROUP BY 5,4,3,2,1 ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
             60);
 
         $super_array = array();
