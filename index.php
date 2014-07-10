@@ -34,7 +34,8 @@ if (!isset($_SESSION)) {
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in Stats <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobbies Created</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobbies Status</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies Per Mod</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
                 </li>
             </ul>
