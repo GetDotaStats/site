@@ -21,27 +21,27 @@ try {
 
         $chart = new chart2('ComboChart');
 
-        echo '<h2>Plot of lobbies per mod created over time</h2>';
+        echo '<h2>Plot of lobbies per region created over time</h2>';
 
         //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
-        $mod_stats = simple_cached_query('d2moddin_production_mods',
-            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `mod_lobbies`, `mod_version`, `mod_name` FROM `stats_production_mods` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
+        $region_stats = simple_cached_query('d2moddin_production_regions',
+            'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `region_playing`, `region_servercount`, `region_name` FROM `stats_production_regions` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, `region_name` DESC;',
             60);
-        $mod_list = simple_cached_query('d2moddin_production_mod_list',
-            'SELECT DISTINCT  `mod_name` as mod_name FROM `stats_production_mods`;',
+        $region_list = simple_cached_query('d2moddin_production_region_list',
+            'SELECT DISTINCT `region_name` FROM `stats_production_regions`;',
             60);
 
         $test_array = array();
-        foreach($mod_stats as $key => $value){
+        foreach($region_stats as $key => $value){
             $date = $value['year'].'-'.$value['month'].'-'.$value['day'].' '.str_pad($value['hour'], 2, '0', STR_PAD_LEFT).':'.' '.str_pad($value['minute'], 2, '0', STR_PAD_LEFT);
 
             if(!isset($test_array[$date])){
-                foreach($mod_list as $mod_list_key => $mod_list_value){
-                    $test_array[$date][$mod_list_value['mod_name']] = 0;
+                foreach($region_list as $mod_list_key => $mod_list_value){
+                    $test_array[$date][$mod_list_value['region_name']] = 0;
                 }
             }
 
-            $test_array[$date][$value['mod_name']] = $value['mod_lobbies'];
+            $test_array[$date][$value['region_name']] = $value['region_playing'];
             ksort($test_array[$date]);
         }
 
@@ -63,8 +63,8 @@ try {
             'rows' => $super_array
         );
 
-        foreach($mod_list as $key => $value){
-            $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
+        foreach($region_list as $key => $value){
+            $data['cols'][] = array('id' => '', 'label' => $value['region_name'], 'type' => 'number');
         }
 
         $chart_width = max(count($test_array) * 4, 800);
