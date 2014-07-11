@@ -28,7 +28,7 @@ try {
             'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `region_playing`, `region_servercount`, `region_name` FROM `stats_production_regions` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, `region_name` DESC;',
             60);
         $region_list = simple_cached_query('d2moddin_production_region_list',
-            'SELECT DISTINCT `region_name` FROM `stats_production_regions`;',
+            'SELECT DISTINCT `region_name` FROM `stats_production_regions` ORDER BY `region_name`;',
             60);
 
         $test_array = array();
@@ -42,7 +42,6 @@ try {
             }
 
             $test_array[$date][$value['region_name']] = $value['region_playing'];
-            ksort($test_array[$date]);
         }
 
         $super_array = array();
@@ -120,10 +119,9 @@ try {
             'pageSize' => 6);
 
         echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
-        echo '<div id="lobby_count_dataTable"></div>';
 
         $chart->load(json_encode($data));
-        echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
+        echo $chart->draw('lobby_count', $options);
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';
         echo '<hr />Page generated in ' . (time() - $start) . 'secs';

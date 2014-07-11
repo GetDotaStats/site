@@ -28,7 +28,7 @@ try {
             'SELECT MINUTE(sps.`date_recorded`) as minute, HOUR(sps.`date_recorded`) as hour, DAY(sps.`date_recorded`) as day, MONTH(sps.`date_recorded`) as month, YEAR(sps.`date_recorded`) as year, sps.`server_activeinstances`, sps.`server_maxinstances`, sps.`server_name` FROM `stats_production_servers` sps GROUP BY `date_recorded`, `server_name` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, sps.`server_name` DESC;',
             60);
         $region_list = simple_cached_query('d2moddin_production_server_list',
-            'SELECT DISTINCT `server_name` FROM `stats_production_servers`;',
+            'SELECT DISTINCT `server_name` FROM `stats_production_servers` ORDER BY server_name DESC;',
             60);
 
         $test_array = array();
@@ -42,7 +42,7 @@ try {
             }
 
             $test_array[$date][$value['server_name']] = $value['server_activeinstances'];
-            ksort($test_array[$date]);
+            //ksort($test_array[$date]);
         }
 
         $super_array = array();
@@ -56,7 +56,8 @@ try {
             $i++;
         }
 
-        $data = array(
+
+       $data = array(
             'cols' => array(
                 array('id' => '', 'label' => 'Date', 'type' => 'string'),
             ),
@@ -66,6 +67,7 @@ try {
         foreach($region_list as $key => $value){
             $data['cols'][] = array('id' => '', 'label' => $value['server_name'], 'type' => 'number');
         }
+
 
         $chart_width = max(count($test_array) * 4, 800);
 
@@ -120,10 +122,9 @@ try {
             'pageSize' => 6);
 
         echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
-        echo '<div id="lobby_count_dataTable"></div>';
 
         $chart->load(json_encode($data));
-        echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
+        echo $chart->draw('lobby_count', $options);
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';
         echo '<hr />Page generated in ' . (time() - $start) . 'secs';

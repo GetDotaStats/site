@@ -95,10 +95,9 @@ try {
             'pageSize' => 6);
 
         echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
-        echo '<div id="lobby_count_dataTable"></div>';
 
         $chart->load(json_encode($data));
-        echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
+        echo $chart->draw('lobby_count', $options);
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';
         echo '<hr />Page generated in ' . (time() - $start) . 'secs';
