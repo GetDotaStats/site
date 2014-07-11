@@ -42,12 +42,14 @@ try {
         foreach ($stats['servers'] as $key => $value) {
             if (isset($value['region']) && isset($value['name']) && isset($value['ip']) && isset($value['activeinstances']) && isset($value['maxinstances'])) {
                 foreach ($value['region'] as $key2 => $value2) {
-                    $sql[] = '(' .
-                        $db->escape($value2) . ', \'' .
-                        $db->escape($value['name']) . '\', \'' .
-                        $db->escape($value['ip']) . '\', ' .
-                        $db->escape($value['activeinstances']) . ', ' .
-                        $db->escape($value['maxinstances']) . ')';
+                    if ($key2 == 0 || ($key2 > 0 && $value2 > 0)) {
+                        $sql[] = '(' .
+                            $db->escape($value2) . ', \'' .
+                            $db->escape($value['name']) . '\', \'' .
+                            $db->escape($value['ip']) . '\', ' .
+                            $db->escape($value['activeinstances']) . ', ' .
+                            $db->escape($value['maxinstances']) . ')';
+                    }
                 }
             } else {
                 echo 'Failed: ' . $value['name'] . ' | ' . $value['region'] . '<br />';
