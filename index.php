@@ -37,6 +37,7 @@ if (!isset($_SESSION)) {
                         <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
                 </li>
             </ul>
