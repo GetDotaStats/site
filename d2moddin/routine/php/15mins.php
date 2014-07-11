@@ -22,6 +22,9 @@ try {
         $sql = array();
         foreach ($stats['regions'] as $key => $value) {
             if (isset($value['name']) && isset($value['id']) && isset($value['servercount']) && isset($value['playing'])) {
+                if($value['name'] == 'UNKNOWN'){
+                    $value['name'] = 'All Regions';
+                }
                 $sql[] = '(\'' . $db->escape($value['name']) . '\', ' .
                     $db->escape($value['id']) . ', ' .
                     $db->escape($value['servercount']) . ', ' .
