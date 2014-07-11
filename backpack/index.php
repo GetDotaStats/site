@@ -3,27 +3,30 @@ require_once("./functions.php");
 require_once("../connections/parameters.php");
 
 ?>
-    <p>You can lookup your 64bit steam ID <a href="http://steamidfinder.ru/" target="_blank">here</a> OR <a href="http://steamidconverter.com/" target="_blank">here</a></p>
+    <p>You can lookup your 64bit steam ID <a href="http://steamidfinder.ru/" target="_blank">here</a> OR <a
+            href="http://steamidconverter.com/" target="_blank">here</a></p>
 
     <form action="./backpack/dummy.php" method="POST">
         <table cellspacing="1" cellpadding="5" border="1">
             <tr>
                 <th align="left">Steam ID</th>
-                <td colspan="2"><input name="uid" type="number" min="0" required></td>
+                <td colspan="2"><input name="uid" type="number" min="0"
+                                       value="<?= !empty($_GET["uid"]) && is_numeric($_GET["uid"]) ? $_GET["uid"] : 0 ?>"
+                                       required></td>
             </tr>
             <tr>
                 <td colspan="4" align="center"><input type="submit" value="Lookup"></td>
             </tr>
         </table>
     </form>
-<br />
+    <br/>
 <?php
 if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
     $user_id = $_GET["uid"];
 
-    if(!empty($_GET["flush"]) && $_GET["flush"] == 1){
+    if (!empty($_GET["flush"]) && $_GET["flush"] == 1) {
         $flush = 1;
-    } else{
+    } else {
         $flush = 0;
     }
 
@@ -80,54 +83,64 @@ if (!empty($_GET["uid"]) && is_numeric($_GET["uid"])) {
         : NULL;
     unset($player_items_filtered['errors']);
 
-    echo '<h2>TI4 card summary for your inventory</h2>';
-    echo '<p>Backpack and item schema cached for 15mins. This will not show which cards you have stamped, as there is no public API for that.</p>';
+    if (!empty($player_items_filtered)) {
+        echo '<h2>TI4 card summary for your inventory</h2>';
+        echo '<p>Backpack and item schema cached for 15mins. This will not show which cards you have stamped, as there is no public API for that.</p>';
 
-    foreach ($card_schema_arranged as $key => $value) {
-        $row1 = $row2 = $row3 = '';
-        $min_card = NULL;
-        $colspan = 0;
-        foreach ($value as $key2 => $value2) {
-            $card_count = !empty($player_items_filtered[$value2['item_id']]['count'])
-                ? $player_items_filtered[$value2['item_id']]['count']
-                : 0;
-            //$card_count = $player_items_filtered['item_id']['count'];
+        if (empty($errors)) {
+            foreach ($card_schema_arranged as $key => $value) {
+                $row1 = $row2 = $row3 = '';
+                $min_card = NULL;
+                $colspan = 0;
+                foreach ($value as $key2 => $value2) {
+                    $card_count = !empty($player_items_filtered[$value2['item_id']]['count'])
+                        ? $player_items_filtered[$value2['item_id']]['count']
+                        : 0;
+                    //$card_count = $player_items_filtered['item_id']['count'];
 
-            if($min_card === NULL){
-                $min_card = $card_count;
-            } else if($card_count < $min_card) {
-                $min_card = $card_count;
+                    if ($min_card === NULL) {
+                        $min_card = $card_count;
+                    } else if ($card_count < $min_card) {
+                        $min_card = $card_count;
+                    }
+
+                    $card_class = '';
+                    if ($card_count > 0) {
+                        $card_colour = 'label-success';
+                    } else {
+                        $card_colour = 'label-danger';
+                        $card_class = ' class="item-not-owned"';
+                    }
+
+                    $card_name = cut_str($value2['name'] . '||', 'Card: ', '||');
+
+                    $row1 .= '<td align="center"><a href="http://steamcommunity.com/market/search?category_570_Hero%5B%5D=any&category_570_Slot%5B%5D=any&category_570_Type%5B%5D=any&appid=570&q=player+card+' . $card_name . '" target="_blank">' . $card_name . '</a></td>';
+                    $row2 .= '<td><img' . $card_class . ' width="100px" src="' . $value2['image_url'] . '" /></td>';
+                    $row3 .= '<td align="center"><span class="label ' . $card_colour . '">' . $card_count . '</span></td>';
+
+                    $colspan++;
+                }
+                echo '<h2>' . $key . '</h2>';
+                echo '<table border="1" cellspacing="1">';
+                echo '<tr>' . $row1 . '</tr>';
+                echo '<tr>' . $row2 . '</tr>';
+                echo '<tr>' . $row3 . '</tr>';
+                echo '</table><br />';
+
+                if ($min_card <= 0) {
+                    echo '<div><h4>Enough cards for <span class="label label-danger">' . $min_card . '</span> levels</h4></div>';
+                } else if ($min_card > 0) {
+                    echo '<div><h4>Enough cards for <span class="label label-success">' . $min_card . '</span> levels</h4></div>';
+                }
+                echo '<hr />';
+
             }
-
-            if($card_count > 0){
-                $card_colour = 'label-success';
-            } else{
-                $card_colour = 'label-danger';
-            }
-
-            $card_name = cut_str($value2['name'] . '||', 'Card: ', '||');
-
-            $row1 .= '<td align="center"><a href="http://steamcommunity.com/market/search?category_570_Hero%5B%5D=any&category_570_Slot%5B%5D=any&category_570_Type%5B%5D=any&appid=570&q=player+card+'.$card_name.'" target="_blank">' . $card_name . '</a></td>';
-            $row2 .= '<td><img width="100px" src="' . $value2['image_url'] . '" /></td>';
-            $row3 .= '<td align="center"><span class="label '.$card_colour.'">' . $card_count . '</span></td>';
-
-            $colspan++;
+        } else {
+            print_r($errors);
         }
-        echo '<h2>' . $key . '</h2>';
-        echo '<table border="1" cellspacing="1">';
-        echo '<tr>' . $row1 . '</tr>';
-        echo '<tr>' . $row2 . '</tr>';
-        echo '<tr>' . $row3 . '</tr>';
-        echo '</table><br />';
-
-        if($min_card <= 0){
-            echo '<div><h4>Enough cards for <span class="label label-danger">' . $min_card . '</span> levels</h4></div>';
-        }
-        else if($min_card > 0){
-            echo '<div><h4>Enough cards for <span class="label label-success">' . $min_card . '</span> levels</h4></div>';
-        }
-        echo '<hr />';
-
+    } else {
+        echo '<div><span class="label label-danger">No cards in selected inventory!</span></div>';
+        //print_r($player_items_filtered);
     }
 
     //print_r($player_items_filtered);

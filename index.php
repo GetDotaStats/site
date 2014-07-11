@@ -30,53 +30,50 @@ if (!isset($_SESSION)) {
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
-                <li><a class="nav-clickable" href="#backpack/">Card Summary <span class="label label-default">NEW</span></a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in Stats <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in Stats <span class="label label-default">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
+
+                    </ul>
                 </li>
-            </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>
-                    <li><a class="nav-clickable" href="#match_analysis__general_stats">General Stats</a></li>
-                    <li><a class="nav-clickable" href="#match_analysis__game_modes">Game Modes</a></li>
-                    <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Misc.</li>
-                    <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
-                    </li>
-                </ul>
-            </li>
-            <li><a class="nav-clickable" href="#steamtracks/">Signature Generator</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Projects <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
-                    <li class="divider"></li>
-                    <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Simulations</li>
-                    <li><a class="nav-clickable" href="#simulations__axespins/">Axe Spins</a></li>
-                    <li><a>Shield Block - Soon™</a></li>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dead Projekts <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a class="nav-clickable" href="#replays/">Replay Archive</a></li>
-                    <li><a href="./economy_analysis/">Economy Analysis</a></li>
-                </ul>
-            </li>
-            <li><a class="nav-clickable" href="#contact">Contact</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>
+                        <li><a class="nav-clickable" href="#match_analysis__general_stats">General Stats</a></li>
+                        <li><a class="nav-clickable" href="#match_analysis__game_modes">Game Modes</a></li>
+                        <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Misc.</li>
+                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="nav-clickable" href="#steamtracks/">Signature Generator</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <span class="label label-default">NEW</span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">Economy Related</li>
+                        <li><a class="nav-clickable" href="#backpack/">Card Summary <span class="label label-default">NEW</span></a></li>
+                        <li><a href="./economy_analysis/">Economy Analysis <span class="label label-info">DEAD</span></a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Browser Extensions</li>
+                        <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Simulations</li>
+                        <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Misc.</li>
+                        <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
+                        <li><a class="nav-clickable" href="#replays/">Replay Archive <span class="label label-info">DEAD</span></a></a></li>
+                    </ul>
+                </li>
+                <li><a class="nav-clickable" href="#contact">Contact</a></li>
             </ul>
         </div>
     </div>

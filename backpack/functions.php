@@ -582,7 +582,7 @@ if (!function_exists('sortCardsFromInventory')) {
         $final_array = array();
         $aggregate_count = array();
 
-        if ($player_items['result']['status'] == '1' && !empty($player_items['result']['items'])) {
+        if (isset($player_items['result']['status']) && $player_items['result']['status'] == '1' && !empty($player_items['result']['items'])) {
             foreach ($player_items['result']['items'] as $key => $value) {
                 if (array_key_exists($value['defindex'], $cardLookup)) {
                     $item_id = $value['defindex'];
