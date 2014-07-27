@@ -88,9 +88,8 @@ if (!isset($_SESSION)) {
 <div class="clear"></div>
 
 <div class="container">
-    <div class="jumbotron text-center">
-        <h1>Welcome to GetDotaStats!</h1>
-
+    <div class="page-header text-center">
+        <h1>GetDotaStats <small> A collection of random stats</small></h1>
         <div id="loading">
             <img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
             <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>
