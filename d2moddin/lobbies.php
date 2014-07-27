@@ -56,7 +56,7 @@ try {
             'chartArea' => array(
                 'width' => '100%',
                 'height' => '90%',
-                'left' => 40,
+                'left' => 50,
                 'top' => 10,
             ),
             'hAxis' => array(

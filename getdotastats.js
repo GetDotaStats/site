@@ -18,7 +18,7 @@ $(document).ready(function () {
 var lasturl = "";
 function checkURL(hash) {
     if (!hash) {
-        loadPage('home');
+        loadPage('#home');
     }
     else if (hash != lasturl) {
         //alert('new');
@@ -28,6 +28,7 @@ function checkURL(hash) {
 }
 
 function loadPage(url) {
+    var oldURL = url;
     url = url.replace('#', '').split('__').join('/');
 
     if (url.indexOf('?') > -1 && url.indexOf('/?') < 0) {
@@ -53,6 +54,7 @@ function loadPage(url) {
                 url: url,
                 dataType: "html",
                 success: function (msg) {
+                    document.getElementById("abcd").setAttribute("href", oldURL);
                     setTimeout(function () {
                         $('#loading_spinner1').show();
                         $('#loading_spinner2').hide();
