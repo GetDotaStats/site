@@ -2,12 +2,6 @@ $(document).ready(function () {
 
     checkURL(window.location.hash);
 
-    //$('a').click(function (e) {
-    /*$('ul li a.nav-clickable').click(function (e) {
-     //event.preventDefault();
-     checkURL(this.hash);
-     });*/
-
     $(document).on("click", 'a.nav-clickable', function (e) {
         checkURL(this.hash);
     });
@@ -15,14 +9,16 @@ $(document).ready(function () {
     //setInterval("checkURL(window.location.hash)", 15 * 60 * 1000); //refresh every 15minutes
 });
 
-var lasturl = "";
 function checkURL(hash) {
     if (!hash) {
         loadPage('#home');
     }
-    else if (hash != lasturl) {
-        //alert('new');
-        //lasturl = hash;
+    else {
+        var testElement = $('#navBarCustom');
+        //if($(this).parent().closest('div').attr("id") == 'navBarCustom'){ //CHECK IF THE PARENT DIV IS THE NAVBAR
+        testElement.find('.active').removeClass('active');
+        testElement.find('a[href="' + hash + '"]').parents('li').addClass('active');
+        //}
         loadPage(hash);
     }
 }
@@ -37,8 +33,6 @@ function loadPage(url) {
     else if (url.slice(-1) != '/' && url.indexOf('?') < 0) {
         url = url + '.php';
     }
-
-    //alert(url);
 
     $('#loading').show({
         start: function () {
@@ -69,7 +63,11 @@ function loadPage(url) {
                     }, 500);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    $('#loading').hide();
+                    $('#loading').hide({
+                        complete: function () {
+                            $('#main_content').html('Failed to load page. Try again later.');
+                        }
+                    });
                 }
             });
 

@@ -27,7 +27,7 @@ if (!isset($_SESSION)) {
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
-        <div class="navbar-collapse collapse">
+        <div id="navBarCustom"  class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
                 <li class="dropdown">
