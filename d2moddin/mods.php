@@ -18,7 +18,7 @@ try {
         echo '<h2>Breakdown of Mods Hosted</h2>';
 
         ////////////////////////////////////////////////////////
-        // LAST 5 DAYS
+        // LAST 2 DAYS
         ////////////////////////////////////////////////////////
 
         {
@@ -180,7 +180,7 @@ try {
                 $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
             }
 
-            $chart_width = max(count($test_array) * 4, 800);
+            $chart_width = max(count($test_array) * 2, 800);
 
             $options = array(
                 //'title' => 'Average spins in ' . $hits . ' attacks',
@@ -188,7 +188,7 @@ try {
                 'axisTitlesPosition' => 'in',
                 'width' => $chart_width,
                 'bar' => array(
-                    'groupWidth' => 2,
+                    'groupWidth' => 1,
                 ),
                 'height' => 300,
                 'chartArea' => array(
