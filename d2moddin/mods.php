@@ -126,7 +126,7 @@ try {
             echo '<div class="panel panel-default" style="width: 800px;">
                 <div class="panel-heading">
                     <h4 class="panel-title text-center">
-                        <a data-toggle="collapse" data-target="#collapseTwo" class="collapsed">Click here for data of last 4days</a>
+                        <a data-toggle="collapse" data-target="#collapseTwo" class="btn btn btn-success collapsed" type="button">Data Table</a>
                     </h4>
                 </div>
                 <div id="collapseTwo" class="panel-collapse collapse">
@@ -139,8 +139,10 @@ try {
             //echo '<div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>';
 
             $chart->load(json_encode($data));
-            echo $chart->draw('lobby_count', $options, true, $optionsDataTable, '100px', 'Date');
+            echo $chart->draw('lobby_count', $options, true, $optionsDataTable, true);
         }
+
+        echo '<hr />';
 
         ////////////////////////////////////////////////////////
         // ALL TIME STATS
@@ -240,6 +242,11 @@ try {
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
             echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div class="panel-heading" style="width: 800px;">
+                    <h4 class="text-center">
+                        <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods'.time().'.csv\')">Download to CSV</a>
+                    </h4>
+                </div>';
 
             $chart->load(json_encode($data));
             echo $chart->draw('lobby_count_alltime', $options);
