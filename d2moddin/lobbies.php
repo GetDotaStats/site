@@ -15,7 +15,7 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        echo '<h2>Breakdown of Lobbies Hosted</h2>';
+        echo '<h2>Breakdown of Lobby Statuses</h2>';
 
         {
             ////////////////////////////////////////////////////////
