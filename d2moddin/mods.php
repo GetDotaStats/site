@@ -120,7 +120,7 @@ try {
                 'page' => 'enable',
                 'pageSize' => 5);
 
-            echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
+            echo '<div id="lobby_count" style="width: 800px;"></div>';
             echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
 
             echo '<div class="panel panel-default" style="width: 800px;">
@@ -131,7 +131,7 @@ try {
                 </div>
                 <div id="collapseTwo" class="panel-collapse collapse">
                     <div class="panel-body">
-                        <div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>
+                        <div id="lobby_count_dataTable" style="width: 100%;"></div>
                     </div>
                 </div>
             </div>';

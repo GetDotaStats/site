@@ -116,7 +116,7 @@ try {
                 'isStacked' => 'true',
             );
 
-            echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
+            echo '<div id="lobby_count" style="width: 800px;"></div>';
             echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
 
             $chart->load(json_encode($data));
