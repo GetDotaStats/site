@@ -114,18 +114,32 @@ try {
             );
 
             $optionsDataTable = array(
-                'width' => 800,
                 'sortColumn' => 0,
                 'sortAscending' => true,
                 'alternatingRowStyle' => true,
                 'page' => 'enable',
-                'pageSize' => 6);
+                'pageSize' => 5);
 
             echo '<div id="lobby_count" style="overflow-x: scroll; width: 800px;"></div>';
             echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
 
+            echo '<div class="panel panel-default" style="width: 800px;">
+                <div class="panel-heading">
+                    <h4 class="panel-title text-center">
+                        <a data-toggle="collapse" data-target="#collapseTwo" class="collapsed">Click here for data of last 4days</a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>
+                    </div>
+                </div>
+            </div>';
+
+            //echo '<div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>';
+
             $chart->load(json_encode($data));
-            echo $chart->draw('lobby_count', $options);
+            echo $chart->draw('lobby_count', $options, true, $optionsDataTable, '100px', 'Date');
         }
 
         ////////////////////////////////////////////////////////
