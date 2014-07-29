@@ -39,8 +39,10 @@ if (!isset($_SESSION)) {
                                     class="label label-default">UPDATED</span></a></li>
                         <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod <span
                                     class="label label-default">UPDATED</span></a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region <span
+                                    class="label label-default">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server <span
+                                    class="label label-default">UPDATED</span></a></li>
                         <li class="dropdown-header">Deprecated</li>
                         <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
                     </ul>

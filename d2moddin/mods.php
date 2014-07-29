@@ -24,14 +24,14 @@ try {
         {
             $chart = new chart2('ComboChart');
 
-            echo '<h3>Last 2days</h3>';
+            echo '<h3>Last 4days</h3>';
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $mod_stats = simple_cached_query('d2moddin_production_mods_2days',
-                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `mod_lobbies`, `mod_version`, `mod_name` FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 2 DAY ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
+                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `mod_lobbies`, `mod_version`, `mod_name` FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
                 10);
             $mod_list = simple_cached_query('d2moddin_production_mod_list_2days',
-                'SELECT DISTINCT  `mod_name` as mod_name FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 2 DAY ORDER BY `mod_name`;',
+                'SELECT DISTINCT  `mod_name` as mod_name FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY `mod_name`;',
                 10);
 
             $test_array = array();
@@ -69,7 +69,7 @@ try {
                 $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
             }
 
-            $chart_width = max(count($test_array) * 4, 800);
+            $chart_width = max(count($test_array) * 2, 800);
 
             $options = array(
                 //'title' => 'Average spins in ' . $hits . ' attacks',
@@ -77,7 +77,7 @@ try {
                 'axisTitlesPosition' => 'in',
                 'width' => $chart_width,
                 'bar' => array(
-                    'groupWidth' => 2,
+                    'groupWidth' => 1,
                 ),
                 'height' => 300,
                 'chartArea' => array(
