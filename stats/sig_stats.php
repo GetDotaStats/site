@@ -95,11 +95,23 @@ try {
                 'page' => 'enable',
                 'pageSize' => 6);
 
-            echo '<div id="sig_views_alltime" style="overflow-x: scroll; width: 800px;"></div>';
+            echo '<div id="sig_views_lastweek" style="width: 800px;"></div>';
             echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div class="panel panel-default" style="width: 800px;">
+                <div class="panel-heading">
+                    <h4 class="panel-title text-center">
+                        <a data-toggle="collapse" data-target="#collapseTwo" class="btn btn btn-success collapsed" type="button">Data Table</a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="sig_views_lastweek_dataTable" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>';
 
             $chart->load(json_encode($data));
-            echo $chart->draw('sig_views_alltime', $options);
+            echo $chart->draw('sig_views_lastweek', $options, true, $optionsDataTable);
         }
 
         {
@@ -182,9 +194,14 @@ try {
 
             echo '<div id="sig_views_alltime_daily" style="overflow-x: scroll; width: 800px;"></div>';
             echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div class="panel-heading" style="width: 800px;">
+                    <h4 class="text-center">
+                        <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'sig_stats'.time().'.csv\')">Download to CSV</a>
+                    </h4>
+                </div>';
 
             $chart->load(json_encode($data));
-            echo $chart->draw('sig_views_alltime_daily', $options);
+            echo $chart->draw('sig_views_alltime_daily', $options, false, array(), true);
         }
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';

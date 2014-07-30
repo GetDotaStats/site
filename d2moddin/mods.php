@@ -139,7 +139,7 @@ try {
             //echo '<div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>';
 
             $chart->load(json_encode($data));
-            echo $chart->draw('lobby_count', $options, true, $optionsDataTable, true);
+            echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
         }
 
         echo '<hr />';
@@ -249,7 +249,7 @@ try {
                 </div>';
 
             $chart->load(json_encode($data));
-            echo $chart->draw('lobby_count_alltime', $options);
+            echo $chart->draw('lobby_count_alltime', $options, false, array(), true);
         }
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';
