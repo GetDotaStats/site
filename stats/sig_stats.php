@@ -142,8 +142,8 @@ try {
                 'chartArea' => array(
                     'width' => '100%',
                     'height' => '90%',
-                    'left' => 110,
-                    'top' => 15,
+                    'left' => 70,
+                    'top' => 10,
                 ),
                 'hAxis' => array(
                     'title' => 'Date',
