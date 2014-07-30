@@ -28,7 +28,7 @@ try {
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $production_stats = simple_cached_query('d2moddin_production_stats_4days',
-                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY 5,4,3,2,1 ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
+                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`lobby_total`) as lobby_total, SUM(`lobby_wait`) as lobby_wait, SUM(`lobby_play`) as lobby_play, SUM(`lobby_queue`) as lobby_queue FROM `stats_production` WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY 5,4,3,2,1 ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
                 10);
 
             $super_array = array();
@@ -116,7 +116,7 @@ try {
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $production_stats = simple_cached_query('d2moddin_production_stats_alltime',
-                'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `lobby_total`, `lobby_wait`, `lobby_play`, `lobby_queue` FROM `stats_production` GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
+                'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`lobby_total`) as lobby_total, SUM(`lobby_wait`) as lobby_wait, SUM(`lobby_play`) as lobby_play, SUM(`lobby_queue`) as lobby_queue FROM `stats_production` GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
                 10);
 
             $super_array = array();

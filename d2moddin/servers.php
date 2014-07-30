@@ -28,7 +28,7 @@ try {
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $region_stats = simple_cached_query('d2moddin_production_servers',
-                'SELECT MINUTE(sps.`date_recorded`) as minute, HOUR(sps.`date_recorded`) as hour, DAY(sps.`date_recorded`) as day, MONTH(sps.`date_recorded`) as month, YEAR(sps.`date_recorded`) as year, sps.`server_activeinstances`, sps.`server_maxinstances`, sps.`server_name` FROM `stats_production_servers` sps WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY `date_recorded`, `server_name` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, sps.`server_name` DESC;',
+                'SELECT MINUTE(sps.`date_recorded`) as minute, HOUR(sps.`date_recorded`) as hour, DAY(sps.`date_recorded`) as day, MONTH(sps.`date_recorded`) as month, YEAR(sps.`date_recorded`) as year, SUM(sps.`server_activeinstances`) as server_activeinstances, SUM(sps.`server_maxinstances`) as server_maxinstances, sps.`server_name` FROM `stats_production_servers` sps WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY `date_recorded`, `server_name` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, sps.`server_name` DESC;',
                 10);
             $region_list = simple_cached_query('d2moddin_production_server_list',
                 'SELECT DISTINCT `server_name` FROM `stats_production_servers` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY server_name DESC;',
@@ -134,7 +134,7 @@ try {
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $region_stats = simple_cached_query('d2moddin_production_servers_alltime',
-                'SELECT HOUR(sps.`date_recorded`) as hour, DAY(sps.`date_recorded`) as day, MONTH(sps.`date_recorded`) as month, YEAR(sps.`date_recorded`) as year, sps.`server_activeinstances`, sps.`server_maxinstances`, sps.`server_name` FROM `stats_production_servers` sps GROUP BY `date_recorded`, `server_name` ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC, sps.`server_name` DESC;',
+                'SELECT HOUR(sps.`date_recorded`) as hour, DAY(sps.`date_recorded`) as day, MONTH(sps.`date_recorded`) as month, YEAR(sps.`date_recorded`) as year, SUM(sps.`server_activeinstances`) as server_activeinstances, SUM(sps.`server_maxinstances`) as server_maxinstances, sps.`server_name` FROM `stats_production_servers` sps GROUP BY `date_recorded`, `server_name` ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC, sps.`server_name` DESC;',
                 10);
             $region_list = simple_cached_query('d2moddin_production_server_list_alltime',
                 'SELECT DISTINCT `server_name` FROM `stats_production_servers` ORDER BY server_name DESC;',
