@@ -48,14 +48,22 @@ if (!isset($_SESSION)) {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Match Analysis <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Site Stats <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li class="dropdown-header">GetDotaStats Stats</li>
+                        <li><a class="nav-clickable" href="#stats__sig_stats">Signature Popularity</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pub Game Stats <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">Dec 2013 - Feb 2014</li>
                         <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>
                         <li><a class="nav-clickable" href="#match_analysis__general_stats">General Stats</a></li>
                         <li><a class="nav-clickable" href="#match_analysis__game_modes">Game Modes</a></li>
                         <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
                         <li class="divider"></li>
-                        <li class="dropdown-header">Misc.</li>
+                        <li class="dropdown-header">API Scraper</li>
                         <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
                         </li>
                     </ul>
