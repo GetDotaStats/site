@@ -43,10 +43,10 @@ try {
 
 
                     if (isset($match['match_id']) && isset($match['mod']) && !empty($match['teams'])) {
-                        $db->q("INSERT INTO `match_stats` (`match_id`, `mod`, `automatic_surrender`, `match_date`, `duration`, `first_blood_time`, `good_guys_win`, `mass_disconnect`, `num_teams`, `num_players`, `server_addr`, `server_version`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        ON DUPLICATE KEY UPDATE `mod` = VALUES(`mod`), `automatic_surrender` = VALUES(`automatic_surrender`), `match_date` = VALUES(`match_date`), `duration` = VALUES(`duration`), `first_blood_time` = VALUES(`first_blood_time`), `good_guys_win` = VALUES(`good_guys_win`), `mass_disconnect` = VALUES(`mass_disconnect`), `num_teams` = VALUES(`num_teams`), `num_players` = VALUES(`num_players`), `server_addr` = VALUES(`server_addr`), `server_version` = VALUES(`server_version`);",
-                            "ssiiiiiiiisi",
-                            $match['match_id'], $match['mod'], $match['automatic_surrender'], $match['date']['$numberLong'], $match['duration'], $match['first_blood_time'], $match['good_guys_win'], $match['mass_disconnect'], count($match['teams']), array_sum($match['num_players']), $match['server_addr'], $match['server_version']);
+                        $db->q("INSERT INTO `match_stats` (`_id`, `match_id`, `mod`, `automatic_surrender`, `match_date`, `duration`, `first_blood_time`, `good_guys_win`, `mass_disconnect`, `num_teams`, `num_players`, `server_addr`, `server_version`, `match_ended`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(`match_date`))
+                        ON DUPLICATE KEY UPDATE `match_id` = VALUES(`match_id`), `mod` = VALUES(`mod`), `automatic_surrender` = VALUES(`automatic_surrender`), `match_date` = VALUES(`match_date`), `duration` = VALUES(`duration`), `first_blood_time` = VALUES(`first_blood_time`), `good_guys_win` = VALUES(`good_guys_win`), `mass_disconnect` = VALUES(`mass_disconnect`), `num_teams` = VALUES(`num_teams`), `num_players` = VALUES(`num_players`), `server_addr` = VALUES(`server_addr`), `server_version` = VALUES(`server_version`), `match_ended` = FROM_UNIXTIME(VALUES(`match_date`));",
+                            "sssiiiiiiiisi",
+                            $match['_id']['$oid'], $match['match_id'], $match['mod'], $match['automatic_surrender'], $match['date']['$numberLong'], $match['duration'], $match['first_blood_time'], $match['good_guys_win'], $match['mass_disconnect'], count($match['teams']), array_sum($match['num_players']), $match['server_addr'], $match['server_version']);
 
 
                         ////////////////////////

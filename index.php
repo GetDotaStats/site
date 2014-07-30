@@ -32,17 +32,16 @@ if (!isset($_SESSION)) {
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in Stats <span
-                            class="label label-default">UPDATED</span> <b class="caret"></b></a>
+                            class="label label-default">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Live Stats</li>
-                        <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types <span
-                                    class="label label-default">UPDATED</span></a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod <span
-                                    class="label label-default">UPDATED</span></a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region <span
-                                    class="label label-default">UPDATED</span></a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server <span
-                                    class="label label-default">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
+                        <li class="dropdown-header">Game Summary Parsed</li>
+                        <li><a class="nav-clickable" href="#d2moddin__games_mods">Games per Mod <span
+                                    class="label label-default">NEW</span></a></li>
                         <li class="dropdown-header">Deprecated</li>
                         <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
                     </ul>
