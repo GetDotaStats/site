@@ -28,7 +28,7 @@ try {
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $region_stats = simple_cached_query('d2moddin_production_regions',
-                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `region_playing`, `region_servercount`, `region_name` FROM `stats_production_regions` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, `region_name` DESC;',
+                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`region_playing`) as region_playing, SUM(`region_servercount`) as region_servercount, `region_name` FROM `stats_production_regions` WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY 5,4,3,2,1,`region_name` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, `region_name` DESC;',
                 60);
             $region_list = simple_cached_query('d2moddin_production_region_list',
                 'SELECT DISTINCT `region_name` FROM `stats_production_regions` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY `region_name`;',
@@ -139,7 +139,7 @@ try {
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $region_stats = simple_cached_query('d2moddin_production_regions_alltime',
-                'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `region_playing`, `region_servercount`, `region_name` FROM `stats_production_regions` ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC, `region_name` DESC;',
+                'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`region_playing`) as region_playing, SUM(`region_servercount`) as region_servercount, `region_name` FROM `stats_production_regions` GROUP BY 4,3,2,1,`region_name` ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC, `region_name` DESC;',
                 60);
             $region_list = simple_cached_query('d2moddin_production_region_list_alltime',
                 'SELECT DISTINCT `region_name` FROM `stats_production_regions` ORDER BY `region_name`;',
