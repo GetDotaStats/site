@@ -15,7 +15,7 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        echo '<h2>Breakdown of Signature Adoption</h2>';
+        echo '<h2>Breakdown of Signature Popularity</h2>';
 
         {
             ////////////////////////////////////////////////////////
@@ -24,10 +24,10 @@ try {
 
             $chart = new chart2('ComboChart');
 
-            echo '<h3>All Time (Hourly)</h3>';
+            echo '<h3>Last week</h3>';
 
             $production_stats = simple_cached_query('stats_signature_adoption_alltime',
-                'SELECT `hour`, `day`, `month`, `year`, `sig_views` FROM `stats_1_count` GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
+                'SELECT `hour`, `day`, `month`, `year`, `sig_views` FROM `stats_1_count` WHERE `date_accessed` >= now() - INTERVAL 7 DAY GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
                 10);
 
             $super_array = array();
