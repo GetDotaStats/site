@@ -39,7 +39,7 @@ if (!isset($_SESSION)) {
                         <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
-                        <li class="dropdown-header">Game Summary Parsed</li>
+                        <li class="dropdown-header">Parsed Match Data</li>
                         <li><a class="nav-clickable" href="#d2moddin__games_mods">Games per Mod <span
                                     class="label label-default">NEW</span></a></li>
                         <li class="dropdown-header">Deprecated</li>

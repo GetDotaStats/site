@@ -29,7 +29,10 @@ try {
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $production_stats = simple_cached_query('d2moddin_production_stats_4days',
                 'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`lobby_total`) as lobby_total, SUM(`lobby_wait`) as lobby_wait, SUM(`lobby_play`) as lobby_play, SUM(`lobby_queue`) as lobby_queue FROM `stats_production` WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY 5,4,3,2,1 ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
-                10);
+                60);
+            $mod_range = simple_cached_query('d2moddin_production_stats_range_4days',
+                'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production` WHERE `date_recorded` >= now() - INTERVAL 4 DAY;',
+                60);
 
             $super_array = array();
             foreach ($production_stats as $key => $value) {
@@ -99,7 +102,7 @@ try {
                 'pageSize' => 6);
 
             echo '<div id="lobby_count" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
 
             $chart->load(json_encode($data));
             echo $chart->draw('lobby_count', $options);
@@ -117,7 +120,10 @@ try {
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $production_stats = simple_cached_query('d2moddin_production_stats_alltime',
                 'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`lobby_total`) as lobby_total, SUM(`lobby_wait`) as lobby_wait, SUM(`lobby_play`) as lobby_play, SUM(`lobby_queue`) as lobby_queue FROM `stats_production` GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
-                10);
+                60);
+            $mod_range = simple_cached_query('d2moddin_production_stats_range_alltime',
+                'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production`;',
+                60);
 
             $super_array = array();
             foreach ($production_stats as $key => $value) {
@@ -187,7 +193,7 @@ try {
                 'pageSize' => 6);
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
 
             $chart->load(json_encode($data));
             echo $chart->draw('lobby_count_alltime', $options);

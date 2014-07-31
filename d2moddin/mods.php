@@ -27,12 +27,15 @@ try {
             echo '<h3>Last 4days</h3>';
 
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
-            $mod_stats = simple_cached_query('d2moddin_production_mods_2days',
+            $mod_stats = simple_cached_query('d2moddin_production_mods_last4days',
                 'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`mod_lobbies`) as mod_lobbies, `mod_version`, `mod_name` FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 4 DAY GROUP BY 5,4,3,2,1,`mod_name` ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC, `mod_name`;',
                 10);
-            $mod_list = simple_cached_query('d2moddin_production_mod_list_2days',
+            $mod_list = simple_cached_query('d2moddin_production_mod_list_last4days',
                 'SELECT DISTINCT  `mod_name` as mod_name FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY `mod_name`;',
                 10);
+            $mod_range = simple_cached_query('d2moddin_production_mod_range_last4days',
+                'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production_mods` WHERE `date_recorded` >= now() - INTERVAL 4 DAY;',
+                60);
 
             $test_array = array();
             foreach ($mod_stats as $key => $value) {
@@ -121,7 +124,7 @@ try {
                 'pageSize' => 5);
 
             echo '<div id="lobby_count" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
 
             echo '<div class="panel panel-default" style="width: 800px;">
                 <div class="panel-heading">
@@ -156,10 +159,13 @@ try {
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $mod_stats = simple_cached_query('d2moddin_production_mods_alltime',
                 'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, SUM(`mod_lobbies`) as mod_lobbies, `mod_version`, `mod_name` FROM `stats_production_mods` GROUP BY 4,3,2,1,`mod_name` ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC, `mod_name`;',
-                10);
+                60);
             $mod_list = simple_cached_query('d2moddin_production_mod_list_alltime',
                 'SELECT DISTINCT  `mod_name` as mod_name FROM `stats_production_mods` ORDER BY `mod_name`;',
-                10);
+                60);
+            $mod_range = simple_cached_query('d2moddin_production_mod_range_alltime',
+                'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production_mods`;',
+                60);
 
             $test_array = array();
             foreach ($mod_stats as $key => $value) {
@@ -241,7 +247,7 @@ try {
             );
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
             echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
                         <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods'.time().'.csv\')">Download to CSV</a>

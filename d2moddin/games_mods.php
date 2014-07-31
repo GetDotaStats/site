@@ -15,7 +15,7 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        echo '<h2>Breakdown per Mod Based on Game Summaries</h2>';
+        echo '<h2>Breakdown per Mod Based on Match Data</h2>';
 
         ////////////////////////////////////////////////////////
         // LAST WEEK
@@ -124,7 +124,7 @@ try {
                 'pageSize' => 5);
 
             echo '<div id="lobby_count" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest ('.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' - '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).')</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
 
             echo '<div class="panel panel-default" style="width: 800px;">
                 <div class="panel-heading">
@@ -245,7 +245,7 @@ try {
             );
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest ('.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' - '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).')</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
             echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
                         <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods'.time().'.csv\')">Download to CSV</a>

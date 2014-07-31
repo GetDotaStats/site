@@ -33,6 +33,9 @@ try {
             $region_list = simple_cached_query('d2moddin_production_region_list',
                 'SELECT DISTINCT `region_name` FROM `stats_production_regions` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY `region_name`;',
                 60);
+            $mod_range = simple_cached_query('d2moddin_production_region_range',
+                'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production_regions` WHERE `date_recorded` >= now() - INTERVAL 4 DAY;',
+                60);
 
             $test_array = array();
             foreach ($region_stats as $key => $value) {
@@ -122,7 +125,7 @@ try {
                 'pageSize' => 6);
 
             echo '<div id="lobby_count" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
 
             $chart->load(json_encode($data));
             echo $chart->draw('lobby_count', $options);
@@ -143,6 +146,9 @@ try {
                 60);
             $region_list = simple_cached_query('d2moddin_production_region_list_alltime',
                 'SELECT DISTINCT `region_name` FROM `stats_production_regions` ORDER BY `region_name`;',
+                60);
+            $mod_range = simple_cached_query('d2moddin_production_region_range_alltime',
+                'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production_regions`;',
                 60);
 
             $test_array = array();
@@ -233,7 +239,7 @@ try {
                 'pageSize' => 6);
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
 
             $chart->load(json_encode($data));
             echo $chart->draw('lobby_count_alltime', $options);
