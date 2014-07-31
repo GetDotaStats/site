@@ -35,6 +35,8 @@ if (!isset($_SESSION)) {
                             class="label label-default">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Live Stats</li>
+                        <li><a class="nav-clickable" href="#d2moddin__players">Players <span
+                                    class="label label-default">NEW</span></a></li>
                         <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
