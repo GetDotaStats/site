@@ -29,10 +29,13 @@ try {
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $mod_stats = simple_cached_query('d2moddin_games_mods',
                 'SELECT HOUR(`match_ended`) as hour, DAY(`match_ended`) as day, MONTH(`match_ended`) as month, YEAR(`match_ended`) as year, `mod` as mod_name, COUNT(*) as num_lobbies FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY GROUP BY 4,3,2,1,mod_name ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC,mod_name DESC;',
-                10);
+                60);
             $mod_list = simple_cached_query('d2moddin_games_mods_list',
                 'SELECT DISTINCT  `mod` as mod_name FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY ORDER BY `mod_name`;',
-                10);
+                60);
+            $mod_range = simple_cached_query('d2moddin_games_mods_range',
+                'SELECT MIN(`match_ended`) as min_date, MAX(`match_ended`) as max_date FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY ;',
+                60);
 
             $test_array = array();
             foreach ($mod_stats as $key => $value) {
@@ -121,7 +124,7 @@ try {
                 'pageSize' => 5);
 
             echo '<div id="lobby_count" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest ('.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' - '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).')</h4></div>';
 
             echo '<div class="panel panel-default" style="width: 800px;">
                 <div class="panel-heading">
@@ -154,10 +157,13 @@ try {
             //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $mod_stats = simple_cached_query('d2moddin_games_mods_alltime',
                 'SELECT HOUR(`match_ended`) as hour, DAY(`match_ended`) as day, MONTH(`match_ended`) as month, YEAR(`match_ended`) as year, `mod` as mod_name, COUNT(*) as num_lobbies FROM `match_stats` GROUP BY 4,3,2,1,mod_name ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC,mod_name DESC;',
-                10);
+                60);
             $mod_list = simple_cached_query('d2moddin_games_mods_list_alltime',
                 'SELECT DISTINCT  `mod` as mod_name FROM `match_stats` ORDER BY `mod_name`;',
-                10);
+                60);
+            $mod_range = simple_cached_query('d2moddin_games_mods_range_alltime',
+                'SELECT MIN(`match_ended`) as min_date, MAX(`match_ended`) as max_date FROM `match_stats`;',
+                60);
 
             $test_array = array();
             foreach ($mod_stats as $key => $value) {
@@ -239,7 +245,7 @@ try {
             );
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest ('.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' - '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).')</h4></div>';
             echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
                         <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods'.time().'.csv\')">Download to CSV</a>
