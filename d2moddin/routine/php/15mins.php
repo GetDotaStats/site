@@ -64,11 +64,11 @@ try {
         $db->q("INSERT INTO `stats_production_servers` (`region_id`, `server_name`, `server_ip`, `server_activeinstances`, `server_maxinstances`) VALUES " . $sql_values);
 
         echo '<pre>';
+        echo '<h1>Servers/Regions:</h1>';
         print_r($stats);
         echo '</pre>';
+        echo '<hr />';
     }
-
-    echo '<hr />';
 
     ////////////////////////
     //MODS
@@ -90,8 +90,40 @@ try {
         $db->q("INSERT INTO `stats_production_mods` (`mod_name`, `mod_version`, `mod_lobbies`) VALUES " . $sql_values);
 
         echo '<pre>';
+        echo '<h1>Mods:</h1>';
         print_r($stats);
         echo '</pre>';
+        echo '<hr />';
+    }
+
+
+    ////////////////////////
+    //PLAYERS
+    ////////////////////////
+    {
+        $stats = json_decode(curl('http://net1.d2modd.in/stats/players', NULL, NULL, NULL, NULL, 20), 1);
+
+        $stats['online'] = !isset($stats['online']) || empty($stats['online'])
+            ? 0
+            : $db->escape($stats['online']);
+
+        $stats['lastmonth'] = !isset($stats['lastmonth']) || empty($stats['lastmonth'])
+            ? 0
+            : $db->escape($stats['lastmonth']);
+
+        $stats['playing'] = !isset($stats['playing']) || empty($stats['playing'])
+            ? 0
+            : $db->escape($stats['playing']);
+
+        $db->q("INSERT INTO `stats_production_players` (`players_online`, `players_lastmonth`, `players_playing`) VALUES (?, ?, ?)",
+            "iii",
+            $stats['online'], $stats['lastmonth'], $stats['playing']);
+
+        echo '<pre>';
+        echo '<h1>Players:</h1>';
+        print_r($stats);
+        echo '</pre>';
+        echo '<hr />';
     }
 } catch (Exception $e) {
     echo $e->getMessage();

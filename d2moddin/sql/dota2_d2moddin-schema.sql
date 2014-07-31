@@ -1,3 +1,7 @@
+--
+-- Table structure for table `match_players`
+--
+
 CREATE TABLE IF NOT EXISTS `match_players` (
   `match_id` varchar(255) NOT NULL,
   `team_id` int(255) NOT NULL,
@@ -117,4 +121,18 @@ CREATE TABLE IF NOT EXISTS `stats_production_servers` (
   `server_maxinstances` int(255) NOT NULL,
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`date_recorded`,`server_name`,`region_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stats_production_players`
+--
+
+CREATE TABLE IF NOT EXISTS `stats_production_players` (
+  `players_online` int(255) NOT NULL,
+  `players_lastmonth` int(255) NOT NULL,
+  `players_playing` int(255) NOT NULL,
+  `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`date_recorded`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
