@@ -27,7 +27,7 @@ try {
             echo '<h3>Last 4days</h3>';
 
             $production_stats = simple_cached_query('d2moddin_production_players_last4days',
-                'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `players_online`, `players_playing` FROM `stats_production_players` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
+                'SELECT MINUTE(`date_recorded`) as minute, HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, `players_online`, `players_playing` FROM `stats_production_players` WHERE `date_recorded` >= now() - INTERVAL 4 DAY ORDER BY 5 DESC,4 DESC,3 DESC,2 DESC,1 DESC;',
                 60);
             $mod_range = simple_cached_query('d2moddin_production_players_range_last4days',
                 'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production_players` WHERE `date_recorded` >= now() - INTERVAL 4 DAY;',
@@ -38,7 +38,7 @@ try {
                 $value1 = number_format($value['players_online'],0);
                 $value2 = number_format($value['players_playing'],0);
 
-                $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':00';
+                $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':' . ' ' . str_pad($value['minute'], 2, '0', STR_PAD_LEFT);
                 $super_array[] = array('c' => array(array('v' => $date), array('v' => $value1), array('v' => $value2)));
             }
 
