@@ -35,8 +35,8 @@ try {
 
             $super_array = array();
             foreach ($production_stats as $key => $value) {
-                $value1 = number_format($value['players_online'],0);
-                $value2 = number_format($value['players_playing'],0);
+                $value1 = round($value['players_online'],0);
+                $value2 = round($value['players_playing'],0);
 
                 $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':' . ' ' . str_pad($value['minute'], 2, '0', STR_PAD_LEFT);
                 $super_array[] = array('c' => array(array('v' => $date), array('v' => $value1), array('v' => $value2)));
@@ -75,6 +75,7 @@ try {
                     //'viewWindowMode' => 'maximized'
                 ),
                 'vAxis' => array(
+                    //'maxValue' => 2000,
                     'title' => 'Players',
                     //'textPosition' => 'in',
                 ),
@@ -143,8 +144,8 @@ try {
 
             $super_array = array();
             foreach ($production_stats as $key => $value) {
-                $value1 = number_format($value['players_online'],0);
-                $value2 = number_format($value['players_playing'],0);
+                $value1 = round($value['players_online'],0);
+                $value2 = round($value['players_playing'],0);
 
                 $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':00';
                 $super_array[] = array('c' => array(array('v' => $date), array('v' => $value1), array('v' => $value2)));
@@ -164,6 +165,7 @@ try {
                 //'title' => 'Average spins in ' . $hits . ' attacks',
                 //'theme' => 'maximized',
                 'axisTitlesPosition' => 'in',
+                'reverseCategories' => 0,
                 'width' => $chart_width,
                 'bar' => array(
                     'groupWidth' => 1,
@@ -184,7 +186,13 @@ try {
                 ),
                 'vAxis' => array(
                     'title' => 'Players',
-                    //'textPosition' => 'in',
+                    /*array(
+                        'title' => 'Players_1',
+                        //'textPosition' => 'in',
+                    ),
+                    array(
+                        'title' => 'Players_2',
+                    ),*/
                 ),
                 'legend' => array(
                     'position' => 'bottom',
@@ -195,7 +203,11 @@ try {
                 ),
                 'seriesType' => "bars",
                 'series' => array(
+                    /*0 => array(
+                        'targetAxisIndex' => 0,
+                    ),*/
                     1 => array(
+                        //'targetAxisIndex' => 1,
                         'type' => "line"
                     ),
                 ),
