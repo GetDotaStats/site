@@ -135,7 +135,7 @@ try {
             echo '<h3>All Time</h3>';
 
             $production_stats = simple_cached_query('d2moddin_production_players_alltime',
-                'SELECT DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, AVG(`players_online`) as players_online, AVG(`players_playing`) as players_playing FROM `stats_production_players` GROUP BY 3,2,1 ORDER BY 3 DESC,2 DESC,1 DESC;',
+                'SELECT HOUR(`date_recorded`) as hour, DAY(`date_recorded`) as day, MONTH(`date_recorded`) as month, YEAR(`date_recorded`) as year, AVG(`players_online`) as players_online, AVG(`players_playing`) as players_playing FROM `stats_production_players` GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
                 60);
             $mod_range = simple_cached_query('d2moddin_production_players_range_alltime',
                 'SELECT MIN(`date_recorded`) as min_date, MAX(`date_recorded`) as max_date FROM `stats_production_players`;',
@@ -146,7 +146,7 @@ try {
                 $value1 = number_format($value['players_online'],0);
                 $value2 = number_format($value['players_playing'],0);
 
-                $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'];
+                $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':00';
                 $super_array[] = array('c' => array(array('v' => $date), array('v' => $value1), array('v' => $value2)));
             }
 
