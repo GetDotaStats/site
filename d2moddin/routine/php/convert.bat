@@ -1,2 +1,2 @@
-dos2unix 15mins.php
+dos2unix *
 @PAUSE
