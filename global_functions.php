@@ -103,8 +103,8 @@ if (!function_exists("curl")) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
-        if($timeout){
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT , $timeout);
+        if ($timeout) {
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); //timeout in seconds
         }
         if ($refer) {
@@ -121,7 +121,7 @@ if (!function_exists("curl")) {
 
         $page = curl_exec($ch);
 
-        if(!$page){
+        if (!$page) {
             $page = false;
         }
 
@@ -175,19 +175,78 @@ if (!function_exists('relative_time')) {
 
 
 if (!function_exists("simple_cached_query")) {
-    function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600){
+    function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600)
+    {
         global $memcache, $db;
 
         $variable = $memcache->get($memcached_name);
-        if(!$variable){
-            if($sql){
+        if (!$variable) {
+            if ($sql) {
                 $variable = $db->q($sql);
                 $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
-            }
-            else{
+            } else {
                 return 'No sql provided!!!';
             }
         }
         return $variable;
+    }
+}
+
+if (!function_exists("guid")) {
+    function guid()
+    {
+        if (function_exists('com_create_guid')) {
+            return com_create_guid();
+        } else {
+            mt_srand((double)microtime() * 10000); //optional for php 4.2.0 and up.
+            $charid = strtoupper(md5(uniqid(rand(), true)));
+            $hyphen = chr(45); // "-"
+            $uuid = //chr(123).// "{"
+                substr($charid, 0, 8) . $hyphen
+                . substr($charid, 8, 4) . $hyphen
+                . substr($charid, 12, 4) . $hyphen
+                . substr($charid, 16, 4) . $hyphen
+                . substr($charid, 20, 12);
+            //.chr(125);// "}"
+            return $uuid;
+        }
+    }
+}
+
+if (!function_exists("checkLogin")) {
+    function checkLogin($db, $cookie)
+    {
+        $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
+            's',
+            $cookie);
+
+        if (!empty($auth)) {
+            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1',
+                'i',
+                $auth[0]['user_id64']);
+
+
+            if (!empty($accountDetails) && $accountDetails[0]['user_id32'] != $_SESSION['user_id32']) {
+                $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
+                $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
+                $_SESSION['user_name'] = $accountDetails[0]['user_name'];
+                $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
+
+                header("Location: ./");
+            }
+
+            return true;
+        } else {
+            if (!empty($_SESSION['user_id32']) || !empty($_SESSION['user_id64']) || !empty($_SESSION['user_name']) || !empty($_SESSION['user_avatar'])) {
+                unset($_SESSION['user_id32']);
+                unset($_SESSION['user_id64']);
+                unset($_SESSION['user_name']);
+                unset($_SESSION['user_avatar']);
+
+                header("Location: ./");
+            }
+
+            return false;
+        }
     }
 }

@@ -3,61 +3,61 @@ require_once("./functions.php");
 require_once("../global_functions.php");
 require_once("../connections/parameters.php");
 
-try{
-	if (!isset($_SESSION)) {
-		session_start();
-	}
-	
-	$user = new user;
-	$user->apikey = $steam_api_key; // put your API key here
-	$user->domain = $steam_api_domain; // put your domain
-	
-	//echo $steam_api_key . '<br />' . $steam_api_domain . '<br />';
-	
-	if(isset($_GET['login']))
-	{
-		$user->signIn('./');
-	}
-	if (isset($_GET['logout']))
-	{
-		$user->signOut('./');
-	}
-	
-	
-	/*if(empty($_SESSION['user_id']))
-	{
-		print ('<form action="?login" method="post">
-			<input type="image" src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_border.png"/>
-			</form>');
-	}
-	else
-	{
-		echo '<pre>';
-		echo $_SESSION['user_name'].'<br />';
-		print('<form method="post"><button title="Logout" name="logout">Logout</button></form>');
-		print_r( $user->GetPlayerSummaries($_SESSION['user_id']) );
-		echo '</pre>';
-	}
-	*/
-	/*
-	stdClass Object
-	(
-		[steamid] => 76561198111755442
-		[communityvisibilitystate] => 3
-		[profilestate] => 1
-		[personaname] => getdotabet
-		[profileurl] => http://steamcommunity.com/id/getdotabet/
-		[avatar] => http://media.steampowered.com/steamcommunity/public/images/avatars/63/6334ac1c60cbd025d4cc87071414e6569d2b64e8.jpg
-		[avatarmedium] => http://media.steampowered.com/steamcommunity/public/images/avatars/63/6334ac1c60cbd025d4cc87071414e6569d2b64e8_medium.jpg
-		[avatarfull] => http://media.steampowered.com/steamcommunity/public/images/avatars/63/6334ac1c60cbd025d4cc87071414e6569d2b64e8_full.jpg
-		[personastate] => 0
-		[primaryclanid] => 103582791429521408
-		[timecreated] => 1382411448
-		[loccountrycode] => RU
-	)
-	*/
+try {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
+    $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+
+    $steam_api_domain = 'staging.getdotastats.com'; //////////////////////////////////////////////////
+
+    $user = new user;
+    $user->apikey = $api_key6; // put your API key here
+    $user->domain = $steam_api_domain; // put your domain
+
+    //echo $steam_api_key . '<br />' . $steam_api_domain . '<br />';
+
+    if (isset($_GET['login'])) {
+        $user->signIn('../', $db);
+    }
+    if (isset($_GET['logout'])) {
+        $user->signOut('../', $db);
+    }
+
+
+    /*if(empty($_SESSION['user_id']))
+    {
+        print ('<form action="?login" method="post">
+            <input type="image" src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_border.png"/>
+            </form>');
+    }
+    else
+    {
+        echo '<pre>';
+        echo $_SESSION['user_name'].'<br />';
+        print('<form method="post"><button title="Logout" name="logout">Logout</button></form>');
+        print_r( $user->GetPlayerSummaries($_SESSION['user_id']) );
+        echo '</pre>';
+    }
+    */
+    /*
+    stdClass Object
+    (
+        [steamid] => 76561198111755442
+        [communityvisibilitystate] => 3
+        [profilestate] => 1
+        [personaname] => getdotabet
+        [profileurl] => http://steamcommunity.com/id/getdotabet/
+        [avatar] => http://media.steampowered.com/steamcommunity/public/images/avatars/63/6334ac1c60cbd025d4cc87071414e6569d2b64e8.jpg
+        [avatarmedium] => http://media.steampowered.com/steamcommunity/public/images/avatars/63/6334ac1c60cbd025d4cc87071414e6569d2b64e8_medium.jpg
+        [avatarfull] => http://media.steampowered.com/steamcommunity/public/images/avatars/63/6334ac1c60cbd025d4cc87071414e6569d2b64e8_full.jpg
+        [personastate] => 0
+        [primaryclanid] => 103582791429521408
+        [timecreated] => 1382411448
+        [loccountrycode] => RU
+    )
+    */
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-catch (Exception $e){
-	echo $e->getMessage();
-}
-?>

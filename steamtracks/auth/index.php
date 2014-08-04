@@ -8,7 +8,7 @@ try{
 	}
 	
 	$user = new user;
-	$user->apikey = $steam_api_key; // put your API key here
+	$user->apikey = $api_key6; // put your API key here
 	$user->domain = $steam_api_domain; // put your domain
 	
 	//echo $steam_api_key . '<br />' . $steam_api_domain . '<br />';

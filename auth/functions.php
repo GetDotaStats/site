@@ -12,7 +12,7 @@ if (!class_exists('user')) {
             return $json->response->players[0];
         }
 
-        public function signIn($relocate = NULL)
+        public function signIn($relocate = NULL, $db)
         {
             require_once './openid.php';
             $openid = new LightOpenID($this->domain); // put your domain
@@ -25,8 +25,35 @@ if (!class_exists('user')) {
                 if ($openid->validate()) {
                     preg_match("/^http:\/\/steamcommunity\.com\/openid\/id\/(7[0-9]{15,25}+)$/", $openid->identity, $matches); // steamID: $matches[1]
                     //setcookie('steamID', $matches[1], time()+(60*60*24*7), '/'); // 1 week
-                    $_SESSION['user_id'] = $matches[1];
-                    $_SESSION['user_details'] = $this->GetPlayerSummaries($_SESSION['user_id']);
+
+                    $steamID64 = $matches[1];
+                    $steamID32 = convert_steamid($steamID64);
+
+                    $user_details = $this->GetPlayerSummaries($steamID64);
+
+                    $userName = $user_details->personaname;
+                    $userAvatar = $user_details->avatar;
+                    $userAvatarMedium = $user_details->avatarmedium;
+                    $userAvatarLarge = $user_details->avatarfull;
+
+
+                    $_SESSION['user_id32'] = $steamID32;
+                    $_SESSION['user_id64'] = $steamID64;
+                    $_SESSION['user_name'] = $userName;
+                    $_SESSION['user_avatar'] = $userAvatar;
+
+                    $db->q("INSERT INTO `gds_users`(`user_id32`, `user_id64`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`) VALUES (?, ?, ?, ?, ?, ?)
+                                ON DUPLICATE KEY UPDATE `user_name` = VALUES(`user_name`), `user_avatar` = VALUES(`user_avatar`), `user_avatar_medium` = VALUES(`user_avatar_medium`), `user_avatar_large` = VALUES(`user_avatar_large`);",
+                        'iissss',
+                        $steamID32, $steamID64, $userName, $userAvatar, $userAvatarMedium, $userAvatarLarge);
+
+                    $cookie = guid();
+
+                    $db->q("INSERT INTO `gds_users_sessions` (`user_id64`, `remote_ip`, `user_cookie`) VALUES (?, ?, ?)",
+                        'iss',
+                        $steamID64, $_SERVER['REMOTE_ADDR'], $cookie);
+
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', 'getdotastats.com');
 
                     if ($relocate) {
                         header('Location: ' . $relocate);
@@ -40,10 +67,20 @@ if (!class_exists('user')) {
             }
         }
 
-        public function signOut($relocate = NULL)
+        public function signOut($relocate = NULL, $db)
         {
-            unset($_SESSION['user_id']);
-            unset($_SESSION['user_details']);
+            if (!empty($_COOKIE['session']) || !empty($_SESSION['user_id64'])) {
+                $db->q("DELETE FROM `gds_users_sessions` WHERE `user_id64` = ? OR `user_cookie` = ?;",
+                    'is',
+                    $_SESSION['user_id64'], $_COOKIE['session']);
+            }
+
+            unset($_SESSION['user_id32']);
+            unset($_SESSION['user_id64']);
+            unset($_SESSION['user_name']);
+            unset($_SESSION['user_avatar']);
+
+            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
 
             if ($relocate) {
                 header('Location: ' . $relocate);
@@ -63,8 +100,7 @@ if (!function_exists("convert_id")) {
             $converted = substr($id, 3) - 61197960265728;
         } else if (strlen($id) != 17 && $required_output == '64') {
             $converted = '765' . ($id + 61197960265728);
-        }
-        else{
+        } else {
             $converted = '';
         }
 
