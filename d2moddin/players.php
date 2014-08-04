@@ -51,14 +51,14 @@ try {
                 'rows' => $super_array
             );
 
-            $chart_width = max(count($production_stats) * 4, 800);
+            $chart_width = max(count($production_stats) * 2, 800);
             $options = array(
                 //'title' => 'Average spins in ' . $hits . ' attacks',
                 //'theme' => 'maximized',
                 'axisTitlesPosition' => 'in',
                 'width' => $chart_width,
                 'bar' => array(
-                    'groupWidth' => 2,
+                    'groupWidth' => 1,
                 ),
                 'height' => 300,
                 'chartArea' => array(
