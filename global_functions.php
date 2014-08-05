@@ -221,30 +221,38 @@ if (!function_exists("checkLogin")) {
             $cookie);
 
         if (!empty($auth)) {
-            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1',
+            $steamID64 = $auth[0]['user_id64'];
+            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
                 'i',
-                $auth[0]['user_id64']);
+                $steamID64);
 
-
-            if (!empty($accountDetails) && $accountDetails[0]['user_id32'] != $_SESSION['user_id32']) {
+          if (!empty($accountDetails)) {
                 $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
                 $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
                 $_SESSION['user_name'] = $accountDetails[0]['user_name'];
                 $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
+                $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+
+                header("Location: ./");
+            }
+            else{
+                //KILL BAD COOKIE
+                setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
 
                 header("Location: ./");
             }
 
             return true;
         } else {
-            if (!empty($_SESSION['user_id32']) || !empty($_SESSION['user_id64']) || !empty($_SESSION['user_name']) || !empty($_SESSION['user_avatar'])) {
-                unset($_SESSION['user_id32']);
-                unset($_SESSION['user_id64']);
-                unset($_SESSION['user_name']);
-                unset($_SESSION['user_avatar']);
+            //KILL BAD COOKIE
+            unset($_SESSION['user_id32']);
+            unset($_SESSION['user_id64']);
+            unset($_SESSION['user_name']);
+            unset($_SESSION['user_avatar']);
+            unset($_SESSION['access_feeds']);
 
-                header("Location: ./");
-            }
+            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
+            header("Location: ./");
 
             return false;
         }

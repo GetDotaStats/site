@@ -20,17 +20,16 @@
     <script type="text/javascript" src="./getdotastats.js"></script>
 </head>
 <?php
-require_once("./auth/functions.php");
-require_once("./global_functions.php");
-require_once("./connections/parameters.php");
-
 if (!isset($_SESSION)) {
     session_start();
 }
 
-$db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
+    require_once("./auth/functions.php");
+    require_once("./global_functions.php");
+    require_once("./connections/parameters.php");
 
-if (isset($_COOKIE['session'])) {
+    $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
     checkLogin($db, $_COOKIE['session']);
 }
 ?>
@@ -101,16 +100,20 @@ if (isset($_COOKIE['session'])) {
                                     class="label label-info">DEAD</span></a></a></li>
                     </ul>
                 </li>
-                <li><a class="nav-clickable" href="#contact">Contact</a></li>
+                <?php if (empty($_SESSION['user_id64']) || empty($_SESSION['access_feeds'])) { ?>
+                    <li><a class="nav-clickable" href="#contact">Contact</a></li>
+                <?php } else { ?>
+                    <li><a class="nav-clickable" href="#feeds/">Feeds</a></li>
+                <?php } ?>
             </ul>
-            <?php if (empty($_SESSION['user_id32'])) { ?>
+            <?php if (empty($_SESSION['user_id64'])) { ?>
                 <p class="nav navbar-text"><a href="./auth/?login"><img src="./auth/assets/images/steam_small.png"
                                                                         alt="Sign in with Steam"/></a></p>
             <?php
             } else {
                 $image = empty($_SESSION['user_avatar'])
                     ? $_SESSION['user_id32']
-                    : '<a href="http://steamcommunity.com/profiles/'.$_SESSION['user_id64'].'" target="_new"><img width="20px" src="' . $_SESSION['user_avatar'] . '" /></a> ';
+                    : '<a href="http://steamcommunity.com/profiles/' . $_SESSION['user_id64'] . '" target="_new"><img width="20px" src="' . $_SESSION['user_avatar'] . '" /></a> ';
 
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>

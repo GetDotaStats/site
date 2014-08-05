@@ -1,4 +1,15 @@
-<link rel="alternate" href="./rss/" title="GetDotaStats Animu Feed" type="application/rss+xml"/>
+<!--<link rel="alternate" href="./rss/" title="GetDotaStats Animu Feed" type="application/rss+xml"/>-->
+<?php
+if (!isset($_SESSION)) {
+    session_start();
+}
+
+if (empty($_SESSION['user_id64'])) {
+    header("Location: ./");
+}
+
+?>
+<h1 class="text-center"><a href="./feeds/rss/" target="_blank">GetDotaStats Animu Feed</a></h1>
 
 <form id="myForm">
     <table border="1" cellspacing="1">
@@ -46,21 +57,23 @@
     </table>
 </form>
 
+<br />
+
 <span id="result" class="label label-danger"></span>
 
-<hr/>
+<hr />
 
 <div id="feedsList"></div>
 
 <script type="application/javascript">
     $(document).ready(function () {
-        loadPage();
+        testFunction();
     });
 
-    function loadPage() {
+    function testFunction() {
         $.ajax({
             type: "GET",
-            url: "./feeds.php",
+            url: "./feeds/feeds.php",
             dataType: "html",
             success: function (msg) {
                 if (parseInt(msg) != 0) {
@@ -76,12 +89,12 @@
     $("#myForm").submit(function (event) {
         event.preventDefault();
 
-        $.post("feeds_insert.php", $("#myForm").serialize(), function (data) {
+        $.post("./feeds/feeds_insert.php", $("#myForm").serialize(), function (data) {
             $("#myForm :input").each(function () {
                 $(this).val('');
             });
             $('#result').html(data);
-            loadPage();
+            testFunction();
         }, 'text');
     });
 </script>

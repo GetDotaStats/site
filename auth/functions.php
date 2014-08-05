@@ -53,6 +53,16 @@ if (!class_exists('user')) {
                         'iss',
                         $steamID64, $_SERVER['REMOTE_ADDR'], $cookie);
 
+                    //LOOKUP ACCOUNT
+                    $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
+                        'i',
+                        $steamID64);
+
+                    if(!empty($accountDetails)){
+                        //SET ACCESS PERMISSION
+                        $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                    }
+
                     setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', 'getdotastats.com');
 
                     if ($relocate) {
@@ -79,6 +89,7 @@ if (!class_exists('user')) {
             unset($_SESSION['user_id64']);
             unset($_SESSION['user_name']);
             unset($_SESSION['user_avatar']);
+            unset($_SESSION['access_feeds']);
 
             setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
 
