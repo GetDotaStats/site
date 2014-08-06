@@ -10,7 +10,7 @@ try {
 
     $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
-    $steam_api_domain = 'staging.getdotastats.com'; //////////////////////////////////////////////////
+    $steam_api_domain = 'getdotastats.com'; //////////////////////////////////////////////////
 
     $user = new user;
     $user->apikey = $api_key6; // put your API key here
