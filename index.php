@@ -44,14 +44,14 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                             class="label label-default">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Live Stats</li>
-                        <li><a class="nav-clickable" href="#d2moddin__players">Players <span
-                                    class="label label-default">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__players">Players</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
                         <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
                         <li class="dropdown-header">Parsed Match Data</li>
-                        <li><a class="nav-clickable" href="#d2moddin__games_mods">Games per Mod <span
+                        <li><a class="nav-clickable" href="#d2moddin__games_mods">Games per Mod</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin__games_duration">Duration of Games <span
                                     class="label label-default">NEW</span></a></li>
                         <li class="dropdown-header">Deprecated</li>
                         <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>

@@ -26,7 +26,6 @@ try {
 
             echo '<h3>Last Week of Available Data</h3>';
 
-            //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $mod_stats = simple_cached_query('d2moddin_games_mods',
                 'SELECT HOUR(`match_ended`) as hour, DAY(`match_ended`) as day, MONTH(`match_ended`) as month, YEAR(`match_ended`) as year, `mod` as mod_name, COUNT(*) as num_lobbies FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY GROUP BY 4,3,2,1,mod_name ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC,mod_name DESC;',
                 60);
@@ -143,6 +142,56 @@ try {
 
             $chart->load(json_encode($data));
             echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
+        }
+
+        ////////////////////////////////////////////////////////
+        // LAST WEEK PIE
+        ////////////////////////////////////////////////////////
+
+        {
+            $chart = new chart2('PieChart');
+
+            $mod_stats_pie = simple_cached_query('d2moddin_games_mods_pie',
+                'SELECT `mod` as mod_name, COUNT(*) as num_games FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY GROUP BY `mod_name` ORDER BY mod_name DESC;',
+                60);
+
+            $super_array = array();
+            foreach ($mod_stats_pie as $key => $value) {
+                $super_array[] = array('c' => array(array('v' => $value['mod_name']), array('v' => $value['num_games'])));
+            }
+
+            $data = array(
+                'cols' => array(
+                    array('id' => '', 'label' => 'Mod', 'type' => 'string'),
+                    array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                ),
+                'rows' => $super_array
+            );
+
+            $chart_width = max(count($test_array) * 2, 800);
+
+            $options = array(
+                'axisTitlesPosition' => 'in',
+                'width' => $chart_width,
+                'height' => 300,
+                'chartArea' => array(
+                    'width' => '100%',
+                    'height' => '90%',
+                ),
+                'legend' => array(
+                    'position' => 'top',
+                    'alignment' => 'center',
+                    'textStyle' => array(
+                        'fontSize' => 10
+                    )
+                ),
+                'is3D' => 'true'
+            );
+
+            echo '<div id="lobby_count_pie" style="width: 800px;"></div>';
+
+            $chart->load(json_encode($data));
+            echo $chart->draw('lobby_count_pie', $options);
         }
 
         ////////////////////////////////////////////////////////

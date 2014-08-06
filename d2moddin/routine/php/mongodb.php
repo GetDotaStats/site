@@ -1,31 +1,10 @@
+#!/usr/bin/php -q
 <?php
 require_once('../../../connections/parameters.php');
 require_once('../../../global_functions.php');
+require_once('./functions.php');
 
 try {
-    //find the most recent match
-    function mostRecentMatch($db)
-    {
-        $mostRecentMatch = $db->q('SELECT MAX(`match_date`) as match_date FROM match_stats;');
-        $mostRecentMatch = !empty($mostRecentMatch[0]['match_date'])
-            ? $mostRecentMatch[0]['match_date']
-            : 0;
-
-        return $mostRecentMatch;
-    }
-
-    //run a query or check the number of results
-    function searchMongoD2moddin($tableRef, $mostRecentMatch, $check = 0, $limit = 10)
-    {
-        if ($check) {
-            //'mod' => "lod",
-            $cursor = $tableRef->find(array('date' => array('$gt' => $mostRecentMatch)))->limit(1)->sort(array("date" => 1))->count();
-        } else {
-            $cursor = $tableRef->find(array('date' => array('$gt' => $mostRecentMatch)))->limit($limit)->sort(array("date" => 1));
-        }
-        return $cursor;
-    }
-
     //CONTROL VARS
     $loopReps = 10; //the number of times to loop
     $documentsPerQuery = 200;
@@ -69,6 +48,12 @@ try {
                 echo '<pre>';
                 while ($cursor->hasNext()) {
                     $match = $cursor->getNext();
+
+                    /*echo '<pre>';
+                    print_r($match);
+                    echo '</pre>';
+                    exit();*/
+
                     echo date('d/m/Y', $match['date']) . ' - ' . $match['match_id'] . ' - ' . $match['mod'] . '<br />';
                     ////////////////////////
                     // add `MATCH STATS`
@@ -205,7 +190,7 @@ try {
                                         echo 'No values on of the lines for : ' . $match['match_id'] . '<br />';
                                     }
                                 } else {
-                                    echo 'One of the teams was empty for match: '.$match['match_id'].'<br />';
+                                    echo 'One of the teams was empty for match: ' . $match['match_id'] . '<br />';
                                 }
                             }
                         } else {
