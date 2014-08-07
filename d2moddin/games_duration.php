@@ -15,7 +15,13 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        echo '<h2>Games played Per Duration per Mod Based on Match Data</h2>';
+        echo '<h2>Games played Per Duration per Mod Based on Match Data<br />';
+
+        $mod_range = simple_cached_query('d2moddin_games_mods_duration_range',
+            //'SELECT * FROM `stats_mods_duration` ORDER BY `mod`, `range_end`;',
+            'SELECT MIN(`match_date`) as date_start, MAX(`match_date`) as date_end, MIN(`match_ended`) as date_start_nice FROM `match_stats`;',
+            60);
+        echo '<small><time datetime="'.$mod_range[0]['date_start_nice'].'">' . relative_time($mod_range[0]['date_start']) . '</time> - ' . relative_time($mod_range[0]['date_end']) . '</small></h2>';
 
         ////////////////////////////////////////////////////////
         // LAST WEEK
@@ -35,8 +41,8 @@ try {
             $mod_stats = simple_cached_query('d2moddin_games_mods_duration',
                 //'SELECT * FROM `stats_mods_duration` ORDER BY `mod`, `range_end`;',
                 'SELECT
-                    300 * floor(`duration` / 300) as `range_start`,
-                    300 * floor(`duration` / 300) + 300 as `range_end`,
+                    120 * floor(`duration` / 120) as `range_start`,
+                    120 * floor(`duration` / 120) + 120 as `range_end`,
                     COUNT(*) as `num_games`,
                     `mod`
                 FROM `match_stats` GROUP BY `mod`, 2 ORDER BY `mod`, 2;',
@@ -46,18 +52,18 @@ try {
             $lastNum = 0;
             $lastMod = '';
 
-            foreach($mod_stats as $key => $value){
+            foreach ($mod_stats as $key => $value) {
                 $value['range_end'] = $value['range_end'] / 60;
 
 
-                if($value['mod'] != $lastMod){
+                if ($value['mod'] != $lastMod) {
                     $lastNum = 0;
                 }
 
-                if($value['range_end'] > ($lastNum+5)){
-                    while($value['range_end'] > ($lastNum+5)){
-                        $testArray[$value['mod']][($lastNum+5)] = 0;
-                        $lastNum+=5;
+                if ($value['range_end'] > ($lastNum + 2)) {
+                    while ($value['range_end'] > ($lastNum + 2)) {
+                        $testArray[$value['mod']][($lastNum + 2)] = 0;
+                        $lastNum += 2;
                     }
                 }
 
@@ -113,10 +119,15 @@ try {
                 'pageSize' => 5);
 
 
-            foreach($testArray as $key => $value){
+            foreach ($testArray as $key => $value) {
+                /*echo '<pre>';
+                print_r($value);
+                echo '</pre';*/
+
+
                 $chart = new chart2('ComboChart');
 
-                echo '<hr /><h3>'.$key.'</h3>';
+                echo '<hr /><h3>' . $key . ' <small>' . array_sum($value) . ' games</small></h3>';
 
                 $super_array = array();
                 foreach ($value as $key2 => $value2) {
@@ -137,10 +148,10 @@ try {
 
                 $chart_width = max(count($super_array) * 5, 400);
                 $options['width'] = $chart_width;
-                $options['hAxis']['maxValue'] = $maxKey+5;
-                $options['hAxis']['gridlines']['count'] = ($maxKey+5)/5;
+                $options['hAxis']['maxValue'] = $maxKey + 2;
+                $options['hAxis']['gridlines']['count'] = ($maxKey + 2) / 2;
 
-                echo '<div id="duration_breakdown_'.$key.'" style="width: 400px;"></div>';
+                echo '<div id="duration_breakdown_' . $key . '" style="width: 400px;"></div>';
                 //echo '<div style="width: 800px;"><h4 class="text-center">' . date('Y-m-d', strtotime($mod_range[0]['max_date'])) . ' --> ' . date('Y-m-d', strtotime($mod_range[0]['min_date'])) . '</h4></div>';
 
                 /*echo '<div class="panel panel-default" style="width: 800px;">
@@ -157,7 +168,7 @@ try {
                 echo '</div>';
 
                 $chart->load(json_encode($data));
-                echo $chart->draw('duration_breakdown_'.$key, $options);
+                echo $chart->draw('duration_breakdown_' . $key, $options);
 
             }
         }
