@@ -120,11 +120,6 @@ try {
 
 
             foreach ($testArray as $key => $value) {
-                /*echo '<pre>';
-                print_r($value);
-                echo '</pre';*/
-
-
                 $chart = new chart2('ComboChart');
 
                 echo '<hr /><h3>' . $key . ' <small>' . array_sum($value) . ' games</small></h3>';
