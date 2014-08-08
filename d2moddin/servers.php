@@ -88,8 +88,8 @@ try {
                     'height' => 300,
                     'chartArea' => array(
                         'width' => '100%',
-                        'height' => '90%',
-                        'left' => 50,
+                        'height' => '85%',
+                        'left' => 60,
                         'top' => 10,
                     ),
                     'hAxis' => array(
@@ -201,8 +201,8 @@ try {
                 'height' => 300,
                 'chartArea' => array(
                     'width' => '100%',
-                    'height' => '90%',
-                    'left' => 50,
+                    'height' => '85%',
+                    'left' => 70,
                     'top' => 10,
                 ),
                 'hAxis' => array(

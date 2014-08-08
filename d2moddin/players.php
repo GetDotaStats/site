@@ -62,7 +62,7 @@ try {
                 'height' => 300,
                 'chartArea' => array(
                     'width' => '100%',
-                    'height' => '90%',
+                    'height' => '85%',
                     'left' => 60,
                     'top' => 10,
                 ),
@@ -171,7 +171,7 @@ try {
                 'height' => 300,
                 'chartArea' => array(
                     'width' => '100%',
-                    'height' => '90%',
+                    'height' => '85%',
                     'left' => 60,
                     'top' => 10,
                 ),

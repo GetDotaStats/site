@@ -19,7 +19,7 @@ try {
 
         $mod_range = simple_cached_query('d2moddin_games_mods_duration_range',
             //'SELECT * FROM `stats_mods_duration` ORDER BY `mod`, `range_end`;',
-            'SELECT MIN(`match_date`) as date_start, MAX(`match_date`) as date_end FROM `match_stats`;',
+            'SELECT MIN(`match_date`) as date_end, MAX(`match_date`) as date_start FROM `match_stats`;',
             60);
         echo '<small>'.relative_time($mod_range[0]['date_start']).' - ' . relative_time($mod_range[0]['date_end']) . '</small></h2>';
 

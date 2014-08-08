@@ -84,7 +84,7 @@ try {
                     'height' => 300,
                     'chartArea' => array(
                         'width' => '100%',
-                        'height' => '90%',
+                        'height' => '85%',
                         'left' => 50,
                         'top' => 10,
                     ),
@@ -175,12 +175,11 @@ try {
             $chart_width = max(count($test_array) * 2, 800);
 
             $options = array(
-                'axisTitlesPosition' => 'in',
                 'width' => $chart_width,
                 'height' => 300,
                 'chartArea' => array(
                     'width' => '100%',
-                    'height' => '90%',
+                    'height' => '85%',
                 ),
                 'legend' => array(
                     'position' => 'top',
@@ -265,7 +264,7 @@ try {
                 'height' => 300,
                 'chartArea' => array(
                     'width' => '100%',
-                    'height' => '90%',
+                    'height' => '85%',
                     'left' => 50,
                     'top' => 10,
                 ),
