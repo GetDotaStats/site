@@ -77,7 +77,6 @@ try {
                 $options = array(
                     //'title' => 'Average spins in ' . $hits . ' attacks',
                     //'theme' => 'maximized',
-                    'axisTitlesPosition' => 'in',
                     'width' => $chart_width,
                     'bar' => array(
                         'groupWidth' => 1,
@@ -259,7 +258,6 @@ try {
             $options = array(
                 //'title' => 'Average spins in ' . $hits . ' attacks',
                 //'theme' => 'maximized',
-                'axisTitlesPosition' => 'in',
                 'width' => $chart_width,
                 'bar' => array(
                     'groupWidth' => 1,
