@@ -93,14 +93,13 @@ try {
             $options = array(
                 //'title' => 'Average spins in ' . $hits . ' attacks',
                 //'theme' => 'maximized',
-                'axisTitlesPosition' => 'in',
                 'bar' => array(
                     'groupWidth' => 3,
                 ),
                 'height' => 300,
                 'chartArea' => array(
                     'width' => '100%',
-                    'height' => '90%',
+                    'height' => '85%',
                     'left' => 50,
                     'top' => 10,
                 ),

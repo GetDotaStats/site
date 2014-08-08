@@ -36,112 +36,117 @@ try {
                 'SELECT MIN(`match_ended`) as min_date, MAX(`match_ended`) as max_date FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY ;',
                 60);
 
-            $test_array = array();
-            foreach ($mod_stats as $key => $value) {
-                $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':00';
+            if (!empty($mod_stats)) {
+                $test_array = array();
+                foreach ($mod_stats as $key => $value) {
+                    $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':00';
 
-                if (!isset($test_array[$date])) {
-                    foreach ($mod_list as $mod_list_key => $mod_list_value) {
-                        $test_array[$date][$mod_list_value['mod_name']] = 0;
+                    if (!isset($test_array[$date])) {
+                        foreach ($mod_list as $mod_list_key => $mod_list_value) {
+                            $test_array[$date][$mod_list_value['mod_name']] = 0;
+                        }
                     }
+
+                    $test_array[$date][$value['mod_name']] = $value['num_lobbies'];
                 }
 
-                $test_array[$date][$value['mod_name']] = $value['num_lobbies'];
-            }
+                $super_array = array();
+                $i = 0;
+                foreach ($test_array as $key => $value) {
+                    $super_array[$i] = array('c' => array(array('v' => $key)));
 
-            $super_array = array();
-            $i = 0;
-            foreach ($test_array as $key => $value) {
-                $super_array[$i] = array('c' => array(array('v' => $key)));
-
-                foreach ($value as $key2 => $value2) {
-                    $super_array[$i]['c'][] = array('v' => $value2);
+                    foreach ($value as $key2 => $value2) {
+                        $super_array[$i]['c'][] = array('v' => $value2);
+                    }
+                    $i++;
                 }
-                $i++;
-            }
 
-            $data = array(
-                'cols' => array(
-                    array('id' => '', 'label' => 'Date', 'type' => 'string'),
-                ),
-                'rows' => $super_array
-            );
-
-            foreach ($mod_list as $key => $value) {
-                $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
-            }
-
-            $chart_width = max(count($test_array) * 2, 800);
-
-            $options = array(
-                //'title' => 'Average spins in ' . $hits . ' attacks',
-                //'theme' => 'maximized',
-                'axisTitlesPosition' => 'in',
-                'width' => $chart_width,
-                'bar' => array(
-                    'groupWidth' => 1,
-                ),
-                'height' => 300,
-                'chartArea' => array(
-                    'width' => '100%',
-                    'height' => '90%',
-                    'left' => 50,
-                    'top' => 10,
-                ),
-                'hAxis' => array(
-                    'title' => 'Date',
-                    'maxAlternation' => 1,
-                    'textPosition' => 'none',
-                    //'textPosition' => 'in',
-                    //'viewWindowMode' => 'maximized'
-                ),
-                'vAxis' => array(
-                    'title' => 'Games',
-                    //'textPosition' => 'in',
-                ),
-                'legend' => array(
-                    'position' => 'bottom',
-                    'alignment' => 'start',
-                    'textStyle' => array(
-                        'fontSize' => 10
-                    )
-                ),
-                'seriesType' => "bars",
-                /*'series' => array(
-                    3 => array(
-                        'type' => "line"
+                $data = array(
+                    'cols' => array(
+                        array('id' => '', 'label' => 'Date', 'type' => 'string'),
                     ),
-                ),*/
-                'isStacked' => 'true',
-            );
+                    'rows' => $super_array
+                );
 
-            $optionsDataTable = array(
-                'sortColumn' => 0,
-                'sortAscending' => true,
-                'alternatingRowStyle' => true,
-                'page' => 'enable',
-                'pageSize' => 5);
+                foreach ($mod_list as $key => $value) {
+                    $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
+                }
 
-            echo '<div id="lobby_count" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
+                $chart_width = max(count($test_array) * 2, 800);
 
-            echo '<div class="panel panel-default" style="width: 800px;">
-                <div class="panel-heading">
-                    <h4 class="panel-title text-center">
-                        <a data-toggle="collapse" data-target="#collapseTwo" class="btn btn btn-success collapsed" type="button">Data Table</a>
-                    </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <div id="lobby_count_dataTable" style="width: 100%;"></div>
+                $options = array(
+                    //'title' => 'Average spins in ' . $hits . ' attacks',
+                    //'theme' => 'maximized',
+                    'axisTitlesPosition' => 'in',
+                    'width' => $chart_width,
+                    'bar' => array(
+                        'groupWidth' => 1,
+                    ),
+                    'height' => 300,
+                    'chartArea' => array(
+                        'width' => '100%',
+                        'height' => '90%',
+                        'left' => 50,
+                        'top' => 10,
+                    ),
+                    'hAxis' => array(
+                        'title' => 'Date',
+                        'maxAlternation' => 1,
+                        'textPosition' => 'none',
+                        //'textPosition' => 'in',
+                        //'viewWindowMode' => 'maximized'
+                    ),
+                    'vAxis' => array(
+                        'title' => 'Games',
+                        //'textPosition' => 'in',
+                    ),
+                    'legend' => array(
+                        'position' => 'bottom',
+                        'alignment' => 'start',
+                        'textStyle' => array(
+                            'fontSize' => 10
+                        )
+                    ),
+                    'seriesType' => "bars",
+                    /*'series' => array(
+                        3 => array(
+                            'type' => "line"
+                        ),
+                    ),*/
+                    'isStacked' => 'true',
+                );
+
+                $optionsDataTable = array(
+                    'sortColumn' => 0,
+                    'sortAscending' => true,
+                    'alternatingRowStyle' => true,
+                    'page' => 'enable',
+                    'pageSize' => 5);
+
+                echo '<div id="lobby_count" style="width: 800px;"></div>';
+                //echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
+                echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($mod_range[0]['max_date']) . ' --> ' . relative_time($mod_range[0]['min_date']) . '</h4></div>';
+
+                echo '<div class="panel panel-default" style="width: 800px;">
+                    <div class="panel-heading">
+                        <h4 class="panel-title text-center">
+                            <a data-toggle="collapse" data-target="#collapseTwo" class="btn btn btn-success collapsed" type="button">Data Table</a>
+                        </h4>
                     </div>
-                </div>
-            </div>';
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div id="lobby_count_dataTable" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>';
 
-            //echo '<div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>';
+                //echo '<div id="lobby_count_dataTable" style="overflow-x: hidden; width: 800px;"></div>';
 
-            $chart->load(json_encode($data));
-            echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
+                $chart->load(json_encode($data));
+                echo $chart->draw('lobby_count', $options, true, $optionsDataTable);
+            } else {
+                echo 'No data for the last week!';
+            }
         }
 
         ////////////////////////////////////////////////////////
@@ -294,10 +299,12 @@ try {
             );
 
             echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">'.date('Y-m-d', strtotime($mod_range[0]['max_date'])).' --> '.date('Y-m-d', strtotime($mod_range[0]['min_date'])).'</h4></div>';
+            //echo '<div style="width: 800px;"><h4 class="text-center">' . date('Y-m-d', strtotime($mod_range[0]['max_date'])) . ' --> ' . date('Y-m-d', strtotime($mod_range[0]['min_date'])) . '</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($mod_range[0]['max_date']) . ' --> ' . relative_time($mod_range[0]['min_date']) . '</h4></div>';
+
             echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
-                        <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods'.time().'.csv\')">Download to CSV</a>
+                        <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods' . time() . '.csv\')">Download to CSV</a>
                     </h4>
                 </div>';
 
