@@ -1,3 +1,0 @@
-dos2unix *
-
-@PAUSE

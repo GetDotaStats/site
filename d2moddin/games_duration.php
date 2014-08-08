@@ -19,9 +19,9 @@ try {
 
         $mod_range = simple_cached_query('d2moddin_games_mods_duration_range',
             //'SELECT * FROM `stats_mods_duration` ORDER BY `mod`, `range_end`;',
-            'SELECT MIN(`match_date`) as date_start, MAX(`match_date`) as date_end, MIN(`match_ended`) as date_start_nice FROM `match_stats`;',
+            'SELECT MIN(`match_date`) as date_start, MAX(`match_date`) as date_end FROM `match_stats`;',
             60);
-        echo '<small><time datetime="'.$mod_range[0]['date_start_nice'].'">' . relative_time($mod_range[0]['date_start']) . '</time> - ' . relative_time($mod_range[0]['date_end']) . '</small></h2>';
+        echo '<small>'.relative_time($mod_range[0]['date_start']).' - ' . relative_time($mod_range[0]['date_end']) . '</small></h2>';
 
         ////////////////////////////////////////////////////////
         // LAST WEEK
@@ -52,7 +52,10 @@ try {
             $lastNum = 0;
             $lastMod = '';
 
+            $durationArray = array();
+
             foreach ($mod_stats as $key => $value) {
+                //$testArray[$value['mod']]['duration'] = $value['total_length'];
                 $value['range_end'] = $value['range_end'] / 60;
 
 
@@ -71,6 +74,13 @@ try {
 
                 $lastNum = $value['range_end'];
                 $lastMod = $value['mod'];
+
+                if(isset($durationArray[$value['mod']])){
+                    $durationArray[$value['mod']] += ($value['range_end'] * $value['num_games']);
+                }
+                else{
+                    $durationArray[$value['mod']] = ($value['range_end'] * $value['num_games']);
+                }
             }
 
 
@@ -122,7 +132,7 @@ try {
             foreach ($testArray as $key => $value) {
                 $chart = new chart2('ComboChart');
 
-                echo '<hr /><h3>' . $key . ' <small>' . array_sum($value) . ' games</small></h3>';
+                echo '<hr /><h3>' . $key . ' <small>' . number_format(array_sum($value), 0) . ' games - ' . number_format($durationArray[$key], 0) . ' mins</small></h3>';
 
                 $super_array = array();
                 foreach ($value as $key2 => $value2) {
