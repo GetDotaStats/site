@@ -15,7 +15,7 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        echo '<h2>Games played Per Duration per Mod Based on Match Data<br />';
+        echo '<h2>Games Played per Duration per Mod<br />';
 
         $mod_range = simple_cached_query('d2moddin_games_mods_duration_range',
             //'SELECT * FROM `stats_mods_duration` ORDER BY `mod`, `range_end`;',

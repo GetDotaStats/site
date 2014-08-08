@@ -15,7 +15,7 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        echo '<h2>Breakdown per Mod Based on Match Data</h2>';
+        echo '<h2>Games Played per Mod</h2>';
 
         ////////////////////////////////////////////////////////
         // LAST WEEK
@@ -30,7 +30,7 @@ try {
                 'SELECT HOUR(`match_ended`) as hour, DAY(`match_ended`) as day, MONTH(`match_ended`) as month, YEAR(`match_ended`) as year, `mod` as mod_name, COUNT(*) as num_lobbies FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY GROUP BY 4,3,2,1,mod_name ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC,mod_name DESC;',
                 60);
             $mod_list = simple_cached_query('d2moddin_games_mods_list',
-                'SELECT DISTINCT  `mod` as mod_name FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY ORDER BY `mod_name`;',
+                'SELECT DISTINCT  `mod` as mod_name FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY ORDER BY `mod_name` DESC;',
                 60);
             $mod_range = simple_cached_query('d2moddin_games_mods_range',
                 'SELECT MIN(`match_ended`) as min_date, MAX(`match_ended`) as max_date FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY ;',
