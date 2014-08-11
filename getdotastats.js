@@ -37,12 +37,8 @@ function loadPage(url) {
     $('#loading').show({
         start: function () {
             $('#loading_spinner1').show();
-            $('#loading_spinner2').hide();
         },
         complete: function () {
-            $('#loading_spinner1').hide();
-            $('#loading_spinner2').show();
-
             $.ajax({
                 type: "GET",
                 url: url,
@@ -50,9 +46,6 @@ function loadPage(url) {
                 success: function (msg) {
                     document.getElementById("abcd").setAttribute("href", oldURL);
                     setTimeout(function () {
-                        $('#loading_spinner1').show();
-                        $('#loading_spinner2').hide();
-
                         $('#loading').hide({
                             complete: function () {
                                 if (parseInt(msg) != 0) {
