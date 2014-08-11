@@ -309,6 +309,29 @@ try {
             echo $chart->draw('lobby_count_alltime', $options, false, array(), true);
         }
 
+
+        ////////////////////////////////////////////////////////
+        // ALL TIME
+        ////////////////////////////////////////////////////////
+
+        {
+            echo '<h3>Extra Stats per Mod</h3>';
+
+            echo '<div class="table-responsive">
+		        <table class="table table-striped table-hover">';
+            echo '<tr>
+                        <th>Mod</th>
+                        <th>Stats</th>
+                    </tr>';
+            foreach($mod_list as $key => $value){
+                echo '<tr>';
+                echo '<td>'.$value['mod_name'].'</td>';
+                echo '<td><a class="nav-clickable" href="#d2moddin__games_heroes?m='.$value['mod_name'].'">Heroes</a></td>';
+                echo '</tr>';
+            }
+            echo '</table></div>';
+        }
+
         echo '<div id="pagerendertime" style="font-size: 12px;">';
         echo '<hr />Page generated in ' . (time() - $start) . 'secs';
         echo '</div>';

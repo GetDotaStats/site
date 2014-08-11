@@ -15,36 +15,43 @@ try {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+
+        $mod_name = $db->escape($_GET['m']);
+
         echo '<h2>Heroes Picked per Mod</h2>';
+        echo '<h4><a class="nav-clickable" href="#d2moddin__games_mods">Back to Mod List</a></h4>';
 
-        ////////////////////////////////////////////////////////
-        // LAST WEEK PIE
-        ////////////////////////////////////////////////////////
-        /*
-                {
+        if (!empty($_GET['m'])) {
+
+            ////////////////////////////////////////////////////////
+            // LAST WEEK PIE
+            ////////////////////////////////////////////////////////
+
+            {
+                echo '<h3>Top 10 Picked Heroes</h3>';
+
+                $mod_stats_pie = simple_cached_query('d2moddin_games_mods_pie' . $mod_name,
+                    'SELECT smh.`mod_name`, smh.`hero_id`, gh.`localized_name` as hero_name, smh.`picked`, smh.`wins` FROM `stats_mods_heroes` smh LEFT JOIN `game_heroes` gh ON smh.`hero_id` = gh.`hero_id` WHERE smh.`mod_name` = \'' . $mod_name . '\' ORDER BY smh.`picked` DESC LIMIT 0,10;',
+                    60);
+
+                if (!empty($mod_stats_pie)) {
                     $chart = new chart2('PieChart');
-
-                    $mod_stats_pie = simple_cached_query('d2moddin_games_mods_pie',
-                        'SELECT `mod` as mod_name, COUNT(*) as num_games FROM `match_stats` WHERE `match_ended` >= (SELECT MAX(`match_ended`) FROM `match_stats`) - INTERVAL 7 DAY GROUP BY `mod_name` ORDER BY mod_name DESC;',
-                        60);
 
                     $super_array = array();
                     foreach ($mod_stats_pie as $key => $value) {
-                        $super_array[] = array('c' => array(array('v' => $value['mod_name']), array('v' => $value['num_games'])));
+                        $super_array[] = array('c' => array(array('v' => $value['hero_name']), array('v' => $value['picked'])));
                     }
 
                     $data = array(
                         'cols' => array(
-                            array('id' => '', 'label' => 'Mod', 'type' => 'string'),
+                            array('id' => '', 'label' => 'Heroes', 'type' => 'string'),
                             array('id' => '', 'label' => 'Games', 'type' => 'number'),
                         ),
                         'rows' => $super_array
                     );
 
-                    $chart_width = max(count($test_array) * 2, 800);
-
                     $options = array(
-                        'width' => $chart_width,
+                        'width' => 800,
                         'height' => 300,
                         'chartArea' => array(
                             'width' => '100%',
@@ -55,7 +62,8 @@ try {
                             'alignment' => 'center',
                             'textStyle' => array(
                                 'fontSize' => 10
-                            )
+                            ),
+                            'maxLines' => 2
                         ),
                         'is3D' => 'true'
                     );
@@ -64,127 +72,141 @@ try {
 
                     $chart->load(json_encode($data));
                     echo $chart->draw('lobby_count_pie', $options);
+                } else {
+                    echo 'No hero data for pie<br />';
                 }
-        */
-        ////////////////////////////////////////////////////////
-        // ALL TIME
-        ////////////////////////////////////////////////////////
+            }
 
-        {
-            $chart = new chart2('ComboChart');
+            ////////////////////////////////////////////////////////
+            // ALL TIME
+            ////////////////////////////////////////////////////////
 
-            echo '<h3>All Available Data</h3>';
+            {
+                $chart = new chart2('ComboChart');
 
-            /*
-                CREATE TABLE IF NOT EXISTS `states_mods_heroes`
-                SELECT mp.`hero_id` , COUNT( mp.`hero_id` ) AS picked, ms.`mod` AS mod_name
-                FROM  `match_players` mp
-                LEFT JOIN  `match_stats` ms ON mp.`match_id` = ms.`match_id`
-                GROUP BY ms.`mod` , mp.`hero_id`
-                ORDER BY 1 , 2;
-             */
+                /*
+                CREATE TABLE IF NOT EXISTS `stats_mods_heroes` (
+                    `mod_name` varchar(255) NOT NULL,
+                    `hero_id` int(255) NOT NULL,
+                    `picked` bigint(21) NOT NULL DEFAULT '0',
+                    `wins` bigint(21) NOT NULL DEFAULT '0',
+                    PRIMARY KEY (`mod_name`,`hero_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+                    SELECT
+                        ms.`mod` AS mod_name,
+                        mp.`hero_id`,
+                        COUNT( mp.`hero_id` ) AS picked,
+                        SUM(
+                            CASE
+                                WHEN `good_guys_win` = 1 AND `team_id` = 0 THEN 1
+                                WHEN `good_guys_win` = 0 AND `team_id` = 1 THEN 1
+                                ELSE 0
+                            END) AS wins
+                    FROM  `match_players` mp
+                    LEFT JOIN  `match_stats` ms ON mp.`match_id` = ms.`match_id`
+                    GROUP BY ms.`mod` , mp.`hero_id`
+                    ORDER BY 1 , 2;
+                 */
 
-            //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
-            $mod_stats = simple_cached_query('d2moddin_games_mods_alltime',
-                'SELECT mp.`hero_id`, COUNT(mp.`hero_id`) as picked, ms.`mod` as mod_name FROM `match_players` mp LEFT JOIN `match_stats` ms ON mp.`match_id` = ms.`match_id` GROUP BY ms.`mod`, mp.`hero_id` ORDER BY 1,2;',
-                60);
-            $mod_list = simple_cached_query('d2moddin_games_mods_list_alltime',
-                'SELECT DISTINCT  `mod` as mod_name FROM `match_stats` ORDER BY `mod_name`;',
-                60);
-            $mod_range = simple_cached_query('d2moddin_games_mods_range_alltime',
-                'SELECT MIN(`match_ended`) as min_date, MAX(`match_ended`) as max_date FROM `match_stats`;',
-                60);
+                $orderingClause = array();
 
-            $test_array = array();
-            foreach ($mod_stats as $key => $value) {
-                $date = $value['year'] . '-' . $value['month'] . '-' . $value['day'] . ' ' . str_pad($value['hour'], 2, '0', STR_PAD_LEFT) . ':00';
+                if (isset($_GET['p']) && $_GET['p'] == 0) {
+                    $orderingClause[] = 'smh.`picked` DESC';
+                } else if (isset($_GET['p']) && $_GET['p'] == 1) {
+                    $orderingClause[] = 'smh.`picked` ASC';
+                }
 
-                if (!isset($test_array[$date])) {
-                    foreach ($mod_list as $mod_list_key => $mod_list_value) {
-                        $test_array[$date][$mod_list_value['mod_name']] = 0;
+                if (isset($_GET['w']) && $_GET['w'] == 0) {
+                    $orderingClause[] = 'smh.`wins` DESC';
+                } else if (isset($_GET['w']) && $_GET['w'] == 1) {
+                    $orderingClause[] = 'smh.`wins` ASC';
+                }
+
+                if (empty($orderingClause)) {
+                    $orderingClause[] = 'smh.`picked` DESC';
+                }
+
+                $orderingClause = implode(' , ', $orderingClause);
+
+                $mod_stats = $db->q('SELECT smh.`mod_name`, smh.`hero_id`, gh.`localized_name` as hero_name, smh.`picked`, smh.`wins` FROM `stats_mods_heroes` smh LEFT JOIN `game_heroes` gh ON smh.`hero_id` = gh.`hero_id` WHERE smh.`mod_name` = ? ORDER BY ' . $orderingClause . ';',
+                    's',
+                    $mod_name);
+                $mod_range = simple_cached_query('d2moddin_games_mods_range_alltime',
+                    'SELECT MIN(`match_ended`) as min_date, MAX(`match_ended`) as max_date FROM `match_stats`;',
+                    60);
+
+
+                //////////////////////////////////////////////
+
+                $extra_m = !empty($mod_name)
+                    ? '&m=' . $mod_name
+                    : '';
+
+                //////////////////////////////////////////////
+
+                $extra = isset($_GET['w']) && ($_GET['w'] == 1 || $_GET['w'] == 0)
+                    ? '&w=' . $_GET['w']
+                    : '';
+                $extra .= $extra_m;
+
+                if (isset($_GET['p'])) {
+                    $arrow_p = $_GET['p'] == 1
+                        ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?p=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
+                        : '<a class="nav-clickable" href="#d2moddin__games_heroes?p=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
+                } else {
+                    $arrow_p = '<a class="nav-clickable" href="#d2moddin__games_heroes?p=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?p=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
+                }
+
+                //////////////////////////////////////////////
+
+                $extra = isset($_GET['p']) && ($_GET['p'] == 1 || $_GET['p'] == 0)
+                    ? '&p=' . $_GET['p']
+                    : '';
+                $extra .= $extra_m;
+
+                if (isset($_GET['w'])) {
+                    $arrow_w = $_GET['w'] == 1
+                        ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?w=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
+                        : '<a class="nav-clickable" href="#d2moddin__games_heroes?w=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
+                } else {
+                    $arrow_w = '<a class="nav-clickable" href="#d2moddin__games_heroes?w=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?w=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
+                }
+
+                //////////////////////////////////////////////
+
+                echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($mod_range[0]['max_date']) . ' --> ' . relative_time($mod_range[0]['min_date']) . '</h4></div>';
+
+                echo '<div class="table-responsive">
+		        <table class="table table-striped table-hover">';
+                echo '<tr>
+                        <th>&nbsp;</th>
+                        <th>Hero</th>
+                        <th>Picked ' . $arrow_p . '</th>
+                        <th>Win Rate ' . $arrow_w . '</th>
+                    </tr>';
+                foreach ($mod_stats as $key => $value) {
+                    if (empty($value['hero_name'])) {
+                        $value['hero_name'] = 'No hero';
+                        $img = './images/heroes/aaa_blank.png';
+                    } else {
+                        $img = './images/heroes/' . str_replace('\'', '', str_replace(' ', '-', strtolower($value['hero_name']))) . '.png';
                     }
+
+                    $winrate = number_format($value['wins'] / $value['picked'] * 100, 1) . '%';
+
+
+                    echo '<tr>';
+                    echo '<td width="50"><img width="45" src="' . $img . '" /></td>';
+                    echo '<td>' . $value['hero_name'] . '</td>';
+                    echo '<td>' . number_format($value['picked'], 0) . '</td>';
+                    echo '<td>' . $winrate . '</td>';
+                    echo '</tr>';
                 }
+                echo '</table></div>';
 
-                $test_array[$date][$value['mod_name']] = $value['num_lobbies'];
             }
-
-            $super_array = array();
-            $i = 0;
-            foreach ($test_array as $key => $value) {
-                $super_array[$i] = array('c' => array(array('v' => $key)));
-
-                foreach ($value as $key2 => $value2) {
-                    $super_array[$i]['c'][] = array('v' => $value2);
-                }
-                $i++;
-            }
-
-            $data = array(
-                'cols' => array(
-                    array('id' => '', 'label' => 'Date', 'type' => 'string'),
-                ),
-                'rows' => $super_array
-            );
-
-            foreach ($mod_list as $key => $value) {
-                $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
-            }
-
-            $chart_width = max(count($test_array) * 2, 800);
-
-            $options = array(
-                //'title' => 'Average spins in ' . $hits . ' attacks',
-                //'theme' => 'maximized',
-                'width' => $chart_width,
-                'bar' => array(
-                    'groupWidth' => 1,
-                ),
-                'height' => 300,
-                'chartArea' => array(
-                    'width' => '100%',
-                    'height' => '85%',
-                    'left' => 50,
-                    'top' => 10,
-                ),
-                'hAxis' => array(
-                    'title' => 'Date',
-                    'maxAlternation' => 1,
-                    'textPosition' => 'none',
-                    //'textPosition' => 'in',
-                    //'viewWindowMode' => 'maximized'
-                ),
-                'vAxis' => array(
-                    'title' => 'Games',
-                    //'textPosition' => 'in',
-                ),
-                'legend' => array(
-                    'position' => 'bottom',
-                    'alignment' => 'start',
-                    'textStyle' => array(
-                        'fontSize' => 10
-                    )
-                ),
-                'seriesType' => "bars",
-                /*'series' => array(
-                    3 => array(
-                        'type' => "line"
-                    ),
-                ),*/
-                'isStacked' => 'true',
-            );
-
-            echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-            //echo '<div style="width: 800px;"><h4 class="text-center">' . date('Y-m-d', strtotime($mod_range[0]['max_date'])) . ' --> ' . date('Y-m-d', strtotime($mod_range[0]['min_date'])) . '</h4></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($mod_range[0]['max_date']) . ' --> ' . relative_time($mod_range[0]['min_date']) . '</h4></div>';
-
-            echo '<div class="panel-heading" style="width: 800px;">
-                    <h4 class="text-center">
-                        <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'mods' . time() . '.csv\')">Download to CSV</a>
-                    </h4>
-                </div>';
-
-            $chart->load(json_encode($data));
-            echo $chart->draw('lobby_count_alltime', $options, false, array(), true);
+        } else {
+            echo 'No data for this mod.';
         }
 
         echo '<div id="pagerendertime" style="font-size: 12px;">';
