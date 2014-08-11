@@ -95,6 +95,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                         <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
+                        <li><a class="nav-clickable" href="#credits">Credits</a></li>
                         <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
                         <li><a class="nav-clickable" href="#replays/">Replay Archive <span
                                     class="label label-info">DEAD</span></a></a></li>
@@ -124,9 +125,10 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 
 <div class="container">
     <div class="page-header text-center">
-        <h1>GetDotaStats
+        <!--<h1>GetDotaStats
             <small> A collection of random stats</small>
-        </h1>
+        </h1>-->
+        <img width="400px" src="./images/getdotastats_logo_v3.png" />
         <div id="loading">
             <img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
             <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>
