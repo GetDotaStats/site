@@ -206,7 +206,6 @@ try {
 
             echo '<h3>All Available Data</h3>';
 
-            //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
             $mod_stats = simple_cached_query('d2moddin_games_mods_alltime',
                 'SELECT HOUR(`match_ended`) as hour, DAY(`match_ended`) as day, MONTH(`match_ended`) as month, YEAR(`match_ended`) as year, `mod` as mod_name, COUNT(*) as num_lobbies FROM `match_stats` GROUP BY 4,3,2,1,mod_name ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC,mod_name DESC;',
                 60);

@@ -27,7 +27,7 @@ try {
             // LAST WEEK PIE
             ////////////////////////////////////////////////////////
 
-            {
+            if (1) {
                 echo '<h3>Top 10 Picked Heroes</h3>';
 
                 $mod_stats_pie = simple_cached_query('d2moddin_games_mods_pie' . $mod_name,
@@ -81,54 +81,42 @@ try {
             // ALL TIME
             ////////////////////////////////////////////////////////
 
-            {
+            if (1) {
                 $chart = new chart2('ComboChart');
 
-                /*
-                CREATE TABLE IF NOT EXISTS `stats_mods_heroes` (
-                    `mod_name` varchar(255) NOT NULL,
-                    `hero_id` int(255) NOT NULL,
-                    `picked` bigint(21) NOT NULL DEFAULT '0',
-                    `wins` bigint(21) NOT NULL DEFAULT '0',
-                    PRIMARY KEY (`mod_name`,`hero_id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=latin1
-                    SELECT
-                        ms.`mod` AS mod_name,
-                        mp.`hero_id`,
-                        COUNT( mp.`hero_id` ) AS picked,
-                        SUM(
-                            CASE
-                                WHEN `good_guys_win` = 1 AND `team_id` = 0 THEN 1
-                                WHEN `good_guys_win` = 0 AND `team_id` = 1 THEN 1
-                                ELSE 0
-                            END) AS wins
-                    FROM  `match_players` mp
-                    LEFT JOIN  `match_stats` ms ON mp.`match_id` = ms.`match_id`
-                    GROUP BY ms.`mod` , mp.`hero_id`
-                    ORDER BY 1 , 2;
-                 */
+                //////////////////////////
+                // SQL Ordering
+                //////////////////////////
 
-                $orderingClause = array();
+                if (1) {
+                    $orderingClause = array();
 
-                if (isset($_GET['p']) && $_GET['p'] == 0) {
-                    $orderingClause[] = 'smh.`picked` DESC';
-                } else if (isset($_GET['p']) && $_GET['p'] == 1) {
-                    $orderingClause[] = 'smh.`picked` ASC';
+                    if (isset($_GET['p']) && $_GET['p'] == 0) {
+                        $orderingClause[] = 'smh.`picked` DESC';
+                    } else if (isset($_GET['p']) && $_GET['p'] == 1) {
+                        $orderingClause[] = 'smh.`picked` ASC';
+                    }
+
+                    if (isset($_GET['w']) && $_GET['w'] == 0) {
+                        $orderingClause[] = 'smh.`wins` DESC';
+                    } else if (isset($_GET['w']) && $_GET['w'] == 1) {
+                        $orderingClause[] = 'smh.`wins` ASC';
+                    }
+
+                    if (isset($_GET['wr']) && $_GET['wr'] == 0) {
+                        $orderingClause[] = 'win_rate DESC';
+                    } else if (isset($_GET['wr']) && $_GET['wr'] == 1) {
+                        $orderingClause[] = 'win_rate ASC';
+                    }
+
+                    if (empty($orderingClause)) {
+                        $orderingClause[] = 'smh.`picked` DESC';
+                    }
+
+                    $orderingClause = implode(', ', $orderingClause);
                 }
 
-                if (isset($_GET['w']) && $_GET['w'] == 0) {
-                    $orderingClause[] = 'smh.`wins` DESC';
-                } else if (isset($_GET['w']) && $_GET['w'] == 1) {
-                    $orderingClause[] = 'smh.`wins` ASC';
-                }
-
-                if (empty($orderingClause)) {
-                    $orderingClause[] = 'smh.`picked` DESC';
-                }
-
-                $orderingClause = implode(' , ', $orderingClause);
-
-                $mod_stats = $db->q('SELECT smh.`mod_name`, smh.`hero_id`, gh.`localized_name` as hero_name, smh.`picked`, smh.`wins` FROM `stats_mods_heroes` smh LEFT JOIN `game_heroes` gh ON smh.`hero_id` = gh.`hero_id` WHERE smh.`mod_name` = ? ORDER BY ' . $orderingClause . ';',
+                $mod_stats = $db->q('SELECT smh.`mod_name`, smh.`hero_id`, gh.`localized_name` as hero_name, smh.`picked`, smh.`wins`, ROUND(smh.`wins` / smh.`picked` * 100, 2) as win_rate FROM `stats_mods_heroes` smh LEFT JOIN `game_heroes` gh ON smh.`hero_id` = gh.`hero_id` WHERE smh.`mod_name` = ? ORDER BY ' . $orderingClause . ';',
                     's',
                     $mod_name);
                 $mod_range = simple_cached_query('d2moddin_games_mods_range_alltime',
@@ -137,41 +125,70 @@ try {
 
 
                 //////////////////////////////////////////////
-
-                $extra_m = !empty($mod_name)
-                    ? '&m=' . $mod_name
-                    : '';
-
+                // DO FANCY ARROWS ON TABLE
                 //////////////////////////////////////////////
+                if (1) {
+                    $extra_m = !empty($mod_name)
+                        ? '&m=' . $mod_name
+                        : '';
 
-                $extra = isset($_GET['w']) && ($_GET['w'] == 1 || $_GET['w'] == 0)
-                    ? '&w=' . $_GET['w']
-                    : '';
-                $extra .= $extra_m;
+                    //////////////////////////////////////////////
 
-                if (isset($_GET['p'])) {
-                    $arrow_p = $_GET['p'] == 1
-                        ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?p=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
-                        : '<a class="nav-clickable" href="#d2moddin__games_heroes?p=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
-                } else {
-                    $arrow_p = '<a class="nav-clickable" href="#d2moddin__games_heroes?p=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?p=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
+                    $extra = '';
+                    $extra .= isset($_GET['w']) && ($_GET['w'] == 1 || $_GET['w'] == 0)
+                        ? '&w=' . $_GET['w']
+                        : '';
+                    $extra .= isset($_GET['wr']) && ($_GET['wr'] == 1 || $_GET['wr'] == 0)
+                        ? '&wr=' . $_GET['wr']
+                        : '';
+                    $extra .= $extra_m;
+
+                    if (isset($_GET['p'])) {
+                        $arrow_p = $_GET['p'] == 1
+                            ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?p=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
+                            : '<a class="nav-clickable" href="#d2moddin__games_heroes?p=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
+                    } else {
+                        $arrow_p = '<a class="nav-clickable" href="#d2moddin__games_heroes?p=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?p=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
+                    }
+
+                    //////////////////////////////////////////////
+
+                    $extra = '';
+                    $extra .= isset($_GET['p']) && ($_GET['p'] == 1 || $_GET['p'] == 0)
+                        ? '&p=' . $_GET['p']
+                        : '';
+                    $extra .= isset($_GET['wr']) && ($_GET['wr'] == 1 || $_GET['wr'] == 0)
+                        ? '&wr=' . $_GET['wr']
+                        : '';
+                    $extra .= $extra_m;
+
+                    if (isset($_GET['w'])) {
+                        $arrow_w = $_GET['w'] == 1
+                            ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?w=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
+                            : '<a class="nav-clickable" href="#d2moddin__games_heroes?w=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
+                    } else {
+                        $arrow_w = '<a class="nav-clickable" href="#d2moddin__games_heroes?w=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?w=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
+                    }
+
+                    //////////////////////////////////////////////
+
+                    $extra = '';
+                    $extra .= isset($_GET['p']) && ($_GET['p'] == 1 || $_GET['p'] == 0)
+                        ? '&p=' . $_GET['p']
+                        : '';
+                    $extra .= isset($_GET['w']) && ($_GET['w'] == 1 || $_GET['w'] == 0)
+                        ? '&w=' . $_GET['w']
+                        : '';
+                    $extra .= $extra_m;
+
+                    if (isset($_GET['wr'])) {
+                        $arrow_wr = $_GET['wr'] == 1
+                            ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?wr=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
+                            : '<a class="nav-clickable" href="#d2moddin__games_heroes?wr=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
+                    } else {
+                        $arrow_wr = '<a class="nav-clickable" href="#d2moddin__games_heroes?wr=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?wr=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
+                    }
                 }
-
-                //////////////////////////////////////////////
-
-                $extra = isset($_GET['p']) && ($_GET['p'] == 1 || $_GET['p'] == 0)
-                    ? '&p=' . $_GET['p']
-                    : '';
-                $extra .= $extra_m;
-
-                if (isset($_GET['w'])) {
-                    $arrow_w = $_GET['w'] == 1
-                        ? '<span class="glyphicon glyphicon-arrow-up"></span> <a class="nav-clickable" href="#d2moddin__games_heroes?w=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>'
-                        : '<a class="nav-clickable" href="#d2moddin__games_heroes?w=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <span class="glyphicon glyphicon-arrow-down"></span>';
-                } else {
-                    $arrow_w = '<a class="nav-clickable" href="#d2moddin__games_heroes?w=1' . $extra . '"><span class="glyphicon glyphicon-arrow-up"></span></a> <a class="nav-clickable" href="#d2moddin__games_heroes?w=0' . $extra . '"><span class="glyphicon glyphicon-arrow-down"></span></a>';
-                }
-
                 //////////////////////////////////////////////
 
                 echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($mod_range[0]['max_date']) . ' --> ' . relative_time($mod_range[0]['min_date']) . '</h4></div>';
@@ -179,10 +196,12 @@ try {
                 echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
                 echo '<tr>
-                        <th>&nbsp;</th>
+                        <th width="50">&nbsp;</th>
                         <th>Hero</th>
                         <th>Picked ' . $arrow_p . '</th>
-                        <th>Win Rate ' . $arrow_w . '</th>
+                        <th>Wins ' . $arrow_w . '</th>
+                        <th>Win Rate ' . $arrow_wr . '</th>
+                        <th width="20"><a class="nav-clickable" href="#d2moddin__games_heroes?' . $extra_m . '"><span class="glyphicon glyphicon-remove-circle"></span></a></th>
                     </tr>';
                 foreach ($mod_stats as $key => $value) {
                     if (empty($value['hero_name'])) {
@@ -192,14 +211,13 @@ try {
                         $img = './images/heroes/' . str_replace('\'', '', str_replace(' ', '-', strtolower($value['hero_name']))) . '.png';
                     }
 
-                    $winrate = number_format($value['wins'] / $value['picked'] * 100, 1) . '%';
-
-
                     echo '<tr>';
-                    echo '<td width="50"><img width="45" src="' . $img . '" /></td>';
+                    echo '<td><img width="45" height="25" src="' . $img . '" /></td>';
                     echo '<td>' . $value['hero_name'] . '</td>';
                     echo '<td>' . number_format($value['picked'], 0) . '</td>';
-                    echo '<td>' . $winrate . '</td>';
+                    echo '<td>' . number_format($value['wins'], 0) . '</td>';
+                    echo '<td>' . number_format($value['win_rate'], 0) . '%</td>';
+                    echo '<td>&nbsp;</td>';
                     echo '</tr>';
                 }
                 echo '</table></div>';

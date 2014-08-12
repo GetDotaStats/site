@@ -18,3 +18,4 @@
 
 */15 * * * *   /home/www-getdotastats/d2moddin/routine/scripts/15mins.sh > /home/www-getdotastats/d2moddin/routine/log_15mins.html 2>&1
 */30 * * * *   /home/www-getdotastats/d2moddin/routine/scripts/30mins.sh > /home/www-getdotastats/d2moddin/routine/log_30mins.html 2>&1
+@daily   /home/www-getdotastats/d2moddin/routine/scripts/daily.sh > /home/www-getdotastats/d2moddin/routine/log_daily.html 2>&1
