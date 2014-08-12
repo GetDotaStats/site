@@ -132,7 +132,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
         <div id="loading">
             <!--<img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
             <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>-->
-            <img id="loading_spinner1" src="./images/spinner.gif" alt="loading"/>
+            <img id="loading_spinner1" src="./images/spinner_v2.gif" alt="loading"/>
         </div>
     </div>
 </div>

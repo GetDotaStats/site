@@ -15,7 +15,7 @@ try {
         $steamid32 = $_SESSION['user_id32'];
     }
 
-    if ($_GET['status'] == 'success' && !empty($steamid32)) {
+    if (!empty($_GET['status']) && $_GET['status'] == 'success' && !empty($steamid32)) {
         $file_name_location = '../sig/images/generated/' . $steamid32 . '.png';
 
         if (file_exists($file_name_location)) {
