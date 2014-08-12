@@ -203,12 +203,14 @@ try {
                         <th>Win Rate ' . $arrow_wr . '</th>
                         <th width="20"><a class="nav-clickable" href="#d2moddin__games_heroes?' . $extra_m . '"><span class="glyphicon glyphicon-remove-circle"></span></a></th>
                     </tr>';
+
+                $staticContentDomain = '//static.getdotastats.com/';
                 foreach ($mod_stats as $key => $value) {
                     if (empty($value['hero_name'])) {
                         $value['hero_name'] = 'No hero';
-                        $img = './images/heroes/aaa_blank.png';
+                        $img = $staticContentDomain.'/images/heroes/aaa_blank.png';
                     } else {
-                        $img = './images/heroes/' . str_replace('\'', '', str_replace(' ', '-', strtolower($value['hero_name']))) . '.png';
+                        $img = $staticContentDomain.'/images/heroes/' . str_replace('\'', '', str_replace(' ', '-', strtolower($value['hero_name']))) . '.png';
                     }
 
                     echo '<tr>';

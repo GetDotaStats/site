@@ -7,17 +7,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./getdotastats.css" rel="stylesheet">
+    <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="./getdotastats.js"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js"></script>
 </head>
 <?php
 if (!isset($_SESSION)) {
@@ -128,11 +128,11 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
         <!--<h1>GetDotaStats
             <small> A collection of random stats</small>
         </h1>-->
-        <img width="400px" src="./images/getdotastats_logo_v3.png" />
+        <img width="400px" src="//static.getdotastats.com/images/getdotastats_logo_v3.png" alt="site logo" />
         <div id="loading">
             <!--<img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
             <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>-->
-            <img id="loading_spinner1" src="./images/spinner_v2.gif" alt="loading"/>
+            <img id="loading_spinner1" src="//static.getdotastats.com/images/spinner_v2.gif" alt="loading"/>
         </div>
     </div>
 </div>
@@ -149,7 +149,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
         <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <!-- Begin chatwing.com chatbox -->
-                <iframe src="http://chatwing.com/chatbox/f220203c-c1fa-4ce9-a840-c90a3a2edb9d" width="100%" height="600"
+                <iframe src="//chatwing.com/chatbox/f220203c-c1fa-4ce9-a840-c90a3a2edb9d" width="100%" height="600"
                         frameborder="0" scrolling="0">Embedded chat
                 </iframe>
                 <!-- End chatwing.com chatbox -->
@@ -163,13 +163,13 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
             Steam.
-            <small><a target="_blank" href="https://github.com/GetDotaStats/site/issues">Issues/Feature Requests
+            <small><a target="_blank" href="//github.com/GetDotaStats/site/issues">Issues/Feature Requests
                     here</a></small>
         </p>
     </div>
 </div>
 
-<script src="./bootstrap/js/jquery-1-11-0.min.js"></script>
-<script src="./bootstrap/js/bootstrap.min.js"></script>
+<script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
+<script src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
