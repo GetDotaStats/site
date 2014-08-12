@@ -29,3 +29,35 @@ if (!function_exists('searchMongoD2moddin')) {
         return $cursor;
     }
 }
+
+if (!function_exists("GetHeroes")) {
+    function getHeroes($steam_api_key){
+        $url = 'http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?language=en&key='.$steam_api_key;
+
+        $matches = json_decode(curl($url), true);
+
+        if(empty($matches)){
+            sleep(1);
+            $matches = json_decode(curl($url), true);
+        }
+
+        return $matches;
+    }
+}
+
+if (!function_exists("grab_heroes")) {
+    function grab_heroes($api_key, $time_to_store_secs = 600){
+        global $memcache;
+
+        $heroes = $memcache->get("d2_heroes");
+        if(!$heroes){
+            $heroes = GetHeroes(false, $api_key);
+
+            if($heroes){
+                $memcache->set("d2_heroes", $heroes, 0, $time_to_store_secs);
+            }
+        }
+
+        return $heroes;
+    }
+}

@@ -206,10 +206,15 @@ try {
 
                 $staticContentDomain = '//static.getdotastats.com/';
                 foreach ($mod_stats as $key => $value) {
-                    if (empty($value['hero_name'])) {
+                    if (empty($value['hero_name']) && !empty($value['hero_id'])) {
+                        $value['hero_name'] = 'Hero: #'.$value['hero_id'];
+                        $img = $staticContentDomain.'/images/heroes/aaa_blank.png';
+                    }
+                    else if (empty($value['hero_name'])) {
                         $value['hero_name'] = 'No hero';
                         $img = $staticContentDomain.'/images/heroes/aaa_blank.png';
-                    } else {
+                    }
+                    else {
                         $img = $staticContentDomain.'/images/heroes/' . str_replace('\'', '', str_replace(' ', '-', strtolower($value['hero_name']))) . '.png';
                     }
 
