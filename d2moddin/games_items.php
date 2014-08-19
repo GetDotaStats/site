@@ -182,19 +182,19 @@ try {
                     </tr>';
 
                     $staticContentDomain = '//static.getdotastats.com/';
-                    $staticContentDomain = '//localhost/getdotastats/';
+                    //$staticContentDomain = '//localhost/getdotastats/';
                     foreach ($mod_stats as $key => $value) {
                         if (empty($value['item_name']) && !empty($value['item_id'])) {
                             $value['item_name'] = 'Item: #' . $value['item_id'];
-                            $img = $staticContentDomain . '/images/items/aaa_blank.png';
+                            $img = $staticContentDomain . '/images/items/default/aaa_blank.png';
                         } else if (empty($value['item_name'])) {
                             $value['item_name'] = 'No item';
-                            $img = $staticContentDomain . '/images/items/aaa_blank.png';
+                            $img = $staticContentDomain . '/images/items/default/aaa_blank.png';
                         } else if(stristr($value['item_npc_name'],'recipe')){
-                            $img = $staticContentDomain . '/images/items/recipe.png';
+                            $img = $staticContentDomain . '/images/items/default/recipe.png';
                         }
                         else {
-                            $img = $staticContentDomain . '/images/items/' . str_replace('item_', '', $value['item_npc_name']) . '.png';
+                            $img = $staticContentDomain . '/images/items/default/' . str_replace('item_', '', $value['item_npc_name']) . '.png';
                         }
 
                         echo '<tr>';
