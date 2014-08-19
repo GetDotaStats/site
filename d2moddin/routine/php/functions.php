@@ -61,3 +61,18 @@ if (!function_exists("grab_heroes")) {
         return $heroes;
     }
 }
+
+if (!function_exists("GetItems")) {
+    function GetItems($steam_api_key){
+        $url = 'http://api.steampowered.com/IEconDOTA2_570/GetGameItems/v1/?language=en&key='.$steam_api_key;
+
+        $matches = json_decode(curl($url), true);
+
+        if(empty($matches)){
+            sleep(1);
+            $matches = json_decode(curl($url), true);
+        }
+
+        return $matches;
+    }
+}
