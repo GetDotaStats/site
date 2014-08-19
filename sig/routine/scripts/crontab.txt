@@ -17,3 +17,4 @@
 # @daily                    /home/www-dota2/matches/routine/a_scripts/db_1day_super.sh > /home/www-dota2/matches/routine/log_1day 2>&1
 
 @hourly		/home/www-getdotastats/sig/routine/scripts/hourly.sh > /home/www-getdotastats/sig/routine/log_hourly_sig_stats.html 2>&1
+@daily		/home/www-getdotastats/sig/routine/scripts/daily.sh > /home/www-getdotastats/sig/routine/log_daily.html 2>&1
