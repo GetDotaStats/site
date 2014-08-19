@@ -318,14 +318,11 @@ try {
 
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
-            echo '<tr>
-                        <th>Mod</th>
-                        <th>Stats</th>
-                    </tr>';
             foreach($mod_list as $key => $value){
                 echo '<tr>';
                 echo '<td>'.$value['mod_name'].'</td>';
                 echo '<td><a class="nav-clickable" href="#d2moddin__games_heroes?m='.$value['mod_name'].'">Heroes</a></td>';
+                echo '<td><a class="nav-clickable" href="#d2moddin__games_items?m='.$value['mod_name'].'">Items</a></td>';
                 echo '</tr>';
             }
             echo '</table></div>';
@@ -338,7 +335,7 @@ try {
 
         $memcache->close();
     } else {
-        echo 'No DB';
+        echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
     }
 } catch (Exception $e) {
     echo $e->getMessage();
