@@ -58,7 +58,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Site Stats <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sig Stats <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">GetDotaStats Stats</li>
                         <li><a class="nav-clickable" href="#stats__sig_stats">Signature Popularity</a></li>
