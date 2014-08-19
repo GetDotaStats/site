@@ -29,6 +29,9 @@ try {
             $production_stats = simple_cached_query('stats_signature_adoption_alltime',
                 'SELECT `hour`, `day`, `month`, `year`, `sig_views` FROM `stats_1_count` WHERE `date_accessed` >= now() - INTERVAL 7 DAY GROUP BY 4,3,2,1 ORDER BY 4 DESC,3 DESC,2 DESC,1 DESC;',
                 10);
+            $production_range = simple_cached_query('stats_signature_adoption_range',
+                'SELECT MIN(`date_accessed`) as min_date, MAX(`date_accessed`) as max_date FROM `stats_1_count` WHERE `date_accessed` >= now() - INTERVAL 7 DAY;',
+                60);
 
             $super_array = array();
             foreach ($production_stats as $key => $value) {
@@ -96,7 +99,7 @@ try {
                 'pageSize' => 6);
 
             echo '<div id="sig_views_lastweek" style="width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($production_range[0]['max_date']) . ' --> ' . relative_time($production_range[0]['min_date']) . '</h4></div>';
             echo '<div class="panel panel-default" style="width: 800px;">
                 <div class="panel-heading">
                     <h4 class="panel-title text-center">
@@ -126,6 +129,9 @@ try {
             $production_stats = simple_cached_query('stats_signature_adoption_alltime_daily',
                 'SELECT `day`, `month`, `year`, SUM(`sig_views`) as sig_views FROM `stats_1_count` GROUP BY 3,2,1 ORDER BY 3 DESC,2 DESC,1 DESC;',
                 10);
+            $production_range = simple_cached_query('stats_signature_adoption_range_alltime',
+                'SELECT MIN(`date_accessed`) as min_date, MAX(`date_accessed`) as max_date FROM `stats_1_count`;',
+                60);
 
             $super_array = array();
             foreach ($production_stats as $key => $value) {
@@ -193,7 +199,7 @@ try {
                 'pageSize' => 6);
 
             echo '<div id="sig_views_alltime_daily" style="overflow-x: scroll; width: 800px;"></div>';
-            echo '<div style="width: 800px;"><h4 class="text-center">Newest -> Oldest</h4></div>';
+            echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($production_range[0]['max_date']) . ' --> ' . relative_time($production_range[0]['min_date']) . '</h4></div>';
             echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
                         <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'sig_stats'.time().'.csv\')">Download to CSV</a>
