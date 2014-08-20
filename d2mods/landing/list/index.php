@@ -35,12 +35,12 @@ try {
                         <th width="50">&nbsp;</th>
                         <th>Message</th>
                         <th width="100">IP</th>
-                        <th width="100">Date Recorded</th>
+                        <th width="120">Recorded</th>
                     </tr>';
         foreach ($messages as $key => $value) {
             echo '<tr>
                         <td>' . $value['test_id'] . '</td>
-                        <td>' . $value['message'] . '</td>
+                        <td>' . stripslashes($value['message']) . '</td>
                         <td>' . $value['remote_ip'] . '</td>
                         <td>' . relative_time($value['date_recorded']) . '</td>
                     </tr>';

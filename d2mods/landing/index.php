@@ -59,9 +59,9 @@ try {
 
             // loop through all the clients that have data to read from
             foreach ($read as $read_sock) {
-                // read until newline or 1024 bytes
+                // read until newline or 15360 bytes
                 // socket_read while show errors when the client is disconnected, so silence the error messages
-                $data = @socket_read($read_sock, 1024, PHP_NORMAL_READ);
+                $data = @socket_read($read_sock, 15360, PHP_NORMAL_READ);
 
                 // check if the client is disconnected
                 if ($data === false) {
