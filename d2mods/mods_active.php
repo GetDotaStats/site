@@ -1,1 +1,0 @@
-<h2>No active mods yet!</h2>

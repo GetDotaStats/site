@@ -226,7 +226,7 @@ if (!function_exists("checkLogin")) {
                 'i',
                 $steamID64);
 
-          if (!empty($accountDetails)) {
+            if (!empty($accountDetails)) {
                 $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
                 $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
                 $_SESSION['user_name'] = $accountDetails[0]['user_name'];
@@ -234,8 +234,7 @@ if (!function_exists("checkLogin")) {
                 $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
 
                 header("Location: ./");
-            }
-            else{
+            } else {
                 //KILL BAD COOKIE
                 setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
 
@@ -259,24 +258,75 @@ if (!function_exists("checkLogin")) {
     }
 }
 
+if (!function_exists("checkLogin_v2")) {
+    function checkLogin_v2()
+    {
+        global $_COOKIE;
+        global $hostname_gds_site;
+        global $username_gds_site;
+        global $password_gds_site;
+        global $database_gds_site;
+
+        $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+
+        $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
+            's',
+            $_COOKIE['session']);
+
+        if (!empty($auth)) {
+            $steamID64 = $auth[0]['user_id64'];
+            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
+                'i',
+                $steamID64);
+
+            if (!empty($accountDetails)) {
+                $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
+                $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
+                $_SESSION['user_name'] = $accountDetails[0]['user_name'];
+                $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
+                $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                //header("Location: ./");
+            } else {
+                //KILL BAD COOKIE
+                setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
+                //header("Location: ./");
+            }
+
+            return true;
+        } else {
+            //KILL BAD COOKIE
+            unset($_SESSION['user_id32']);
+            unset($_SESSION['user_id64']);
+            unset($_SESSION['user_name']);
+            unset($_SESSION['user_avatar']);
+            unset($_SESSION['access_feeds']);
+
+            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
+            //header("Location: ./");
+
+            return false;
+        }
+    }
+}
+
 if (!function_exists("secs_to_h")) {
     function secs_to_h($secs)
     {
         $units = array(
-            "week"   => 7*24*3600,
-            "day"    =>   24*3600,
-            "hour"   =>      3600,
-            "minute" =>        60,
-            "second" =>         1,
+            "week" => 7 * 24 * 3600,
+            "day" => 24 * 3600,
+            "hour" => 3600,
+            "minute" => 60,
+            "second" => 1,
         );
 
         // specifically handle zero
-        if ( $secs == 0 ) return "0 seconds";
+        if ($secs == 0) return "0 seconds";
 
         $s = "";
 
-        foreach ( $units as $name => $divisor ) {
-            if ( $quot = intval($secs / $divisor) ) {
+        foreach ($units as $name => $divisor) {
+            if ($quot = intval($secs / $divisor)) {
                 $s .= "$quot $name";
                 $s .= (abs($quot) > 1 ? "s" : "") . ", ";
                 $secs -= $quot * $divisor;

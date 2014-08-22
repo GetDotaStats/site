@@ -6,6 +6,10 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
+if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
+    checkLogin_v2();
+}
+
 try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper($hostname_gds_feeds, $username_gds_feeds, $password_gds_feeds, $database_gds_feeds, true);

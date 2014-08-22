@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css?2" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -25,12 +25,9 @@ if (!isset($_SESSION)) {
 }
 
 if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-    require_once("./auth/functions.php");
     require_once("./global_functions.php");
     require_once("./connections/parameters.php");
-
-    $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-    checkLogin($db, $_COOKIE['session']);
+    checkLogin_v2();
 }
 ?>
 <body>
@@ -43,7 +40,9 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#d2mods__mods_active">Active Mods</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__signup">Signup a new Mod</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
