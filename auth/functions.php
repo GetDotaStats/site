@@ -63,7 +63,15 @@ if (!class_exists('user')) {
                         $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
                     }
 
-                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', 'getdotastats.com');
+                    $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', $domain);
+
+                    /*setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', '.getdotastats.com');
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', '.dota.solutions');
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', '.dota2.solutions');
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', '.dota.technology');
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', '.dota.photography');
+                    setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', '.dota.company');*/
 
                     if ($relocate) {
                         header('Location: ' . $relocate);
@@ -91,7 +99,15 @@ if (!class_exists('user')) {
             unset($_SESSION['user_avatar']);
             unset($_SESSION['access_feeds']);
 
-            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
+            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
+            setcookie('session', '', time() - 3600, '/', $domain);
+
+            /*setcookie('session', '', time() - 3600, '/', '.getdotastats.com');
+            setcookie('session', '', time() - 3600, '/', '.dota.solutions');
+            setcookie('session', '', time() - 3600, '/', '.dota2.solutions');
+            setcookie('session', '', time() - 3600, '/', '.dota.technology');
+            setcookie('session', '', time() - 3600, '/', '.dota.photography');
+            setcookie('session', '', time() - 3600, '/', '.dota.company');*/
 
             if ($relocate) {
                 header('Location: ' . $relocate);

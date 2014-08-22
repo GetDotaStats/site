@@ -237,7 +237,11 @@ if (!function_exists("checkLogin")) {
             } else {
                 //KILL BAD COOKIE
                 setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-
+                setcookie('session', '', time() - 3600, '/', 'dota.solutions');
+                setcookie('session', '', time() - 3600, '/', 'dota2.solutions');
+                setcookie('session', '', time() - 3600, '/', 'dota.technology');
+                setcookie('session', '', time() - 3600, '/', 'dota.photography');
+                setcookie('session', '', time() - 3600, '/', 'dota.company');
                 header("Location: ./");
             }
 
@@ -251,6 +255,11 @@ if (!function_exists("checkLogin")) {
             unset($_SESSION['access_feeds']);
 
             setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
+            setcookie('session', '', time() - 3600, '/', 'dota.solutions');
+            setcookie('session', '', time() - 3600, '/', 'dota2.solutions');
+            setcookie('session', '', time() - 3600, '/', 'dota.technology');
+            setcookie('session', '', time() - 3600, '/', 'dota.photography');
+            setcookie('session', '', time() - 3600, '/', 'dota.company');
             header("Location: ./");
 
             return false;
@@ -285,11 +294,17 @@ if (!function_exists("checkLogin_v2")) {
                 $_SESSION['user_name'] = $accountDetails[0]['user_name'];
                 $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
                 $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
-                //header("Location: ./");
             } else {
                 //KILL BAD COOKIE
-                setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-                //header("Location: ./");
+                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
+                setcookie('session', '', time() - 3600, '/', $domain);
+
+                /*setcookie('session', '', time() - 3600, '/', '.getdotastats.com');
+                setcookie('session', '', time() - 3600, '/', '.dota.solutions');
+                setcookie('session', '', time() - 3600, '/', '.dota2.solutions');
+                setcookie('session', '', time() - 3600, '/', '.dota.technology');
+                setcookie('session', '', time() - 3600, '/', '.dota.photography');
+                setcookie('session', '', time() - 3600, '/', '.dota.company');*/
             }
 
             return true;
@@ -301,8 +316,15 @@ if (!function_exists("checkLogin_v2")) {
             unset($_SESSION['user_avatar']);
             unset($_SESSION['access_feeds']);
 
-            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-            //header("Location: ./");
+            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
+            setcookie('session', '', time() - 3600, '/', $domain);
+
+            /*setcookie('session', '', time() - 3600, '/', '.getdotastats.com');
+            setcookie('session', '', time() - 3600, '/', '.dota.solutions');
+            setcookie('session', '', time() - 3600, '/', '.dota2.solutions');
+            setcookie('session', '', time() - 3600, '/', '.dota.technology');
+            setcookie('session', '', time() - 3600, '/', '.dota.photography');
+            setcookie('session', '', time() - 3600, '/', '.dota.company');*/
 
             return false;
         }
