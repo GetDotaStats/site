@@ -17,7 +17,9 @@ try {
 
         if ($db) {
             ?>
-            <div class="page-header"><h2>Add a new Mod for Stats</h2></div>
+            <div class="page-header"><h2>Add a new Mod for Stats <small>BETA</small></h2></div>
+
+            <p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. This section is a Work-In-Progress, so check back later.</p>
 
             <div class="col-sm-7">
                 <form id="modSignup">

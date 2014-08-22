@@ -12,7 +12,9 @@ try {
     if ($db) {
         $modList = simple_cached_query('d2mods_directory', 'SELECT * FROM `mod_list`;', 10);
 
-        echo '<div class="page-header"><h2>Mod Directory</h2></div>';
+        echo '<div class="page-header"><h2>Mod Directory <small>BETA</small></h2></div>';
+
+        echo '<p>This is a directory of all the games that developers are planning to implement stats for. This section is a Work-In-Progress, so check back later.</p>';
 
         if (!empty($modList)) {
             echo '<div class="table-responsive">

@@ -38,11 +38,11 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                 <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-default">NEW</span> <b class="caret"></b></a>
+                            class="label label-default">BETA</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__signup">Signup a new Mod</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__signup">Registration</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

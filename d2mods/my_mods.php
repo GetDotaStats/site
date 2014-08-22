@@ -23,7 +23,9 @@ try {
                 'i',
                 $_SESSION['user_id64']);
 
-            echo '<div class="page-header"><h2>My Mods</h2></div>';
+            echo '<div class="page-header"><h2>My Mods <small>BETA</small></h2></div>';
+
+            echo '<p>This is a list of the mods you have added. Each mod has an associated encryption key that you will require. Do not share it! This section is a Work-In-Progress, so check back later.</p>';
 
             if (!empty($modList)) {
                 foreach ($modList as $key => $value) {
