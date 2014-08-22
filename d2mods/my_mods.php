@@ -25,7 +25,7 @@ try {
 
             echo '<div class="page-header"><h2>My Mods <small>BETA</small></h2></div>';
 
-            echo '<p>This is a list of the mods you have added. Each mod has an associated encryption key that you will require. Do not share it! This section is a Work-In-Progress, so check back later.</p>';
+            echo '<p>This is a list of the mods you have added. Each mod has an associated encryption key that you will require. Please <a class="nav-clickable" href="#d2mods__guide">read our guide</a> on how to integrate statistic gathering into your mod. This section is a Work-In-Progress, so check back later.</p>';
 
             if (!empty($modList)) {
                 foreach ($modList as $key => $value) {
