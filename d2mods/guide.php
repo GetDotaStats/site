@@ -7,9 +7,9 @@
 <p>This section is a Work-In-Progress, so check back later.</p>
 
 <p>Initial experimentation has revealed that via LUA or Flash, we can open socket connections with remote servers. We
-    plan to take advantage of this by opening a socket back to this server at the end of each game. Before starting this
-    guide, please ensure that you have added your mod to our directory. You will be provided with an encryption key that
-    will be required towards the end of the guide.</p>
+    plan to take advantage of this by opening a socket back to our servers at the end of each game for stat gathering
+    purposes. Before starting this guide, please ensure that you have added your mod to our directory. You will be
+    provided with an encryption key that will be required towards the end of the guide.</p>
 
 <h3>Gathering the Data</h3>
 
@@ -30,32 +30,32 @@
     <li>dateEnded -- Match Ending Unix Timestamp</li>
     <li>players -- Player data - <strong>repeat</strong>
         <ul>
-            <li>Player Nickname</li>
-            <li>steamID32</li>
-            <li>steamID64</li>
-            <li>Leaver Status</li>
-            <li>Team ID</li>
-            <li>Slot ID - <strong>wrt. their team</strong></li>
-            <li>Hero ID
+            <li>playerNickname -- Player Nickname</li>
+            <li>steamID32 -- Player's steam account ID (same as Dotabuff's)</li>
+            <li>steamID64 -- Player's steam ID (starts with 765)</li>
+            <li>leaverStatus -- Leaver Status ID</li>
+            <li>teamID -- Team ID - <strong>we currently can only do Radiant and Dire</strong></li>
+            <li>slotID -- Slot ID - <strong>wrt. their team</strong></li>
+            <li>heroID -- Hero ID
                 <ul>
-                    <li>Level</li>
-                    <li>Tower Damage</li>
-                    <li>Hero Damage</li>
-                    <li>Kills</li>
-                    <li>Assists</li>
-                    <li>Deaths</li>
-                    <li>Abilities
+                    <li>level</li>
+                    <li>structureDamage</li>
+                    <li>heroDamage</li>
+                    <li>kills</li>
+                    <li>assists</li>
+                    <li>deaths</li>
+                    <li>abilities
                         <ul>
-                            <li>Ability ID - <strong>repeat, only the hero chosen abilities</strong></li>
+                            <li>abilityID - <strong>repeat, only the hero chosen abilities</strong></li>
                         </ul>
                     </li>
                 </ul>
             </li>
-            <li>Items
+            <li>items
                 <ul>
-                    <li>Game Time - <strong>repeat</strong>
+                    <li>gameTime - <strong>repeat</strong>
                         <ul>
-                            <li>Item ID</li>
+                            <li>itemID</li>
                         </ul>
                     </li>
                 </ul>
@@ -95,6 +95,18 @@
 <div class="panel panel-default">
     <div class="panel-body">
         Alan, add code here
+        <br/>Steps:
+        <ul>
+            <li>Create message body of JSON</li>
+            <li>Add a timestamp to the message</li>
+            <li>Encrypt message using the encryption key unique to your mod</li>
+            <li>Open socket request to 176.31.182.87 on port 4444</li>
+            <li>After receiving welcome message, send mod identifier</li>
+            <li>After receiving ack, send message</li>
+            <li>After receiving ack, close connection</li>
+        </ul>
+        You can view if it worked by looking at <a href="//getdotastats.com/d2mods/list_messages.php" target="_new">our
+            list of messages</a>
     </div>
 </div>
 
@@ -120,5 +132,6 @@
 
 <p>This method of stat collection is very new, so feel free to contact me via <a
         href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a>/<a
-        href="steamcommunity.com/id/jimmydorry/" target="_new">Steam</a>/Chatbox. If contacting me via Steam, make
-    sure to leave a message on my profile, as I will likely not add you otherwise.</p>
+        href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a>/<a
+        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a>/Site Chatbox. If contacting me via
+    Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
