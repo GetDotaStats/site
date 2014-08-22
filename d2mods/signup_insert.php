@@ -1,5 +1,4 @@
 <?php
-require_once('./functions.php');
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
@@ -13,7 +12,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 
 try {
     if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test, true);
+        $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test);
         if ($db) {
             if (!empty($_POST['mod_name'])) {
                 $modName = $db->escape($_POST['mod_name']);

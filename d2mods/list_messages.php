@@ -21,7 +21,6 @@
 </head>
 <body>
 <?php
-require_once('./functions.php');
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
@@ -35,7 +34,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 
 try {
     if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test, true);
+        $db = new dbWrapper($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test);
         if ($db) {
             $messages = $db->q('SELECT * FROM `test_landing` ORDER BY date_recorded DESC;');
 
@@ -65,7 +64,7 @@ try {
         echo '<a href="../">Go back to main site</a>';
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
 }
 ?>
 <script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
