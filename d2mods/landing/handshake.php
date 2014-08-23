@@ -4,45 +4,35 @@ require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
 try {
-    $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test);
+    $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test, true);
     if ($db) {
 
-        $port = 4444;
+        $port = 4445;
 
-        // create a streaming socket, of type TCP/IP
-        $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP); // create a streaming socket, of type TCP/IP
 
-        // set the option to reuse the port
-        socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1);
+        socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1); // set the option to reuse the port
 
-        // "bind" the socket to the address to "localhost", on port $port
-        // so this means that all connections on this port are now our resposibility to send/recv data, disconnect, etc..
-        socket_bind($sock, 0, $port);
+        socket_bind($sock, 0, $port); // "bind" the socket to the address to "localhost", on port $port
 
-        // start listen for connections
-        socket_listen($sock);
+        socket_listen($sock); // start listen for connections
 
         echo "Waiting for connections...\n";
 
-        // create a list of all the clients that will be connected to us..
-        // add the listening socket to this list
-        $clients = array($sock);
+        $clients = array($sock); // create a list of all the clients that will be connected to us and add the listening socket to this list
 
         $write = NULL; //hacks cause we can't pass null
         $except = NULL; //hacks cause we can't pass null
 
         while (true) {
-            // create a copy, so $clients doesn't get modified by socket_select()
-            $read = $clients;
+            $read = $clients; // create a copy, so $clients doesn't get modified by socket_select()
 
-            // get a list of all the clients that have data to be read from
-            // if there are no clients with data, go to next iteration
+            // get a list of all the clients that have data to be read from if there are no clients with data, go to next iteration
 
             if (socket_select($read, $write, $except, 0) < 1)
                 continue;
 
-            // check if there is a client trying to connect
-            if (in_array($sock, $read)) {
+            if (in_array($sock, $read)) { // check if there is a client trying to connect
                 // accept the client, and add him to the $clients array
                 $clients[] = $newsock = socket_accept($sock);
 
