@@ -34,7 +34,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 
 try {
     if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test);
+        $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test);
         if ($db) {
             $messages = $db->q('SELECT * FROM `test_landing` ORDER BY date_recorded DESC;');
 
