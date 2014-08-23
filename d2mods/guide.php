@@ -16,7 +16,9 @@
 <p>Via LUA, you will communicate the following in JSON.</p>
 
 <ul>
-    <li>matchID -- Match ID</li>
+    <li>matchID -- Match ID - needs to be a unique repeatable hash for all of the clients (try hashing dateEnded,
+        duration, modID, serverAddress)
+    </li>
     <li>modID -- Mod Identifier</li>
     <li>modes -- Game mode flags - <strong>as an array, if applicable</strong></li>
     <li>version -- Map version</li>
@@ -28,7 +30,7 @@
     <li>massDisconnect -- Mass Disconnect - <strong>boolean for everyone being disconnected</strong></li>
     <li>serverAddress -- Server Address - <strong>including port</strong></li>
     <li>dateEnded -- Match Ending Unix Timestamp</li>
-    <li>players -- Player data - <strong>repeat</strong>
+    <li>player -- Player data
         <ul>
             <li>playerNickname -- Player Nickname</li>
             <li>steamID32 -- Player's steam account ID (same as Dotabuff's)</li>
