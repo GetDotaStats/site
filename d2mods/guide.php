@@ -6,14 +6,14 @@
 
 <p>This section is a Work-In-Progress, so check back later.</p>
 
-<p>Initial experimentation has revealed that via LUA or Flash, we can open socket connections with remote servers. We
-    plan to take advantage of this by opening a socket back to our servers at the end of each game for stat gathering
-    purposes. Before starting this guide, please ensure that you have added your mod to our directory. You will be
-    provided with an encryption key that will be required towards the end of the guide.</p>
+<p>Initial experimentation has revealed that via a combination of Flash and LUA, we can open socket connections with
+    remote servers. We plan to take advantage of this by opening a socket back to our servers at the end of each game
+    for stat gathering purposes. Before starting this guide, please ensure that you have added your mod to our
+    directory. You will be provided with an encryption key that will be required towards the end of the guide.</p>
 
 <h3>Gathering the Data</h3>
 
-<p>Via LUA, you will communicate the following in JSON.</p>
+<p>Via Flash and LUA, you will communicate the following in JSON.</p>
 
 <ul>
     <li>matchID -- Match ID - needs to be a unique repeatable hash for all of the clients (try hashing dateEnded,
@@ -66,7 +66,7 @@
     </li>
 </ul>
 
-<p>You will first need to implement your LUA methods for gathering the above data. Failing to collect all of the
+<p>You will first need to implement your Flash and LUA methods for gathering the above data. Failing to collect all of the
     required data may result in your mod getting de-listed, or stats not functioning correctly. Below is a sample JSON
     schema:</p>
 
@@ -79,11 +79,13 @@
 </div>
 
 <p>There is no standard cookie cutter code that will work for every mod, but much of it should be the same. Below is
-    sample LUA code for gathering some of the required statistics:</p>
+    sample Flash and LUA code for gathering some of the required statistics:</p>
 
 <div class="panel panel-default">
     <div class="panel-body">
-        Alan, add code here
+        Alan, add code here. In the meantime, <a
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/HUDsrc/StatsCollection.as" target="_blank">SinZ163
+            has a whole script up for collection and communication</a>
     </div>
 </div>
 
@@ -96,7 +98,9 @@
 
 <div class="panel panel-default">
     <div class="panel-body">
-        Alan, add code here
+        Alan, add code here. In the meantime, <a
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/HUDsrc/StatsCollection.as" target="_blank">SinZ163
+            has a whole script up for collection and communication</a>
         <br/>Steps:
         <ul>
             <li>Create message body of JSON</li>
@@ -132,7 +136,7 @@
 
 <p>You are now ready to go! Upload your mod to the workshop and see if it works!</p>
 
-<p>This method of stat collection is very new, so feel free to contact me via <a
+<p>This method of stat collection is new and experimental, so feel free to contact me via <a
         href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a>/<a
         href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a>/<a
         href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a>/Site Chatbox. If contacting me via
