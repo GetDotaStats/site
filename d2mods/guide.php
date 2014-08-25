@@ -84,7 +84,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         Alan, add code here. In the meantime, <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/HUDsrc/StatsCollection.as" target="_blank">SinZ163
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/StatSource/StatsCollection.as" target="_blank">SinZ163
             has a whole script up for collection and communication</a>
     </div>
 </div>
@@ -99,7 +99,7 @@
 <div class="panel panel-default">
     <div class="panel-body">
         Alan, add code here. In the meantime, <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/HUDsrc/StatsCollection.as" target="_blank">SinZ163
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/StatSource/StatsCollection.as" target="_blank">SinZ163
             has a whole script up for collection and communication</a>
         <br/>Steps:
         <ul>
