@@ -66,7 +66,8 @@
     </li>
 </ul>
 
-<p>You will first need to implement your Flash and LUA methods for gathering the above data. Failing to collect all of the
+<p>You will first need to implement your Flash and LUA methods for gathering the above data. Failing to collect all of
+    the
     required data may result in your mod getting de-listed, or stats not functioning correctly. Below is a sample JSON
     schema:</p>
 
@@ -98,9 +99,13 @@
 
 <div class="panel panel-default">
     <div class="panel-body">
-        Alan, add code here. In the meantime, <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/StatSource/StatsCollection.as" target="_blank">SinZ163
-            has a whole script up for collection and communication</a>
+        <a href="https://github.com/SinZ163/TrollsAndElves/blob/master/StatSource/StatsCollection.as" target="_blank">SinZ163's
+            code, and his GitHub should have the latest working copy</a>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
         <br/>Steps:
         <ul>
             <li>Create message body of JSON</li>
@@ -115,6 +120,10 @@
             list of messages</a>
     </div>
 </div>
+
+<p>The above code should compile into "resource/flash3/StatsCollection.swf", where it can be put into any game mode. It
+    will send the data if LUA sends the event, and it is in custom_events too. The compiled flash will need to be called
+    in custom_ui.</p>
 
 <p>As you can see above, you will need to add the encryption key specific to your mod. <strong>It is important not
         to share this key!</strong> If we see any unusual activity associated with a key, we will revoke the mod and
