@@ -129,6 +129,14 @@ if (!class_exists("dbWrapper_v2")) {
             return $this->_mysqli->real_escape_string($query);
         }
 
+        public function ping(){
+            if ($this->_mysqli->ping()) {
+                return true;
+            } else {
+                throw new Exception("Error: %s\n", $this->_mysqli->error);
+            }
+        }
+
         public function q($query)
         {
             if ($query = $this->_mysqli->prepare($query)) {

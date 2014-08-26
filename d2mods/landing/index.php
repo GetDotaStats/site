@@ -3,105 +3,106 @@
 require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
-while (true) {
+try {
+    $port = 4444;
+
+    $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP); // create a streaming socket, of type TCP/IP
+
+    socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1); // set the option to reuse the port
+
+    socket_bind($sock, 0, $port); // "bind" the socket to the address to "localhost", on port $port
+
+    socket_listen($sock); // start listen for connections
+
+    echo "Waiting for connections...\n";
+
+    $clients = array($sock); // create a list of all the clients that will be connected to us... & add the listening socket to this list
+
+    $write = NULL; //hacks cause we can't pass null
+    $except = NULL; //hacks cause we can't pass null
+
     try {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
-        if ($db) {
+
+        if (!$db) {
+            throw new Exception('[1] No DB!!!');
+        }
+
+        while (true) {
             try {
-                $port = 4444;
-
-                // create a streaming socket, of type TCP/IP
-                $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-
-                // set the option to reuse the port
-                socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1);
-
-                // "bind" the socket to the address to "localhost", on port $port
-                // so this means that all connections on this port are now our resposibility to send/recv data, disconnect, etc..
-                socket_bind($sock, 0, $port);
-
-                // start listen for connections
-                socket_listen($sock);
-
-                echo "Waiting for connections...\n";
-
-                // create a list of all the clients that will be connected to us..
-                // add the listening socket to this list
-                $clients = array($sock);
-
-                $write = NULL; //hacks cause we can't pass null
-                $except = NULL; //hacks cause we can't pass null
+                if (!$db) {
+                    echo '[2] No DB!!';
+                    $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+                }
 
                 while ($db) {
-                    // create a copy, so $clients doesn't get modified by socket_select()
-                    $read = $clients;
+                    $read = $clients; // create a copy, so $clients doesn't get modified by socket_select()
 
-                    // get a list of all the clients that have data to be read from
-                    // if there are no clients with data, go to next iteration
-
-                    if (socket_select($read, $write, $except, 0) < 1)
+                    if (socket_select($read, $write, $except, 0) < 1) // get a list of all the clients that have data to be read from & if there are no clients with data, go to next iteration
                         continue;
 
-                    // check if there is a client trying to connect
-                    if (in_array($sock, $read)) {
-                        // accept the client, and add him to the $clients array
-                        $clients[] = $newsock = socket_accept($sock);
+                    if (in_array($sock, $read)) { // check if there is a client trying to connect
+                        $clients[] = $newsock = socket_accept($sock); // accept the client, and add him to the $clients array
 
-                        // send the client a welcome message
-                        socket_write($newsock, "I'm listening. There are " . (count($clients) - 1) . " client(s) connected\n");
+                        socket_write($newsock, "I'm listening. There are " . (count($clients) - 1) . " client(s) connected\n"); // send the client a welcome message
 
                         socket_getpeername($newsock, $ip);
                         echo "New client connected: {$ip}\n";
 
-                        // remove the listening socket from the clients-with-data array
-                        $key = array_search($sock, $read);
+                        $key = array_search($sock, $read); // remove the listening socket from the clients-with-data array
                         unset($read[$key]);
                     }
 
-                    // loop through all the clients that have data to read from
-                    foreach ($read as $read_sock) {
-                        // read until newline or 15360 bytes
-                        // socket_read while show errors when the client is disconnected, so silence the error messages
-                        $data = @socket_read($read_sock, 15360, PHP_NORMAL_READ);
+                    foreach ($read as $read_sock) { // loop through all the clients that have data to read from
+                        $data = @socket_read($read_sock, 15360, PHP_NORMAL_READ); // read until newline or 15360 bytes || socket_read while show errors when the client is disconnected, so silence the error messages
 
-                        // check if the client is disconnected
-                        if ($data === false) {
-                            // remove client for $clients array
-                            $key = array_search($read_sock, $clients);
+                        if ($data === false) { // check if the client is disconnected
+                            $key = array_search($read_sock, $clients); // remove client for $clients array
                             unset($clients[$key]);
                             echo "client disconnected.\n";
-                            // continue to the next client to read from, if any
+
                             continue;
                         }
 
-                        // trim off the trailing/beginning white spaces
-                        $data = trim($data);
+                        $data = trim($data); // trim off the trailing/beginning white spaces
 
-                        // check if there is any data after trimming off the spaces
-                        if (!empty($data)) {
+                        if (!empty($data)) { // check if there is any data after trimming off the spaces
                             socket_getpeername($read_sock, $ip, $port);
 
-                            // send ack back to client -- add a newline character to the end of the message
-                            socket_write($read_sock, 'Acknowledged' . "\n");
-                            echo 'Received: [' . $ip . ':' . $port . '] ' . $data . "\n";
+                            echo 'Received: [' . $ip . ':' . $port . '] ' . $data . "\n"; // send ack back to client -- add a newline character to the end of the message
 
-                            $db->q('INSERT INTO `test_landing`(`message`, `remote_ip`) VALUES (?, ?)',
-                                'ss',
-                                $db->escape($data), $ip);
+                            try {
+                                $db->ping();
+                                $test = $db->q('INSERT INTO `test_landing`(`message`, `remote_ip`) VALUES (?, ?)',
+                                    'ss',
+                                    $db->escape($data), $ip);
+
+                                if ($test) {
+                                    socket_write($read_sock, 'Acknowledged' . "\n");
+
+                                } else {
+                                    socket_write($read_sock, '[4] Failure DB' . "\n");
+                                }
+                            } catch (Exception $e) {
+                                echo $e->getMessage();
+                                socket_write($read_sock, '[3] Failure' . "\n");
+                                $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+                            }
                         }
                     }
                 }
             } catch (Exception $e) {
                 echo $e->getMessage();
-            } finally {
-                socket_close($sock);
             }
-        } else {
-            echo 'No DB!';
+
+            sleep(10);
         }
     } catch (Exception $e) {
         echo $e->getMessage();
+    } finally {
+        socket_close($sock);
     }
-
-    sleep(15);
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
+
