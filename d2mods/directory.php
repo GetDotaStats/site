@@ -9,7 +9,7 @@ try {
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if ($db) {
-        $modList = simple_cached_query('d2mods_directory', 'SELECT * FROM `mod_list`;', 10);
+        $modList = simple_cached_query('d2mods_directory', 'SELECT ml.*, gu.`user_name` FROM `mod_list` ml LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`;', 10);
 
         echo '<div class="page-header"><h2>Mod Directory <small>BETA</small></h2></div>';
 
@@ -21,6 +21,7 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>Name</th>
+                        <th>Owner</th>
                         <th width="120">Workshop</th>
                         <th width="120">Steam Group</th>
                         <th width="120">Added</th>
@@ -30,10 +31,15 @@ try {
                 echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <td>' . $value['mod_name'] . '</td>
+                        <th class="text-right">' . $value['user_name'] . '</th>
                         <td><a href="' . $value['mod_workshop_link'] . '" target="_new">Workshop</a></td>
                         <td><a href="' . $value['mod_steam_group'] . '" target="_new">Steam Group</a></td>
                         <td>' . relative_time($value['date_recorded']) . '</td>
-                    </tr>';
+                    </tr>
+                    <tr>
+                        <td colspan="6">' . $value['mod_description'] . '</td>
+                    </tr>
+                    <tr><td colspan="6">&nbsp;</td></tr>';
             }
 
             echo '</table></div>';
