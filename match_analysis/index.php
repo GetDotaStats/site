@@ -84,6 +84,18 @@ try {
         $header .= '</div>';
 
         echo $header;
+
+        ?>
+
+        <p><em>Dec 2013 - Feb 2014</em></p>
+        <ul>
+            <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>
+            <li><a class="nav-clickable" href="#match_analysis__general_stats">General Stats</a></li>
+            <li><a class="nav-clickable" href="#match_analysis__game_modes">Game Modes</a></li>
+            <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
+        </ul>
+
+    <?php
     } else {
         echo 'No DB';
     }

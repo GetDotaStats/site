@@ -47,27 +47,12 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Signatures <span class="label label-danger">HOT</span> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Signatures <span
+                            class="label label-danger">HOT</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#steamtracks/">Generator <span class="label label-danger">HOT</span></a></li>
+                        <li><a class="nav-clickable" href="#steamtracks/">Generator <span
+                                    class="label label-danger">HOT</span></a></li>
                         <li><a class="nav-clickable" href="#stats__sig_stats">Usage Stats</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">D2Modd.in <span
-                            class="label label-info">DEAD</span><b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">Live Stats</li>
-                        <li><a class="nav-clickable" href="#d2moddin__players">Players</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__lobbies">Lobby Types</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__mods">Lobbies per Mod</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__regions">Lobbies per Region</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__servers">Lobbies per Server</a></li>
-                        <li class="dropdown-header">Parsed Match Data</li>
-                        <li><a class="nav-clickable" href="#d2moddin__games_mods">Games per Mod</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin__games_duration">Duration of Games</a></li>
-                        <li class="dropdown-header">Deprecated</li>
-                        <li><a class="nav-clickable" href="#d2moddin__queue">Queue Join Rate</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -85,19 +70,19 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                         <li class="dropdown-header">Simulations</li>
                         <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
                         <li class="divider"></li>
-                        <li class="dropdown-header">Pub Match Analysis</li>
-                        <li class="dropdown-header"><em>Dec 2013 - Feb 2014</em></li>
-                        <li><a class="nav-clickable" href="#match_analysis/">Overview</a></li>
-                        <li><a class="nav-clickable" href="#match_analysis__general_stats">General Stats</a></li>
-                        <li><a class="nav-clickable" href="#match_analysis__game_modes">Game Modes</a></li>
-                        <li><a class="nav-clickable" href="#match_analysis__clusters">Region Breakdown</a></li>
-                        <li class="divider"></li>
                         <li class="dropdown-header">API Scraper</li>
-                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a></li>
+                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header"><em>Dec 2013 - Feb 2014</em></li>
+                        <li><a class="nav-clickable" href="#match_analysis/">Pub Match Analysis <span
+                                    class="label label-info">DEAD</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#credits">Credits</a></li>
                         <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
+                        <li><a class="nav-clickable" href="#d2moddin/">D2Modd.in <span
+                                    class="label label-info">DEAD</span></a></a></li>
                         <li><a class="nav-clickable" href="#replays/">Replay Archive <span
                                     class="label label-info">DEAD</span></a></a></li>
                     </ul>
@@ -129,7 +114,8 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
         <!--<h1>GetDotaStats
             <small> A collection of random stats</small>
         </h1>-->
-        <img width="400px" src="//static.getdotastats.com/images/getdotastats_logo_v3.png" alt="site logo" />
+        <img width="400px" src="//static.getdotastats.com/images/getdotastats_logo_v3.png" alt="site logo"/>
+
         <div id="loading">
             <!--<img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
             <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>-->
