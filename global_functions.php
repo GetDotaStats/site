@@ -2,7 +2,13 @@
 if (!function_exists('exceptions_error_handler')) {
     function exceptions_error_handler($severity, $message, $filename, $lineno)
     {
-        throw new ErrorException($message, 0, $severity, $filename, $lineno);
+        if ( 0 == error_reporting () ) {
+            // Error reporting is currently turned off or suppressed with @
+            return;
+        }
+        else{
+            throw new ErrorException($message, 0, $severity, $filename, $lineno);
+        }
     }
 }
 
