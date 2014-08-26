@@ -5,7 +5,7 @@ require_once('../../connections/parameters.php');
 
 while (true) {
     try {
-        $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test);
+        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
             try {
                 $port = 4444;

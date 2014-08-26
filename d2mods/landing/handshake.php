@@ -4,7 +4,7 @@ require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
 try {
-    $db = new dbWrapper_v2($hostname_gds_test, $username_gds_test, $password_gds_test, $database_gds_test, true);
+    $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if ($db) {
 
         $port = 4445;
