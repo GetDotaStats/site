@@ -19,7 +19,7 @@ try {
 
                 $modDesc = !empty($_POST['mod_description'])
                     ? $db->escape($_POST['mod_description'])
-                    : NULL;
+                    : 'No description given.';
 
                 $modWork = !empty($_POST['mod_workshop_link'])
                     ? $db->escape($_POST['mod_workshop_link'])
