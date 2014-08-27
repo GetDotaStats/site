@@ -20,6 +20,9 @@
     <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js"></script>
 </head>
 <body>
+
+<h2>Don't forget that you can look at the raw messages (from terminal) <a href="./log.html" target="_blank">here</a>.</h2>
+
 <?php
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');

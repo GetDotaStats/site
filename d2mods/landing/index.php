@@ -3,6 +3,13 @@
 require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
+if (!function_exists('timePretty')) {
+    function timePretty()
+    {
+        return date("c", time());
+    }
+}
+
 try {
     $port = 4444;
 
@@ -14,7 +21,7 @@ try {
 
     socket_listen($sock); // start listen for connections
 
-    echo "Waiting for connections...\n";
+    echo "[".timePretty()."] Waiting for connections...<br />";
 
     $clients = array($sock); // create a list of all the clients that will be connected to us... & add the listening socket to this list
 
@@ -47,7 +54,7 @@ try {
                         socket_write($newsock, "I'm listening. There are " . (count($clients) - 1) . " client(s) connected\n"); // send the client a welcome message
 
                         socket_getpeername($newsock, $ip);
-                        echo "New client connected: {$ip}\n";
+                        echo "[".timePretty()."] New client connected: {$ip}<br />";
 
                         $key = array_search($sock, $read); // remove the listening socket from the clients-with-data array
                         unset($read[$key]);
@@ -59,7 +66,7 @@ try {
                         if ($data === false) { // check if the client is disconnected
                             $key = array_search($read_sock, $clients); // remove client for $clients array
                             unset($clients[$key]);
-                            echo "client disconnected.\n";
+                            echo "[".timePretty()."] Client disconnected.<br />";
 
                             continue;
                         }
@@ -69,7 +76,7 @@ try {
                         if (!empty($data)) { // check if there is any data after trimming off the spaces
                             socket_getpeername($read_sock, $ip, $port);
 
-                            echo 'Received: [' . $ip . ':' . $port . '] ' . $data . "\n"; // send ack back to client -- add a newline character to the end of the message
+                            echo "[".timePretty()."] Received: [" . $ip . ':' . $port . '] ' . $data . "<br />"; // send ack back to client -- add a newline character to the end of the message
 
                             try {
                                 $db->ping();
