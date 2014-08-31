@@ -196,7 +196,8 @@
             <td>0</td>
             <td>integer</td>
             <td>4</td>
-            <td>0 = none, 1 = disconnected, 2 = disconnected timeout, 3 = abandoned match, 4 = AFK (no xp for 5mins), 5 = never connected, 6 = never connected too long (reached the timeout) (<a
+            <td>0 = none, 1 = disconnected, 2 = disconnected timeout, 3 = abandoned match, 4 = AFK (no xp for 5mins), 5
+                = never connected, 6 = never connected too long (reached the timeout) (<a
                     href="https://github.com/SteamRE/SteamKit/blob/master/Resources/Protobufs/dota/dota_gcmessages_common.proto#L519"
                     target="_blank">refer to enum</a>)
             </td>
@@ -452,8 +453,9 @@
 </ul>
 
 <p>Now that you have the code implemented to send, why not test it out? You can monitor what test data we receive via
-    our <a href="./d2mods/list_messages.php" target="_blank">database</a> and <a href="./d2mods/log.html"
-                                                                                 target="_blank">console</a></p>
+    our <a href="./d2mods/list_messages.php" target="_blank">database</a> and <a href="./d2mods/log-test.html"
+                                                                                 target="_blank">test console</a> ||
+    <a href="./d2mods/log-live.html" target="_blank">live console</a></p>
 
 <h3>Custom Flash to send JSON</h3>
 
