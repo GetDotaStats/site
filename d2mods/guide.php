@@ -4,72 +4,419 @@
     </h2>
 </div>
 
-<p>This section is a Work-In-Progress, so check back later.</p>
+<p>This guide is still a Work-In-Progress, so check back later.</p>
 
 <p>Initial experimentation has revealed that via a combination of Flash and LUA, we can open socket connections with
     remote servers. We plan to take advantage of this by opening a socket back to our servers at the end of each game
     for stat gathering purposes. Before starting this guide, please ensure that you have added your mod to our
     directory. You will be provided with an encryption key that will be required towards the end of the guide.</p>
 
-<h3>Gathering the Data</h3>
+<h3>Data Schema</h3>
 
 <p>Via Flash and LUA, you will communicate the following in JSON.</p>
 
-<ul>
-    <li>matchID -- Match ID - needs to be a unique repeatable hash for all of the clients (try hashing dateEnded,
-        duration, modID, serverAddress)
-    </li>
-    <li>modID -- Mod Identifier</li>
-    <li>modes -- Game mode flags - <strong>as an array, if applicable</strong></li>
-    <li>version -- Map version</li>
-    <li>duration -- Game duration in seconds</li>
-    <li>winner -- Winning Team ID</li>
-    <li>numTeams -- Number of Teams</li>
-    <li>numPlayers -- Number of Players</li>
-    <li>autoSurrender -- Automatic Surrender - <strong>boolean for a team forfeiting</strong></li>
-    <li>massDisconnect -- Mass Disconnect - <strong>boolean for everyone being disconnected</strong></li>
-    <li>serverAddress -- Server Address - <strong>including port</strong></li>
-    <li>dateEnded -- Match Ending Unix Timestamp</li>
-    <li>player -- Player data
-        <ul>
-            <li>playerNickname -- Player Nickname</li>
-            <li>steamID32 -- Player's steam account ID (same as Dotabuff's)</li>
-            <li>steamID64 -- Player's steam ID (starts with 765)</li>
-            <li>leaverStatus -- Leaver Status ID</li>
-            <li>teamID -- Team ID - <strong>we currently can only do Radiant and Dire</strong></li>
-            <li>slotID -- Slot ID - <strong>wrt. their team</strong></li>
-            <li>heroID -- Hero ID
-                <ul>
-                    <li>level</li>
-                    <li>structureDamage</li>
-                    <li>heroDamage</li>
-                    <li>kills</li>
-                    <li>assists</li>
-                    <li>deaths</li>
-                    <li>abilities
-                        <ul>
-                            <li>abilityID - <strong>repeat, only the hero chosen abilities</strong></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>items
-                <ul>
-                    <li>gameTime - <strong>repeat</strong>
-                        <ul>
-                            <li>itemID</li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-</ul>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tr>
+            <th width="130">Parameter</th>
+            <th width="50">&nbsp;</th>
+            <th width="70">Default</th>
+            <th width="70">Type</th>
+            <th>Example</th>
+            <th width="300">Notes</th>
+        </tr>
+        <tr>
+            <td>matchID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>98426ea5f41590</td>
+            <td>Unique repeatable hash for all clients (hash of modID AND serverAddress including the port)</td>
+        </tr>
+        <tr>
+            <td>modID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>4d710f4c81bf6402e5</td>
+            <td>Unique modID <a class="nav-clickable" href="#d2mods__my_mods" target="_blank">assigned to your
+                    mod</a></td>
+        </tr>
+        <tr>
+            <td>modes</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>array</td>
+            <td>ctf, 1v1, best100, best20</td>
+            <td>Array of modes (even if only one mode selected)</td>
+        </tr>
+        <tr>
+            <td>version</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>2.0.12</td>
+            <td>Version of the mod</td>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>1234</td>
+            <td>Duration of the game in seconds</td>
+        </tr>
+        <tr>
+            <td>winner</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>Winning Team ID</td>
+        </tr>
+        <tr>
+            <td>numTeams</td>
+            <td>&nbsp;</td>
+            <td>2</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>Number of teams playing (in preparation of multi-team support getting added)</td>
+        </tr>
+        <tr>
+            <td>numPlayers</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>8</td>
+            <td>Number of players in game (important this is set as it effects if games are counted for stats)</td>
+        </tr>
+        <tr>
+            <td>serverAddress</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>8</td>
+            <td>Server address including port</td>
+        </tr>
+        <tr>
+            <td>dateEnded</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>1409461194</td>
+            <td>Match ending time as a Unix Timestamp</td>
+        </tr>
+        <tr>
+            <td>rounds</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>array</td>
+            <td>roundInfo</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+<h4>roundInfo</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tr>
+            <th width="130">Parameter</th>
+            <th width="50">&nbsp;</th>
+            <th width="70">Default</th>
+            <th width="70">Type</th>
+            <th>Example</th>
+            <th width="300">Notes</th>
+        </tr>
+        <tr>
+            <td>winner</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>Winning team of the round (fill this even if you only have a single round)</td>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>1234</td>
+            <td>Duration of the round in seconds</td>
+        </tr>
+        <tr>
+            <td>players</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>array</td>
+            <td>playerInfo</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+<h4>playerInfo</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tr>
+            <th width="130">Parameter</th>
+            <th width="50">&nbsp;</th>
+            <th width="70">Default</th>
+            <th width="70">Type</th>
+            <th>Example</th>
+            <th width="300">Notes</th>
+        </tr>
+        <tr>
+            <td>playerName</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>ᅠ<┼jiæ░d▒r▓y┼ ҉҈ᅠ</td>
+            <td>Steam persona name of the player</td>
+        </tr>
+        <tr>
+            <td>steamID32</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>28755155</td>
+            <td>Player's steam account ID (same as Dotabuff's)</td>
+        </tr>
+        <tr>
+            <td>steamID64</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>76561197989020883</td>
+            <td>Player's steam ID (starts with 765)</td>
+        </tr>
+        <tr>
+            <td>leaverStatus</td>
+            <td>&nbsp;</td>
+            <td>0</td>
+            <td>integer</td>
+            <td>4</td>
+            <td>0 = none, 1 = disconnected, 2 = disconnected timeout, 3 = abandoned match, 4 = AFK (no xp for 5mins), 5 = never connected, 6 = never connected too long (reached the timeout) (<a
+                    href="https://github.com/SteamRE/SteamKit/blob/master/Resources/Protobufs/dota/dota_gcmessages_common.proto#L519"
+                    target="_blank">refer to enum</a>)
+            </td>
+        </tr>
+        <tr>
+            <td>teamID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>Player's team ID (will obviously be 2 or 3 for now)</td>
+        </tr>
+        <tr>
+            <td>slotID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>3</td>
+            <td>Player's slot ID in their team</td>
+        </tr>
+        <tr>
+            <td>hero</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>array</td>
+            <td>heroInfo</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>items</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>array</td>
+            <td>itemsInfo</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+<h4>heroInfo</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tr>
+            <th width="130">Parameter</th>
+            <th width="50">&nbsp;</th>
+            <th width="70">Default</th>
+            <th width="70">Type</th>
+            <th>Example</th>
+            <th width="300">Notes</th>
+        </tr>
+        <tr>
+            <td>heroID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>100</td>
+            <td>Hero ID of the player</td>
+        </tr>
+        <tr>
+            <td>level</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>25</td>
+            <td>Level of the player</td>
+        </tr>
+        <tr>
+            <td>structureDamage</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>10203</td>
+            <td>Damage player has done to structures</td>
+        </tr>
+        <tr>
+            <td>heroDamage</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>39234</td>
+            <td>Damage player has done to other players</td>
+        </tr>
+        <tr>
+            <td>kills</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>13</td>
+            <td>Kills player has performed</td>
+        </tr>
+        <tr>
+            <td>assists</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>24</td>
+            <td>Kills player has assisted with</td>
+        </tr>
+        <tr>
+            <td>deaths</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>Deaths player has accrued</td>
+        </tr>
+        <tr>
+            <td>abilities</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>array</td>
+            <td>abilitiesInfo</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+<h4>abilitiesInfo</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tr>
+            <th width="130">Parameter</th>
+            <th width="50">&nbsp;</th>
+            <th width="70">Default</th>
+            <th width="70">Type</th>
+            <th>Example</th>
+            <th width="300">Notes</th>
+        </tr>
+        <tr>
+            <td>abilityID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>231</td>
+            <td>Ability ID</td>
+        </tr>
+        <tr>
+            <td>abilityName</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>ability_testmod_build_elemental</td>
+            <td>Name of ability (Unlocalised string)</td>
+        </tr>
+        <tr>
+            <td>level</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>5</td>
+            <td>Level of ability</td>
+        </tr>
+    </table>
+</div>
+
+<h4>itemsInfo</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tr>
+            <th width="130">Parameter</th>
+            <th width="50">&nbsp;</th>
+            <th width="70">Default</th>
+            <th width="70">Type</th>
+            <th>Example</th>
+            <th width="300">Notes</th>
+        </tr>
+        <tr>
+            <td>itemID</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>255</td>
+            <td>Item ID</td>
+        </tr>
+        <tr>
+            <td>itemName</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>string</td>
+            <td>item_testmod_wand_wizard</td>
+            <td>Name of item (Unlocalised string)</td>
+        </tr>
+        <tr>
+            <td>obtainStatus</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>0 = Purchased, 1 = Picked up, 2 = Given by ally</td>
+        </tr>
+        <tr>
+            <td>lostStatus</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>2</td>
+            <td>0 = Sold, 1 = Dropped (including transferred to stash or ally), 2 = Used</td>
+        </tr>
+        <tr>
+            <td>itemStartTime</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>123</td>
+            <td>Number of seconds after round began that item was obtained</td>
+        </tr>
+        <tr>
+            <td>itemEndTime</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>255</td>
+            <td>Number of seconds after round began that item was used/lost</td>
+        </tr>
+    </table>
+</div>
 
 <p>You will first need to implement your Flash and LUA methods for gathering the above data. Failing to collect all of
-    the
-    required data may result in your mod getting de-listed, or stats not functioning correctly. Below is a sample JSON
-    schema:</p>
+    the required data may result in your mod getting de-listed, or stats not functioning correctly. Below is a sample
+    JSON to demonstrate the kind of string we are expecting:</p>
 
 <div class="panel panel-default">
     <div class="panel-body">
@@ -79,74 +426,59 @@
     </div>
 </div>
 
-<p>There is no standard cookie cutter code that will work for every mod, but much of it should be the same. Below is
-    sample Flash and LUA code for gathering some of the required statistics:</p>
+<p>There is no standard cookie cutter code that will work for every mod, but much of it should be the same. You
+    essentially just need to build an array during the game duration that matches the schema above.</p>
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        Alan, add code here. In the meantime, <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/StatSource/StatsCollection.as" target="_blank">SinZ163
-            has a whole script up for collection and communication</a>
-    </div>
-</div>
-
-<p>You should now test that your JSON looks the same as the schema provided above. If so, you are now ready to test
-    transmitting this JSON to our servers.</p>
+<p>Before continuing, you should test that your JSON looks the same as the schema provided above. If so, you are ready
+    to test transmitting the JSON to our servers.</p>
 
 <h3>Sending the Data</h3>
 
-<p>Below is sample code for sending the JSON via sockets.</p>
+<p>Now that you have data to send, you need to: </p>
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <a href="https://github.com/SinZ163/TrollsAndElves/blob/master/StatSource/StatsCollection.as" target="_blank">SinZ163's
-            code, and his GitHub should have the latest working copy</a>
-    </div>
-</div>
+<ul>
+    <li>Include the compiled flash code for sending data in your "resource/flash3" folder - <a
+            href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection.swf"
+            target="_blank">here</a></li>
+    <li>Call the compiled flash in your "resource/flash3/custom_ui.txt" - <a
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/resource/flash3/custom_ui.txt#L8-L12"
+            target="_blank">here</a></li>
+    <li>Create a custom event in your "blob/master/scripts/custom_events.txt" - <a
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/custom_events.txt#L23-L28"
+            target="_blank">here</a></li>
+    <li>Fire the "stat_collection" event and give it the JSON - <a
+            href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/vscripts/TrollsAndElves.lua#L142-L150"
+            target="_blank">here</a></li>
+</ul>
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <br/>Steps:
-        <ul>
-            <li>Create message body of JSON</li>
-            <li>Add a timestamp to the message</li>
-            <li>Encrypt message using the encryption key unique to your mod</li>
-            <li>Open socket request to 176.31.182.87 on port 4444</li>
-            <li>After receiving welcome message, send mod identifier</li>
-            <li>After receiving ack, send message</li>
-            <li>After receiving ack, close connection</li>
-        </ul>
-        You can view if it worked by looking at <a href="//getdotastats.com/d2mods/list_messages.php" target="_new">our
-            list of messages</a>
-    </div>
-</div>
+<p>Now that you have the code implemented to send, why not test it out? You can monitor what test data we receive via
+    our <a href="./d2mods/list_messages.php" target="_blank">database</a> and <a href="./d2mods/log.html"
+                                                                                 target="_blank">console</a></p>
 
-<p>The above code should compile into "resource/flash3/StatsCollection.swf", where it can be put into any game mode. It
-    will send the data if LUA sends the event, and it is in custom_events too. The compiled flash will need to be called
-    in custom_ui.</p>
+<h3>Custom Flash to send JSON</h3>
 
-<p>As you can see above, you will need to add the encryption key specific to your mod. <strong>It is important not
-        to share this key!</strong> If we see any unusual activity associated with a key, we will revoke the mod and
-    investigate. It is important that the stats gathered are legitimate. If your transmitting code works, it is now
-    time to move to the final step... making it more difficult for people to fake your stats and protecting your
-    data transmission.</p>
+<p>If you want to understand what the compiled Flash is doing (or make your own), it essentially just opens a socket
+    connection to 176.31.182.87 on port 4444 and sends the JSON string.</p>
 
-<h3>Strengthening Security of your Stats and Encryption</h3>
+<h3>Final steps</h3>
 
-<p>You will now need to obsfucate and compile the LUA encryption routine, as anyone that downloads your mod off the
-    workshop can see all of the source code. We recommend using the following tool to obsfucate and compile this
-    part of your LUA code.</p>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        Alan, make steps and find program
-    </div>
-</div>
+<p>If you are happy that the test data works, replace the compiled flash with the flash that points to the live data
+    collection server <a
+        href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection_live.swf"
+        target="_blank">here</a></p>
 
 <p>You are now ready to go! Upload your mod to the workshop and see if it works!</p>
 
 <p>This method of stat collection is new and experimental, so feel free to contact me via <a
         href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a>/<a
         href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a>/<a
-        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a>/Site Chatbox. If contacting me via
-    Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
+        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a>/Site Chatbox.</p>
+<p>If contacting me via Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
+
+<h3>Miscellaneous Guidelines</h3>
+
+<ul>
+    <li>Do not re-use IDs for abilities, items, etc. If you remove an item from the game, and later add another, it is
+        important that you do not re-use an existing ID as this will break the integrity of your stats database.
+    </li>
+</ul>
