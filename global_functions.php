@@ -133,7 +133,7 @@ if (!class_exists("dbWrapper_v2")) {
             if ($this->_mysqli->ping()) {
                 return true;
             } else {
-                throw new Exception("Error: %s\n", $this->_mysqli->error);
+                throw new Exception($this->_mysqli->error);
             }
         }
 
