@@ -11,7 +11,7 @@ if (!function_exists('timePretty')) {
 }
 
 try {
-    $port = 4445;
+    $port = 4444;
 
     $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP); // create a streaming socket, of type TCP/IP
 
