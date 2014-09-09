@@ -1,5 +1,5 @@
 <IfModule mod_headers.c>
-  SetEnvIf Origin "^http(s)?://(.+\.)?(getdotastats\.com|dota\.solutions|dota\.$
+  SetEnvIf Origin "^http(s)?://(.+\.)?(getdotastats\.com|dota\.solutions|dota\.technology|dota\.photography|dota2\.solutions|localhost)$" origin_is=$0
   Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
 </IfModule>
 
@@ -12,3 +12,6 @@
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule .* custom_404.html [L]
 </IfModule>
+
+
+
