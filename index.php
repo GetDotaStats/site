@@ -1,3 +1,19 @@
+<?php
+require_once("./global_functions.php");
+try {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
+    if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
+        require_once("./connections/parameters.php");
+        checkLogin_v2();
+    }
+
+} catch (Exception $e) {
+    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+}
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -19,17 +35,6 @@
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js"></script>
 </head>
-<?php
-if (!isset($_SESSION)) {
-    session_start();
-}
-
-if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-    require_once("./global_functions.php");
-    require_once("./connections/parameters.php");
-    checkLogin_v2();
-}
-?>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">

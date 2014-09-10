@@ -399,7 +399,7 @@ if (!function_exists("checkLogin_v2")) {
         if (!empty($auth)) {
             $steamID64 = $auth[0]['user_id64'];
             $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
-                'i',
+                's',        //STUPID x64 windows PHP is actually x86
                 $steamID64);
 
             if (!empty($accountDetails)) {
@@ -412,13 +412,6 @@ if (!function_exists("checkLogin_v2")) {
                 //KILL BAD COOKIE
                 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
                 setcookie('session', '', time() - 3600, '/', $domain);
-
-                /*setcookie('session', '', time() - 3600, '/', '.getdotastats.com');
-                setcookie('session', '', time() - 3600, '/', '.dota.solutions');
-                setcookie('session', '', time() - 3600, '/', '.dota2.solutions');
-                setcookie('session', '', time() - 3600, '/', '.dota.technology');
-                setcookie('session', '', time() - 3600, '/', '.dota.photography');
-                setcookie('session', '', time() - 3600, '/', '.dota.company');*/
             }
 
             return true;
@@ -432,13 +425,6 @@ if (!function_exists("checkLogin_v2")) {
 
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
             setcookie('session', '', time() - 3600, '/', $domain);
-
-            /*setcookie('session', '', time() - 3600, '/', '.getdotastats.com');
-            setcookie('session', '', time() - 3600, '/', '.dota.solutions');
-            setcookie('session', '', time() - 3600, '/', '.dota2.solutions');
-            setcookie('session', '', time() - 3600, '/', '.dota.technology');
-            setcookie('session', '', time() - 3600, '/', '.dota.photography');
-            setcookie('session', '', time() - 3600, '/', '.dota.company');*/
 
             return false;
         }

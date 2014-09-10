@@ -1,4 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<?php
+require_once('../global_functions.php');
+require_once('../connections/parameters.php');
+
+try {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
+    if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
+        checkLogin_v2();
+    }
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
@@ -21,41 +33,30 @@
 </head>
 <body>
 
-<h2>Don't forget that you can look at the raw messages (from terminal) <a href="./log.html" target="_blank">here</a>.</h2>
+<h2>Don't forget that you can look at the raw messages (from terminal) <a href="./log-test.html" target="_blank">test</a> || <a href="./log-live.html" target="_blank">live</a>.
+</h2>
 
 <?php
-require_once('../global_functions.php');
-require_once('../connections/parameters.php');
-
-if (!isset($_SESSION)) {
-    session_start();
-}
-
-if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-    checkLogin_v2();
-}
-
-try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
             $messages = $db->q('SELECT * FROM `test_landing` ORDER BY date_recorded DESC;');
 
             echo '<div class="table-responsive">
-		        <table class="table table-striped table-hover">';
+                    <table class="table table-striped table-hover">';
             echo '<tr>
-                        <th width="50">&nbsp;</th>
-                        <th>Message</th>
-                        <th width="100">IP</th>
-                        <th width="120">Recorded</th>
-                    </tr>';
+                            <th width="50">&nbsp;</th>
+                            <th>Message</th>
+                            <th width="100">IP</th>
+                            <th width="120">Recorded</th>
+                        </tr>';
             foreach ($messages as $key => $value) {
                 echo '<tr>
-                        <td>' . $value['test_id'] . '</td>
-                        <td>' . stripslashes($value['message']) . '</td>
-                        <td>' . $value['remote_ip'] . '</td>
-                        <td>' . relative_time($value['date_recorded']) . '</td>
-                    </tr>';
+                            <td>' . $value['test_id'] . '</td>
+                            <td>' . stripslashes($value['message']) . '</td>
+                            <td>' . $value['remote_ip'] . '</td>
+                            <td>' . relative_time($value['date_recorded']) . '</td>
+                        </tr>';
             }
             echo '</table></div>';
 
