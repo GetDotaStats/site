@@ -419,13 +419,9 @@
     the required data may result in your mod getting de-listed, or stats not functioning correctly. Below is a sample
     JSON to demonstrate the kind of string we are expecting:</p>
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        {"matchID" : 123123123123, "modID" : "abcdabcdabcd", "modes" : {0 : "ar", 1 : "dr"}, "version" : 0.1.23,
-        "duration" : 123, "winner" : 1, "numTeams" : 2, "numPlayers" : 10, "autoSurrender" : 0, "massDisconnect" : 0,
-        "serverAddress" : "192.168.0.1:27001", "dateEnded" : 123123123123}
-    </div>
-</div>
+<pre class="pre-scrollable">
+{"matchID" : 123123123123, "modID" : "abcdabcdabcd", "modes" : {0 : "ar", 1 : "dr"}, "version" : 0.1.23, "duration" : 123, "winner" : 1, "numTeams" : 2, "numPlayers" : 10, "autoSurrender" : 0, "massDisconnect" : 0, "serverAddress" : "192.168.0.1:27001", "dateEnded" : 123123123123}
+</pre>
 
 <p>There is no standard cookie cutter code that will work for every mod, but much of it should be the same. You
     essentially just need to build an array during the game duration that matches the schema above.</p>
@@ -437,20 +433,121 @@
 
 <p>Now that you have data to send, you need to: </p>
 
-<ul>
-    <li>Include the compiled flash code for sending data in your "resource/flash3" folder - <a
-            href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection.swf"
-            target="_blank">here</a></li>
-    <li>Call the compiled flash in your "resource/flash3/custom_ui.txt" - <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/resource/flash3/custom_ui.txt#L8-L12"
-            target="_blank">here</a></li>
-    <li>Create a custom event in your "blob/master/scripts/custom_events.txt" - <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/custom_events.txt#L23-L28"
-            target="_blank">here</a></li>
-    <li>Fire the "stat_collection" event and give it the JSON - <a
-            href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/vscripts/TrollsAndElves.lua#L142-L150"
-            target="_blank">here</a></li>
-</ul>
+<h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
+        href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection.swf"
+        target="_blank">GitHub</a> || <a href="./resources/StatsCollection.swf" target="_blank">site copy</a></h4>
+
+<pre class="pre-scrollable">
+    package  {
+        import flash.display.MovieClip;
+        import flash.net.Socket;
+        import flash.utils.ByteArray;
+        import flash.events.Event;
+        import flash.events.ProgressEvent;
+        import flash.events.IOErrorEvent;
+
+        public class StatsCollection extends MovieClip {
+            public var gameAPI:Object;
+            public var globals:Object;
+            public var elementName:String;
+
+            var sock:Socket;
+            var json:String;
+            var SERVER_ADDRESS:String = "176.31.182.87";
+            var SERVER_PORT:Number = 4444;
+
+            public function onLoaded() : void {
+                trace("##Loading StatsCollection by SinZ");
+                gameAPI.SubscribeToGameEvent("stat_collection", this.statCollect);
+            }
+
+            public function socketConnect(e:Event) {
+                // We have connected successfully!
+                trace('Connected to the server!');
+                var buff:ByteArray = new ByteArray();
+                writeString(buff, json + "\n");
+                sock.writeBytes(buff, 0, buff.length);
+                sock.flush();
+            }
+
+            private static function writeString(buff:ByteArray, write:String){
+                trace("Message: "+write);
+                trace("Length: "+write.length);
+                buff.writeUTF(write);
+                for(var i = 0; i < write.length; i++){
+                    buff.writeByte(0);
+                }
+            }
+
+            public function statCollect(args:Object) {
+                trace("##STATS Received data from server");
+                delete args.splitscreenplayer;
+                json = args.json;
+                sock = new Socket();
+                // Setup socket event handlers
+                sock.addEventListener(Event.CONNECT, socketConnect);
+
+                try {
+                    sock.connect(SERVER_ADDRESS, SERVER_PORT);
+                } catch (e:Error) {
+                    trace("##STATS Failed to connect!");
+                    return false;
+                }
+            }
+        }
+    }
+</pre>
+
+<h4>Call the compiled flash in your "resource/flash3/custom_ui.txt" - <a
+        href="https://github.com/SinZ163/TrollsAndElves/blob/master/resource/flash3/custom_ui.txt#L8-L12"
+        target="_blank">GitHub</a></h4>
+
+<pre class="pre-scrollable">
+    "CustomUI"
+    {
+        "1"
+        {
+            "File" "TrollsAndElves"
+            "Depth" "16"
+        }
+        "2"
+        {
+            "File" "StatsCollection"
+            "Depth" "1"
+        }
+    }
+</pre>
+
+<h4>Create a custom event in your "blob/master/scripts/custom_events.txt" - <a
+        href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/custom_events.txt#L23-L28"
+        target="_blank">GitHub</a></h4>
+
+<pre class="pre-scrollable">
+    "CustomEvents"
+    {
+        //StatsCollection Service by SinZ and jimmydorry
+        "stat_collection"
+        {
+        "json"          "string"
+        }
+        //End StatsCollection
+</pre>
+
+<h4>Fire the "stat_collection" event and give it the JSON - <a
+        href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/vscripts/TrollsAndElves.lua#L142-L150"
+        target="_blank">GitHub</a></h4>
+
+<pre class="pre-scrollable">
+    print("###StatsCollection sending stats")
+    FireGameEvent("stat_collection", {
+        json = JSON:encode({
+            fakedata1 = "testing 123",
+            fakedata2 = "321 gnitset",
+            modid = "TrollsAndElves",
+            fancyinfo = "yolo swaggins and the fellowship of the bling"
+        })
+    })
+</pre>
 
 <p>Now that you have the code implemented to send, why not test it out? You can monitor what test data we receive via
     our <a href="./d2mods/list_messages.php" target="_blank">database</a> and <a href="./d2mods/log-test.html"
@@ -460,7 +557,7 @@
 <h3>Custom Flash to send JSON</h3>
 
 <p>If you want to understand what the compiled Flash is doing (or make your own), it essentially just opens a socket
-    connection to 176.31.182.87 on port 4444 and sends the JSON string.</p>
+    connection to 176.31.182.87 on port 4444 (for testing) OR 4445 (live) and sends the JSON string.</p>
 
 <h3>Final steps</h3>
 
