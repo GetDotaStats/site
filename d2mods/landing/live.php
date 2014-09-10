@@ -11,7 +11,7 @@ if (!function_exists('timePretty')) {
 }
 
 try {
-    $port = 4444;
+    $port = 4445;
 
     $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP); // create a streaming socket, of type TCP/IP
 
@@ -21,7 +21,7 @@ try {
 
     socket_listen($sock); // start listen for connections
 
-    echo "[".timePretty()."] Waiting for connections...<br />";
+    echo "[".timePretty()."] Waiting for connections...\n";
 
     $clients = array($sock); // create a list of all the clients that will be connected to us... & add the listening socket to this list
 
@@ -54,7 +54,7 @@ try {
                         socket_write($newsock, "I'm listening. There are " . (count($clients) - 1) . " client(s) connected\n"); // send the client a welcome message
 
                         socket_getpeername($newsock, $ip);
-                        echo "[".timePretty()."] New client connected: {$ip}<br />";
+                        echo "[".timePretty()."] New client connected: {$ip}\n";
 
                         $key = array_search($sock, $read); // remove the listening socket from the clients-with-data array
                         unset($read[$key]);
@@ -66,7 +66,7 @@ try {
                         if ($data === false) { // check if the client is disconnected
                             $key = array_search($read_sock, $clients); // remove client for $clients array
                             unset($clients[$key]);
-                            echo "[".timePretty()."] Client disconnected.<br />";
+                            echo "[".timePretty()."] Client disconnected.\n";
 
                             continue;
                         }
@@ -76,7 +76,7 @@ try {
                         if (!empty($data)) { // check if there is any data after trimming off the spaces
                             socket_getpeername($read_sock, $ip, $port);
 
-                            echo "[".timePretty()."] Received: [" . $ip . ':' . $port . '] ' . $data . "<br />"; // send ack back to client -- add a newline character to the end of the message
+                            echo "[".timePretty()."] Received: [" . $ip . ':' . $port . '] ' . $data . "\n"; // send ack back to client -- add a newline character to the end of the message
 
                             try {
                                 $db->ping();
@@ -84,11 +84,20 @@ try {
                                     'ss',
                                     $db->escape($data), $ip);
 
-                                if ($test) {
-                                    socket_write($read_sock, 'Acknowledged' . "\n");
+                                $json_array = json_decode($data,true);
+                                if(!empty($json_array)){
+                                    echo "||JSON is parsable||\n";
+                                    print_r($json_array);
 
-                                } else {
-                                    socket_write($read_sock, '[4] Failure DB' . "\n");
+                                    if ($test) {
+                                        socket_write($read_sock, 'Acknowledged' . "\n");
+
+                                    } else {
+                                        socket_write($read_sock, '[4] Failure: Not recorded' . "\n");
+                                    }
+                                }
+                                else{
+                                    socket_write($read_sock, '[5] Failure: Not JSON' . "\n");
                                 }
                             } catch (Exception $e) {
                                 echo $e->getMessage();
@@ -106,9 +115,8 @@ try {
         }
     } catch (Exception $e) {
         echo $e->getMessage();
-    } finally {
-        socket_close($sock);
     }
+    socket_close($sock);
 } catch (Exception $e) {
     echo $e->getMessage();
 }
