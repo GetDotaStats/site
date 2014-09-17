@@ -136,8 +136,6 @@ try {
 <div class="container">
     <div class="row">
         <div class="col-sm-9">
-            <div class="blog-post pull-right"><a id="abcd" class="nav-clickable" href="#"><span
-                        class="glyphicon glyphicon-refresh"></span></a></div>
             <div id="main_content" class="blog-post"></div>
         </div>
 
