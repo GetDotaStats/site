@@ -56,7 +56,8 @@ try {
 
                         $clients[$sockName] = $newsock; //add client socket to the $clients array
 
-                        socket_write($newsock, "I'm listening. There are " . (count($clients) - 1) . " client(s) connected\n"); // send the client a welcome message
+                        //socket_write($newsock, "I'm listening. There are " . (count($clients) - 1) . " client(s) connected\n"); // send the client a welcome message
+                        socket_write($newsock, "connected"); // send the client a welcome message
 
                         echo "[" . timePretty() . "] New client connected: {$sockName}<br />";
 
@@ -86,10 +87,12 @@ try {
                                     $db->escape($data), $key);
 
                                 if ($test) {
-                                    socket_write($read_sock, 'Acknowledged' . "\n");
+                                    //socket_write($read_sock, 'Acknowledged' . "\n");
+                                    socket_write($read_sock, 'ack');
 
                                 } else {
-                                    socket_write($read_sock, '[4] Failure DB' . "\n");
+                                    //socket_write($read_sock, '[4] Failure DB' . "\n");
+                                    socket_write($read_sock, 'fail4');
                                 }
                             } catch (Exception $e) {
                                 echo $e->getMessage() . "<br />";
@@ -102,14 +105,14 @@ try {
                                         $db->escape($data), $key);
 
                                     if ($test) {
-                                        socket_write($read_sock, 'Acknowledged' . "\n");
+                                        socket_write($read_sock, 'ack');
 
                                     } else {
-                                        socket_write($read_sock, '[4] Failure DB' . "\n");
+                                        socket_write($read_sock, 'fail4');
                                     }
                                 } catch (Exception $e) {
                                     echo $e->getMessage() . "<br />";
-                                    socket_write($read_sock, '[3] Failure' . "\n");
+                                    socket_write($read_sock, 'fail3');
                                 }
                             }
                         }
