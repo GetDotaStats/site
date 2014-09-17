@@ -31,7 +31,7 @@
             <td>&nbsp;</td>
             <td>string</td>
             <td>98426ea5f41590</td>
-            <td>Unique repeatable hash for all clients (hash of modID AND serverAddress including the port)</td>
+            <td>Unique repeatable hash that will be repeatable for all of the clients in the same game (i.e. MD5 hash of modID, serverAddress, serverPort, and dateEnded)</td>
         </tr>
         <tr>
             <td>modID</td>
