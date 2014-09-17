@@ -563,8 +563,8 @@
 
 <p>If you are happy that the test data works, replace the compiled flash with the flash that points to the live data
     collection server <a
-        href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection_live.swf"
-        target="_blank">here</a></p>
+        href="https://github.com/SinZ163/TrollsAndElves/blob/master/resource/flash3/StatsCollection_live.swf"
+        target="_blank">here</a> || <a href="./d2mods/resources/StatsCollection_live.swf" target="_blank">site copy</a></p>
 
 <p>You are now ready to go! Upload your mod to the workshop and see if it works!</p>
 
