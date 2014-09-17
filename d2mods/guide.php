@@ -435,7 +435,7 @@
 
 <h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
         href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection.swf"
-        target="_blank">GitHub</a> || <a href="./resources/StatsCollection.swf" target="_blank">site copy</a></h4>
+        target="_blank">GitHub</a> || <a href="./d2mods/resources/StatsCollection.swf" target="_blank">site copy</a></h4>
 
 <pre class="pre-scrollable">
     package  {
