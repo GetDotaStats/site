@@ -445,7 +445,7 @@
 
 <h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
         href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection.swf"
-        target="_blank">GitHub</a> || <a href="./d2mods/resources/StatsCollection.swf" target="_blank">site copy</a>
+        target="_blank">GitHub</a>
 </h4>
 
 <pre class="pre-scrollable">
@@ -600,16 +600,15 @@
 <p>If you are happy that the test data works, replace the compiled flash with the flash that points to the live data
     collection server <a
         href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection_live.swf"
-        target="_blank">here</a> || <a href="./d2mods/resources/StatsCollection_live.swf" target="_blank">site copy</a>
+        target="_blank">here</a>.
 </p>
 
-<p>You are now ready to go! Upload your mod to the workshop and see if it works!</p>
-
-<p>This method of stat collection is new and experimental, so feel free to contact me via <a
+<p>You are now ready to go! Upload your mod to the workshop and see if it works! This method of stat collection is new
+    and experimental, so feel free to contact me via <a
         href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a> / <a
         href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a> / <a
-        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / Site Chatbox (on the right).</p>
-<p>If contacting me via Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
+        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / Site Chatbox (on the right). If
+    contacting me via Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
 
 <h3>Miscellaneous Guidelines</h3>
 
