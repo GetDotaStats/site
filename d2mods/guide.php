@@ -6,6 +6,14 @@
 
 <p>This guide is still a Work-In-Progress, so check back later.</p>
 
+<div class="alert alert-danger" role="alert"><strong>Special thanks to:</strong> <a href="https://github.com/SinZ163/"
+                                                                                    target="_blank">SinZ163</a>, <a
+        href="https://github.com/tetl/" target="_blank">Tet</a>, and <a href="https://github.com/ash47/"
+                                                                        target="_blank">Ash47</a> for their hard-work in
+    testing and developing the Lua and Flash code that makes this all possible. I take no credit for the Lua and Flash
+    found here, as I have just collated and reformatted it.
+</div>
+
 <p>Initial experimentation has revealed that via a combination of Flash and LUA, we can open socket connections with
     remote servers. We plan to take advantage of this by opening a socket back to our servers at the end of each game
     for stat gathering purposes. Before starting this guide, please ensure that you have added your mod to our
@@ -31,7 +39,9 @@
             <td>&nbsp;</td>
             <td>string</td>
             <td>98426ea5f41590</td>
-            <td>Unique repeatable hash that will be repeatable for all of the clients in the same game (i.e. MD5 hash of modID, serverAddress, serverPort, and dateEnded)</td>
+            <td>Unique repeatable hash that will be repeatable for all of the clients in the same game (i.e. MD5 hash of
+                modID, serverAddress, serverPort, and dateEnded)
+            </td>
         </tr>
         <tr>
             <td>modID</td>
@@ -434,8 +444,9 @@
 <p>Now that you have data to send, you need to: </p>
 
 <h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
-        href="https://github.com/SinZ163/TrollsAndElves/raw/master/resource/flash3/StatsCollection.swf"
-        target="_blank">GitHub</a> || <a href="./d2mods/resources/StatsCollection.swf" target="_blank">site copy</a></h4>
+        href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection.swf"
+        target="_blank">GitHub</a> || <a href="./d2mods/resources/StatsCollection.swf" target="_blank">site copy</a>
+</h4>
 
 <pre class="pre-scrollable">
     package  {
@@ -499,7 +510,7 @@
 </pre>
 
 <h4>Call the compiled flash in your "resource/flash3/custom_ui.txt" - <a
-        href="https://github.com/SinZ163/TrollsAndElves/blob/master/resource/flash3/custom_ui.txt#L8-L12"
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/resource/flash3/custom_ui.txt#L8"
         target="_blank">GitHub</a></h4>
 
 <pre class="pre-scrollable">
@@ -507,8 +518,8 @@
     {
         "1"
         {
-            "File" "TrollsAndElves"
-            "Depth" "16"
+            "File"      "XXXXXXX" //YOUR MAIN UI ELEMENT
+            "Depth"     "253"
         }
         "2"
         {
@@ -518,41 +529,66 @@
     }
 </pre>
 
-<h4>Create a custom event in your "blob/master/scripts/custom_events.txt" - <a
-        href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/custom_events.txt#L23-L28"
+<h4>Create a custom event in your "scripts/custom_events.txt" - <a
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/custom_events.txt#L23"
         target="_blank">GitHub</a></h4>
 
 <pre class="pre-scrollable">
     "CustomEvents"
     {
-        //StatsCollection Service by SinZ and jimmydorry
+        // Stat collection
         "stat_collection"
         {
-        "json"          "string"
+            "json"          "string"
         }
-        //End StatsCollection
+    }
 </pre>
 
-<h4>Fire the "stat_collection" event and give it the JSON - <a
-        href="https://github.com/SinZ163/TrollsAndElves/blob/master/scripts/vscripts/TrollsAndElves.lua#L142-L150"
+<h4>Add stats to your JSON object over the duration of the game - <a
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/addon_game_mode.lua#L10"
         target="_blank">GitHub</a></h4>
 
 <pre class="pre-scrollable">
-    print("###StatsCollection sending stats")
-    FireGameEvent("stat_collection", {
-        json = JSON:encode({
-            fakedata1 = "testing 123",
-            fakedata2 = "321 gnitset",
-            modid = "TrollsAndElves",
-            fancyinfo = "yolo swaggins and the fellowship of the bling"
-        })
-    })
+    require('lib.statcollection')
+    statcollection.addStats{{
+        exampleStat = 'XXXXXXXXXXXXXXXXXXX'
+    }}
 </pre>
 
-<p>Now that you have the code implemented to send, why not test it out? You can monitor what test data we receive via
-    our <a href="./d2mods/list_messages.php" target="_blank">database</a> and <a href="./d2mods/log-test.html"
-                                                                                 target="_blank">test console</a> ||
-    <a href="./d2mods/log-live.html" target="_blank">live console</a></p>
+<h4>Fire the "stat_collection" event at the end of the game - <a
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/lod.lua#L31"
+        target="_blank">GitHub</a></h4>
+
+<pre class="pre-scrollable">
+    if currentStage == STAGE_PLAYING then
+        if GameRules:State_Get() >= DOTA_GAMERULES_STATE_POST_GAME then
+            -- Send stats
+            statcollection.sendStats()
+
+            -- Finally done!
+            return
+        else
+            -- Sleep again
+            return 1
+        end
+    end
+</pre>
+
+<h4>Finally!</h4>
+
+<p>Now that you have the code implemented to send stats, why not test it out? You can monitor what test data we receive
+    via
+    our <a href="./d2mods/list_messages.php" target="_blank">database</a> (need to be logged in) and via the output from
+    the console <a href="./d2mods/log-test.html"
+                   target="_blank">test</a> ||
+    <a href="./d2mods/log-live.html" target="_blank">live</a></p>
+
+<h3>Understanding how the stat collection works</h3>
+
+<p>Have a look at the <a
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/lib/statcollection.lua"
+        target="_blank">statcollection library</a>. This library handles the data you collect, and even abstracts the
+    process for sending the stats from the rest of your logic.</p>
 
 <h3>Custom Flash to send JSON</h3>
 
@@ -563,15 +599,16 @@
 
 <p>If you are happy that the test data works, replace the compiled flash with the flash that points to the live data
     collection server <a
-        href="https://github.com/SinZ163/TrollsAndElves/blob/master/resource/flash3/StatsCollection_live.swf"
-        target="_blank">here</a> || <a href="./d2mods/resources/StatsCollection_live.swf" target="_blank">site copy</a></p>
+        href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection_live.swf"
+        target="_blank">here</a> || <a href="./d2mods/resources/StatsCollection_live.swf" target="_blank">site copy</a>
+</p>
 
 <p>You are now ready to go! Upload your mod to the workshop and see if it works!</p>
 
 <p>This method of stat collection is new and experimental, so feel free to contact me via <a
-        href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a>/<a
-        href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a>/<a
-        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a>/Site Chatbox.</p>
+        href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a> / <a
+        href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a> / <a
+        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / Site Chatbox (on the right).</p>
 <p>If contacting me via Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
 
 <h3>Miscellaneous Guidelines</h3>

@@ -79,7 +79,7 @@ try {
                         $data = trim($data); // trim off the trailing/beginning white spaces
 
                         if (!empty($data)) { // check if there is any data after trimming off the spaces
-                            echo "[" . timePretty() . "] Received: [{$key}] " . $data . "<br />"; // send ack back to client -- add a newline character to the end of the message
+                            echo "[" . timePretty() . "] Received: [{$key}] {$data}<br />"; // send ack back to client -- add a newline character to the end of the message
 
                             try {
                                 $test = $db->q('INSERT INTO `test_landing`(`message`, `remote_ip`) VALUES (?, ?)',
