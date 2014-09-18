@@ -28,11 +28,11 @@ try {
 
             if (!empty($modList)) {
                 foreach ($modList as $key => $value) {
+                    //<div class="well well-sm" style="white-space: normal;word-break: break-all;"><strong>Encryption Key:</strong> ' . $value['mod_public_key'] . '</div>
                     echo '<div class="panel panel-default">
                             <div class="panel-heading"><h4>' . $value['mod_name'] . '</h4></div>
                             <div class="panel-body">
-                                <div class="well well-sm"><strong>Identifier:</strong> ' . $value['mod_identifier'] . '</div>
-                                <div class="well well-sm" style="white-space: normal;word-break: break-all;"><strong>Encryption Key:</strong> ' . $value['mod_public_key'] . '</div>
+                                <div class="well well-sm"><strong>modID:</strong> ' . $value['mod_identifier'] . '</div>
                                 <div class="well well-sm"><strong>Description:</strong> ' . $value['mod_description'] . '</div>
                                 <div class="well well-sm"><strong>Links:</strong> <a href="' . $value['mod_workshop_link'] . '" target="_new">Workshop</a> || <a href="' . $value['mod_steam_group'] . '" target="_new">Steam Group</a></div>
                                 <div class="well well-sm"><strong>Date Added:</strong> ' . relative_time($value['date_recorded']) . '</div>
