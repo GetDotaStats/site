@@ -607,7 +607,8 @@
     and experimental, so feel free to contact me via <a
         href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a> / <a
         href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a> / <a
-        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / Site Chatbox (on the right). If
+        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / <a
+        href="http://chatwing.com/getdotaenterprises" target="_new">Site Chatbox</a> (on the right). If
     contacting me via Steam, make sure to leave a message on my profile, as I will likely not add you otherwise.</p>
 
 <h3>Miscellaneous Guidelines</h3>
