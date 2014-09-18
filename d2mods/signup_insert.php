@@ -15,18 +15,18 @@ try {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
             if (!empty($_POST['mod_name'])) {
-                $modName = $db->escape($_POST['mod_name']);
+                $modName = htmlentities($_POST['mod_name']);
 
                 $modDesc = !empty($_POST['mod_description'])
-                    ? $db->escape($_POST['mod_description'])
+                    ? htmlentities($_POST['mod_description'])
                     : 'No description given.';
 
                 $modWork = !empty($_POST['mod_workshop_link'])
-                    ? $db->escape($_POST['mod_workshop_link'])
+                    ? htmlentities($_POST['mod_workshop_link'])
                     : NULL;
 
                 $modGroup = !empty($_POST['mod_steam_group'])
-                    ? $db->escape($_POST['mod_steam_group'])
+                    ? htmlentities($_POST['mod_steam_group'])
                     : NULL;
 
 
