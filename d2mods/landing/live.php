@@ -21,6 +21,9 @@ try {
 
     socket_listen($sock); // start listen for connections
 
+    socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 5, 'usec' => 0)); //SET timeout on receiving data
+    socket_set_option($sock, SOL_SOCKET, SO_SNDTIMEO, array('sec' => 5, 'usec' => 0)); //SET timeout on sending data
+
     echo "[" . timePretty() . "] Waiting for connections...<br />";
 
     $clients = array($sock); // create a list of all the clients that will be connected to us... & add the listening socket to this list
