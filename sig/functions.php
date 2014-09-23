@@ -160,7 +160,7 @@ if (!function_exists("get_account_char_winrate")) {
 
             $big_array = array();
 
-            $big_array['user_pic'] = str_replace('full', 'medium', cut_str(cut_str($page, '<div class="image-container image-container-avatar image-container-player">', '</div>'), 'src="', '"'));
+            $big_array['user_pic'] = str_replace('full', 'medium', cut_str(cut_str($page, '<div class="image-container image-container-player image-container-avatar">', '</div>'), 'src="', '"'));
 
             $big_array['username'] = cut_str($page, '<h1>', '<small>');
 
@@ -235,7 +235,7 @@ if (!function_exists("get_account_char_mostplayed")) {
 
             $big_array = array();
 
-            $big_array['user_pic'] = str_replace('full', 'medium', cut_str(cut_str($page, '<div class="image-container image-container-avatar image-container-player">', '</div>'), 'src="', '"'));
+            $big_array['user_pic'] = str_replace('full', 'medium', cut_str(cut_str($page, '<div class="image-container image-container-player image-container-avatar">', '</div>'), 'src="', '"'));
 
             $big_array['username'] = cut_str($page, '<h1>', '<small>');
 
