@@ -40,7 +40,7 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $messages = $db->q('SELECT * FROM `test_landing` ORDER BY date_recorded DESC;');
+            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC;');
 
             echo '<div class="table-responsive">
                     <table class="table table-striped table-hover">';
