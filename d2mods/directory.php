@@ -25,7 +25,7 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
-                        <th class="text-center">Owner</th>
+                        <th width="170" class="text-center">Owner</th>
                         <th width="80" class="text-center">Links</th>
                         <th width="120" class="text-center">Added</th>
                     </tr>';
@@ -47,9 +47,8 @@ try {
                         <td>' . relative_time($value['date_recorded']) . '</td>
                     </tr>
                     <tr>
-                        <td colspan="6">' . $value['mod_description'] . '</td>
-                    </tr>
-                    <tr><td colspan="6">&nbsp;</td></tr>';
+                        <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>
+                    </tr>';
             }
 
             echo '</table></div>';
@@ -65,7 +64,7 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
-                        <th class="text-center">Owner</th>
+                        <th width="170" class="text-center">Owner</th>
                         <th width="80" class="text-center">Links</th>
                         <th width="120" class="text-center">Added</th>
                     </tr>';
@@ -87,9 +86,8 @@ try {
                         <td>' . relative_time($value['date_recorded']) . '</td>
                     </tr>
                     <tr>
-                        <td colspan="6">' . $value['mod_description'] . '</td>
-                    </tr>
-                    <tr><td colspan="6">&nbsp;</td></tr>';
+                        <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>
+                    </tr>';
             }
 
             echo '</table></div>';
