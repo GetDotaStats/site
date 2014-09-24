@@ -21,14 +21,17 @@ try {
                     ? htmlentities($_POST['mod_description'])
                     : 'No description given.';
 
-                $modWork = !empty($_POST['mod_workshop_link'])
-                    ? htmlentities($_POST['mod_workshop_link'])
-                    : NULL;
+                if (!empty($_POST['mod_workshop_link']) && stristr($_POST['mod_workshop_link'], 'steamcommunity.com/sharedfiles/filedetails/?id=')) {
+                    $modWork = htmlentities(rtrim(cut_str($_POST['mod_steam_group'], 'steamcommunity.com/sharedfiles/filedetails/?id='), '/'));
+                } else {
+                    $modWork = NULL;
+                }
 
-                $modGroup = !empty($_POST['mod_steam_group'])
-                    ? htmlentities($_POST['mod_steam_group'])
-                    : NULL;
-
+                if (!empty($_POST['mod_steam_group']) && stristr($_POST['mod_steam_group'], 'steamcommunity.com/groups/')) {
+                    $modGroup = htmlentities(rtrim(cut_str($_POST['mod_steam_group'], 'groups/'), '/'));
+                } else {
+                    $modGroup = NULL;
+                }
 
                 $config = array(
                     "digest_alg" => "sha512",
@@ -43,7 +46,7 @@ try {
 
                 $insertSQL = $db->q('INSERT INTO `mod_list` (`steam_id64`, `mod_identifier`, `mod_name`, `mod_description`, `mod_workshop_link`, `mod_steam_group`, `mod_public_key`, `mod_private_key`)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
-                    'ssssssss',             //STUPID x64 windows PHP is actually x86
+                    'ssssssss', //STUPID x64 windows PHP is actually x86
                     $_SESSION['user_id64'], md5($modName . time()), $modName, $modDesc, $modWork, $modGroup, $pubKey, $privKey);
 
                 if ($insertSQL) {
