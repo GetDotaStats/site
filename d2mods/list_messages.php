@@ -43,6 +43,11 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
     </div>
     <div class="row">
         <div class="col-sm-12">
+            <p><a href="../">Return to main site</a></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
             <?php
             if (!empty($_SESSION['user_id64'])) {
                 $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
