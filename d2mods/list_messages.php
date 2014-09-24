@@ -24,56 +24,64 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script type="text/javascript" src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script type="text/javascript" src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js"></script>
 </head>
 <body>
+<div class="container">
+    <div class="row">
+        <div class="page-header text-center">
+            <h2>Terminal out for:
+                <a href="./log-test.html" target="_blank">test</a>
+                ||
+                <a href="./log-live.html" target="_blank">live</a></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <?php
+            if (!empty($_SESSION['user_id64'])) {
+                $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+                if ($db) {
+                    $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC;');
 
-<h2>Don't forget that you can look at the raw messages (from terminal) <a href="./log-test.html"
-                                                                          target="_blank">test</a> || <a
-        href="./log-live.html" target="_blank">live</a>.
-</h2>
-
-<?php
-if (!empty($_SESSION['user_id64'])) {
-    $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
-    if ($db) {
-        $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC;');
-
-        echo '<div class="table-responsive">
-                    <table class="table table-striped table-hover">';
-        echo '<tr>
+                    echo '<div class="table-responsive">
+                    <table class="table table-striped table-hover" style="word-wrap:break-word; table-layout:fixed;">';
+                    echo '<tr>
                             <th width="50">&nbsp;</th>
                             <th>Message</th>
-                            <th width="100">IP</th>
+                            <th width="115">IP</th>
                             <th width="120">Recorded</th>
                         </tr>';
-        foreach ($messages as $key => $value) {
-            echo '<tr>
+                    foreach ($messages as $key => $value) {
+                        echo '<tr>
                             <td>' . $value['test_id'] . '</td>
                             <td>' . stripslashes($value['message']) . '</td>
-                            <td>' . $value['remote_ip'] . ':' . $value['remote_port'] . '</td>
+                            <td>' . $value['remote_ip'] . '<br />' . $value['remote_port'] . '</td>
                             <td>' . relative_time($value['date_recorded']) . '</td>
                         </tr>';
-        }
-        echo '</table></div>';
+                    }
+                    echo '</table></div>';
 
-    } else {
-        echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
-    }
-} else {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
-    echo '<a href="../">Go back to main site</a>';
-}
-} catch (Exception $e) {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
-}
-?>
-<script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
-<script src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js"></script>
+                } else {
+                    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
+                }
+            } else {
+                echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
+                echo '<a href="../">Go back to main site</a>';
+            }
+            } catch (Exception $e) {
+                echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+            }
+            ?>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
+<script type="text/javascript" src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
