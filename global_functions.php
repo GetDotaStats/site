@@ -246,12 +246,15 @@ if (!function_exists("curl")) {
 }
 
 if (!function_exists("cut_str")) {
-    function cut_str($str, $left, $right)
+    function cut_str($str, $left, $right = NULL)
     {
         $str = substr(stristr($str, $left), strlen($left));
-        $leftLen = strlen(stristr($str, $right));
-        $leftLen = $leftLen ? -($leftLen) : strlen($str);
-        $str = substr($str, 0, $leftLen);
+
+        if ($right) {
+            $leftLen = strlen(stristr($str, $right));
+            $leftLen = $leftLen ? -($leftLen) : strlen($str);
+            $str = substr($str, 0, $leftLen);
+        }
 
         return $str;
     }
