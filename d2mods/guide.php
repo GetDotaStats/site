@@ -591,9 +591,13 @@
     "CustomEvents"
     {
         // Stat collection
-        "stat_collection"
+        "stat_collection_part"
         {
-            "json"          "string"
+            "data"          "string"
+        }
+
+        "stat_collection_send"
+        {
         }
     }
 </pre>
