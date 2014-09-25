@@ -35,10 +35,10 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 <div class="container">
     <div class="row">
         <div class="page-header text-center">
-            <h2>Terminal out for:
+            <h2>Last 50 communications <small>Logs can be found here:
                 <a href="./log-test.html" target="_blank">test</a>
                 ||
-                <a href="./log-live.html" target="_blank">live</a></h2>
+                <a href="./log-live.html" target="_blank">live</a></small></h2>
         </div>
     </div>
     <div class="row">
