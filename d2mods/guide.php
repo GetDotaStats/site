@@ -91,22 +91,6 @@
             <td>Winning Team ID</td>
         </tr>
         <tr>
-            <td>numTeams</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>integer</td>
-            <td>2</td>
-            <td>Number of teams playing (in preparation of multi-team support getting added)</td>
-        </tr>
-        <tr>
-            <td>numPlayers</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>integer</td>
-            <td>8</td>
-            <td>Number of players in game (important this is set as it effects if games are counted for stats)</td>
-        </tr>
-        <tr>
             <td>serverAddress</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -123,87 +107,12 @@
             <td>Match ending time as a Unix Timestamp</td>
         </tr>
         <tr>
-            <td>playerInfo</td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>&nbsp;</td>
-            <td>array</td>
-            <td>playerInfo</td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
             <td>rounds</td>
             <td><span class="glyphicon glyphicon-ok"></span></td>
             <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>array</td>
             <td>rounds</td>
             <td>&nbsp;</td>
-        </tr>
-    </table>
-</div>
-
-<h4>playerInfo</h4>
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <tr>
-            <th width="130">Parameter</th>
-            <th width="50">Req</th>
-            <th width="50">Auto</th>
-            <th width="70">Type</th>
-            <th>Example</th>
-            <th width="300">Notes</th>
-        </tr>
-        <tr>
-            <td>teamID</td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>integer</td>
-            <td>2</td>
-            <td>Player's team ID (will obviously be 2 or 3 for now)</td>
-        </tr>
-        <tr>
-            <td>slotID</td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>integer</td>
-            <td>3</td>
-            <td>Player's slot ID in their team</td>
-        </tr>
-        <tr>
-            <td>playerName</td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>string</td>
-            <td>ᅠ<┼jiæ░d▒r▓y┼ ҉҈ᅠ</td>
-            <td>Steam persona name of the player</td>
-        </tr>
-        <tr>
-            <td>steamID32</td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>integer</td>
-            <td>28755155</td>
-            <td>Player's steam account ID (same as Dotabuff's)</td>
-        </tr>
-        <tr>
-            <td>steamID64</td>
-            <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>&nbsp;</td>
-            <td>integer</td>
-            <td>76561197989020883</td>
-            <td>Player's steam ID (starts with 765)</td>
-        </tr>
-        <tr>
-            <td>leaverStatus</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>integer</td>
-            <td>4</td>
-            <td>As recorded at end of the game. 0 = none, 1 = disconnected, 2 = disconnected timeout, 3 = abandoned
-                match, 4 = AFK (no xp for 5mins), 5 = never connected, 6 = never connected too long (reached the
-                timeout) (<a
-                    href="https://github.com/SteamRE/SteamKit/blob/master/Resources/Protobufs/dota/dota_gcmessages_common.proto#L544"
-                    target="_blank">refer to enum DOTALeaverStatus_t</a>)
-            </td>
         </tr>
     </table>
 </div>
@@ -274,12 +183,33 @@
             <td>Player's slot ID in their team</td>
         </tr>
         <tr>
-            <td>steamID64</td>
+            <td>steamID32</td>
             <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>&nbsp;</td>
             <td>integer</td>
-            <td>76561197989020883</td>
-            <td>Player's steam ID (starts with 765)</td>
+            <td>28755155</td>
+            <td>Player's account ID as returned by GetSteamAccountID()</td>
+        </tr>
+        <tr>
+            <td>playerName</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
+            <td>string</td>
+            <td>ᅠ<┼jiæ░d▒r▓y┼ ҉҈ᅠ</td>
+            <td>Steam persona name of the player</td>
+        </tr>
+        <tr>
+            <td>leaverStatus</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>integer</td>
+            <td>4</td>
+            <td>As recorded at end of the game. 0 = none, 1 = disconnected, 2 = disconnected timeout, 3 = abandoned
+                match, 4 = AFK (no xp for 5mins), 5 = never connected, 6 = never connected too long (reached the
+                timeout) (<a
+                    href="https://github.com/SteamRE/SteamKit/blob/master/Resources/Protobufs/dota/dota_gcmessages_common.proto#L544"
+                    target="_blank">refer to enum DOTALeaverStatus_t</a>)
+            </td>
         </tr>
         <tr>
             <td>hero</td>
@@ -510,10 +440,12 @@
 {"matchID" : 123123123123, "modID" : "abcdabcdabcd", "modes" : {0 : "ar", 1 : "dr"}, "version" : 0.1.23, "duration" : 123, "winner" : 1, "numTeams" : 2, "numPlayers" : 10, "autoSurrender" : 0, "massDisconnect" : 0, "serverAddress" : "192.168.0.1:27001", "dateEnded" : 123123123123}
 </pre>
 
-<p>There is standard "cookie cutter" code available in the "scripts/vscripts/lib/statcollection.lua" that should work
-    for every mod. It is called in the form of getPlayerSnapshot() when the match ends. If your mod has multiple rounds,
-    then you will need to modify that library such that you call it at the end of each round. All of the other data in
-    the schema will need to be manually added during game play by calling addStats() with your array of stats.</p>
+<p>There is standard "cookie cutter" code available in the <a
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/lib/statcollection.lua"
+        target="_blank">"scripts/vscripts/lib/statcollection.lua"</a> that should work for every mod. It is called in
+    the form of getPlayerSnapshot() when the match ends. If your mod has multiple rounds, then you will need to modify
+    that library such that you call it at the end of each round. All of the other data in the schema will need to be
+    manually added during game play by calling addStats() with your array of stats.</p>
 
 <h3>Setting up stat collection</h3>
 
@@ -756,7 +688,7 @@
 
 <p>You are now ready to go! Upload your mod to the workshop and see if it works! This method of stat collection is new
     and experimental, so feel free to contact me via <a
-        href="http://github.com/GetDotaStats/site/issues" target="_new">Github Issues</a> / <a
+        href="https://github.com/GetDotaStats/stat-collection/issues" target="_new">Github Issues</a> / <a
         href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a> / <a
         href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / <a
         href="http://chatwing.com/getdotaenterprises" target="_new">Site Chatbox</a> (on the right). <strong>If
