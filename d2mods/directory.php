@@ -9,8 +9,27 @@ try {
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if ($db) {
-        $modListActive = simple_cached_query('d2mods_directory_active', 'SELECT ml.*, gu.`user_name`, gu.`user_avatar` FROM `mod_list` ml LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64` WHERE ml.`mod_active` = 1;', 10);
-        $modListInactive = simple_cached_query('d2mods_directory_inactive', 'SELECT ml.*, gu.`user_name`, gu.`user_avatar` FROM `mod_list` ml LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64` WHERE ml.`mod_active` = 0;', 10);
+        $modListActive = simple_cached_query('d2mods_directory_active',
+            'SELECT
+                    ml.*,
+                    gu.`user_name`,
+                    gu.`user_avatar`,
+                    (SELECT COUNT(*) FROM `mod_match_overview` WHERE `mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS num_games
+                FROM `mod_list` ml
+                LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+                WHERE ml.`mod_active` = 1
+                ORDER BY num_games DESC, `date_recorded` DESC;'
+            , 30
+        );
+
+        $modListInactive = simple_cached_query('d2mods_directory_inactive',
+            'SELECT ml.*, gu.`user_name`, gu.`user_avatar`
+                FROM `mod_list` ml
+                LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+                WHERE ml.`mod_active` = 0
+                ORDER BY `date_recorded` DESC;'
+            , 10
+        );
 
         echo '<div class="page-header"><h2>Mod Directory <small>BETA</small></h2></div>';
 
@@ -25,6 +44,7 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
+                        <th width="70" class="text-right">Games</th>
                         <th width="170" class="text-center">Owner</th>
                         <th width="80" class="text-center">Links</th>
                         <th width="120" class="text-center">Added</th>
@@ -42,9 +62,10 @@ try {
                 echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <th>' . $value['mod_name'] . '</th>
+                        <th class="text-right">' . number_format($value['num_games']) . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <td class="text-center">' . $wg . ' || ' . $sg . '</td>
-                        <td>' . relative_time($value['date_recorded']) . '</td>
+                        <td class="text-left">' . relative_time($value['date_recorded']) . '</td>
                     </tr>
                     <tr>
                         <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>
@@ -66,7 +87,7 @@ try {
                         <th>&nbsp;</th>
                         <th width="170" class="text-center">Owner</th>
                         <th width="80" class="text-center">Links</th>
-                        <th width="120" class="text-center">Added</th>
+                        <th width="120" class="text-left">Added</th>
                     </tr>';
 
             foreach ($modListInactive as $key => $value) {
@@ -83,7 +104,7 @@ try {
                         <th>' . $value['mod_name'] . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <td class="text-center">' . $wg . ' || ' . $sg . '</td>
-                        <td>' . relative_time($value['date_recorded']) . '</td>
+                        <td class="text-right">' . relative_time($value['date_recorded']) . '</td>
                     </tr>
                     <tr>
                         <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>
