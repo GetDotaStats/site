@@ -185,7 +185,7 @@
         <tr>
             <td>steamID32</td>
             <td><span class="glyphicon glyphicon-ok"></span></td>
-            <td>&nbsp;</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>integer</td>
             <td>28755155</td>
             <td>Player's account ID as returned by GetSteamAccountID()</td>
