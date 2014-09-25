@@ -52,7 +52,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
             if (!empty($_SESSION['user_id64'])) {
                 $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
                 if ($db) {
-                    $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC;');
+                    $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC LIMIT 0,50;');
                     $mods = $db->q('SELECT * FROM `mod_list`;');
 
                     $modList = array();
