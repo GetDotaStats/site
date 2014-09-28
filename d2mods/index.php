@@ -48,7 +48,7 @@ try {
 
                     echo '<pre>';
                     echo '<h3>Recorded from ' . $messages['remote_ip'] . ':' . $messages['remote_port'] . ' <small>' . relative_time($messages['date_recorded']) . '</small></h3>';
-                    print_r(json_decode($messages['message'], 1));
+                    echo json_encode(json_decode($messages['message'],1), JSON_PRETTY_PRINT);
                     echo '</pre>';
                 } else {
                     echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Message not found!</div></div>';
