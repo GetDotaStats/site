@@ -1,11 +1,11 @@
 <?php
 require_once('./functions.php');
-require_once('./connections/parameters.php');
+require_once('../connections/parameters.php');
 ?>
 
 <?php
 try {
-    $db = new dbWrapper($hostname, $username, $password, $database, false);
+    $db = new dbWrapper($hostname_match_analysis, $username_match_analysis, $password_match_analysis, $database_match_analysis, false);
 
     if ($db) {
         $memcache = new Memcache;

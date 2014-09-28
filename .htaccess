@@ -1,9 +1,17 @@
-<IfModule mod_rewrite.c>  
-  RewriteEngine on 
-  RewriteCond %{HTTP_HOST} ^www\.getdotastats\.com$ [NC] 
-  RewriteRule ^(.*)$ http://getdotastats.com/$1 [R=301,L] 
+<IfModule mod_headers.c>
+  SetEnvIf Origin "^http(s)?://(.+\.)?(getdotastats\.com|dota\.solutions|dota\.technology|dota\.photography|dota2\.solutions|localhost)$" origin_is=$0
+  Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
+</IfModule>
 
-  RewriteCond %{REQUEST_FILENAME} !-f  
-  RewriteCond %{REQUEST_FILENAME} !-d  
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST} ^www\.getdotastats\.com$ [NC]
+  RewriteRule ^(.*)$ http://getdotastats.com/$1 [R=301,L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule .* custom_404.html [L]
 </IfModule>
+
+
+

@@ -15,4 +15,3 @@ $version_specs['dbe-vote']['download_firefox'] = 'https://addons.mozilla.org/en-
 $version_specs['dbe-vote']['download_chrome'] = 'http://getdotastats.com/dbe/DotabuffExtendedVote-0.1.crx';
 
 echo json_encode($version_specs);
-?>

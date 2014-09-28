@@ -16,4 +16,4 @@ Don't even bother yet. Feel free to submit pull requests, but nothing here has a
 * Duplicate each parametersSAMPLE.php as parameters.php, and ensure it is updated with the relevant parameters.
 
 #Sources
-* OpenID - Mewp
+* OpenID - Mewp - https://gitorious.org/lightopenid

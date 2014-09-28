@@ -8,7 +8,7 @@ if(!empty($match_id)){
 
 	$match_results = $memcache->get("dbe_match_map".$match_id);
 	if(!$match_results){
-		$url="https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?match_id=" . $match_id . "&key=" . $api_key1;
+		$url="https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?match_id=" . $match_id . "&key=" . $api_key_dbe;
 
 		$json = file_get_contents($url); 
 		$data = json_decode($json, true);

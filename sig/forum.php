@@ -1,5 +1,5 @@
 <?php
-require_once('./connections/parameters.php');
+require_once('../connections/parameters.php');
 require_once('./functions.php');
 header( "Content-type: image/png" );
 header("Pragma: public");
@@ -7,13 +7,13 @@ header("Cache-Control: maxage=7200");
 header("Expires: " . date(DATE_RFC822,strtotime(" 2 hours")));
 
 !empty($_GET["aid"]) && is_numeric($_GET["aid"])? $account_id = $_GET["aid"] : $account_id = 28755155;
-//!empty($_GET["base"]) && is_file($base_img_dir . $_GET["base"]) ? $base_img_name = $_GET["base"] : $base_img_name = 'base7.png';
+//!empty($_GET["base"]) && is_file($base_img_dir_sig . $_GET["base"]) ? $base_img_name = $_GET["base"] : $base_img_name = 'base7.png';
 @$_GET["flush_acc"] == 1 ? $flush_acc = 1 : $flush_acc = 0;
 
 $base_img_name = 'base8.png';
 $file_name_location = './images/generated/'.$account_id.'_v2.png';
 
-$db = new dbWrapper($hostname, $username, $password, $database, false);
+$db = new dbWrapper($hostname_sig, $username_sig, $password_sig, $database_sig, false);
 
 empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] = NULL : NULL;
 
@@ -40,10 +40,10 @@ if(!file_exists($file_name_location) || (filemtime($file_name_location) <= strto
 	$sig_stats_winrate = get_account_char_winrate($account_id, 4, $required_hero_min_play, $flush_acc);
 	$sig_stats_most_played = get_account_char_mostplayed($account_id, 4, $required_hero_min_play, $flush_acc);
 	
-	$base_img = imagecreatefrompng ( $base_img_dir . $base_img_name );
+	$base_img = imagecreatefrompng ( $base_img_dir_sig . $base_img_name );
 
 	// We need to know the width and height of the overlay
-	list($src_width, $src_height, $src_type, $src_attr) = getimagesize($base_img_dir . $base_img_name);
+	list($src_width, $src_height, $src_type, $src_attr) = getimagesize($base_img_dir_sig . $base_img_name);
 
     imagealphablending( $base_img, false );
     imagesavealpha( $base_img, true );
@@ -198,8 +198,8 @@ if(!file_exists($file_name_location) || (filemtime($file_name_location) <= strto
 			if(!empty($mmr_stats[0]['dota_wins'])){
 				$dota_wins = $mmr_stats[0]['dota_wins'];
 			}
-			else if(!empty($sig_stats_winrate['acount_win'])){
-				$dota_wins = $sig_stats_winrate['acount_win'];
+			else if(!empty($sig_stats_winrate['account_win'])){
+				$dota_wins = $sig_stats_winrate['account_win'];
 			}
 			else{
 				$dota_wins = '???';
@@ -243,7 +243,7 @@ if(!file_exists($file_name_location) || (filemtime($file_name_location) <= strto
 			}
 
 			$text_colour = imagecolorallocate( $base_img, 78, 213, 84 );
-			//$overlay_text = $sig_stats_winrate['acount_win'] . ' wins';
+			//$overlay_text = $sig_stats_winrate['account_win'] . ' wins';
 			$tb = imagettfbbox($font_size, 0, $font_norm, $overlay_text);
 
 			$overlay_text_offset_x = 10;

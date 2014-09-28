@@ -11,8 +11,45 @@ if (
     || !isset($_GET['asl']) || !is_numeric($_GET['asl'])
     || !isset($_GET['t_min']) || !is_numeric($_GET['t_min'])
     || !isset($_GET['t_max']) || !is_numeric($_GET['t_max'])
+) {
+    //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
+    (!isset($_GET['h']) || $_GET['h'] > $max_h || $_GET['h'] < 1)
+        ? $_GET['h'] = ($max_h / 4)
+        : NULL;
 
-    || ($_GET['h'] > $max_h || $_GET['h'] < 1)
+    (!isset($_GET['r']) || $_GET['r'] > $max_r || $_GET['r'] < 1)
+        ? $_GET['r'] = ($max_r / 4)
+        : NULL;
+
+    (!isset($_GET['g']) || $_GET['g'] > $max_g || $_GET['g'] < 1)
+        ? $_GET['g'] = 5
+        : NULL;
+
+    (!isset($_GET['asl']) || $_GET['asl'] > 4 || $_GET['asl'] < 1)
+        ? $_GET['asl'] = 1
+        : NULL;
+
+    (!isset($_GET['t_min']) || $_GET['t_min'] > 1 || $_GET['t_min'] < 0.01)
+        ? $_GET['t_min'] = 0.01
+        : NULL;
+
+    (!isset($_GET['t_max']) || $_GET['t_max'] > 1 || $_GET['t_max'] < 0.01)
+        ? $_GET['t_max'] = 0.03
+        : NULL;
+
+    if ($_GET['t_min'] > $_GET['t_max']) {
+        $_GET['t_max'] = 0.03;
+        $_GET['t_min'] = 0.01;
+    }
+
+    if($_GET['r'] > ($max_r / 2) && $_GET['h'] > ($max_h / 2)){
+        $_GET['h'] = ($max_h / 4);
+        $_GET['r'] = ($max_r / 4);
+    }
+}
+
+if (
+    ($_GET['h'] > $max_h || $_GET['h'] < 1)
     || ($_GET['r'] > $max_r || $_GET['r'] < 1)
     || ($_GET['g'] > $max_g || $_GET['g'] < 1)
     || ($_GET['asl'] > 4 || $_GET['asl'] < 1)
@@ -22,22 +59,11 @@ if (
     || ($_GET['t_min'] > $_GET['t_max'])
     || ($_GET['r'] > ($max_r / 2) && $_GET['h'] > ($max_h / 2))
 ) {
-    //header("Location: ./?h=" . ($max_h / 4) . "&r=" . ($max_r / 4) . "&g=5&asl=1&t_min=0.01&t_max=0.03");
-
     $param_error = true;
-
-    $_GET['h'] = ($max_h / 4);
-    $_GET['r'] = ($max_r / 4);
-    $_GET['g'] = 5;
-    $_GET['asl'] = 1;
-    $_GET['t_min'] = 0.01;
-    $_GET['t_max'] = 0.03;
 }
 
 include('./chart.php');
 ?>
-
-<script type="text/javascript" src="//www.google.com/jsapi"></script>
 
 <?php
 $rd = 0.15;
@@ -66,7 +92,7 @@ $axe_spin_cd_array = array(
 );
 $axe_spin_cd = $axe_spin_cd_array[$axe_spin_level];
 
-$chart = new Chart('ColumnChart');
+$chart = new Chart2('ColumnChart');
 
 $options = array(
     //'title' => 'Average spins in ' . $hits . ' attacks',
@@ -110,11 +136,13 @@ $optionsDataTable = array(
         defined.</p>
 </div>
 <?php
-if($param_error){
-    echo '<p class="h4 bg-danger">One or more of the parameters used is above the limit.</p>';
+if ($param_error) {
+    echo '<div class="alert alert-danger">';
+    echo 'One or more of the parameters is set to a value outside of the acceptable bounds. Will use defaults.';
+    echo '</div>';
 }
 ?>
-<form action="" method="get">
+<form action="./simulations/axespins/dummy.php" method="POST">
     <table border="1" cellspacing="1">
         <tr>
             <th align="left">Hits</th>
@@ -349,11 +377,13 @@ echo $chart->draw('damage_chart', $options, true, $optionsDataTable);
 
 <div id="resources">
     <h2>Resources</h2>
-    <a href="http://www.playdota.com/forums/showthread.php?t=7993">http://www.playdota.com/forums/showthread.php?t=7993</a>
+    <a href="http://www.playdota.com/forums/showthread.php?t=7993">PlayDota Forums</a>
     <br/>
-    <a href="http://dota2.gamepedia.com/Pseudo-random_distribution">http://dota2.gamepedia.com/Pseudo-random_distribution</a>
-    http://www.playdota.com/forums/showthread.php?t=1386680
-    http://dev.dota2.com/showthread.php?t=72983
+    <a href="http://dota2.gamepedia.com/Pseudo-random_distribution">Dota2 Gamepedia</a>
+    <br/>
+    <a href="http://www.playdota.com/forums/showthread.php?t=1386680">PlayDota Forums</a>
+    <br/>
+    <a href="http://dev.dota2.com/showthread.php?t=72983">Dota 2 Developer Forums</a>
 </div>
 
 <div id="pagerendertime" style="font-size: 12px;">

@@ -1,6 +1,6 @@
 <?php
 require_once("../functions.php");
-require_once("../connections/parameters.php");
+require_once("../../connections/parameters.php");
 
 try{
 	if (!isset($_SESSION)) {
@@ -8,14 +8,14 @@ try{
 	}
 	
 	$user = new user;
-	$user->apikey = $steam_api_key; // put your API key here
+	$user->apikey = $api_key6; // put your API key here
 	$user->domain = $steam_api_domain; // put your domain
 	
 	//echo $steam_api_key . '<br />' . $steam_api_domain . '<br />';
 	
 	if(isset($_GET['login']))
 	{
-		$user->signIn('../');
+		$user->signIn('../../#steamtracks/');
 	}
 	if (isset($_GET['logout']))
 	{

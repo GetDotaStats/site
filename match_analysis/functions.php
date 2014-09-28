@@ -289,7 +289,7 @@ function get_d2_player_backpack($account_id = '76561197989020883', $flush = 0, $
 }
 
 if (!function_exists("get_d2_schema")) {
-function get_d2_item_schema($flush = 0, $steam_api_key = '70B208BD956ED267BDFB6ADC4EA4BDC6'){
+function get_d2_item_schema($flush = 0, $steam_api_key){
 	$memcache = new Memcache;
 	$memcache->connect("localhost",11211); # You might need to set "localhost" to "127.0.0.1"
 	
