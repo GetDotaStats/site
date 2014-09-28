@@ -74,10 +74,11 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                     $table .= '<div class="table-responsive">
                         <table class="table table-striped table-hover" style="width: auto !important">';
                     $table .= '<tr>
-                            <th width="50">&nbsp;</th>
-                            <th width="100">Match ID</th>
-                            <th width="115">IP</th>
-                            <th width="120">Recorded</th>
+                            <th>&nbsp;</th>
+                            <th>Match ID</th>
+                            <th>IP</th>
+                            <th>Port</th>
+                            <th>Recorded</th>
                         </tr>';
 
                     $jsonMessage = array();
@@ -92,12 +93,14 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                         $jsonMessage[$key]['message_id'] = $value['test_id'];
                         $jsonMessage[$key]['match_id'] = $modMatchId;
                         $jsonMessage[$key]['remote_ip'] = $value['remote_ip'];
+                        $jsonMessage[$key]['remote_port'] = $value['remote_port'];
                         $jsonMessage[$key]['date_recorded'] = $value['date_recorded'];
 
                         $table .= '<tr>
                             <td>' . $value['test_id'] . '</td>
                             <td>' . $modMatchId . '</td>
-                            <td>' . $value['remote_ip'] . '<br />' . $value['remote_port'] . '</td>
+                            <td>' . $value['remote_ip'] . '</td>
+                            <td>' . $value['remote_port'] . '</td>
                             <td>' . relative_time($value['date_recorded']) . '</td>
                         </tr>';
                     }
