@@ -50,6 +50,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                 echo '<div class="col-sm-6">
                         <div class="table-responsive">
                         <table class="table table-striped table-hover table-condensed" style="width: auto !important">';
+                echo '<tr><td><a href="./mod_breakdown.php">NO MOD FILTER</a></td></tr>';
                 foreach ($mods as $key => $value) {
                     $modCheckList[$value['mod_id']] = $value['mod_identifier'];
                     echo '<tr><td><a href="./mod_breakdown.php?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td></tr>';
@@ -60,14 +61,15 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                 if ((!empty($modID) && !empty($modCheckList[$modID])) || empty($modID)) {
 
                     if (empty($modID)) {
-                        $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC LIMIT 0,50;');
+                        $messages = $db->q('SELECT * FROM `node_listener` ORDER BY date_recorded DESC LIMIT 0,100;');
+                        echo '<h3>Last 100 games</h3>';
                     } else {
-                        $messages = $db->q('SELECT * FROM `node_listener` WHERE `mod_id` = ? ORDER BY date_recorded DESC LIMIT 0,50;',
+                        $messages = $db->q('SELECT * FROM `node_listener` WHERE `mod_id` = ? ORDER BY date_recorded DESC LIMIT 0,100;',
                             's',
                             $modCheckList[$modID]
                         );
 
-                        echo '<h3>' . $modCheckList[$modID] . ' <small>Last 50 games</small></h3>';
+                        echo '<h3>' . $modCheckList[$modID] . ' <small>Last 100 games</small></h3>';
                     }
 
                     $table = '';
