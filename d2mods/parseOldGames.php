@@ -20,7 +20,7 @@ try {
 
                 echo $parsed['matchID'] . ' || ' . $parsed['modID'] . ' || ' . $parsed['duration'] . '||' . $value['date_recorded'] . '<br />';
 
-                $db->q(
+                /*$db->q(
                     'INSERT INTO `mod_match_overview` (`match_id`, `mod_id`, `match_duration`, `match_recorded`)
                         VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                             `match_id` = VALUES(`match_id`),
@@ -29,6 +29,16 @@ try {
                             `match_recorded` = VALUES(`match_recorded`);'
                     , 'ssds'
                     , $parsed['matchID'], $parsed['modID'], $parsed['duration'], $value['date_recorded']
+                );*/
+
+                echo $parsed['matchID'] . ' || ' . $parsed['modID'] . ' || ' . $parsed['duration'] . '||' . $value['date_recorded'] . '<br />';
+                $db->q(
+                    'INSERT INTO `node_listener` (`test_id`, `mod_id`)
+                        VALUES (?, ?) ON DUPLICATE KEY UPDATE
+                            `test_id` = VALUES(`test_id`),
+                            `mod_id` = VALUES(`mod_id`);'
+                    , 'is'
+                    , $value['test_id'], $parsed['modID']
                 );
             }
         } else {
