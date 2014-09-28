@@ -99,7 +99,7 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                         $jsonMessage[$key]['date_recorded'] = $value['date_recorded'];
 
                         $table .= '<tr>
-                            <td>' . $value['test_id'] . '</td>
+                            <td><a href="./?custom_match=' . $value['test_id'] . '" target="_new">' . $value['test_id'] . '</a></td>
                             <td>' . $modMatchId . '</td>
                             <td>' . $value['remote_ip'] . '</td>
                             <td>' . $value['remote_port'] . '</td>
