@@ -53,7 +53,7 @@ try {
                                     try {
                                         $db = new dbWrapper($hostname_gds_feeds, $username_gds_feeds, $password_gds_feeds, $database_gds_feeds, false);
                                         if ($db) {
-                                            $feeds = $db->q('SELECT `category_id`, `category_name`, `date_recorded` FROM `feeds_categories`;');
+                                            $feeds = $db->q('SELECT `category_id`, `category_name`, `date_recorded` FROM `feeds_categories` ORDER BY `category_name` DESC;');
 
                                             if (!empty($feeds)) {
                                                 foreach ($feeds as $key => $value) {
@@ -158,7 +158,11 @@ try {
             $("#myForm :input").each(function () {
                 $(this).val('');
             });
+
             $('#result').html(data);
+
+            loadPage(document.getElementById("abcd").getAttribute("href"));
+
             //testFunction();
         }, 'text');
     });
