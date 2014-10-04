@@ -44,8 +44,8 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
-                        <th width="70" class="text-right">Games</th>
-                        <th width="170" class="text-center">Owner</th>
+                        <th class="text-right">Games</th>
+                        <th width="170" class="text-left">Owner</th>
                         <th width="80" class="text-center">Links</th>
                         <th width="120" class="text-center">Added</th>
                     </tr>';
@@ -62,7 +62,7 @@ try {
                 echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <th>' . $value['mod_name'] . '</th>
-                        <th class="text-right">' . number_format($value['num_games']) . '</th>
+                        <th class="text-right"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . number_format($value['num_games']) . '</a></th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <td class="text-center">' . $wg . ' || ' . $sg . '</td>
                         <td class="text-left">' . relative_time($value['date_recorded']) . '</td>
@@ -85,9 +85,9 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
-                        <th width="170" class="text-center">Owner</th>
+                        <th width="170" class="text-left">Owner</th>
                         <th width="80" class="text-center">Links</th>
-                        <th width="120" class="text-left">Added</th>
+                        <th width="120" class="text-center">Added</th>
                     </tr>';
 
             foreach ($modListInactive as $key => $value) {
@@ -104,7 +104,7 @@ try {
                         <th>' . $value['mod_name'] . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <td class="text-center">' . $wg . ' || ' . $sg . '</td>
-                        <td class="text-right">' . relative_time($value['date_recorded']) . '</td>
+                        <td class="text-left">' . relative_time($value['date_recorded']) . '</td>
                     </tr>
                     <tr>
                         <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>

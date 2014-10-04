@@ -16,37 +16,45 @@ try {
 
         if ($db) {
             ?>
-            <div class="page-header"><h2>Add a new Mod for Stats <small>BETA</small></h2></div>
+            <div class="page-header">
+                <h2>Add a new Mod for Stats
+                    <small>BETA</small>
+                </h2>
+            </div>
 
-            <p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. This section is a Work-In-Progress, so check back later.</p>
+            <p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to
+                implement stats for their mod. This section is a Work-In-Progress, so check back later.</p>
 
-            <div class="col-sm-7">
-                <form id="modSignup">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <tr>
-                                <th width="120">Name</th>
-                                <td><input name="mod_name" type="text" maxlength="35" size="45" required></td>
-                            </tr>
-                            <tr>
-                                <th>Description</th>
-                                <td><textarea name="mod_description" rows="4" cols="47"></textarea></td>
-                            </tr>
-                            <tr>
-                                <th>Workshop Link</th>
-                                <td><input name="mod_workshop_link" type="text" maxlength="70" size="45"></td>
-                            </tr>
-                            <tr>
-                                <th>Steam Group</th>
-                                <td><input name="mod_steam_group" type="text" maxlength="70" size="45"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" align="center">
-                                    <button id="sub">Signup</button>
-                                </td>
-                            </tr>
-                        </table>
-                </form>
+            <div class="container">
+                <div class="col-sm-6">
+                    <form id="modSignup">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <tr>
+                                    <th width="120">Name</th>
+                                    <td><input name="mod_name" type="text" maxlength="35" size="45" required></td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <td><textarea name="mod_description" rows="4" cols="47"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <th>Workshop Link</th>
+                                    <td><input name="mod_workshop_link" type="text" maxlength="70" size="45"></td>
+                                </tr>
+                                <tr>
+                                    <th>Steam Group</th>
+                                    <td><input name="mod_steam_group" type="text" maxlength="70" size="45"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        <button id="sub">Signup</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <br/>
