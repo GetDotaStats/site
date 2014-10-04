@@ -41,7 +41,7 @@ try {
                     $modID
                 );
 
-                if (!empty($modRange['date_end'])) {
+                if (!empty($modRange[0]['date_end'])) {
 
                     /*$db -> q('CREATE TABLE IF NOT EXISTS `stats_mods_duration` SELECT
                         300 * floor(`duration` / 300) as `range_start`,
