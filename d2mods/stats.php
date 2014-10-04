@@ -200,13 +200,9 @@ try {
 
                         $chart->load(json_encode($data));
                         echo $chart->draw('duration_breakdown', $options);
-
-                        echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
-
-                        echo '<div id="pagerendertime" style="font-size: 12px;">';
-                        echo '<hr />Page generated in ' . (time() - $start) . 'secs';
-                        echo '</div>';
                     }
+
+                    echo '<hr />';
 
                     //////////////////////
                     // PLAYED OVER TIME
@@ -215,7 +211,7 @@ try {
                     {
                         $chart = new chart2('ComboChart');
 
-                        echo '<h3>Played Over Time</h3>';
+                        echo '<h3>Games Played Over Time</h3>';
 
                         //$stats = json_decode(curl('http://ddp2.d2modd.in/stats/general', NULL, NULL, NULL, NULL, 20), 1);
                         $mod_stats = $db->q(
@@ -252,34 +248,25 @@ try {
                             $test_array[$date] = $value['num_games'];
                         }
 
-                        echo '<pre>';
+                        /*echo '<pre>';
                         print_r($test_array);
                         echo '</pre>';
-                        exit();
+                        exit();*/
 
                         $super_array = array();
-                        $i = 0;
                         foreach ($test_array as $key => $value) {
-                            $super_array[$i] = array('c' => array(array('v' => $key)));
-
-                            foreach ($value as $key2 => $value2) {
-                                $super_array[$i]['c'][] = array('v' => $value2);
-                            }
-                            $i++;
+                            $super_array[] = array('c' => array(array('v' => $key), array('v' => $value)));
                         }
 
                         $data = array(
                             'cols' => array(
                                 array('id' => '', 'label' => 'Date', 'type' => 'string'),
+                                array('id' => '', 'label' => 'Games', 'type' => 'number'),
                             ),
                             'rows' => $super_array
                         );
 
-                        foreach ($mod_list as $key => $value) {
-                            $data['cols'][] = array('id' => '', 'label' => $value['mod_name'], 'type' => 'number');
-                        }
-
-                        $chart_width = max(count($test_array) * 2, 800);
+                        $chart_width = max(count($test_array) * 2, 500);
 
                         $options = array(
                             //'title' => 'Average spins in ' . $hits . ' attacks',
@@ -288,7 +275,7 @@ try {
                             'bar' => array(
                                 'groupWidth' => 1,
                             ),
-                            'height' => 300,
+                            'height' => 400,
                             'chartArea' => array(
                                 'width' => '100%',
                                 'height' => '85%',
@@ -305,13 +292,15 @@ try {
                             'vAxis' => array(
                                 'title' => 'Lobbies',
                                 //'textPosition' => 'in',
+                                'format' => '0'
                             ),
                             'legend' => array(
-                                'position' => 'bottom',
-                                'alignment' => 'start',
-                                'textStyle' => array(
-                                    'fontSize' => 10
-                                )
+                                'position' => 'none',
+                                //'position' => 'bottom',
+                                //'alignment' => 'start',
+                                //'textStyle' => array(
+                                //    'fontSize' => 10
+                                //)
                             ),
                             'seriesType' => "bars",
                             /*'series' => array(
@@ -319,12 +308,10 @@ try {
                                     'type' => "line"
                                 ),
                             ),*/
-                            'isStacked' => 'true',
+                            //'isStacked' => 'true',
                         );
 
                         echo '<div id="lobby_count_alltime" style="overflow-x: scroll; width: 800px;"></div>';
-                        //echo '<div style="width: 800px;"><h4 class="text-center">' . date('Y-m-d', strtotime($mod_range[0]['max_date'])) . ' --> ' . date('Y-m-d', strtotime($mod_range[0]['min_date'])) . '</h4></div>';
-                        echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($mod_range[0]['max_date']) . ' --> ' . relative_time($mod_range[0]['min_date']) . '</h4></div>';
 
                         echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
@@ -335,6 +322,14 @@ try {
                         $chart->load(json_encode($data));
                         echo $chart->draw('lobby_count_alltime', $options, false, array(), true);
                     }
+
+                    echo '<hr />';
+
+                    echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
+
+                    echo '<div id="pagerendertime" style="font-size: 12px;">';
+                    echo '<hr />Page generated in ' . (time() - $start) . 'secs';
+                    echo '</div>';
 
 
                 } else {
@@ -351,5 +346,5 @@ try {
         echo 'No DB';
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
 }
