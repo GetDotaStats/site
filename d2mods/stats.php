@@ -196,16 +196,14 @@ try {
                     $chart->load(json_encode($data));
                     echo $chart->draw('duration_breakdown', $options);
 
+                    echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
+
+                    echo '<div id="pagerendertime" style="font-size: 12px;">';
+                    echo '<hr />Page generated in ' . (time() - $start) . 'secs';
+                    echo '</div>';
                 } else {
                     echo 'No games played with that modID';
                 }
-
-                echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
-
-                echo '<div id="pagerendertime" style="font-size: 12px;">';
-                echo '<hr />Page generated in ' . (time() - $start) . 'secs';
-                echo '</div>';
-
             } else {
                 echo 'No mods with that modID';
             }
