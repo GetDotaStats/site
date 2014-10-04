@@ -72,7 +72,7 @@ try {
                     $durationArray = '';
 
                     $periodGrouping = 4; //CHANGE SQL TOO IF YOU MODIFY THIS
-                    $periodCutoff = 48;
+                    $periodCutoff = 50;
 
                     foreach ($modStats as $key => $value) {
                         $value['range_end'] = $value['range_end'] / 60;
