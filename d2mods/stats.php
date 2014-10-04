@@ -113,7 +113,7 @@ try {
                         //'title' => 'Average spins in ' . $hits . ' attacks',
                         //'theme' => 'maximized',
                         'bar' => array(
-                            'groupWidth' => 3,
+                            'groupWidth' => 7,
                         ),
                         'height' => 400,
                         'chartArea' => array(
@@ -173,7 +173,7 @@ try {
                     $maxKey = key($value);
 
 
-                    $chart_width = max(count($super_array) * 5, 400);
+                    $chart_width = max(count($super_array) * 9, 500);
                     $options['width'] = $chart_width;
                     $options['hAxis']['maxValue'] = $maxKey + 2;
                     $options['hAxis']['gridlines']['count'] = ($maxKey + 2) / 2;
@@ -182,7 +182,7 @@ try {
                     echo '<div id="duration_breakdown" style="width: 400px;"></div>';
 
                     echo '<div class="container">
-                        <div class="col-sm-6">
+                        <div class="col-sm-5">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover">';
                     echo '<tr><th>Range</th><td>' . relative_time($modRange[0]['date_start']) . ' - ' . relative_time($modRange[0]['date_end']) . '</td></tr>';
