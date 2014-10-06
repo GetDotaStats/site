@@ -162,7 +162,7 @@ try {
 
                         $super_array = array();
                         foreach ($testArray as $key2 => $value2) {
-                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<strong>' . $key2 . '</strong> mins<br />Games: <strong>' . $value2 . '</strong>')));
+                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
                         }
 
                         $data = array(
