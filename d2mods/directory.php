@@ -27,7 +27,7 @@ try {
                 FROM `mod_list` ml
                 LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                 WHERE ml.`mod_active` = 0
-                ORDER BY `date_recorded` DESC;'
+                ORDER BY `date_recorded` DESC LIMIT 0,10;'
             , 10
         );
 
@@ -79,7 +79,7 @@ try {
 
         if (!empty($modListInactive)) {
             echo '<hr />';
-            echo '<h3>Mods waiting approval</h3>';
+            echo '<h3>Mods waiting approval <small>Last 10</small></h3>';
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
             echo '<tr>
