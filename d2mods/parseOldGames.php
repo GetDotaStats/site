@@ -18,20 +18,22 @@ try {
             foreach ($messages as $key => $value) {
                 $parsed = json_decode($value['message'],1);
 
-                echo $parsed['matchID'] . ' || ' . $parsed['modID'] . ' || ' . $parsed['duration'] . '||' . $value['date_recorded'] . '<br />';
+                $numPlayers = !empty($parsed['rounds']['players'])
+                    ? count($parsed['rounds']['players'])
+                    : NULL;
 
-                /*$db->q(
-                    'INSERT INTO `mod_match_overview` (`match_id`, `mod_id`, `match_duration`, `match_recorded`)
-                        VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+                echo $parsed['matchID'] . ' || ' . $numPlayers . '<br />';
+
+                $db->q(
+                    'INSERT INTO `mod_match_overview` (`match_id`, `match_num_players`)
+                        VALUES (?, ?) ON DUPLICATE KEY UPDATE
                             `match_id` = VALUES(`match_id`),
-                            `mod_id` = VALUES(`mod_id`),
-                            `match_duration` = VALUES(`match_duration`),
-                            `match_recorded` = VALUES(`match_recorded`);'
-                    , 'ssds'
-                    , $parsed['matchID'], $parsed['modID'], $parsed['duration'], $value['date_recorded']
-                );*/
+                            `match_num_players` = VALUES(`match_num_players`);'
+                    , 'si'
+                    , $parsed['matchID'], $numPlayers
+                );
 
-                echo $parsed['matchID'] . ' || ' . $parsed['modID'] . ' || ' . $parsed['duration'] . '||' . $value['date_recorded'] . '<br />';
+                /*echo $parsed['matchID'] . ' || ' . $parsed['modID'] . ' || ' . $parsed['duration'] . '||' . $value['date_recorded'] . '<br />';
                 $db->q(
                     'INSERT INTO `node_listener` (`test_id`, `mod_id`)
                         VALUES (?, ?) ON DUPLICATE KEY UPDATE
@@ -39,7 +41,10 @@ try {
                             `mod_id` = VALUES(`mod_id`);'
                     , 'is'
                     , $value['test_id'], $parsed['modID']
-                );
+                );*/
+
+                flush();
+                ob_flush();
             }
         } else {
             echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
