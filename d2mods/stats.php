@@ -325,6 +325,112 @@ try {
 
                     echo '<hr />';
 
+                    //////////////////////
+                    // NUM PLAYERS
+                    //////////////////////
+
+                    {
+                        $modStats = $db->q(
+                            'SELECT
+                                match_num_players as `num_players`,
+                                COUNT(*) as `num_games`
+                            FROM `mod_match_overview` mmo
+                            LEFT JOIN `mod_list` ml ON ml.mod_identifier = mmo.mod_id
+                            WHERE ml.`mod_id` = ?
+                            GROUP BY 1
+                            ORDER BY 1;',
+                            'i',
+                            $modID
+                        );
+
+                        $testArray = array();
+                        $lastNum = 0; //NEED TO BE NEGATIVE TO GRAPH 0 TOO
+
+                        foreach ($modStats as $key => $value) {
+                            if ($value['num_players'] > ($lastNum + 1)) {
+                                while ($value['num_players'] > ($lastNum + 1)) {
+                                    $testArray[$lastNum + 1] = 0;
+                                    $lastNum += 1;
+                                }
+                            }
+
+                            $testArray[$value['num_players']] = $value['num_games'];
+
+                            $lastNum = $value['num_players'];
+                        }
+
+                        /*echo '<pre>';
+                        print_r($testArray);
+                        echo '</pre>';
+                        //exit();*/
+
+
+                        $options = array(
+                            //'title' => 'Average spins in ' . $hits . ' attacks',
+                            //'theme' => 'maximized',
+                            'bar' => array(
+                                'groupWidth' => 10,
+                            ),
+                            'height' => 400,
+                            'chartArea' => array(
+                                'width' => '100%',
+                                'height' => '80%',
+                                'left' => 50,
+                                'top' => 10,
+                            ),
+                            'hAxis' => array(
+                                'title' => 'Number of Players',
+                                //'maxAlternation' => 1,
+                                //'textPosition' => 'none',
+                                //'textPosition' => 'in',
+                                //'viewWindowMode' => 'maximized'
+                                //'slantedText' => 1,
+                                //'slantedTextAngle' => 60,
+                            ),
+                            'vAxis' => array(
+                                'title' => 'Games',
+                                //'textPosition' => 'in',
+                                //'logScale' => 1,
+                            ),
+                            'legend' => array(
+                                'position' => 'none',
+                            ),
+                            'seriesType' => "bars",
+                            'tooltip' => array(
+                                'isHtml' => 1,
+                            ),
+                        );
+
+                        $chart = new chart2('ComboChart');
+
+                        $super_array = array();
+                        foreach ($testArray as $key2 => $value2) {
+                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                        }
+
+                        $data = array(
+                            'cols' => array(
+                                array('id' => '', 'label' => 'Number of Players', 'type' => 'number'),
+                                array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                                array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                            ),
+                            'rows' => $super_array
+                        );
+
+                        $chart_width = max(count($super_array) * 9, 500);
+                        $options['width'] = $chart_width;
+                        $options['hAxis']['maxValue'] = $maxKey;
+                        $options['hAxis']['gridlines']['count'] = count($super_array);
+
+                        echo '<h3>Players per Game</h3>';
+                        echo '<div id="breakdown_num_players" style="width: 400px;"></div>';
+
+                        $chart->load(json_encode($data));
+                        echo $chart->draw('breakdown_num_players', $options);
+                    }
+
+                    echo '<hr />';
+
                     echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
 
                     echo '<div id="pagerendertime" style="font-size: 12px;">';
