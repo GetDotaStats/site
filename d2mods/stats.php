@@ -316,7 +316,12 @@ try {
                             'vAxis' => array(
                                 'title' => 'Games',
                                 //'textPosition' => 'in',
-                                'logScale' => 1,
+                                //'logScale' => 1,
+                                'scaleType'=> 'mirrorLog',
+                                //'minValue' => 0.01,
+                                /*'viewWindow' => array(
+                                    'min' => 0
+                                ),*/
                             ),
                             'legend' => array(
                                 'position' => 'none',
