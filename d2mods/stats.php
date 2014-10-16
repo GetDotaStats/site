@@ -134,9 +134,9 @@ try {
                             ),
                             'height' => 400,
                             'chartArea' => array(
-                                'width' => '80%',
+                                'width' => '100%',
                                 'height' => '80%',
-                                'left' => 50,
+                                'left' => 80,
                                 'top' => 10,
                             ),
                             'hAxis' => array(
@@ -301,7 +301,7 @@ try {
                             'chartArea' => array(
                                 'width' => '100%',
                                 'height' => '80%',
-                                'left' => 50,
+                                'left' => 80,
                                 'top' => 10,
                             ),
                             'hAxis' => array(
@@ -461,7 +461,7 @@ try {
                             'chartArea' => array(
                                 'width' => '100%',
                                 'height' => '85%',
-                                'left' => 50,
+                                'left' => 80,
                                 'top' => 10,
                             ),
                             'hAxis' => array(
@@ -557,7 +557,7 @@ try {
                             'chartArea' => array(
                                 'width' => '100%',
                                 'height' => '80%',
-                                'left' => 50,
+                                'left' => 80,
                                 'top' => 10,
                             ),
                             'hAxis' => array(
