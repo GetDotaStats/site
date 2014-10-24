@@ -443,6 +443,121 @@ try {
                     echo '<hr />';
 
                     //////////////////////
+                    // UNIQUE PLAYERS PER DAY
+                    //////////////////////
+
+                    {
+                        $modFailStats_numgames = $db->q(
+                            'SELECT
+                                DAY(mmp.`date_recorded`) as day,
+                                MONTH(mmp.`date_recorded`) as month,
+                                YEAR(mmp.`date_recorded`) as year,
+                                COUNT(DISTINCT mmp.`player_sid32`) as num_players
+                            FROM `mod_match_players` mmp
+                            LEFT JOIN `mod_list` ml ON ml.mod_identifier = mmp.mod_id
+                            WHERE ml.`mod_id` = ?
+                            GROUP BY 3,2,1
+                            ORDER BY 3,2,1',
+                            'i',
+                            $modID
+                        );
+
+                        /*echo '<pre>';
+                        print_r($modFailStats_numfails);
+                        echo '</pre>';
+                        //exit();*/
+
+
+                        $testArray = array();
+
+                        foreach ($modFailStats_numgames as $key => $value) {
+                            $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+
+                            $testArray[$modDate]['num_players'] = $value['num_players'];
+                        }
+
+                        /*echo '<pre>';
+                        print_r($testArray);
+                        echo '</pre>';
+                        //exit();*/
+
+
+                        $options = array(
+                            //'title' => 'Average spins in ' . $hits . ' attacks',
+                            //'theme' => 'maximized',
+                            'bar' => array(
+                                'groupWidth' => 10,
+                            ),
+                            'height' => 300,
+                            'chartArea' => array(
+                                'width' => '100%',
+                                'height' => '75%',
+                                'left' => 80,
+                                'top' => 10,
+                            ),
+                            'hAxis' => array(
+                                //'title' => 'Date',
+                                //'maxAlternation' => 1,
+                                //'textPosition' => 'none',
+                                //'textPosition' => 'in',
+                                //'viewWindowMode' => 'maximized'
+                                //'slantedText' => 1,
+                                //'slantedTextAngle' => 60,
+                            ),
+                            'vAxes' => array(
+                                array(
+                                    'title' => 'Unique Players',
+                                    //'textPosition' => 'in',
+                                    //'logScale' => 1,
+                                ),
+                            ),
+                            'legend' => array(
+                                'position' => 'none',
+                                //'alignment' => 'center',
+                            ),
+                            'seriesType' => 'bars',
+                            'tooltip' => array(
+                                //'isHtml' => 1,
+                            ),
+                            'isStacked' => 1,
+                            'focusTarget' => 'category',
+                        );
+
+                        $chart = new chart2('ComboChart');
+
+                        $super_array = array();
+                        foreach ($testArray as $key2 => $value2) {
+
+                            $numPlayers = !empty($value2['num_players'])
+                                ? $value2['num_players']
+                                : 0;
+
+                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $numPlayers))); //, array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games?: <strong>' . number_format($numFails) . '</strong></div>')));
+                        }
+
+                        $data = array(
+                            'cols' => array(
+                                array('id' => '', 'label' => 'Date', 'type' => 'string'),
+                                array('id' => '', 'label' => 'Unique Players', 'type' => 'number'),
+                                //array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                            ),
+                            'rows' => $super_array
+                        );
+
+                        $chart_width = max(count($super_array) * 9, 700);
+                        $options['width'] = $chart_width;
+                        $options['hAxis']['gridlines']['count'] = count($super_array);
+
+                        echo '<h3>Unique Players per Day <small>Not fully live yet!</small></h3>';
+                        echo '<div id="breakdown_num_players_per_day" style="width: 400px;"></div>';
+
+                        $chart->load(json_encode($data));
+                        echo $chart->draw('breakdown_num_players_per_day', $options);
+                    }
+
+                    echo '<hr />';
+
+                    //////////////////////
                     // FAILURES PER DAY
                     //////////////////////
 
