@@ -585,9 +585,14 @@ try {
                                 ? $value2['num_fails']
                                 : 0;
 
-                            $gamesPercentageSuccess = !empty($value2['num_games'])
-                                ? $value2['num_fails'] / $value2['num_games'] * 100
-                                : 100;
+                            if(!empty($value2['num_fails'])){
+                                $gamesPercentageSuccess = !empty($value2['num_games'])
+                                    ? $value2['num_fails'] / $value2['num_games'] * 100
+                                    : 100;
+                            }
+                            else{
+                                $gamesPercentageSuccess = 0;
+                            }
 
                             $avgPlayers = !empty($value2['avg_players'])
                                 ? $value2['avg_players']
