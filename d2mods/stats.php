@@ -167,12 +167,12 @@ try {
                         $super_array = array();
                         foreach ($testArray as $key2 => $value2) {
 
-                            $numGames = !empty($value2['num_games'])
-                                ? $value2['num_games']
-                                : 0;
-
                             $numFails = !empty($value2['num_fails'])
                                 ? $value2['num_fails']
+                                : 0;
+
+                            $numActualGames = !empty($value2['num_games'])
+                                ? $value2['num_games'] - $numFails
                                 : 0;
 
                             if(!empty($value2['num_fails'])){
@@ -186,8 +186,8 @@ try {
 
                             $super_array[] = array('c' => array(
                                 array('v' => $key2),
-                                array('v' => $numGames),
-                                array('v' => number_format($numGames)),
+                                array('v' => $numActualGames),
+                                array('v' => number_format($numActualGames)),
                                 array('v' => $gamesPercentageSuccess),
                                 array('v' => number_format($gamesPercentageSuccess) . '%'),
                             ));
@@ -196,7 +196,7 @@ try {
                         $data = array(
                             'cols' => array(
                                 array('id' => '', 'label' => 'Date', 'type' => 'string'),
-                                array('id' => '', 'label' => 'Number of Games', 'type' => 'number'),
+                                array('id' => '', 'label' => 'Actual Games', 'type' => 'number'),
                                 array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
                                 array('id' => '', 'label' => 'Failure Rate (%)', 'type' => 'number'),
                                 array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
