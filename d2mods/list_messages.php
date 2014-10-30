@@ -35,10 +35,12 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
 <div class="container">
     <div class="row">
         <div class="page-header text-center">
-            <h2>Last 50 communications <small>Logs can be found here:
-                <a href="./log-test.html" target="_blank">test</a>
-                ||
-                <a href="./log-live.html" target="_blank">live</a></small></h2>
+            <h2>Last 50 communications
+                <small>Logs can be found here:
+                    <a href="./log-test.html" target="_blank">test</a>
+                    ||
+                    <a href="./log-live.html" target="_blank">live</a></small>
+            </h2>
         </div>
     </div>
     <div class="row">
@@ -86,9 +88,15 @@ if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
                             ? $json['matchID']
                             : '??';
 
-                        $modPlayers = !empty($json)
-                            ? count($json['rounds']['players'])
-                            : '??';
+                        if (isset($json['rounds']['players'])) {
+                            $modPlayers = !empty($json)
+                                ? count($json['rounds']['players'])
+                                : '??';
+                        } else {
+                            $modPlayers = !empty($json)
+                                ? count($json['rounds'][0]['players'])
+                                : '??';
+                        }
 
                         if (!empty($modCount[$modName])) {
                             $modCount[$modName]++;
