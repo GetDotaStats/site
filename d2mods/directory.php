@@ -61,8 +61,8 @@ try {
 
                 echo '<tr>
                         <td>' . ($key + 1) . '</td>
-                        <th>' . $value['mod_name'] . '</th>
-                        <th class="text-right"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . number_format($value['num_games']) . '</a></th>
+                        <th><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></th>
+                        <th class="text-right">' . number_format($value['num_games']) . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <td class="text-center">' . $wg . ' || ' . $sg . '</td>
                         <td class="text-left">' . relative_time($value['date_recorded']) . '</td>
