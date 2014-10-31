@@ -14,11 +14,13 @@ try {
                     ml.*,
                     gu.`user_name`,
                     gu.`user_avatar`,
-                    (SELECT COUNT(*) FROM `mod_match_overview` WHERE `mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS num_games
+                    (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_last_week,
+                    (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_all_time,
+                    (SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
                 FROM `mod_list` ml
                 LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                 WHERE ml.`mod_active` = 1
-                ORDER BY num_games DESC, `date_recorded` DESC;'
+                ORDER BY games_last_week DESC, games_all_time DESC;'
             , 30
         );
 
@@ -44,10 +46,9 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
-                        <th class="text-right">Games</th>
+                        <th colspan="2" width="90" class="text-center">Games <span class="glyphicon glyphicon-question-sign" title="Last week / Total Games"></span></th>
                         <th width="170" class="text-left">Owner</th>
-                        <th width="80" class="text-center">Links</th>
-                        <th width="120" class="text-center">Added</th>
+                        <th width="80" class="text-center">Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
                     </tr>';
 
             foreach ($modListActive as $key => $value) {
@@ -62,13 +63,16 @@ try {
                 echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <th><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></th>
-                        <th class="text-right">' . number_format($value['num_games']) . '</th>
+                        <th class="text-center">' . number_format($value['games_last_week']) . '</th>
+                        <th class="text-center">' . number_format($value['games_all_time']) . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
-                        <td class="text-center">' . $wg . ' || ' . $sg . '</td>
-                        <td class="text-left">' . relative_time($value['date_recorded']) . '</td>
+                        <th class="text-center">' . $wg . ' || ' . $sg . '</th>
                     </tr>
-                    <tr>
-                        <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>
+                    <tr class="warning">
+                        <td colspan="6">
+                            <div class="text-right"><strong>' . relative_time($value['date_recorded']) . '</strong> <span class="glyphicon glyphicon-question-sign" title="This mod was added ' . relative_time($value['date_recorded']) . '"></span></div>
+                            ' . $value['mod_description'] . '<br />
+                        </td>
                     </tr>';
             }
 
@@ -86,8 +90,7 @@ try {
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
                         <th width="170" class="text-left">Owner</th>
-                        <th width="80" class="text-center">Links</th>
-                        <th width="120" class="text-center">Added</th>
+                        <th width="80" class="text-center">Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
                     </tr>';
 
             foreach ($modListInactive as $key => $value) {
@@ -103,11 +106,13 @@ try {
                         <td>' . ($key + 1) . '</td>
                         <th>' . $value['mod_name'] . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
-                        <td class="text-center">' . $wg . ' || ' . $sg . '</td>
-                        <td class="text-left">' . relative_time($value['date_recorded']) . '</td>
+                        <th class="text-center">' . $wg . ' || ' . $sg . '</th>
                     </tr>
-                    <tr>
-                        <td colspan="6">' . $value['mod_description'] . '<br /><br /></td>
+                    <tr class="warning">
+                        <td colspan="6">
+                            <div class="text-right"><strong>' . relative_time($value['date_recorded']) . '</strong> <span class="glyphicon glyphicon-question-sign" title="This mod was added ' . relative_time($value['date_recorded']) . '"></span></div>
+                            ' . $value['mod_description'] . '<br />
+                        </td>
                     </tr>';
             }
 
