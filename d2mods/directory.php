@@ -47,6 +47,7 @@ try {
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
                         <th colspan="2" width="90" class="text-center">Games <span class="glyphicon glyphicon-question-sign" title="Last week / Total Games"></span></th>
+                        <th width="85" class="text-center">Players <span class="glyphicon glyphicon-question-sign" title="The total number of unique players"></span></th>
                         <th width="170" class="text-left">Owner</th>
                         <th width="80" class="text-center">Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
                     </tr>';
@@ -65,11 +66,12 @@ try {
                         <th><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></th>
                         <th class="text-center">' . number_format($value['games_last_week']) . '</th>
                         <th class="text-center">' . number_format($value['games_all_time']) . '</th>
+                        <th class="text-center">' . number_format($value['players_all_time']) . '</th>
                         <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <th class="text-center">' . $wg . ' || ' . $sg . '</th>
                     </tr>
                     <tr class="warning">
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="text-right"><strong>' . relative_time($value['date_recorded']) . '</strong> <span class="glyphicon glyphicon-question-sign" title="This mod was added ' . relative_time($value['date_recorded']) . '"></span></div>
                             ' . $value['mod_description'] . '<br />
                         </td>
