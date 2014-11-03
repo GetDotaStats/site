@@ -10,13 +10,13 @@ try {
 
     if ($db) {
         $modListActive = simple_cached_query('d2mods_directory_active',
+            //,(SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
             'SELECT
                     ml.*,
                     gu.`user_name`,
                     gu.`user_avatar`,
                     (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_last_week,
-                    (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_all_time,
-                    (SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
+                    (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_all_time
                 FROM `mod_list` ml
                 LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                 WHERE ml.`mod_active` = 1
@@ -46,9 +46,9 @@ try {
             echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
-                        <th colspan="2" width="90" class="text-center">Games <span class="glyphicon glyphicon-question-sign" title="Last week / Total Games"></span></th>
-                        <th width="85" class="text-center">Players <span class="glyphicon glyphicon-question-sign" title="The total number of unique players"></span></th>
-                        <th width="170" class="text-left">Owner</th>
+                        <th colspan="2" width="90" class="text-center">Games <span class="glyphicon glyphicon-question-sign" title="Last week / Total Games"></span></th>'.
+                        //<th width="85" class="text-center">Players <span class="glyphicon glyphicon-question-sign" title="The total number of unique players"></span></th>
+                        '<th width="170" class="text-left">Owner</th>
                         <th width="80" class="text-center">Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
                     </tr>';
 
@@ -65,9 +65,9 @@ try {
                         <td>' . ($key + 1) . '</td>
                         <th><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></th>
                         <th class="text-center">' . number_format($value['games_last_week']) . '</th>
-                        <th class="text-center">' . number_format($value['games_all_time']) . '</th>
-                        <th class="text-center">' . number_format($value['players_all_time']) . '</th>
-                        <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
+                        <th class="text-center">' . number_format($value['games_all_time']) . '</th>'.
+                        //<th class="text-center">' . number_format($value['players_all_time']) . '</th>
+                        '<td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
                         <th class="text-center">' . $wg . ' || ' . $sg . '</th>
                     </tr>
                     <tr class="warning">
