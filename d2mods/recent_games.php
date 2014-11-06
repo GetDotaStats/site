@@ -22,7 +22,7 @@ try {
                     ml.`mod_active`
                 FROM `mod_match_overview` mmo
                 LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
-                ORDER BY `date_recorded` DESC
+                ORDER BY mmo.`match_recorded` DESC
                 LIMIT 0,50;'
             , 30
         );
