@@ -464,7 +464,7 @@ if (!function_exists("secs_to_h")) {
 
 // default, primary, success, info, warning, danger, link
 if (!function_exists("bootstrapMessage")) {
-    function bootstrapMessage($errorHeading, $errorMessage, $type = 'danger')
+    function bootstrapMessage($errorHeading = 'Oh Snap', $errorMessage, $type = 'danger')
     {
         switch ($type) {
             case 'primary':
