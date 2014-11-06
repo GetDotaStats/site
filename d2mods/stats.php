@@ -49,7 +49,15 @@ try {
                                     mmo.`mod_id` = ml.`mod_identifier`
                                     AND mmo.`match_duration` > 130
                                   GROUP BY `mod_id`
-                            ) AS game_duration
+                            ) AS game_duration,
+                            (
+                                  SELECT COUNT(*)
+                                  FROM `mod_match_overview` mmo
+                                  WHERE
+                                    mmo.`mod_id` = ml.`mod_identifier`
+                                    AND mmo.`match_duration` <= 130
+                                  GROUP BY `mod_id`
+                            ) AS games_failed
                         FROM `mod_list` ml
                         LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                         WHERE ml.`mod_active` = 1 AND `mod_id` = ? LIMIT 0,1;',
@@ -110,6 +118,10 @@ try {
                                     <tr>
                                         <th>All Time</th>
                                         <td>' . number_format($modDetails[0]['games_all_time']) . ' games played</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Failed</th>
+                                        <td>' . number_format($modDetails[0]['games_failed']) . ' games failed to load</td>
                                     </tr>
                                     <tr>
                                         <th>Gameplay</th>
