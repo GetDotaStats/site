@@ -20,7 +20,39 @@ try {
             : $_GET['id'];
 
         if (!empty($modID)) {
-            $modDetails = $db->q('SELECT * FROM `mod_list` WHERE `mod_id` = ? LIMIT 0,1;',
+            $modDetails = $db->q(
+                'SELECT
+                            ml.*,
+                            gu.`user_name`,
+                            gu.`user_avatar`,
+                            (
+                                  SELECT COUNT(*)
+                                  FROM `mod_match_overview` mmo
+                                  WHERE
+                                    mmo.`mod_id` = ml.`mod_identifier`
+                                    AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY
+                                    AND mmo.`match_duration` > 130
+                                  GROUP BY `mod_id`
+                            ) AS games_last_week,
+                            (
+                                  SELECT COUNT(*)
+                                  FROM `mod_match_overview` mmo
+                                  WHERE
+                                    mmo.`mod_id` = ml.`mod_identifier`
+                                    AND mmo.`match_duration` > 130
+                                  GROUP BY `mod_id`
+                            ) AS games_all_time,
+                            (
+                                  SELECT SUM(mmo.`match_duration`)
+                                  FROM `mod_match_overview` mmo
+                                  WHERE
+                                    mmo.`mod_id` = ml.`mod_identifier`
+                                    AND mmo.`match_duration` > 130
+                                  GROUP BY `mod_id`
+                            ) AS game_duration
+                        FROM `mod_list` ml
+                        LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+                        WHERE ml.`mod_active` = 1 AND `mod_id` = ? LIMIT 0,1;',
                 'i',
                 $modID
             );
@@ -28,6 +60,10 @@ try {
             if (!empty($modDetails)) {
                 echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
                 echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
+
+                echo '<hr />';
+
+                ////////////////////////////////////////////////////////
 
                 $modRange = $db->q(
                     'SELECT
@@ -40,6 +76,72 @@ try {
                     'i',
                     $modID
                 );
+
+                $sg = !empty($modDetails[0]['mod_steam_group'])
+                    ? '<a href="http://steamcommunity.com/groups/' . $modDetails[0]['mod_steam_group'] . '" target="_new">SG</a>'
+                    : 'SG';
+
+                $wg = !empty($modDetails[0]['mod_workshop_link'])
+                    ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $modDetails[0]['mod_workshop_link'] . '" target="_new">WS</a>'
+                    : 'WG';
+
+                $dataRange = !empty($modRange[0]['date_start'])
+                    ? relative_time($modRange[0]['date_start']) . ' - ' . relative_time($modRange[0]['date_end'])
+                    : 'No data';
+
+                $developerName = !empty($modDetails[0]['user_name'])
+                    ? $modDetails[0]['user_name']
+                    : 'Hasn\'t logged in';
+
+                $developerAvatar = !empty($modDetails[0]['user_avatar'])
+                    ? '<img width="20" height="20" src="' . $modDetails[0]['user_avatar'] . '"/> '
+                    : '';
+
+                $developerCombined = $developerAvatar . $developerName;
+
+                echo '<div class="container">
+                        <div class="col-sm-7">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <tr>
+                                        <th>Last Week</th>
+                                        <td>' . number_format($modDetails[0]['games_last_week']) . ' games played</td>
+                                    </tr>
+                                    <tr>
+                                        <th>All Time</th>
+                                        <td>' . number_format($modDetails[0]['games_all_time']) . ' games played</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gameplay</th>
+                                        <td>' . number_format($modDetails[0]['game_duration']/60) . ' mins</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Data Range</th>
+                                        <td>' . $dataRange . '</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Developer</th>
+                                        <td>' . $developerCombined . '</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
+                                        <td>' . $wg . ' || ' . $sg . '</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>' . $modDetails[0]['mod_description'] . '</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" class="text-center">Added ' . relative_time($modDetails[0]['date_recorded']) . '</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                      </div>';
+
+                echo '<hr />';
+
+                ////////////////////////////////////////////////////////
 
                 if (!empty($modRange[0]['date_end'])) {
 
@@ -186,8 +288,7 @@ try {
                                     'targetAxisIndex' => 2,
                                 ),
                             ),
-                            'tooltip' => array(
-                                //'isHtml' => 1,
+                            'tooltip' => array( //'isHtml' => 1,
                             ),
                             'isStacked' => 1,
                             'focusTarget' => 'category',
@@ -206,12 +307,11 @@ try {
                                 ? $value2['num_games'] - $numFails
                                 : 0;
 
-                            if(!empty($value2['num_fails'])){
+                            if (!empty($value2['num_fails'])) {
                                 $gamesPercentageSuccess = !empty($value2['num_games'])
                                     ? $value2['num_fails'] / $value2['num_games'] * 100
                                     : 100;
-                            }
-                            else{
+                            } else {
                                 $gamesPercentageSuccess = 0;
                             }
 
@@ -248,7 +348,7 @@ try {
                         $options['hAxis']['gridlines']['count'] = count($super_array);
 
                         echo '<h3>Games Played per Day</h3>';
-                        echo '<div id="breakdown_num_games_per_day" style="width: 400px;"></div>';
+                        echo '<div id="breakdown_num_games_per_day" style="width: 400px; height: 300px"></div>';
 
                         $chart->load(json_encode($data));
                         echo $chart->draw('breakdown_num_games_per_day', $options);
@@ -287,8 +387,6 @@ try {
                         $testArray = array();
                         $lastNum = 0; //NEED TO BE NEGATIVE TO GRAPH 0 TOO
 
-                        $durationArray = '';
-
                         $periodGrouping = 3; //CHANGE SQL TOO IF YOU MODIFY THIS
                         $periodCutoff = 60;
 
@@ -312,12 +410,6 @@ try {
                                 $testArray[$lastNum . ' - ' . $value['range_end']] = $value['num_games'];
 
                                 $lastNum = $value['range_end'];
-                            }
-
-                            if (isset($durationArray)) {
-                                $durationArray += ($value['range_end'] * $value['num_games']);
-                            } else {
-                                $durationArray = ($value['range_end'] * $value['num_games']);
                             }
                         }
 
@@ -402,19 +494,7 @@ try {
                         $options['hAxis']['gridlines']['count'] = ($maxKey + 2) / 2;
 
                         echo '<h3>Games Played per Duration</h3>';
-                        echo '<div id="duration_breakdown" style="width: 400px;"></div>';
-
-                        echo '<div class="container">
-                        <div class="col-sm-5">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover">';
-                        echo '<tr><th>Range</th><td>' . relative_time($modRange[0]['date_start']) . ' - ' . relative_time($modRange[0]['date_end']) . '</td></tr>';
-                        echo '<tr><th>Games Played</th><td>' . number_format(array_sum($testArray), 0) . '</td></tr>';
-                        echo '<tr><th>Combined Game Time</th><td>' . number_format($durationArray, 0) . ' mins</td></tr>';
-                        echo '</table>';
-                        echo '</div>
-                        </div>
-                        </div>';
+                        echo '<div id="duration_breakdown" style="width: 400px; height: 300px"></div>';
 
                         $chart->load(json_encode($data));
                         echo $chart->draw('duration_breakdown', $options);
@@ -520,34 +600,31 @@ try {
                         $options['hAxis']['gridlines']['count'] = count($super_array);
 
                         echo '<h3>Players per Game</h3>';
-                        echo '<div id="breakdown_num_players" style="width: 400px;"></div>';
+                        echo '<div id="breakdown_num_players" style="width: 400px; height: 300px"></div>';
 
                         $chart->load(json_encode($data));
                         echo $chart->draw('breakdown_num_players', $options);
                     }
 
                     echo '<hr />';
-
-                    echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
-
-                    echo '<div id="pagerendertime" style="font-size: 12px;">';
-                    echo '<hr />Page generated in ' . (time() - $start) . 'secs';
-                    echo '</div>';
-
-
-                } else {
-                    echo 'No games played with that modID';
                 }
             } else {
-                echo 'No mods with that modID';
+                echo bootstrapMessage('Oh Snap', 'No mods with that modID!', 'danger');
             }
         } else {
-            echo 'Invalid modID';
+            echo bootstrapMessage('Oh Snap', 'Invalid modID!', 'danger');
         }
         $memcache->close();
     } else {
-        echo 'No DB';
+        echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
     }
+
+    echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
+
+    echo '<div id="pagerendertime" style="font-size: 12px;">';
+    echo '<hr />Page generated in ' . (time() - $start) . 'secs';
+    echo '</div>';
 } catch (Exception $e) {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
