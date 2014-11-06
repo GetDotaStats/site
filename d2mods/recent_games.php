@@ -41,6 +41,7 @@ try {
                     <th>Match ID</th>
                     <th>Duration</th>
                     <th>Players</th>
+                    <th>Recorded</th>
                 </tr>';
 
             foreach ($modListActive as $key => $value) {
@@ -50,6 +51,7 @@ try {
                         <td>' . $value['match_id'] . '</td>
                         <td>' . number_format($value['match_duration'] / 60) . ' mins</td>
                         <td>' . $value['match_num_players'] . '</td>
+                        <td>' . relative_time($value['match_recorded']) . '</td>
                     </tr>';
             }
 
