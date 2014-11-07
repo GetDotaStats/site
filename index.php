@@ -110,7 +110,7 @@ try {
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>
             <p class="nav navbar-text">
-                <a id="abcd" class="nav-clickable" href="#"><span class="glyphicon glyphicon-refresh"></span></a>
+                <a id="abcd" class="nav-refresh" href="#"><span class="glyphicon glyphicon-refresh"></span></a>
             </p>
         </div>
     </div>

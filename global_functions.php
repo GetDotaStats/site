@@ -2,11 +2,10 @@
 if (!function_exists('exceptions_error_handler')) {
     function exceptions_error_handler($severity, $message, $filename, $lineno)
     {
-        if ( 0 == error_reporting () ) {
+        if (0 == error_reporting()) {
             // Error reporting is currently turned off or suppressed with @
             return;
-        }
-        else{
+        } else {
             throw new ErrorException($message, 0, $severity, $filename, $lineno);
         }
     }
@@ -129,7 +128,8 @@ if (!class_exists("dbWrapper_v2")) {
             return $this->_mysqli->real_escape_string($query);
         }
 
-        public function ping(){
+        public function ping()
+        {
             if ($this->_mysqli->ping()) {
                 return true;
             } else {
@@ -402,7 +402,7 @@ if (!function_exists("checkLogin_v2")) {
         if (!empty($auth)) {
             $steamID64 = $auth[0]['user_id64'];
             $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
-                's',        //STUPID x64 windows PHP is actually x86
+                's', //STUPID x64 windows PHP is actually x86
                 $steamID64);
 
             if (!empty($accountDetails)) {
@@ -459,5 +459,36 @@ if (!function_exists("secs_to_h")) {
         }
 
         return substr($s, 0, -2);
+    }
+}
+
+// default, primary, success, info, warning, danger, link
+if (!function_exists("bootstrapMessage")) {
+    function bootstrapMessage($errorHeading = 'Oh Snap', $errorMessage, $type = 'danger')
+    {
+        switch ($type) {
+            case 'primary':
+                $type = 'primary';
+                break;
+            case 'success':
+                $type = 'success';
+                break;
+            case 'info':
+                $type = 'info';
+                break;
+            case 'warning':
+                $type = 'warning';
+                break;
+            case 'danger':
+                $type = 'danger';
+                break;
+            default:
+                $type = 'danger';
+                break;
+        }
+
+        $formatted = '<div class="page-header"><div class="alert alert-' . $type . '" role="alert"><strong>' . $errorHeading . ':</strong> ' . $errorMessage . '</div></div>';
+
+        return $formatted;
     }
 }
