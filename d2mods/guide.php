@@ -4,7 +4,7 @@
     </h2>
 </div>
 
-<p>This guide is still a Work-In-Progress, so check back later.</p>
+<p>This guide is still a Work-In-Progress, so always use the code in the Github!</p>
 
 <div class="alert alert-danger" role="alert"><strong>Special thanks to:</strong> <a href="https://github.com/SinZ163/"
                                                                                     target="_blank">SinZ163</a>, <a
@@ -21,8 +21,11 @@
 
 <p>Initial experimentation has revealed that via a combination of Flash and LUA, we can open socket connections with
     remote servers. We plan to take advantage of this by opening a socket back to our servers at the end of each game
-    for stat gathering purposes. Before starting this guide, please ensure that you have added your mod to our
-    directory. You will be provided with an encryption key that will be required towards the end of the guide.</p>
+    for stat gathering purposes. Before starting this guide, <a class="nav-clickable" href="#d2mods__my_mods"
+                                                                target="_blank">please ensure that you have added your
+        mod to our directory</a>. You will be provided with an encryption key that will be required towards the end of
+    the guide.
+</p>
 
 <h3>Data Schema</h3>
 
@@ -85,7 +88,7 @@
         <tr>
             <td>winner</td>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>integer</td>
             <td>2</td>
             <td>Winning Team ID</td>
@@ -93,7 +96,7 @@
         <tr>
             <td>serverAddress</td>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>string</td>
             <td>8</td>
             <td>Server address including port</td>
@@ -201,7 +204,7 @@
         <tr>
             <td>leaverStatus</td>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>integer</td>
             <td>4</td>
             <td>As recorded at end of the game. 0 = none, 1 = disconnected, 2 = disconnected timeout, 3 = abandoned
@@ -442,10 +445,14 @@
 
 <p>There is standard "cookie cutter" code available in the <a
         href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/lib/statcollection.lua"
-        target="_blank">"scripts/vscripts/lib/statcollection.lua"</a> that should work for every mod. It is called in
-    the form of getPlayerSnapshot() when the match ends. If your mod has multiple rounds, then you will need to modify
-    that library such that you call it at the end of each round. All of the other data in the schema will need to be
-    manually added during game play by calling addStats() with your array of stats.</p>
+        target="_blank">"scripts/vscripts/lib/statcollection.lua"</a> that should work for every mod. It is called
+    automatically (It hooks the game_state >= postgame and calls to SetGameWinner(), so that if either of those
+    conditions is met it will send the stats) at the end of the game via the getPlayerSnapshot() method. If your mod has
+    multiple rounds, then you will need to modify that library such that you call it at the end of each round. If you
+    are doing anything non-standard, or are having problems with your end game detection, call
+    statcollection.disableAutoSend(). To get the most out of this stat collection, you will also need to refer to the
+    schema to see which data is not automatically captured, as you will need to manually capture some things, should you
+    desire. This data can be added during game play by calling addStats() with your array of stats.</p>
 
 <h3>Setting up stat collection</h3>
 
@@ -642,26 +649,6 @@
     print( "Example stat collection game mode loaded." )
 </pre>
 
-<h4>Send the stats at the end of the game - <a
-        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/addon_game_mode.lua"
-        target="_blank">GitHub</a></h4>
-
-<pre class="pre-scrollable">
-    function YourGamemode:GameThink()
-        -- Check to see if the game has finished
-        if GameRules:State_Get() >= DOTA_GAMERULES_STATE_POST_GAME then
-            -- Send stats
-            statcollection.sendStats()
-
-            -- Delete the thinker
-            return
-        else
-            -- Check again in 1 second
-            return 1
-        end
-    end
-</pre>
-
 <h4>Finally!</h4>
 
 <p>Now that you have the code implemented to collect and send stats, why not test it out? You can monitor what test data
@@ -670,9 +657,10 @@
     ||
     <a href="./d2mods/log-live.html" target="_blank">live</a>.
     By default, you will be submitting to the test server. When you modify your "scripts/stat_collection.kv" by setting
-    live = 1, your stats will appear in the live log and be elligible for recording. Only stats from approved mods will
-    be accepted on the live server. Live stats that are sucessfully parsed will be recorded in our
-    <a href="./d2mods/list_messages.php" target="_blank">database</a> (need to be logged in to view).
+    live = 1, your stats will appear in the live log and be eligible for recording. Only stats from approved mods are
+    guaranteed to be accepted on the live server. Live stats that are successfully parsed will be recorded in our
+    <a href="./d2mods/list_messages.php" target="_blank">database</a> (need to be logged in to view). The test log
+    records all data sent, while the live log will only record failures.
 </p>
 
 <h3>Understanding how the stat collection works</h3>
