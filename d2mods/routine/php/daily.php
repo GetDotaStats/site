@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 require_once('../functions.php');
 require_once('../../global_functions.php');
