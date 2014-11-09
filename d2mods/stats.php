@@ -125,7 +125,7 @@ try {
                                     </tr>
                                     <tr>
                                         <th>Gameplay</th>
-                                        <td>' . number_format($modDetails[0]['game_duration']/60) . ' mins</td>
+                                        <td>' . number_format($modDetails[0]['game_duration'] / 60) . ' mins</td>
                                     </tr>
                                     <tr>
                                         <th>Data Range</th>
@@ -626,104 +626,110 @@ try {
 
                     {
                         $modStats = $db->q(
-                            'SELECT '.
-                                  //cmh.`player_hero_id`,
-                                  'gh.`localized_name`,
-                                  cmh.`numPicks`
-                                FROM `cron_mod_heroes` cmh
-                                LEFT JOIN `mod_list` ml ON ml.`mod_identifier` = cmh.`mod_id`
-                                LEFT JOIN `game_heroes` gh ON cmh.`player_hero_id` = gh.`hero_id`
-                                WHERE ml.`mod_id` = ?
-                                ORDER BY 2 DESC;',
+                            'SELECT ' .
+                            //cmh.`player_hero_id`,
+                            'gh.`localized_name`,
+                            cmh.`numPicks`
+                          FROM `cron_mod_heroes` cmh
+                          LEFT JOIN `mod_list` ml ON ml.`mod_identifier` = cmh.`mod_id`
+                          LEFT JOIN `game_heroes` gh ON cmh.`player_hero_id` = gh.`hero_id`
+                          WHERE ml.`mod_id` = ?
+                          ORDER BY 2 DESC;',
                             'i',
                             $modID
                         );
 
-                        $testArray = array();
-                        //$lastNum = 0;
+                        if (!empty($modStats)) {
 
-                        foreach ($modStats as $key => $value) {
-                            /*if ($value['player_hero_id'] > ($lastNum + 1)) {
-                                while ($value['player_hero_id'] > ($lastNum + 1)) {
-                                    $testArray[$lastNum + 1] = 0;
-                                    $lastNum += 1;
-                                }
-                            }*/
+                            $testArray = array();
+                            //$lastNum = 0;
 
-                            $testArray[$value['localized_name']] = $value['numPicks'];
+                            foreach ($modStats as $key => $value) {
+                                /*if ($value['player_hero_id'] > ($lastNum + 1)) {
+                                    while ($value['player_hero_id'] > ($lastNum + 1)) {
+                                        $testArray[$lastNum + 1] = 0;
+                                        $lastNum += 1;
+                                    }
+                                }*/
 
-                            //$lastNum = $value['player_hero_id'];
+                                $testArray[$value['localized_name']] = $value['numPicks'];
+
+                                //$lastNum = $value['player_hero_id'];
+                            }
+
+                            /*echo '<pre>';
+                            print_r($testArray);
+                            echo '</pre>';
+                            //exit();*/
+
+
+                            $options = array(
+                                //'title' => 'Average spins in ' . $hits . ' attacks',
+                                //'theme' => 'maximized',
+                                'height' => 400,
+                                'chartArea' => array(
+                                    'width' => '100%',
+                                    'height' => '80%',
+                                    'left' => 80,
+                                    //'top' => 35,
+                                ),
+                                'hAxis' => array(
+                                    'title' => 'Number of Players',
+                                    //'maxAlternation' => 1,
+                                    //'textPosition' => 'none',
+                                    //'textPosition' => 'in',
+                                    //'viewWindowMode' => 'maximized'
+                                    //'slantedText' => 1,
+                                    //'slantedTextAngle' => 60,
+                                ),
+                                'vAxis' => array(
+                                    'title' => 'Games',
+                                    //'textPosition' => 'in',
+                                    //'logScale' => 1,
+                                ),
+                                //'pieSliceText' => 'label',
+                                'pieResidueSliceLabel' => 'Other',
+                                'sliceVisibilityThreshold' => 1 / 270, //minimum degrees to be rendered
+                                'legend' => array(
+                                    'position' => 'top',
+                                    'maxLines' => 2,
+                                ),
+                                'seriesType' => "bars",
+                                'tooltip' => array(
+                                    'isHtml' => 1,
+                                ),
+                            );
+
+                            $chart = new chart2('PieChart');
+
+                            $super_array = array();
+                            foreach ($testArray as $key2 => $value2) {
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                            }
+
+                            $data = array(
+                                'cols' => array(
+                                    array('id' => '', 'label' => 'Hero', 'type' => 'string'),
+                                    array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                                ),
+                                'rows' => $super_array
+                            );
+
+                            $chart_width = max(count($super_array) * 9, 700);
+                            $options['width'] = $chart_width;
+                            //$options['hAxis']['maxValue'] = $maxKey;
+                            //$options['hAxis']['gridlines']['count'] = count($super_array);
+
+                            echo '<h3>Heroes Picked</h3>';
+                            echo '<div id="breakdown_heroes_picked" style="width: 400px; height: 300px"></div>';
+
+                            $chart->load(json_encode($data));
+                            echo $chart->draw('breakdown_heroes_picked', $options);
+                        } else {
+                            echo '<h3>Heroes Picked</h3>';
+                            echo 'No hero stats!';
                         }
-
-                        /*echo '<pre>';
-                        print_r($testArray);
-                        echo '</pre>';
-                        //exit();*/
-
-
-                        $options = array(
-                            //'title' => 'Average spins in ' . $hits . ' attacks',
-                            //'theme' => 'maximized',
-                            'height' => 400,
-                            'chartArea' => array(
-                                'width' => '100%',
-                                'height' => '80%',
-                                'left' => 80,
-                                //'top' => 35,
-                            ),
-                            'hAxis' => array(
-                                'title' => 'Number of Players',
-                                //'maxAlternation' => 1,
-                                //'textPosition' => 'none',
-                                //'textPosition' => 'in',
-                                //'viewWindowMode' => 'maximized'
-                                //'slantedText' => 1,
-                                //'slantedTextAngle' => 60,
-                            ),
-                            'vAxis' => array(
-                                'title' => 'Games',
-                                //'textPosition' => 'in',
-                                //'logScale' => 1,
-                            ),
-                            //'pieSliceText' => 'label',
-                            'pieResidueSliceLabel' => 'Other',
-                            'sliceVisibilityThreshold' => 1/270, //minimum degrees to be rendered
-                            'legend' => array(
-                                'position' => 'top',
-                                'maxLines' => 2,
-                            ),
-                            'seriesType' => "bars",
-                            'tooltip' => array(
-                                'isHtml' => 1,
-                            ),
-                        );
-
-                        $chart = new chart2('PieChart');
-
-                        $super_array = array();
-                        foreach ($testArray as $key2 => $value2) {
-                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
-                        }
-
-                        $data = array(
-                            'cols' => array(
-                                array('id' => '', 'label' => 'Hero', 'type' => 'string'),
-                                array('id' => '', 'label' => 'Games', 'type' => 'number'),
-                                array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
-                            ),
-                            'rows' => $super_array
-                        );
-
-                        $chart_width = max(count($super_array) * 9, 700);
-                        $options['width'] = $chart_width;
-                        //$options['hAxis']['maxValue'] = $maxKey;
-                        //$options['hAxis']['gridlines']['count'] = count($super_array);
-
-                        echo '<h3>Heroes Picked</h3>';
-                        echo '<div id="breakdown_heroes_picked" style="width: 400px; height: 300px"></div>';
-
-                        $chart->load(json_encode($data));
-                        echo $chart->draw('breakdown_heroes_picked', $options);
                     }
 
                     echo '<hr />';
