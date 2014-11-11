@@ -40,7 +40,7 @@ function checkURL2(hash) {
 
 function loadPage(url) {
     var oldURL = url;
-    url = url.replace('#', '').replace('.', '').replace('/', '').replace(':', '').split('__').join('/');
+    url = url.replace('#', '').replace('.', '').replace(':', '').split('__').join('/');
 
     console.log("Loading: " + url);
 
@@ -89,7 +89,7 @@ function loadPage(url) {
 
 function loadPage2(url) {
     var oldURL = url;
-    url = url.replace('#', '').replace('.', '').replace('/', '').replace(':', '').split('__').join('/');
+    url = url.replace('#', '').replace('.', '').replace(':', '').split('__').join('/');
 
     console.log("Loading: " + url);
 

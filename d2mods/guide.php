@@ -21,10 +21,9 @@
 
 <p>Initial experimentation has revealed that via a combination of Flash and LUA, we can open socket connections with
     remote servers. We plan to take advantage of this by opening a socket back to our servers at the end of each game
-    for stat gathering purposes. Before starting this guide, <a class="nav-clickable" href="#d2mods__my_mods"
-                                                                target="_blank">please ensure that you have added your
-        mod to our directory</a>. You will be provided with an encryption key that will be required towards the end of
-    the guide.
+    for stat gathering purposes. Before starting this guide, <a class="nav-clickable" href="#d2mods__my_mods">please
+        ensure that you have added your mod to our directory</a>. You will be provided with an encryption key that will
+    be required towards the end of the guide.
 </p>
 
 <h3>Data Schema</h3>
@@ -58,8 +57,7 @@
             <td><span class="glyphicon glyphicon-ok"></span></td>
             <td>string</td>
             <td>4d710f4c81bf6402e5</td>
-            <td>Unique modID <a class="nav-clickable" href="#d2mods__my_mods" target="_blank">assigned to your
-                    mod</a></td>
+            <td>Unique modID <a class="nav-clickable" href="#d2mods__my_mods">assigned to your mod</a></td>
         </tr>
         <tr>
             <td>modes</td>
@@ -636,7 +634,7 @@
 
 <p>It is important that you record the correct modID, otherwise your stats will not be recorded against your mod.
     Re-usage of modID between mods is not allowed, as it will invalidate both your stats and the original mod's
-    stats. You can get your modID from your <a class="nav-clickable" href="#d2mods__my_mods" target="_blank">mod
+    stats. You can get your modID from your <a class="nav-clickable" href="#d2mods__my_mods">mod
         listing</a>.</p>
 
 <pre class="pre-scrollable">
