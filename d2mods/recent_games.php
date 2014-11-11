@@ -45,13 +45,33 @@ try {
                 </tr>';
 
             foreach ($modListActive as $key => $value) {
+                $modName = !empty($value['mod_name'])
+                    ? $value['mod_name']
+                    : 'Unknown';
+
+                $matchID = !empty($value['match_id'])
+                    ? $value['match_id']
+                    : 'Unknown';
+
+                $matchDuration = !empty($value['match_duration'])
+                    ? number_format($value['match_duration'] / 60)
+                    : 'Unknown';
+
+                $numPlayers = !empty($value['match_num_players'])
+                    ? $value['match_num_players']
+                    : 'Unknown';
+
+                $matchDate = !empty($value['match_recorded'])
+                    ? relative_time($value['match_recorded'])
+                    : 'Unknown';
+
                 echo '
                     <tr>
-                        <td>' . $value['mod_name'] . '</td>
-                        <td>' . $value['match_id'] . '</td>
-                        <td>' . number_format($value['match_duration'] / 60) . ' mins</td>
-                        <td>' . $value['match_num_players'] . '</td>
-                        <td>' . relative_time($value['match_recorded']) . '</td>
+                        <td>' . $modName . '</td>
+                        <td>' . $matchID . '</td>
+                        <td>' . $matchDuration . ' mins</td>
+                        <td>' . $numPlayers . '</td>
+                        <td>' . $matchDate . '</td>
                     </tr>';
             }
 

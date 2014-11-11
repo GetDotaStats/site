@@ -125,7 +125,7 @@ try {
                                     </tr>
                                     <tr>
                                         <th>Gameplay</th>
-                                        <td>' . number_format($modDetails[0]['game_duration']/60) . ' mins</td>
+                                        <td>' . number_format($modDetails[0]['game_duration'] / 60) . ' mins</td>
                                     </tr>
                                     <tr>
                                         <th>Data Range</th>
@@ -396,120 +396,113 @@ try {
                             $modID
                         );
 
-                        $testArray = array();
-                        $lastNum = 0; //NEED TO BE NEGATIVE TO GRAPH 0 TOO
+                        if (!empty($modStats)) {
 
-                        $periodGrouping = 3; //CHANGE SQL TOO IF YOU MODIFY THIS
-                        $periodCutoff = 60;
+                            $testArray = array();
+                            $lastNum = 0; //NEED TO BE NEGATIVE TO GRAPH 0 TOO
 
-                        foreach ($modStats as $key => $value) {
-                            $value['range_end'] = $value['range_end'] / 60;
+                            $periodGrouping = 3; //CHANGE SQL TOO IF YOU MODIFY THIS
+                            $periodCutoff = 60;
 
-                            if ($value['range_end'] > $periodCutoff) {
-                                if (empty($testArray[$periodCutoff . '+'])) {
-                                    $testArray[$periodCutoff . '+'] = $value['num_games'];
-                                } else {
-                                    $testArray[$periodCutoff . '+'] += $value['num_games'];
-                                }
-                            } else {
-                                if ($value['range_end'] > ($lastNum + $periodGrouping)) {
-                                    while ($value['range_end'] > ($lastNum + $periodGrouping)) {
-                                        $testArray[$lastNum . ' - ' . ($lastNum + $periodGrouping)] = 0;
-                                        $lastNum += $periodGrouping;
+                            foreach ($modStats as $key => $value) {
+                                $value['range_end'] = $value['range_end'] / 60;
+
+                                if ($value['range_end'] > $periodCutoff) {
+                                    if (empty($testArray[$periodCutoff . '+'])) {
+                                        $testArray[$periodCutoff . '+'] = $value['num_games'];
+                                    } else {
+                                        $testArray[$periodCutoff . '+'] += $value['num_games'];
                                     }
+                                } else {
+                                    if ($value['range_end'] > ($lastNum + $periodGrouping)) {
+                                        while ($value['range_end'] > ($lastNum + $periodGrouping)) {
+                                            $testArray[$lastNum . ' - ' . ($lastNum + $periodGrouping)] = 0;
+                                            $lastNum += $periodGrouping;
+                                        }
+                                    }
+
+                                    $testArray[$lastNum . ' - ' . $value['range_end']] = $value['num_games'];
+
+                                    $lastNum = $value['range_end'];
                                 }
-
-                                $testArray[$lastNum . ' - ' . $value['range_end']] = $value['num_games'];
-
-                                $lastNum = $value['range_end'];
                             }
+
+                            /*echo '<pre>';
+                            print_r($testArray);
+                            echo '</pre>';
+                            //exit();*/
+
+                            $options = array(
+                                'bar' => array(
+                                    'groupWidth' => 7,
+                                ),
+                                'height' => 300,
+                                'chartArea' => array(
+                                    'width' => '100%',
+                                    'height' => '75%',
+                                    'left' => 80,
+                                    'top' => 10,
+                                ),
+                                'hAxis' => array(
+                                    'title' => 'Duration',
+                                    'slantedText' => 1,
+                                    'slantedTextAngle' => 60,
+                                ),
+                                'vAxis' => array(
+                                    'title' => 'Games',
+                                    'scaleType' => 'mirrorLog',
+                                ),
+                                'legend' => array(
+                                    'position' => 'none',
+                                ),
+                                'seriesType' => "bars",
+                                'tooltip' => array(
+                                    'isHtml' => 1,
+                                ),
+                            );
+
+                            $optionsDataTable = array(
+                                'sortColumn' => 0,
+                                'sortAscending' => true,
+                                'alternatingRowStyle' => true,
+                                'page' => 'enable',
+                                'pageSize' => 5);
+
+
+                            $chart = new chart2('ComboChart');
+
+                            $super_array = array();
+                            foreach ($testArray as $key2 => $value2) {
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                            }
+
+                            $data = array(
+                                'cols' => array(
+                                    array('id' => '', 'label' => 'Duration', 'type' => 'string'),
+                                    array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                                ),
+                                'rows' => $super_array
+                            );
+
+                            end($value);
+                            $maxKey = key($value);
+
+
+                            $chart_width = max(count($super_array) * 9, 700);
+                            $options['width'] = $chart_width;
+                            $options['hAxis']['maxValue'] = $maxKey + 2;
+                            $options['hAxis']['gridlines']['count'] = ($maxKey + 2) / 2;
+
+                            echo '<h3>Games Played per Duration</h3>';
+                            echo '<div id="duration_breakdown" style="width: 400px; height: 300px"></div>';
+
+                            $chart->load(json_encode($data));
+                            echo $chart->draw('duration_breakdown', $options);
+                        } else {
+                            echo '<h3>Games Played per Duration</h3>';
+                            echo 'No available stats!';
                         }
-
-                        /*echo '<pre>';
-                        print_r($testArray);
-                        echo '</pre>';
-                        //exit();*/
-
-
-                        $options = array(
-                            //'title' => 'Average spins in ' . $hits . ' attacks',
-                            //'theme' => 'maximized',
-                            'bar' => array(
-                                'groupWidth' => 7,
-                            ),
-                            'height' => 300,
-                            'chartArea' => array(
-                                'width' => '100%',
-                                'height' => '75%',
-                                'left' => 80,
-                                'top' => 10,
-                            ),
-                            'hAxis' => array(
-                                'title' => 'Duration',
-                                //'maxAlternation' => 1,
-                                //'textPosition' => 'none',
-                                //'textPosition' => 'in',
-                                //'viewWindowMode' => 'maximized'
-                                'slantedText' => 1,
-                                'slantedTextAngle' => 60,
-                            ),
-                            'vAxis' => array(
-                                'title' => 'Games',
-                                //'textPosition' => 'in',
-                                //'logScale' => 1,
-                                'scaleType' => 'mirrorLog',
-                                //'minValue' => 0.01,
-                                /*'viewWindow' => array(
-                                    'min' => 0
-                                ),*/
-                            ),
-                            'legend' => array(
-                                'position' => 'none',
-                            ),
-                            'seriesType' => "bars",
-                            'tooltip' => array(
-                                'isHtml' => 1,
-                            ),
-                        );
-
-                        $optionsDataTable = array(
-                            'sortColumn' => 0,
-                            'sortAscending' => true,
-                            'alternatingRowStyle' => true,
-                            'page' => 'enable',
-                            'pageSize' => 5);
-
-
-                        $chart = new chart2('ComboChart');
-
-                        $super_array = array();
-                        foreach ($testArray as $key2 => $value2) {
-                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
-                        }
-
-                        $data = array(
-                            'cols' => array(
-                                array('id' => '', 'label' => 'Duration', 'type' => 'string'),
-                                array('id' => '', 'label' => 'Games', 'type' => 'number'),
-                                array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
-                            ),
-                            'rows' => $super_array
-                        );
-
-                        end($value);
-                        $maxKey = key($value);
-
-
-                        $chart_width = max(count($super_array) * 9, 700);
-                        $options['width'] = $chart_width;
-                        $options['hAxis']['maxValue'] = $maxKey + 2;
-                        $options['hAxis']['gridlines']['count'] = ($maxKey + 2) / 2;
-
-                        echo '<h3>Games Played per Duration</h3>';
-                        echo '<div id="duration_breakdown" style="width: 400px; height: 300px"></div>';
-
-                        $chart->load(json_encode($data));
-                        echo $chart->draw('duration_breakdown', $options);
                     }
 
                     echo '<hr />';
@@ -532,90 +525,178 @@ try {
                             $modID
                         );
 
-                        $testArray = array();
-                        $lastNum = 0; //NEED TO BE NEGATIVE TO GRAPH 0 TOO
+                        if (!empty($modStats)) {
 
-                        foreach ($modStats as $key => $value) {
-                            if ($value['num_players'] > ($lastNum + 1)) {
-                                while ($value['num_players'] > ($lastNum + 1)) {
-                                    $testArray[$lastNum + 1] = 0;
-                                    $lastNum += 1;
+                            $testArray = array();
+                            $lastNum = 0; //NEED TO BE NEGATIVE TO GRAPH 0 TOO
+
+                            foreach ($modStats as $key => $value) {
+                                if ($value['num_players'] > ($lastNum + 1)) {
+                                    while ($value['num_players'] > ($lastNum + 1)) {
+                                        $testArray[$lastNum + 1] = 0;
+                                        $lastNum += 1;
+                                    }
                                 }
+
+                                $testArray[$value['num_players']] = $value['num_games'];
+
+                                $lastNum = $value['num_players'];
                             }
 
-                            $testArray[$value['num_players']] = $value['num_games'];
+                            /*echo '<pre>';
+                            print_r($testArray);
+                            echo '</pre>';
+                            //exit();*/
 
-                            $lastNum = $value['num_players'];
+
+                            $options = array(
+                                'bar' => array(
+                                    'groupWidth' => 10,
+                                ),
+                                'height' => 300,
+                                'chartArea' => array(
+                                    'width' => '100%',
+                                    'height' => '80%',
+                                    'left' => 80,
+                                    'top' => 10,
+                                ),
+                                'hAxis' => array(
+                                    'title' => 'Number of Players',
+                                ),
+                                'vAxis' => array(
+                                    'title' => 'Games',
+                                ),
+                                'legend' => array(
+                                    'position' => 'none',
+                                ),
+                                'seriesType' => "bars",
+                                'tooltip' => array(
+                                    'isHtml' => 1,
+                                ),
+                            );
+
+                            $chart = new chart2('ComboChart');
+
+                            $super_array = array();
+                            foreach ($testArray as $key2 => $value2) {
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                            }
+
+                            $data = array(
+                                'cols' => array(
+                                    array('id' => '', 'label' => 'Number of Players', 'type' => 'number'),
+                                    array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                                ),
+                                'rows' => $super_array
+                            );
+
+                            $chart_width = max(count($super_array) * 9, 700);
+                            $options['width'] = $chart_width;
+                            $options['hAxis']['maxValue'] = $maxKey;
+                            $options['hAxis']['gridlines']['count'] = count($super_array);
+
+                            echo '<h3>Players per Game <span class="glyphicon glyphicon-question-sign" title="Includes failed games"></span></h3>';
+                            echo '<div id="breakdown_num_players" style="width: 400px; height: 300px"></div>';
+
+                            $chart->load(json_encode($data));
+                            echo $chart->draw('breakdown_num_players', $options);
+                        } else {
+                            echo '<h3>Players per Game</h3>';
+                            echo 'No player stats!';
                         }
+                    }
 
-                        /*echo '<pre>';
-                        print_r($testArray);
-                        echo '</pre>';
-                        //exit();*/
+                    echo '<hr />';
 
+                    //////////////////////
+                    // NUM HEROES USED
+                    //////////////////////
 
-                        $options = array(
-                            //'title' => 'Average spins in ' . $hits . ' attacks',
-                            //'theme' => 'maximized',
-                            'bar' => array(
-                                'groupWidth' => 10,
-                            ),
-                            'height' => 300,
-                            'chartArea' => array(
-                                'width' => '100%',
-                                'height' => '80%',
-                                'left' => 80,
-                                'top' => 10,
-                            ),
-                            'hAxis' => array(
-                                'title' => 'Number of Players',
-                                //'maxAlternation' => 1,
-                                //'textPosition' => 'none',
-                                //'textPosition' => 'in',
-                                //'viewWindowMode' => 'maximized'
-                                //'slantedText' => 1,
-                                //'slantedTextAngle' => 60,
-                            ),
-                            'vAxis' => array(
-                                'title' => 'Games',
-                                //'textPosition' => 'in',
-                                //'logScale' => 1,
-                            ),
-                            'legend' => array(
-                                'position' => 'none',
-                            ),
-                            'seriesType' => "bars",
-                            'tooltip' => array(
-                                'isHtml' => 1,
-                            ),
+                    {
+                        $modStats = $db->q(
+                            'SELECT ' .
+                            //cmh.`player_hero_id`,
+                            'gh.`localized_name`,
+                            cmh.`numPicks`
+                          FROM `cron_mod_heroes` cmh
+                          LEFT JOIN `mod_list` ml ON ml.`mod_identifier` = cmh.`mod_id`
+                          LEFT JOIN `game_heroes` gh ON cmh.`player_hero_id` = gh.`hero_id`
+                          WHERE ml.`mod_id` = ?
+                          ORDER BY 2 DESC;',
+                            'i',
+                            $modID
                         );
 
-                        $chart = new chart2('ComboChart');
+                        if (!empty($modStats)) {
 
-                        $super_array = array();
-                        foreach ($testArray as $key2 => $value2) {
-                            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                            $testArray = array();
+
+                            foreach ($modStats as $key => $value) {
+                                $testArray[$value['localized_name']] = $value['numPicks'];
+                            }
+
+                            /*echo '<pre>';
+                            print_r($testArray);
+                            echo '</pre>';
+                            //exit();*/
+
+
+                            $options = array(
+                                'height' => 400,
+                                'chartArea' => array(
+                                    'width' => '100%',
+                                    'height' => '80%',
+                                    'left' => 80,
+                                    //'top' => 35,
+                                ),
+                                'hAxis' => array(
+                                    'title' => 'Number of Players',
+                                ),
+                                'vAxis' => array(
+                                    'title' => 'Games',
+                                ),
+                                //'pieSliceText' => 'label',
+                                'pieResidueSliceLabel' => 'Other',
+                                'sliceVisibilityThreshold' => 1 / 270, //minimum degrees to be rendered
+                                'legend' => array(
+                                    'position' => 'top',
+                                    'maxLines' => 2,
+                                ),
+                                'seriesType' => "bars",
+                                'tooltip' => array(
+                                    'isHtml' => 1,
+                                ),
+                            );
+
+                            $chart = new chart2('PieChart');
+
+                            $super_array = array();
+                            foreach ($testArray as $key2 => $value2) {
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                            }
+
+                            $data = array(
+                                'cols' => array(
+                                    array('id' => '', 'label' => 'Hero', 'type' => 'string'),
+                                    array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                                ),
+                                'rows' => $super_array
+                            );
+
+                            $chart_width = max(count($super_array) * 9, 700);
+                            $options['width'] = $chart_width;
+
+                            echo '<h3>Heroes Picked <span class="glyphicon glyphicon-question-sign" title="Includes failed games"></span></h3>';
+                            echo '<div id="breakdown_heroes_picked" style="width: 400px; height: 300px"></div>';
+
+                            $chart->load(json_encode($data));
+                            echo $chart->draw('breakdown_heroes_picked', $options);
+                        } else {
+                            echo '<h3>Heroes Picked</h3>';
+                            echo 'No hero stats!';
                         }
-
-                        $data = array(
-                            'cols' => array(
-                                array('id' => '', 'label' => 'Number of Players', 'type' => 'number'),
-                                array('id' => '', 'label' => 'Games', 'type' => 'number'),
-                                array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
-                            ),
-                            'rows' => $super_array
-                        );
-
-                        $chart_width = max(count($super_array) * 9, 700);
-                        $options['width'] = $chart_width;
-                        $options['hAxis']['maxValue'] = $maxKey;
-                        $options['hAxis']['gridlines']['count'] = count($super_array);
-
-                        echo '<h3>Players per Game</h3>';
-                        echo '<div id="breakdown_num_players" style="width: 400px; height: 300px"></div>';
-
-                        $chart->load(json_encode($data));
-                        echo $chart->draw('breakdown_num_players', $options);
                     }
 
                     echo '<hr />';
