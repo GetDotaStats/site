@@ -141,6 +141,12 @@ try {
 
         <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
+                <div class="text-center">
+                    <a href="http://flattr.com/thing/3621831/GetDotaStats" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
+                    <br />
+                    Donate if you like what we do!
+                </div>
+                <br />
                 <!-- Begin chatwing.com chatbox -->
                 <iframe src="//chatwing.com/chatbox/f220203c-c1fa-4ce9-a840-c90a3a2edb9d" width="100%" height="600"
                         frameborder="0" scrolling="0">Embedded chat
