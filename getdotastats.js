@@ -40,7 +40,9 @@ function checkURL2(hash) {
 
 function loadPage(url) {
     var oldURL = url;
-    url = url.replace('#', '').split('__').join('/');
+    url = url.replace('#', '').replace('.', '').replace('/', '').replace(':', '').split('__').join('/');
+
+    console.log("Loading: " + url);
 
     if (url.indexOf('?') > -1 && url.indexOf('/?') < 0) {
         url = url.replace('?', '.php?');
@@ -87,7 +89,9 @@ function loadPage(url) {
 
 function loadPage2(url) {
     var oldURL = url;
-    url = url.replace('#', '').split('__').join('/');
+    url = url.replace('#', '').replace('.', '').replace('/', '').replace(':', '').split('__').join('/');
+
+    console.log("Loading: " + url);
 
     if (url.indexOf('?') > -1 && url.indexOf('/?') < 0) {
         url = url.replace('?', '.php?');
@@ -121,6 +125,7 @@ function loadPage2(url) {
                     $('#loading').hide({
                         complete: function () {
                             $('#main_content').html('Failed to load page. Try again later.');
+                            $('html, body').animate({ scrollTop: 0 }, 'fast');
                         }
                     });
                 }
