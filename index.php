@@ -24,7 +24,8 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?3" rel="stylesheet">
+    <!--<link href="//static.getdotastats.com/getdotastats.css?4" rel="stylesheet">-->
+    <link href="./getdotastats.css?4" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -33,7 +34,7 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?3"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?4"></script>
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -142,9 +143,8 @@ try {
         <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <div class="text-center">
-                    <a href="http://flattr.com/thing/3621831/GetDotaStats" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
-                    <br />
-                    Donate if you like what we do!
+                    <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank"><img src="//api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
+                    <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span class="steam-group-icon"></span><span class="steam-group-label">Join us on Steam</span></a>
                 </div>
                 <br />
                 <!-- Begin chatwing.com chatbox -->

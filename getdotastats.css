@@ -176,3 +176,51 @@ table td, table th {
 .selected_back{
     background: #09F;
 }*/
+
+.steam-group-button {
+    height: 20px;
+    border-radius: 2px;
+    color: #FFF;
+    font-size: 12px;
+    line-height: 18px;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: #333 solid 1px;
+    background-color: #4D4B48;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#4D4B48), to(#111));
+    background-image: -moz-linear-gradient(top, #4D4B48, #111);
+    background-image: linear-gradient(top, #4D4B48, #111);
+}
+
+.steam-group-button:focus, .steam-group-button:hover, .steam-group-button:active {
+    color: #FFF;
+    border-color: #111;
+    background-color: #333;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#444), to(#111));
+    background-image: -moz-linear-gradient(top, #444, #111);
+    background-image: linear-gradient(top, #444, #111);
+    box-shadow: none;
+}
+
+.steam-group-button:active {
+    box-shadow: inset 0 3px 7px rgba(255, 255, 255, 0.15);
+}
+
+.steam-group-icon {
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    margin-top: -8px;
+    position: absolute;
+    top: 50%;
+    background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAKlBMVEUAAAAHBgn///8bGxwMCQ1zcnPHysW5urddW16hrJvI1cBTVlGPkY58fHyWUrnQAAAAAXRSTlMAQObYZgAAAHFJREFUCNdjYBQUFBS2NhRgEASCbUpqjiCGcJKLUyKYoTJpsiKIIa2ipKIBYkgBRcCMQ+ourooMGwWFlYCgkUEptAhIHxZkUFJSLlIKFAQxlIySBYGMSUCGIIghsaLcCswQbDJeCmHIpgWDGYyCYCAAAI7EFtmucAY+AAAAAElFTkSuQmCC') 0 0 no-repeat;
+}
+
+.steam-group-label {
+    padding: 0 2px 0 20px;
+}
