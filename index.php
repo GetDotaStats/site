@@ -24,8 +24,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <!--<link href="//static.getdotastats.com/getdotastats.css?4" rel="stylesheet">-->
-    <link href="./getdotastats.css?4" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css?4" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
