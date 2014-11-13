@@ -360,7 +360,7 @@ try {
                         $options['hAxis']['gridlines']['count'] = count($super_array);
 
                         echo '<h3>Games Played per Day</h3>';
-                        echo '<div id="breakdown_num_games_per_day" style="width: 400px; height: 300px"></div>';
+                        echo '<div id="breakdown_num_games_per_day" class="d2mods-graph"></div>';
 
                         $chart->load(json_encode($data));
                         echo $chart->draw('breakdown_num_games_per_day', $options);
@@ -473,7 +473,7 @@ try {
 
                             $super_array = array();
                             foreach ($testArray as $key2 => $value2) {
-                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
                             }
 
                             $data = array(
@@ -495,7 +495,7 @@ try {
                             $options['hAxis']['gridlines']['count'] = ($maxKey + 2) / 2;
 
                             echo '<h3>Games Played per Duration</h3>';
-                            echo '<div id="duration_breakdown" style="width: 400px; height: 300px"></div>';
+                            echo '<div id="duration_breakdown" class="d2mods-graph"></div>';
 
                             $chart->load(json_encode($data));
                             echo $chart->draw('duration_breakdown', $options);
@@ -579,7 +579,7 @@ try {
 
                             $super_array = array();
                             foreach ($testArray as $key2 => $value2) {
-                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
                             }
 
                             $data = array(
@@ -597,7 +597,7 @@ try {
                             $options['hAxis']['gridlines']['count'] = count($super_array);
 
                             echo '<h3>Players per Game <span class="glyphicon glyphicon-question-sign" title="Includes failed games"></span></h3>';
-                            echo '<div id="breakdown_num_players" style="width: 400px; height: 300px"></div>';
+                            echo '<div id="breakdown_num_players" class="d2mods-graph"></div>';
 
                             $chart->load(json_encode($data));
                             echo $chart->draw('breakdown_num_players', $options);
@@ -673,7 +673,7 @@ try {
 
                             $super_array = array();
                             foreach ($testArray as $key2 => $value2) {
-                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div style="padding:5px 5px 5px 5px;"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+                                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
                             }
 
                             $data = array(
@@ -689,7 +689,7 @@ try {
                             $options['width'] = $chart_width;
 
                             echo '<h3>Heroes Picked <span class="glyphicon glyphicon-question-sign" title="Includes failed games"></span></h3>';
-                            echo '<div id="breakdown_heroes_picked" style="width: 400px; height: 300px"></div>';
+                            echo '<div id="breakdown_heroes_picked" class="d2mods-graph"></div>';
 
                             $chart->load(json_encode($data));
                             echo $chart->draw('breakdown_heroes_picked', $options);
@@ -714,7 +714,7 @@ try {
 
     echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
 
-    echo '<div id="pagerendertime" style="font-size: 12px;">';
+    echo '<div id="pagerendertime" class="pagerendertime">';
     echo '<hr />Page generated in ' . (time() - $start) . 'secs';
     echo '</div>';
 } catch (Exception $e) {
