@@ -7,20 +7,14 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-    checkLogin_v2();
-}
-
-if (empty($_SESSION['user_id64'])) {
-    header("Location: ./");
-}
-
-echo '<h1 class="text-center"><a href="./feeds/rss/" target="_blank">GetDotaStats Animu Feed</a></h1>';
+checkLogin_v2();
 
 try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper($hostname_gds_feeds, $username_gds_feeds, $password_gds_feeds, $database_gds_feeds, true);
         if ($db) {
+            echo '<h1 class="text-center"><a href="./feeds/rss/" target="_blank">GetDotaStats Animu Feed</a></h1>';
+
             $accessCheck = $db->q('SELECT * FROM `access_list` WHERE `steam_id64` = ? LIMIT 0,1;',
                 'i',
                 $_SESSION['user_id64']);
@@ -113,17 +107,17 @@ try {
 
                     echo '</table></div>';
                 } else {
-                    echo 'No feeds!';
+                    echo bootstrapMessage('Oh Snap', 'No feeds!');
                 }
             } else {
-                echo 'This user account does not have access!';
+                echo bootstrapMessage('Oh Snap', 'This user account does not have access!');
             }
 
         } else {
-            echo 'No DB';
+            echo bootstrapMessage('Oh Snap', 'No DB!');
         }
     } else {
-        echo 'Not logged in!';
+        echo bootstrapMessage('Oh Snap', 'Not logged in!');
     }
 } catch (Exception $e) {
     echo $e->getMessage();
@@ -131,26 +125,6 @@ try {
 ?>
 
 <script type="application/javascript">
-    /*$(document).ready(function () {
-     testFunction();
-     });
-
-     function testFunction() {
-     $.ajax({
-     type: "GET",
-     url: "./feeds/feeds.php",
-     dataType: "html",
-     success: function (msg) {
-     if (parseInt(msg) != 0) {
-     $('#feedsList').html(msg);
-     }
-     },
-     error: function (jqXHR, textStatus, errorThrown) {
-     $('#feedsList').html('Failed to load page. Try again later.');
-     }
-     });
-     }*/
-
     $("#myForm").submit(function (event) {
         event.preventDefault();
 
@@ -162,8 +136,6 @@ try {
             $('#result').html(data);
 
             loadPage(document.getElementById("abcd").getAttribute("href"));
-
-            //testFunction();
         }, 'text');
     });
 </script>

@@ -6,9 +6,7 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-    checkLogin_v2();
-}
+checkLogin_v2();
 
 try {
     if (!empty($_SESSION['user_id64'])) {

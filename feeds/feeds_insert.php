@@ -6,9 +6,7 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-    checkLogin_v2();
-}
+checkLogin_v2();
 
 try {
     if (!empty($_SESSION['user_id64'])) {
@@ -30,22 +28,23 @@ try {
                         $feed_title, $feed_url, $feed_category);
 
                     if ($insertSQL) {
-                        echo 'Insert Success!';
+                        echo bootstrapMessage('Oh Snap', 'Insert Success!', 'success');
                     } else {
-                        echo 'Insert Failure!';
+                        echo bootstrapMessage('Oh Snap', 'Insert Failure!');
                     }
                 } else {
-                    echo 'One or more of the required variables are missing or empty!';
+                    echo bootstrapMessage('Oh Snap', 'One or more of the required variables are missing or empty!');
+
                 }
             } else {
-                echo 'This user account does not have access!';
+                echo bootstrapMessage('Oh Snap', 'This user account does not have access!');
             }
 
         } else {
-            echo 'No DB';
+            echo bootstrapMessage('Oh Snap', 'No DB!');
         }
     } else {
-        echo 'Not logged in!';
+        echo bootstrapMessage('Oh Snap', 'Not logged in!');
     }
 } catch (Exception $e) {
     echo $e->getMessage();
