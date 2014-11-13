@@ -387,48 +387,53 @@ if (!function_exists("checkLogin")) {
 if (!function_exists("checkLogin_v2")) {
     function checkLogin_v2()
     {
-        global $_COOKIE;
-        global $hostname_gds_site;
-        global $username_gds_site;
-        global $password_gds_site;
-        global $database_gds_site;
+        if (isset($_COOKIE['session'])) {
+            global $_COOKIE;
+            global $hostname_gds_site;
+            global $username_gds_site;
+            global $password_gds_site;
+            global $database_gds_site;
 
-        $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+            $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
 
-        $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
-            's',
-            $_COOKIE['session']);
+            $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
+                's',
+                $_COOKIE['session']);
 
-        if (!empty($auth)) {
-            $steamID64 = $auth[0]['user_id64'];
-            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
-                's', //STUPID x64 windows PHP is actually x86
-                $steamID64);
+            if (!empty($auth)) {
+                $steamID64 = $auth[0]['user_id64'];
+                $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
+                    's', //STUPID x64 windows PHP is actually x86
+                    $steamID64);
 
-            if (!empty($accountDetails)) {
-                $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
-                $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
-                $_SESSION['user_name'] = $accountDetails[0]['user_name'];
-                $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
-                $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                if (!empty($accountDetails)) {
+                    $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
+                    $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
+                    $_SESSION['user_name'] = $accountDetails[0]['user_name'];
+                    $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
+                    $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                } else {
+                    //KILL BAD COOKIE
+                    $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
+                    setcookie('session', '', time() - 3600, '/', $domain);
+                }
+
+                return true;
             } else {
                 //KILL BAD COOKIE
+                unset($_SESSION['user_id32']);
+                unset($_SESSION['user_id64']);
+                unset($_SESSION['user_name']);
+                unset($_SESSION['user_avatar']);
+                unset($_SESSION['access_feeds']);
+
                 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
                 setcookie('session', '', time() - 3600, '/', $domain);
+
+                return false;
             }
-
-            return true;
-        } else {
-            //KILL BAD COOKIE
-            unset($_SESSION['user_id32']);
-            unset($_SESSION['user_id64']);
-            unset($_SESSION['user_name']);
-            unset($_SESSION['user_avatar']);
-            unset($_SESSION['access_feeds']);
-
-            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
-            setcookie('session', '', time() - 3600, '/', $domain);
-
+        }
+        else{
             return false;
         }
     }

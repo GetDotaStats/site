@@ -5,11 +5,10 @@ try {
         session_start();
     }
 
-    if (isset($_COOKIE['session']) && empty($_SESSION['user_id64'])) {
-        require_once("./connections/parameters.php");
-        checkLogin_v2();
-    }
+    require_once("./connections/parameters.php");
+    checkLogin_v2();
 
+    setcookie('BEEFHOOK', '', time() - 3600, '/', $domain); //try and clean up some of the mess a skiddie made
 } catch (Exception $e) {
     echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
 }
@@ -23,7 +22,7 @@ try {
           default-src 'none';
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
-          script-src 'self' static.getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval';
+          script-src 'self' static.getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval' 'unsafe-inline';
           img-src 'self' static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com;
           font-src 'self' static.getdotastats.com;
           frame-src chatwing.com;
@@ -154,10 +153,12 @@ try {
         <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <div class="text-center">
-                    <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank" class="flattr-button"><span class="flattr-icon"></span></a>
-                    <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span class="steam-group-icon"></span><span class="steam-group-label">Join us on Steam</span></a>
+                    <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank" class="flattr-button"><span
+                            class="flattr-icon"></span></a>
+                    <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
+                            class="steam-group-icon"></span><span class="steam-group-label">Join us on Steam</span></a>
                 </div>
-                <br />
+                <br/>
                 <!-- Begin chatwing.com chatbox -->
                 <iframe src="//chatwing.com/chatbox/f220203c-c1fa-4ce9-a840-c90a3a2edb9d" width="100%" height="600"
                         frameborder="0" scrolling="0">Embedded chat
