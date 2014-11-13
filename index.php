@@ -8,6 +8,7 @@ try {
     require_once("./connections/parameters.php");
     checkLogin_v2();
 
+    $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
     setcookie('BEEFHOOK', '', time() - 3600, '/', $domain); //try and clean up some of the mess a skiddie made
 } catch (Exception $e) {
     echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
