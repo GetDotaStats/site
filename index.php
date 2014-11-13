@@ -18,13 +18,25 @@ try {
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
+    <meta http-equiv="Content-Security-Policy"
+          content="
+          default-src 'none';
+          connect-src 'self' static.getdotastats.com getdotastats.com;
+          style-src 'self' static.getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
+          script-src 'self' static.getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval';
+          img-src 'self' static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com;
+          font-src 'self' static.getdotastats.com;
+          frame-src chatwing.com;
+          object-src 'none';
+          media-src 'none';
+          report-uri ./csp_reports.php;">
     <meta charset="utf-8">
     <meta content="text/html">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?4" rel="stylesheet">
+    <link href="./getdotastats.css?5" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -142,7 +154,7 @@ try {
         <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <div class="text-center">
-                    <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank"><img src="//api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
+                    <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank" class="flattr-button"><span class="flattr-icon"></span></a>
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span class="steam-group-icon"></span><span class="steam-group-label">Join us on Steam</span></a>
                 </div>
                 <br />
