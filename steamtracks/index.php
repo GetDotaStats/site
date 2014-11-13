@@ -65,7 +65,7 @@ try {
             $steamid32
         );
 
-        if (((!isset($_GET['status']) && empty($gotDBstats)) || $_GET['status'] == 'readd') && !empty($steamid32)) {
+        if (((!isset($_GET['status']) && empty($gotDBstats)) || (isset($_GET['status']) && $_GET['status'] == 'readd')) && !empty($steamid32)) {
             $token_response = $steamtracks->signup_token($steamid32, 'true'); //GET TOKEN
 
             if (!empty($token_response['result']['token'])) {
