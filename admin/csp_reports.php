@@ -11,7 +11,11 @@ try {
 
         echo '<pre>';
         foreach ($reports as $key => $value) {
-            echo relative_time($value['reportDate']) . "<br />";
+            $reportIP = empty($value['reportIP'])
+                ? ''
+                : " - " . $value['reportIP'];
+
+            echo relative_time($value['reportDate']) . $reportIP . "<br />";
 
             echo json_encode(json_decode($value['reportContent'], 1), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 

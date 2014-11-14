@@ -15,10 +15,14 @@ try {
         if ($db) {
             $headers = json_encode(getallheaders());
 
+            $remoteIP = empty($_SERVER['REMOTE_ADDR'])
+                ? NULL
+                : $_SERVER['REMOTE_ADDR'];
+
             $db->q(
-                "INSERT INTO `reports_csp`(`reportContent`, `reportHeaders`) VALUES (?, ?);",
-                'ss',
-                $data, $headers
+                "INSERT INTO `reports_csp`(`reportContent`, `reportHeaders`, `reportIP`) VALUES (?, ?, ?);",
+                'sss',
+                $data, $headers, $remoteIP
             );
         } else {
             echo 'No DB!';
