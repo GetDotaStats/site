@@ -60,12 +60,15 @@ try {
                             ) AS games_failed
                         FROM `mod_list` ml
                         LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
-                        WHERE ml.`mod_active` = 1 AND `mod_id` = ? LIMIT 0,1;',
+                        WHERE ml.`mod_active` = 1 AND `mod_id` = ?
+                        LIMIT 0,1;',
                 'i',
                 $modID
             );
 
-            if (!empty($modDetails)) {
+            $modGUID = $modDetails[0]['mod_identifier'];
+
+            if (!empty($modDetails) && !empty($modGUID)) {
                 echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
                 echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
 
@@ -250,7 +253,7 @@ try {
                                 'width' => '80%',
                                 'height' => '75%',
                                 'left' => 80,
-                                'top' => 10,
+                                //'top' => 10,
                             ),
                             'hAxis' => array(
                                 'direction' => -1,
@@ -441,7 +444,7 @@ try {
                                     'width' => '100%',
                                     'height' => '75%',
                                     'left' => 80,
-                                    'top' => 10,
+                                    //'top' => 10,
                                 ),
                                 'hAxis' => array(
                                     'title' => 'Duration',
@@ -558,7 +561,7 @@ try {
                                     'width' => '100%',
                                     'height' => '80%',
                                     'left' => 80,
-                                    'top' => 10,
+                                    //'top' => 10,
                                 ),
                                 'hAxis' => array(
                                     'title' => 'Number of Players',
@@ -647,8 +650,6 @@ try {
                                 'chartArea' => array(
                                     'width' => '100%',
                                     'height' => '80%',
-                                    'left' => 80,
-                                    //'top' => 35,
                                 ),
                                 'hAxis' => array(
                                     'title' => 'Number of Players',
@@ -700,6 +701,80 @@ try {
                     }
 
                     echo '<hr />';
+
+                    //////////////////////
+                    // RECENT GAMES
+                    //////////////////////
+
+                    {
+                        $recentGames = $db->q(
+                            'SELECT
+                              `match_id`,
+                              `match_duration`,
+                              `match_num_players`,
+                              `match_recorded`
+                            FROM `mod_match_overview` mmo
+                            WHERE mmo.`mod_id` = ?
+                            ORDER BY `match_recorded` DESC
+                            LIMIT 0,20;',
+                            's',
+                            $modGUID
+                        );
+
+                        if (!empty($recentGames)) {
+                            echo '<h3>Recent Matches</h3>';
+
+                            echo '<div class="table-responsive">
+		                        <table class="table table-striped table-hover">';
+                            echo '
+                                <tr>
+                                    <th class="col-ld-7">Match ID</th>
+                                    <th class="col-ld-1 text-center">Failed <span class="glyphicon glyphicon-question-sign" title="Game failed to load"></span></th>
+                                    <th class="col-ld-1 text-center">Duration</th>
+                                    <th class="col-ld-1 text-center">Players</th>
+                                    <th class="col-ld-2 text-center">Recorded</th>
+                                </tr>';
+
+                            foreach ($recentGames as $key => $value) {
+                                $matchID = !empty($value['match_id'])
+                                    ? $value['match_id']
+                                    : 'Unknown';
+
+                                $matchDuration = !empty($value['match_duration'])
+                                    ? number_format($value['match_duration'] / 60)
+                                    : 'Unknown';
+
+                                $matchFail = !empty($value['match_duration']) && $value['match_duration'] > 130
+                                    ? '<span class="glyphicon glyphicon-remove"></span>'
+                                    : '<span class="glyphicon glyphicon-ok"></span>';
+
+                                $numPlayers = !empty($value['match_num_players'])
+                                    ? $value['match_num_players']
+                                    : 'Unknown';
+
+                                $matchDate = !empty($value['match_recorded'])
+                                    ? relative_time($value['match_recorded'])
+                                    : 'Unknown';
+
+                                echo '
+                                    <tr>
+                                        <td>' . $matchID . '</td>
+                                        <td class="text-center">' . $matchFail . '</td>
+                                        <td class="text-right">' . $matchDuration . ' mins</td>
+                                        <td class="text-center">' . $numPlayers . '</td>
+                                        <td class="text-right">' . $matchDate . '</td>
+                                    </tr>';
+                            }
+
+                            echo '</table></div>';
+                        } else {
+                            echo '<h3>Recent Matches</h3>';
+                            echo 'No recent matches!';
+                        }
+                    }
+
+                    echo '<hr />';
+
                 }
             } else {
                 echo bootstrapMessage('Oh Snap', 'No mods with that modID!', 'danger');
