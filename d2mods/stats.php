@@ -745,8 +745,8 @@ try {
                                     : 'Unknown';
 
                                 $matchFail = !empty($value['match_duration']) && $value['match_duration'] > 130
-                                    ? '<span class="glyphicon glyphicon-remove"></span>'
-                                    : '<span class="glyphicon glyphicon-ok"></span>';
+                                    ? '<span class="label-success label"><span class="glyphicon glyphicon-remove"></span></span>'
+                                    : '<span class="label-danger label"><span class="glyphicon glyphicon-ok"></span></span>';
 
                                 $numPlayers = !empty($value['match_num_players'])
                                     ? $value['match_num_players']
