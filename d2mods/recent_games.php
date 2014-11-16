@@ -9,7 +9,7 @@ try {
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if ($db) {
-        $modListActive = simple_cached_query('d2mods_directory_active',
+        $modListActive = simple_cached_query('d2mods_recent_games',
             //,(SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
             'SELECT
                     mmo.`match_id`,
