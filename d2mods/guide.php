@@ -454,6 +454,11 @@
 
 <h3>Setting up stat collection</h3>
 
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign"></span>
+    Code on this page may be out of date. Always use the Github where possible!
+</div>
+
 <h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
         href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection.swf"
         target="_blank">GitHub</a>
