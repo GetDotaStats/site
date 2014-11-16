@@ -113,29 +113,31 @@ try {
 		                    </table>
 		                </div>';
 
-                $lastTeam = -1;
-                foreach ($matchPlayerDetails as $key => $value) {
-                    if ($value['player_team_id'] > $lastTeam) {
-                        if ($value['player_team_id'] > 0) {
-                            echo '</table></div>';
-                        }
+                if (!empty($matchPlayerDetails)) {
 
-                        echo '<h3>Team: <small>' . $value['player_team_id'] . '</small></h3>';
+                    $lastTeam = -1;
+                    foreach ($matchPlayerDetails as $key => $value) {
+                        if ($value['player_team_id'] > $lastTeam) {
+                            if ($value['player_team_id'] > 0) {
+                                echo '</table></div>';
+                            }
 
-                        echo '<div class="table-responsive">
+                            echo '<h3>Team: <small>' . $value['player_team_id'] . '</small></h3>';
+
+                            echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
-                        /*
-                         * Hero
-                         * Player name
-                         * Level
-                         * Kills
-                         * Deaths
-                         * Assists
-                         * Last Hits
-                         * Denies
-                         * Gold
-                         */
-                        echo '<tr>
+                            /*
+                             * Hero
+                             * Player name
+                             * Level
+                             * Kills
+                             * Deaths
+                             * Assists
+                             * Last Hits
+                             * Denies
+                             * Gold
+                             */
+                            echo '<tr>
                                 <th class="col-sm-1">&nbsp;</th>
                                 <th>Player</th>
                                 <th class="col-sm-1 text-center">Level</th>
@@ -147,30 +149,30 @@ try {
                                 <th class="col-sm-1 text-center">Gold</th>
                         </tr>';
 
-                        $lastTeam = $value['player_team_id'];
-                    }
-
-                    $heroID = $value['player_hero_id'];
-
-                    $heroData = $memcache->get('game_herodata' . $heroID);
-                    if (!$heroData) {
-                        $heroData = $db->q(
-                            'SELECT * FROM `game_heroes` WHERE `hero_id` = ? LIMIT 0,1;',
-                            'i',
-                            $heroID
-                        );
-
-                        if (empty($heroData)) {
-                            $heroData = array();
-                            $heroData['localized_name'] = 'aaa_blank';
-                        } else {
-                            $heroData = $heroData[0];
+                            $lastTeam = $value['player_team_id'];
                         }
 
-                        $memcache->set('game_herodata' . $heroID, $heroData, 0, 1 * 60 * 60);
-                    }
+                        $heroID = $value['player_hero_id'];
 
-                    echo '<tr>
+                        $heroData = $memcache->get('game_herodata' . $heroID);
+                        if (!$heroData) {
+                            $heroData = $db->q(
+                                'SELECT * FROM `game_heroes` WHERE `hero_id` = ? LIMIT 0,1;',
+                                'i',
+                                $heroID
+                            );
+
+                            if (empty($heroData)) {
+                                $heroData = array();
+                                $heroData['localized_name'] = 'aaa_blank';
+                            } else {
+                                $heroData = $heroData[0];
+                            }
+
+                            $memcache->set('game_herodata' . $heroID, $heroData, 0, 1 * 60 * 60);
+                        }
+
+                        echo '<tr>
                             <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace(' ', '-', $heroData['localized_name'])) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['player_hero_id'] . '}" /></td>
                             <td><a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a></td>
                             <td class="text-center">' . $value['player_hero_level'] . '</td>
@@ -181,10 +183,13 @@ try {
                             <td class="text-center">' . $value['player_hero_denies'] . '</td>
                             <td class="text-center">' . $value['player_hero_gold'] . '</td>
                         </tr>';
+                    }
+
+                    echo '</table></div>';
                 }
-
-                echo '</table></div>';
-
+                else{
+                    echo bootstrapMessage('Oh Snap', 'Game ended without recording any player data!', 'danger');
+                }
             } else {
                 echo bootstrapMessage('Oh Snap', 'No match with that matchID!', 'danger');
             }
