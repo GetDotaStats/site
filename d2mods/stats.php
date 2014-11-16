@@ -760,7 +760,7 @@ try {
 
                                 echo '
                                     <tr>
-                                        <td>' . $matchID . '</td>
+                                        <td><a class="nav-clickable" href="#d2mods__match?id=' . $matchID . '">' . $matchID . '</a></td>
                                         <td class="text-center">' . $matchLoaded . '</td>
                                         <td class="text-right">' . $matchDuration . ' mins</td>
                                         <td class="text-center">' . $numPlayers . '</td>

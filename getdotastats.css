@@ -253,3 +253,13 @@ table td, table th {
 .pagerendertime {
     font-size: 12px;
 }
+
+.match_overview_hero_image {
+    height: 20px;
+}
+
+table td.bashful, table th.bashful {
+    empty-cells: hide !important;
+    border: 0 !important;
+    background: none !important;
+}

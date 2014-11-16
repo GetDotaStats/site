@@ -67,8 +67,8 @@ try {
 
                 echo '
                     <tr>
-                        <td>' . $modName . '</td>
-                        <td>' . $matchID . '</td>
+                        <td><a class="nav-clickable" href="#d2mods__stats?id=' . $value['modFakeID'] . '">' . $modName . '</a></td>
+                        <td><a class="nav-clickable" href="#d2mods__match?id=' . $matchID . '">' . $matchID . '</a></td>
                         <td>' . $matchDuration . ' mins</td>
                         <td>' . $numPlayers . '</td>
                         <td>' . $matchDate . '</td>
