@@ -237,6 +237,10 @@ table td, table th {
     height: 300px;
 }
 
+.d2mods-graph-overflow{
+    overflow-x: scroll;
+}
+
 #breakdown_heroes_picked {
     height: 400px !important;
 }

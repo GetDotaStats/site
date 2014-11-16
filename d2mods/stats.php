@@ -246,16 +246,17 @@ try {
                             //'title' => 'Average spins in ' . $hits . ' attacks',
                             //'theme' => 'maximized',
                             'bar' => array(
-                                'groupWidth' => 10,
+                                'groupWidth' => 8,
                             ),
                             'height' => 300,
                             'chartArea' => array(
                                 'width' => '80%',
-                                'height' => '75%',
+                                'height' => '90%',
                                 'left' => 80,
                                 //'top' => 10,
                             ),
                             'hAxis' => array(
+                                'textPosition' => 'none',
                                 'direction' => -1,
                                 //'title' => 'Date',
                                 //'maxAlternation' => 1,
@@ -358,12 +359,12 @@ try {
                             'rows' => $super_array
                         );
 
-                        $chart_width = max(count($super_array) * 9, 700);
+                        $chart_width = max(count($super_array) * 10, 700);
                         $options['width'] = $chart_width;
                         $options['hAxis']['gridlines']['count'] = count($super_array);
 
                         echo '<h3>Games Played per Day</h3>';
-                        echo '<div id="breakdown_num_games_per_day" class="d2mods-graph"></div>';
+                        echo '<div id="breakdown_num_games_per_day" class="d2mods-graph d2mods-graph-overflow"></div>';
 
                         $chart->load(json_encode($data));
                         echo $chart->draw('breakdown_num_games_per_day', $options);
@@ -442,8 +443,9 @@ try {
                                 'height' => 300,
                                 'chartArea' => array(
                                     'width' => '100%',
-                                    'height' => '75%',
+                                    'height' => '55%',
                                     'left' => 80,
+                                    //'bottom' => 20,
                                     //'top' => 10,
                                 ),
                                 'hAxis' => array(
