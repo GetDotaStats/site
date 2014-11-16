@@ -731,7 +731,7 @@ try {
                             echo '
                                 <tr>
                                     <th class="col-ld-7">Match ID</th>
-                                    <th class="col-ld-1 text-center">Failed <span class="glyphicon glyphicon-question-sign" title="Game failed to load"></span></th>
+                                    <th class="col-ld-1 text-center">Loaded <span class="glyphicon glyphicon-question-sign" title="Whether the game managed to successfully start"></span></th>
                                     <th class="col-ld-1 text-center">Duration</th>
                                     <th class="col-ld-1 text-center">Players</th>
                                     <th class="col-ld-2 text-center">Recorded</th>
@@ -746,9 +746,9 @@ try {
                                     ? number_format($value['match_duration'] / 60)
                                     : 'Unknown';
 
-                                $matchFail = !empty($value['match_duration']) && $value['match_duration'] > 130
-                                    ? '<span class="label-success label"><span class="glyphicon glyphicon-remove"></span></span>'
-                                    : '<span class="label-danger label"><span class="glyphicon glyphicon-ok"></span></span>';
+                                $matchLoaded = !empty($value['match_duration']) && $value['match_duration'] > 130
+                                    ? '<span class="label-success label"><span class="glyphicon glyphicon-ok"></span></span>'
+                                    : '<span class="label-danger label"><span class="glyphicon glyphicon-remove"></span></span>';
 
                                 $numPlayers = !empty($value['match_num_players'])
                                     ? $value['match_num_players']
@@ -761,7 +761,7 @@ try {
                                 echo '
                                     <tr>
                                         <td>' . $matchID . '</td>
-                                        <td class="text-center">' . $matchFail . '</td>
+                                        <td class="text-center">' . $matchLoaded . '</td>
                                         <td class="text-right">' . $matchDuration . ' mins</td>
                                         <td class="text-center">' . $numPlayers . '</td>
                                         <td class="text-right">' . $matchDate . '</td>
