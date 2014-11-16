@@ -173,7 +173,7 @@ try {
                         }
 
                         echo '<tr>
-                            <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace(' ', '-', $heroData['localized_name'])) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['player_hero_id'] . '}" /></td>
+                            <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['player_hero_id'] . '}" /></td>
                             <td><a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a></td>
                             <td class="text-center">' . $value['player_hero_level'] . '</td>
                             <td class="text-center">' . $value['player_hero_kills'] . '</td>
