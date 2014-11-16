@@ -186,6 +186,8 @@ try {
                     }
 
                     echo '</table></div>';
+
+                    echo '<hr />';
                 }
                 else{
                     echo bootstrapMessage('Oh Snap', 'Game ended without recording any player data!', 'danger');
@@ -200,8 +202,6 @@ try {
     } else {
         echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
     }
-
-    echo '<hr />';
 
     echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
 
