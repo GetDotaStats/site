@@ -239,6 +239,7 @@ table td, table th {
 
 .d2mods-graph-overflow{
     overflow-x: scroll;
+    overflow-y: hidden;
 }
 
 #breakdown_heroes_picked {

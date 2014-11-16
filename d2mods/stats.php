@@ -251,9 +251,9 @@ try {
                             'height' => 300,
                             'chartArea' => array(
                                 'width' => '80%',
-                                'height' => '90%',
+                                'height' => '75%',
                                 'left' => 80,
-                                //'top' => 10,
+                                'top' => 10,
                             ),
                             'hAxis' => array(
                                 'textPosition' => 'none',
