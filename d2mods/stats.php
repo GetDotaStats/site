@@ -691,7 +691,7 @@ try {
                             $chart_width = max(count($super_array) * 9, 700);
                             $options['width'] = $chart_width;
 
-                            echo '<h3>Heroes Picked <span class="glyphicon glyphicon-question-sign" title="Includes failed games"></span></h3>';
+                            echo '<h3>Heroes Picked <span class="glyphicon glyphicon-question-sign" title="Includes failed games... Updated daily"></span></h3>';
                             echo '<div id="breakdown_heroes_picked" class="d2mods-graph"></div>';
 
                             $chart->load(json_encode($data));
