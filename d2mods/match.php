@@ -49,6 +49,7 @@ try {
                           mmp.`match_id`,
                           mmp.`mod_id`,
                           mmp.`player_sid32`,
+                          mmp.`isBot`,
                           mmp.`player_sid64`,
                           mmp.`player_name`,
                           mmp.`player_round_id`,
@@ -122,7 +123,19 @@ try {
                                 echo '</table></div>';
                             }
 
-                            echo '<h3>Team: <small>' . $value['player_team_id'] . '</small></h3>';
+                            switch ($value['player_team_id']) {
+                                case 2:
+                                    $teamName = 'Radiant';
+                                    break;
+                                case 3:
+                                    $teamName = 'Dire';
+                                    break;
+                                default:
+                                    $teamName = '#' . $value['player_team_id'];
+                                    break;
+                            }
+
+                            echo '<h3>Team: <small>' . $teamName . '</small></h3>';
 
                             echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
@@ -140,6 +153,7 @@ try {
                             echo '<tr>
                                 <th class="col-sm-1">&nbsp;</th>
                                 <th>Player</th>
+                                <th class="col-sm-1 text-center">Bot?</th>
                                 <th class="col-sm-1 text-center">Level</th>
                                 <th class="col-sm-1 text-center">Kills</th>
                                 <th class="col-sm-1 text-center">Deaths</th>
@@ -172,9 +186,24 @@ try {
                             $memcache->set('game_herodata' . $heroID, $heroData, 0, 1 * 60 * 60);
                         }
 
+                        $value['player_name'] = $value['isBot'] != 1 && !empty($value['player_sid32']) && $value['player_sid32'] != 0
+                            ? $value['player_name'] != 'N/A'
+                                ? $value['player_name']
+                                : 'Unknown Player'
+                            : 'Bot';
+
+                        $dbLink = !empty($value['player_sid32']) && $value['player_sid32'] != 0
+                            ? '<a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a>'
+                            : $value['player_name'];
+
+                        $isBot = !empty($value['isBot']) && $value['isBot'] == 1
+                            ? '<span class="glyphicon glyphicon-ok"></span>'
+                            : '<span class="glyphicon glyphicon-remove"></span>';
+
                         echo '<tr>
                             <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['player_hero_id'] . '}" /></td>
-                            <td><a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a></td>
+                            <td>' . $dbLink . '</td>
+                            <td class="text-center">' . $isBot . '</td>
                             <td class="text-center">' . $value['player_hero_level'] . '</td>
                             <td class="text-center">' . $value['player_hero_kills'] . '</td>
                             <td class="text-center">' . $value['player_hero_deaths'] . '</td>
@@ -188,8 +217,7 @@ try {
                     echo '</table></div>';
 
                     echo '<hr />';
-                }
-                else{
+                } else {
                     echo bootstrapMessage('Oh Snap', 'Game ended without recording any player data!', 'danger');
                 }
             } else {
