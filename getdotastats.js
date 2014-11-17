@@ -68,7 +68,7 @@ function loadPage(url, refresh) {
                                 if (parseInt(msg) != 0) {
                                     $('#main_content').html(msg);
                                 }
-                                if (refresh == 0) {
+                                if (refresh != 1) {
                                     $('html, body').animate({ scrollTop: 0 }, 'fast');
                                 }
                             }
