@@ -47,7 +47,7 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?7"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?8"></script>
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">

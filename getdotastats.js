@@ -55,7 +55,7 @@ function loadPage(url, refresh) {
                         document.getElementById("nav-back-holder").removeAttribute("href");
                         document.getElementById("nav-back-holder").setAttribute("class", "");
                     }
-                    else {
+                    else if (refresh != 1) {
                         var backURL = document.getElementById("nav-refresh-holder").getAttribute("href");
                         document.getElementById("nav-back-holder").setAttribute("href", backURL);
                         document.getElementById("nav-back-holder").setAttribute("class", "nav-back");
