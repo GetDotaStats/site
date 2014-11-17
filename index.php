@@ -8,7 +8,7 @@ try {
     require_once("./connections/parameters.php");
     checkLogin_v2();
 
-    if(!empty($_COOKIE['BEEFHOOK'])){
+    if (!empty($_COOKIE['BEEFHOOK'])) {
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
         setcookie('BEEFHOOK', '', time() - 3600, '/', $domain); //try and clean up some of the mess a skiddie made
     }
@@ -47,7 +47,7 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?5"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?6"></script>
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -125,7 +125,10 @@ try {
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>
             <p class="nav navbar-text">
-                <a id="abcd" class="nav-refresh" href="#"><span class="glyphicon glyphicon-refresh"></span></a>
+                <a id="nav-refresh-holder" class="nav-refresh" href="#home" title="Refresh page"><span
+                        class="glyphicon glyphicon-refresh"></span></a> || <a id="nav-back-holder" href="#home"
+                                                                              title="Go back to previous page"><span
+                        class="glyphicon glyphicon-arrow-left"></span></a>
             </p>
         </div>
     </div>
