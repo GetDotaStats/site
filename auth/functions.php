@@ -61,6 +61,7 @@ if (!class_exists('user')) {
                     if(!empty($accountDetails)){
                         //SET ACCESS PERMISSION
                         $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                        $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
                     }
 
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
@@ -98,6 +99,7 @@ if (!class_exists('user')) {
             unset($_SESSION['user_name']);
             unset($_SESSION['user_avatar']);
             unset($_SESSION['access_feeds']);
+            unset($_SESSION['isAdmin']);
 
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
             setcookie('session', '', time() - 3600, '/', $domain);

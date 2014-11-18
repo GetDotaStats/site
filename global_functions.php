@@ -349,6 +349,7 @@ if (!function_exists("checkLogin")) {
                 $_SESSION['user_name'] = $accountDetails[0]['user_name'];
                 $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
                 $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
 
                 header("Location: ./");
             } else {
@@ -370,6 +371,7 @@ if (!function_exists("checkLogin")) {
             unset($_SESSION['user_name']);
             unset($_SESSION['user_avatar']);
             unset($_SESSION['access_feeds']);
+            unset($_SESSION['isAdmin']);
 
             setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
             setcookie('session', '', time() - 3600, '/', 'dota.solutions');
@@ -412,6 +414,7 @@ if (!function_exists("checkLogin_v2")) {
                     $_SESSION['user_name'] = $accountDetails[0]['user_name'];
                     $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
                     $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
+                    $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
                 } else {
                     //KILL BAD COOKIE
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
@@ -426,6 +429,7 @@ if (!function_exists("checkLogin_v2")) {
                 unset($_SESSION['user_name']);
                 unset($_SESSION['user_avatar']);
                 unset($_SESSION['access_feeds']);
+                unset($_SESSION['isAdmin']);
 
                 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
                 setcookie('session', '', time() - 3600, '/', $domain);

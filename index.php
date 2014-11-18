@@ -112,6 +112,9 @@ try {
                 <?php } else { ?>
                     <li><a class="nav-clickable" href="#feeds/">Feeds</a></li>
                 <?php } ?>
+                <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
+                    <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
+                <?php } ?>
             </ul>
             <?php if (empty($_SESSION['user_id64'])) { ?>
                 <p class="nav navbar-text"><a href="./auth/?login"><img src="./auth/assets/images/steam_small.png"
