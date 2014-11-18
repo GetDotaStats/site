@@ -19,10 +19,14 @@ try {
                 ? NULL
                 : $_SERVER['REMOTE_ADDR'];
 
+            $reportURI = empty($_SERVER["REQUEST_URI"])
+                ? NULL
+                : htmlentities($_SERVER["REQUEST_URI"]);
+
             $db->q(
-                "INSERT INTO `reports_csp`(`reportContent`, `reportHeaders`, `reportIP`) VALUES (?, ?, ?);",
-                'sss',
-                $data, $headers, $remoteIP
+                "INSERT INTO `reports_csp`(`reportContent`, `reportHeaders`, `reportIP`, `reportURI`) VALUES (?, ?, ?, ?);",
+                'ssss',
+                $data, $headers, $remoteIP, $reportURI
             );
         } else {
             echo 'No DB!';
