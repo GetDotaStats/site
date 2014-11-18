@@ -31,10 +31,10 @@ try {
 		            <table class="table table-striped table-hover">';
                 echo '<tr>
                         <th>Document</th>
-                        <th>Directive</th>
+                        <th class="text-center">Directive</th>
                         <th>Blocked URI</th>
                         <th>Source URI</th>
-                        <th>Unique Reports</th>
+                        <th class="text-center">Unique Reports</th>
                     </tr>';
                 foreach ($reports as $key => $value) {
                     echo '<tr>
