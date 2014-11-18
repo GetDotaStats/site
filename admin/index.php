@@ -13,11 +13,10 @@ try {
         ?>
         <h2>Administrative Functions</h2>
 
-        <li>
-            <ul>
-                <a class="nav-clickable" href="#admin__csp_reports">CSP Reports (All exceptions due to permissions)</a>
-            </ul>
-        </li>
+        <ul>
+            <li><a class="nav-clickable" href="#admin__csp_reports">CSP Reports (Last 100)</a></li>
+            <li><a class="nav-clickable" href="#admin__csp_reports_filtered">CSP Reports (Filtered)</a></li>
+        </ul>
     <?php
     } else {
         echo bootstrapMessage('Oh Snap', 'Not logged in or not admin!', 'danger');
