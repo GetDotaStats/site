@@ -24,9 +24,26 @@ try {
                 : htmlentities($_SERVER["REQUEST_URI"]);
 
             $db->q(
-                "INSERT INTO `reports_csp`(`reportContent`, `reportHeaders`, `reportIP`, `reportURI`) VALUES (?, ?, ?, ?);",
+                "INSERT INTO `reports_csp` (`reportContent`, `reportHeaders`, `reportIP`, `reportURI`) VALUES (?, ?, ?, ?);",
                 'ssss',
                 $data, $headers, $remoteIP, $reportURI
+            );
+
+            $reportContect = json_decode($data, 1);
+
+            $documentURI = $reportContect['csp-report']['document-uri'];
+
+            $violatedDirective = explode(' ', $reportContect['csp-report']['violated-directive'], 2);
+            $violatedDirective = $violatedDirective[0];
+
+            $blockedURI = $reportContect['csp-report']['blocked-uri'];
+
+            $sourceFile = $reportContect['csp-report']['source-file'];
+
+            $db->q(
+                "INSERT INTO `reports_csp_filter` (`document-uri`, `violated-directive`, `blocked-uri`, `source-file`) VALUES (?, ?, ?, ?);",
+                'ssss',
+                $documentURI, $violatedDirective, $blockedURI, $sourceFile
             );
         } else {
             echo 'No DB!';
