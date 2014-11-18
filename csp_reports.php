@@ -41,9 +41,9 @@ try {
             $sourceFile = $reportContect['csp-report']['source-file'];
 
             $db->q(
-                "INSERT INTO `reports_csp_filter` (`document-uri`, `violated-directive`, `blocked-uri`, `source-file`) VALUES (?, ?, ?, ?);",
-                'ssss',
-                $documentURI, $violatedDirective, $blockedURI, $sourceFile
+                "INSERT INTO `reports_csp_filter` (`document-uri`, `violated-directive`, `blocked-uri`, `source-file`, `remote-ip`) VALUES (?, ?, ?, ?, ?);",
+                'sssss',
+                $documentURI, $violatedDirective, $blockedURI, $sourceFile, $remoteIP
             );
         } else {
             echo 'No DB!';
