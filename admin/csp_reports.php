@@ -41,9 +41,9 @@ try {
                     echo '</pre>';
 
                     echo "<hr />";
-
-                    echo '<p><a class="nav-clickable" href="#admin/">Back to Admin Panel</a></p>';
                 }
+
+                echo '<p><a class="nav-clickable" href="#admin/">Back to Admin Panel</a></p>';
             } else {
                 echo bootstrapMessage('Oh Snap', 'No reports!', 'danger');
             }
