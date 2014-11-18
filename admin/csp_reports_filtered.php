@@ -39,13 +39,15 @@ try {
                 foreach ($reports as $key => $value) {
                     echo '<tr>
                             <td>' . $value['document-uri'] . '</td>
-                            <td>' . $value['violated-directive'] . '</td>
+                            <td class="text-center">' . $value['violated-directive'] . '</td>
                             <td>' . $value['blocked-uri'] . '</td>
                             <td>' . $value['source-file'] . '</td>
-                            <td>' . $value['sumReports'] . '</td>
+                            <td class="text-center">' . $value['sumReports'] . '</td>
                         </tr>';
                 }
                 echo '</table></div>';
+
+                echo '<p><a class="nav-clickable" href="#admin/">Back to Admin Panel</a></p>';
             } else {
                 echo bootstrapMessage('Oh Snap', 'No reports!', 'danger');
             }
