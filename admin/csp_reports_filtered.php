@@ -14,13 +14,12 @@ try {
         if ($db) {
             $reports = $db->q(
                 "SELECT
-                        `document-uri`,
                         `violated-directive`,
                         `blocked-uri`,
                         `source-file`,
                         COUNT(DISTINCT `remote-ip`) as sumReports
                     FROM `reports_csp_filter`
-                    GROUP BY 1,2,3,4
+                    GROUP BY 1,2,3
                     ORDER BY sumReports DESC;"
             );
 
@@ -28,20 +27,21 @@ try {
                 echo '<h2>CSP Reports</h2>';
 
                 echo '<div class="table-responsive">
-		            <table class="table table-striped table-hover">';
+		            <table class="table table-striped table-hover bigTable">';
                 echo '<tr>
-                        <th>Document</th>
-                        <th class="text-center">Directive</th>
+                        <th class="col-sm-2 text-center">Directive</th>
                         <th>Blocked URI</th>
                         <th>Source URI</th>
-                        <th class="text-center">Unique Reports</th>
+                        <th class="col-sm-1 text-center">Unique Reports</th>
                     </tr>';
                 foreach ($reports as $key => $value) {
+                    $blockedURI = str_replace('http://', '', str_replace('https://', '', $value['blocked-uri']));
+                    $sourceFile = str_replace('http://', '', str_replace('https://', '', $value['source-file']));
+
                     echo '<tr>
-                            <td>' . $value['document-uri'] . '</td>
                             <td class="text-center">' . $value['violated-directive'] . '</td>
-                            <td>' . $value['blocked-uri'] . '</td>
-                            <td>' . $value['source-file'] . '</td>
+                            <td>' . $blockedURI . '</td>
+                            <td>' . $sourceFile . '</td>
                             <td class="text-center">' . $value['sumReports'] . '</td>
                         </tr>';
                 }

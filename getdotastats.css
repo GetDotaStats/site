@@ -237,7 +237,7 @@ table td, table th {
     height: 300px;
 }
 
-.d2mods-graph-overflow{
+.d2mods-graph-overflow {
     overflow-x: scroll;
     overflow-y: hidden;
 }
@@ -262,4 +262,9 @@ table td.bashful, table th.bashful {
     empty-cells: hide !important;
     border: 0 !important;
     background: none !important;
+}
+
+.bigTable {
+    word-wrap: break-word;
+    table-layout: fixed;
 }
