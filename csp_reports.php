@@ -16,7 +16,7 @@ try {
             $headers = json_encode(getallheaders());
 
             $remoteIP = empty($_SERVER['REMOTE_ADDR'])
-                ? NULL
+                ? 'Unknown'
                 : $_SERVER['REMOTE_ADDR'];
 
             $reportURI = empty($_SERVER["REQUEST_URI"])
