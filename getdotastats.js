@@ -8,6 +8,10 @@ $(document).ready(function () {
     $(document).on("click", 'a.nav-refresh', function (e) {
         checkURL(this.hash, 1);
     });
+
+    $(document).on("click", 'a.nav-back', function (e) {
+        checkURL(this.hash, 2);
+    });
 });
 
 function checkURL(hash, refresh) {
@@ -47,14 +51,24 @@ function loadPage(url, refresh) {
                 url: url,
                 dataType: "html",
                 success: function (msg) {
-                    document.getElementById("abcd").setAttribute("href", oldURL);
+                    if (refresh == 2) {
+                        document.getElementById("nav-back-holder").removeAttribute("href");
+                        document.getElementById("nav-back-holder").setAttribute("class", "");
+                    }
+                    else if (refresh != 1) {
+                        var backURL = document.getElementById("nav-refresh-holder").getAttribute("href");
+                        document.getElementById("nav-back-holder").setAttribute("href", backURL);
+                        document.getElementById("nav-back-holder").setAttribute("class", "nav-back");
+                    }
+                    document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
+
                     setTimeout(function () {
                         $('#loading').hide({
                             complete: function () {
                                 if (parseInt(msg) != 0) {
                                     $('#main_content').html(msg);
                                 }
-                                if (!refresh) {
+                                if (refresh != 1) {
                                     $('html, body').animate({ scrollTop: 0 }, 'fast');
                                 }
                             }
