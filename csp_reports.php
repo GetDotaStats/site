@@ -24,9 +24,9 @@ try {
                 : htmlentities($_SERVER["REQUEST_URI"]);
 
             $db->q(
-                "INSERT INTO `reports_csp` (`reportContent`, `reportHeaders`, `reportIP`, `reportURI`) VALUES (?, ?, ?, ?);",
-                'ssss',
-                $data, $headers, $remoteIP, $reportURI
+                "INSERT INTO `reports_csp` (`reportContent`, `reportHeaders`, `reportIP`) VALUES (?, ?, ?);",
+                'sss',
+                $data, $headers, $remoteIP
             );
 
             $reportContect = json_decode($data, 1);

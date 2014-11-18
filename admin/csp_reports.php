@@ -24,11 +24,7 @@ try {
                         ? ''
                         : " - " . $value['reportIP'];
 
-                    $reportURI = empty($value['reportURI'])
-                        ? ''
-                        : $value['reportURI'] . "<br />";;
-
-                    echo relative_time($value['reportDate']) . $reportIP . "<br />" . $reportURI;
+                    echo relative_time($value['reportDate']) . $reportIP . "<br />";
 
                     echo '<pre>';
 
