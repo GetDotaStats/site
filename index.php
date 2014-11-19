@@ -37,8 +37,8 @@ try {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?10" rel="stylesheet">
+    <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//getdotastats.com/getdotastats.css?10" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -47,7 +47,7 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?8"></script>
+    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?8"></script>
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -190,7 +190,7 @@ try {
     </div>
 </div>
 
-<script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
-<script src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js"></script>
+<script src="//getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
+<script src="//getdotastats.com/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
