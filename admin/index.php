@@ -16,6 +16,7 @@ try {
         <ul>
             <li><a class="nav-clickable" href="#admin__csp_reports">CSP Reports (Last 100)</a></li>
             <li><a class="nav-clickable" href="#admin__csp_reports_filtered">CSP Reports (Filtered)</a></li>
+            <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">CSP Reports (Filtered - Last Week)</a></li>
         </ul>
     <?php
     } else {
