@@ -49,7 +49,7 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
     list($src_width, $src_height, $src_type, $src_attr) = getimagesize($base_img_dir_sig . $base_img_name);
 
     if ($sig_stats_winrate != 'Timeout' && $sig_stats_most_played != 'Timeout') {
-       if (!empty($sig_stats_winrate) || !empty($sig_stats_most_played)) {
+        if (!empty($sig_stats_winrate) || !empty($sig_stats_most_played)) {
             $overlay_initial_spacing_x = 5;
             $overlay_initial_spacing_y = 5;
 
@@ -244,12 +244,17 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
             //ACCOUNT WIN %
             /////////////////////////////
             $mmr_stats = $db->q(
-                'SELECT `rank_solo`, `rank_team`, `dota_wins` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
+                'SELECT `rank_solo`, `rank_team`, `dota_wins`, `last_updated` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
                 'i',
                 $account_id
             );
 
-            if (!empty($mmr_stats[0]['dota_wins'])) {
+            $timeSinceUpdated = !empty($mmr_stats[0]['last_updated'])
+                ? time() - $mmr_stats[0]['last_updated']
+                : 0;
+
+            //Only use SteamTracks data for wins if they have updated within last 2weeks
+            if (!empty($mmr_stats[0]['dota_wins']) && $timeSinceUpdated != 0 && $timeSinceUpdated <= 1209600) {
                 $dota_wins = $mmr_stats[0]['dota_wins'];
             } else if (!empty($sig_stats_winrate['account_win'])) {
                 $dota_wins = $sig_stats_winrate['account_win'];
@@ -404,9 +409,9 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
 
 $headers = apache_request_headers(); //<=================== TURN OFF ON LOCALHOST
 if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($file_name_location))) {
-	// Client's cache IS current, so we just respond '304 Not Modified'.
-	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file_name_location)).' GMT', true, 304);
-	header('Content-Length: '.filesize($file_name_location));
+    // Client's cache IS current, so we just respond '304 Not Modified'.
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file_name_location)) . ' GMT', true, 304);
+    header('Content-Length: ' . filesize($file_name_location));
 }
 
 readfile($file_name_location);
