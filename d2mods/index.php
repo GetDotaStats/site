@@ -54,7 +54,7 @@ try {
 
                     //echo '<h3>Fallback for when there are wanky characters</h3>';
 
-                    print_r(json_decode($messages['message'],1));
+                    print_r(json_decode(utf8_encode($messages['message']),1));
 
                     echo '</pre>';
                 } else {
