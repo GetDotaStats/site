@@ -10,6 +10,24 @@ if (!isset($_SESSION)) {
 }
 
 try {
+    if (!function_exists('dota2TeamName')) {
+        function dota2TeamName($teamID)
+        {
+            switch ($teamID) {
+                case 2:
+                    $teamName = 'Radiant';
+                    break;
+                case 3:
+                    $teamName = 'Dire';
+                    break;
+                default:
+                    $teamName = '#' . $teamID;
+                    break;
+            }
+            return $teamName;
+        }
+    }
+
     $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if ($db) {
         $memcache = new Memcache;
@@ -24,8 +42,10 @@ try {
                 'SELECT
                       mmo.`match_id`,
                       mmo.`mod_id`,
+                      mmo.`message_id`,
                       mmo.`match_duration`,
                       mmo.`match_num_players`,
+                      mmo.`match_winning_team`,
                       mmo.`match_recorded`,
 
                       ml.`mod_id`,
@@ -49,26 +69,76 @@ try {
                           mmp.`match_id`,
                           mmp.`mod_id`,
                           mmp.`player_sid32`,
-                          mmp.`isBot`,
                           mmp.`player_sid64`,
+                          mmp.`isBot`,
+                          mmp.`leaver_status`,
+                          mmp.`player_won`,
                           mmp.`player_name`,
                           mmp.`player_round_id`,
                           mmp.`player_team_id`,
                           mmp.`player_slot_id`,
-                          mmp.`player_hero_id`,
-                          mmp.`player_hero_level`,
-                          mmp.`player_hero_kills`,
-                          mmp.`player_hero_deaths`,
-                          mmp.`player_hero_assists`,
-                          mmp.`player_hero_gold`,
-                          mmp.`player_hero_lasthits`,
-                          mmp.`player_hero_denies`
+
+                          mmh.`match_id`,
+                          mmh.`mod_id`,
+                          mmh.`player_round_id`,
+                          mmh.`player_sid32`,
+                          mmh.`hero_id`,
+                          mmh.`hero_won`,
+                          mmh.`hero_level`,
+                          mmh.`hero_kills`,
+                          mmh.`hero_deaths`,
+                          mmh.`hero_assists`,
+                          mmh.`hero_gold`,
+                          mmh.`hero_lasthits`,
+                          mmh.`hero_denies`,
+                          mmh.`hero_gold_spent_buyback`,
+                          mmh.`hero_gold_spent_consumables`,
+                          mmh.`hero_gold_spent_items`,
+                          mmh.`hero_gold_spent_support`,
+                          mmh.`hero_num_purchased_consumables`,
+                          mmh.`hero_num_purchased_items`,
+                          mmh.`hero_stun_amount`,
+                          mmh.`hero_total_earned_gold`,
+                          mmh.`hero_total_earned_xp`
                         FROM `mod_match_players` mmp
+                        LEFT JOIN `mod_match_heroes` mmh
+                        ON mmp.`match_id` = mmh.`match_id` AND mmp.`player_round_id` = mmh.`player_round_id` AND mmp.`player_sid32` = mmh.`player_sid32`
                         WHERE mmp.`match_id` = ?
                         ORDER BY mmp.`player_round_id`, mmp.`player_team_id`, mmp.`player_slot_id`;',
                     's',
                     $matchID
                 );
+
+                /*$matchHeroDetails = $db->q(
+                    'SELECT
+                          mmh.`match_id`,
+                          mmh.`mod_id`,
+                          mmh.`player_round_id`,
+                          mmh.`player_sid32`,
+                          mmh.`hero_id`,
+                          mmh.`hero_won`,
+                          mmh.`hero_level`,
+                          mmh.`hero_kills`,
+                          mmh.`hero_deaths`,
+                          mmh.`hero_assists`,
+                          mmh.`hero_gold`,
+                          mmh.`hero_lasthits`,
+                          mmh.`hero_denies`,
+                          mmh.`hero_gold_spent_buyback`,
+                          mmh.`hero_gold_spent_consumables`,
+                          mmh.`hero_gold_spent_items`,
+                          mmh.`hero_gold_spent_support`,
+                          mmh.`hero_num_purchased_consumables`,
+                          mmh.`hero_num_purchased_items`,
+                          mmh.`hero_stun_amount`,
+                          mmh.`hero_total_earned_gold`,
+                          mmh.`hero_total_earned_xp`
+                        FROM `mod_match_heroes` mmh
+                        WHERE mmh.`match_id` = ?
+                        ORDER BY mmh.`player_round_id`, mmh.`player_sid32`;',
+                    's',
+                    $matchID
+                );*/
 
                 echo '<h2><a class="nav-clickable" href="#d2mods__stats?id=' . $matchDetails[0]['mod_id'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
 
@@ -78,6 +148,10 @@ try {
 
                 $wg = !empty($matchDetails[0]['mod_workshop_link'])
                     ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $matchDetails[0]['mod_workshop_link'] . '" target="_new">Workshop</a>'
+                    : 'Workshop';
+
+                $schemaLink = !empty($matchDetails[0]['message_id'])
+                    ? '<a href=" //getdotastats.com/d2mods/?custom_match=' . $matchDetails[0]['message_id'] . '" target="_new">' . $matchDetails[0]['message_id'] . '</a>'
                     : 'Workshop';
 
                 echo '<div class="container">
@@ -91,6 +165,10 @@ try {
                                     <tr>
                                         <th>Description</th>
                                         <td>' . $matchDetails[0]['mod_description'] . '</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Schema</th>
+                                        <td>' . $schemaLink . '</td>
                                     </tr>
                                 </table>
                             </div>
@@ -114,6 +192,8 @@ try {
 		                    </table>
 		                </div>';
 
+                echo '<div><h2><small>Winning Team:</small> ' . dota2TeamName($matchDetails[0]['match_winning_team']) . '</h2></div>';
+
                 if (!empty($matchPlayerDetails)) {
 
                     $lastTeam = -1;
@@ -123,19 +203,9 @@ try {
                                 echo '</table></div>';
                             }
 
-                            switch ($value['player_team_id']) {
-                                case 2:
-                                    $teamName = 'Radiant';
-                                    break;
-                                case 3:
-                                    $teamName = 'Dire';
-                                    break;
-                                default:
-                                    $teamName = '#' . $value['player_team_id'];
-                                    break;
-                            }
+                            $teamName = dota2TeamName($value['player_team_id']);
 
-                            echo '<h3>Team: <small>' . $teamName . '</small></h3>';
+                            echo '<h3><small>Team:</small> ' . $teamName . '</h3>';
 
                             echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
@@ -166,7 +236,7 @@ try {
                             $lastTeam = $value['player_team_id'];
                         }
 
-                        $heroID = $value['player_hero_id'];
+                        $heroID = $value['hero_id'];
 
                         $heroData = $memcache->get('game_herodata' . $heroID);
                         if (!$heroData) {
@@ -186,13 +256,11 @@ try {
                             $memcache->set('game_herodata' . $heroID, $heroData, 0, 1 * 60 * 60);
                         }
 
-                        $value['player_name'] = $value['isBot'] != 1 && !empty($value['player_sid32']) && $value['player_sid32'] != 0
-                            ? $value['player_name'] != 'N/A'
-                                ? $value['player_name']
-                                : 'Unknown Player'
-                            : 'Bot';
+                        $value['player_name'] = $value['isBot'] != 1 && !empty($value['player_name'])
+                            ? $value['player_name']
+                            : '??';
 
-                        $dbLink = !empty($value['player_sid32']) && $value['player_sid32'] != 0
+                        $dbLink = !empty($value['player_sid32']) && is_numeric($value['player_sid32'])
                             ? '<a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a>'
                             : $value['player_name'];
 
@@ -201,16 +269,16 @@ try {
                             : '<span class="glyphicon glyphicon-remove"></span>';
 
                         echo '<tr>
-                            <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['player_hero_id'] . '}" /></td>
+                            <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['hero_id'] . '}" /></td>
                             <td>' . $dbLink . '</td>
                             <td class="text-center">' . $isBot . '</td>
-                            <td class="text-center">' . $value['player_hero_level'] . '</td>
-                            <td class="text-center">' . $value['player_hero_kills'] . '</td>
-                            <td class="text-center">' . $value['player_hero_deaths'] . '</td>
-                            <td class="text-center">' . $value['player_hero_assists'] . '</td>
-                            <td class="text-center">' . $value['player_hero_lasthits'] . '</td>
-                            <td class="text-center">' . $value['player_hero_denies'] . '</td>
-                            <td class="text-center">' . $value['player_hero_gold'] . '</td>
+                            <td class="text-center">' . $value['hero_level'] . '</td>
+                            <td class="text-center">' . $value['hero_kills'] . '</td>
+                            <td class="text-center">' . $value['hero_deaths'] . '</td>
+                            <td class="text-center">' . $value['hero_assists'] . '</td>
+                            <td class="text-center">' . $value['hero_lasthits'] . '</td>
+                            <td class="text-center">' . $value['hero_denies'] . '</td>
+                            <td class="text-center">' . $value['hero_gold'] . '</td>
                         </tr>';
                     }
 
