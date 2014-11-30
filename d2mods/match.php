@@ -76,40 +76,15 @@ try {
                           mmp.`player_name`,
                           mmp.`player_round_id`,
                           mmp.`player_team_id`,
-                          mmp.`player_slot_id`,
-
-                          mmh.`match_id`,
-                          mmh.`mod_id`,
-                          mmh.`player_round_id`,
-                          mmh.`player_sid32`,
-                          mmh.`hero_id`,
-                          mmh.`hero_won`,
-                          mmh.`hero_level`,
-                          mmh.`hero_kills`,
-                          mmh.`hero_deaths`,
-                          mmh.`hero_assists`,
-                          mmh.`hero_gold`,
-                          mmh.`hero_lasthits`,
-                          mmh.`hero_denies`,
-                          mmh.`hero_gold_spent_buyback`,
-                          mmh.`hero_gold_spent_consumables`,
-                          mmh.`hero_gold_spent_items`,
-                          mmh.`hero_gold_spent_support`,
-                          mmh.`hero_num_purchased_consumables`,
-                          mmh.`hero_num_purchased_items`,
-                          mmh.`hero_stun_amount`,
-                          mmh.`hero_total_earned_gold`,
-                          mmh.`hero_total_earned_xp`
+                          mmp.`player_slot_id`
                         FROM `mod_match_players` mmp
-                        LEFT JOIN `mod_match_heroes` mmh
-                        ON mmp.`match_id` = mmh.`match_id` AND mmp.`player_round_id` = mmh.`player_round_id` AND mmp.`player_sid32` = mmh.`player_sid32`
                         WHERE mmp.`match_id` = ?
                         ORDER BY mmp.`player_round_id`, mmp.`player_team_id`, mmp.`player_slot_id`;',
                     's',
                     $matchID
                 );
 
-                /*$matchHeroDetails = $db->q(
+                $matchHeroDetails = $db->q(
                     'SELECT
                           mmh.`match_id`,
                           mmh.`mod_id`,
@@ -138,7 +113,21 @@ try {
                         ORDER BY mmh.`player_round_id`, mmh.`player_sid32`;',
                     's',
                     $matchID
-                );*/
+                );
+
+                $matchDetailsSorted = array();
+
+                foreach ($matchPlayerDetails as $mh_key => $mh_value) {
+                    foreach ($mh_value as $mh_key2 => $mh_value2) {
+                        $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_sid32']][$mh_key2] = $mh_value2;
+                    }
+                }
+
+                foreach ($matchHeroDetails as $mh_key => $mh_value) {
+                    foreach ($mh_value as $mh_key2 => $mh_value2) {
+                        $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_sid32']][$mh_key2] = $mh_value2;
+                    }
+                }
 
                 echo '<h2><a class="nav-clickable" href="#d2mods__stats?id=' . $matchDetails[0]['mod_id'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
 
@@ -151,7 +140,7 @@ try {
                     : 'Workshop';
 
                 $schemaLink = !empty($matchDetails[0]['message_id'])
-                    ? '<a href=" //getdotastats.com/d2mods/?custom_match=' . $matchDetails[0]['message_id'] . '" target="_new">' . $matchDetails[0]['message_id'] . '</a>'
+                    ? '<a href=" ./d2mods/?custom_match=' . $matchDetails[0]['message_id'] . '" target="_new">' . $matchDetails[0]['message_id'] . '</a>'
                     : 'Workshop';
 
                 echo '<div class="container">
@@ -194,97 +183,102 @@ try {
 
                 echo '<div><h2><small>Winning Team:</small> ' . dota2TeamName($matchDetails[0]['match_winning_team']) . '</h2></div>';
 
-                if (!empty($matchPlayerDetails)) {
+                $roundCount = count($matchDetailsSorted);
+                if (!empty($matchDetailsSorted)) {
+                    foreach ($matchDetailsSorted as $round_key => $round_value) {
+                        if ($roundCount > 1) {
+                            echo '<div><h3><small>Round:</small> ' . ($round_key + 1) . ' of ' . $roundCount . '</h3></div>';
+                        }
 
-                    $lastTeam = -1;
-                    foreach ($matchPlayerDetails as $key => $value) {
-                        if ($value['player_team_id'] > $lastTeam) {
-                            if ($value['player_team_id'] > 0) {
-                                echo '</table></div>';
+                        $lastTeam = -1;
+                        foreach ($round_value as $key => $value) {
+                            if ($value['player_team_id'] > $lastTeam) {
+                                if ($value['player_team_id'] > 0) {
+                                    echo '</table></div>';
+                                }
+
+                                $teamName = dota2TeamName($value['player_team_id']);
+
+                                echo '<h4><small>Team:</small> ' . $teamName . '</h4>';
+
+                                echo '<div class="table-responsive">
+		                         <table class="table table-striped table-hover">';
+                                /*
+                                 * Hero
+                                 * Player name
+                                 * Level
+                                 * Kills
+                                 * Deaths
+                                 * Assists
+                                 * Last Hits
+                                 * Denies
+                                 * Gold
+                                 */
+                                echo '<tr>
+                                        <th class="col-sm-1">&nbsp;</th>
+                                        <th>Player</th>
+                                        <th class="col-sm-1 text-center">Bot?</th>
+                                        <th class="col-sm-1 text-center">Level</th>
+                                        <th class="col-sm-1 text-center">Kills</th>
+                                        <th class="col-sm-1 text-center">Deaths</th>
+                                        <th class="col-sm-1 text-center">Assists</th>
+                                        <th class="col-sm-1 text-center">LH</th>
+                                        <th class="col-sm-1 text-center">Denies</th>
+                                        <th class="col-sm-1 text-center">Gold</th>
+                                </tr>';
+
+                                $lastTeam = $value['player_team_id'];
                             }
 
-                            $teamName = dota2TeamName($value['player_team_id']);
+                            $heroID = $value['hero_id'];
 
-                            echo '<h3><small>Team:</small> ' . $teamName . '</h3>';
+                            $heroData = $memcache->get('game_herodata' . $heroID);
+                            if (!$heroData) {
+                                $heroData = $db->q(
+                                    'SELECT * FROM `game_heroes` WHERE `hero_id` = ? LIMIT 0,1;',
+                                    'i',
+                                    $heroID
+                                );
 
-                            echo '<div class="table-responsive">
-		                    <table class="table table-striped table-hover">';
-                            /*
-                             * Hero
-                             * Player name
-                             * Level
-                             * Kills
-                             * Deaths
-                             * Assists
-                             * Last Hits
-                             * Denies
-                             * Gold
-                             */
+                                if (empty($heroData)) {
+                                    $heroData = array();
+                                    $heroData['localized_name'] = 'aaa_blank';
+                                } else {
+                                    $heroData = $heroData[0];
+                                }
+
+                                $memcache->set('game_herodata' . $heroID, $heroData, 0, 1 * 60 * 60);
+                            }
+
+                            $value['player_name'] = $value['isBot'] != 1 && !empty($value['player_name'])
+                                ? $value['player_name']
+                                : '??';
+
+                            $dbLink = !empty($value['player_sid32']) && is_numeric($value['player_sid32'])
+                                ? '<a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a>'
+                                : $value['player_name'];
+
+                            $isBot = !empty($value['isBot']) && $value['isBot'] == 1
+                                ? '<span class="glyphicon glyphicon-ok"></span>'
+                                : '<span class="glyphicon glyphicon-remove"></span>';
+
                             echo '<tr>
-                                <th class="col-sm-1">&nbsp;</th>
-                                <th>Player</th>
-                                <th class="col-sm-1 text-center">Bot?</th>
-                                <th class="col-sm-1 text-center">Level</th>
-                                <th class="col-sm-1 text-center">Kills</th>
-                                <th class="col-sm-1 text-center">Deaths</th>
-                                <th class="col-sm-1 text-center">Assists</th>
-                                <th class="col-sm-1 text-center">LH</th>
-                                <th class="col-sm-1 text-center">Denies</th>
-                                <th class="col-sm-1 text-center">Gold</th>
-                        </tr>';
-
-                            $lastTeam = $value['player_team_id'];
+                                <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['hero_id'] . '}" /></td>
+                                <td>' . $dbLink . '</td>
+                                <td class="text-center">' . $isBot . '</td>
+                                <td class="text-center">' . $value['hero_level'] . '</td>
+                                <td class="text-center">' . $value['hero_kills'] . '</td>
+                                <td class="text-center">' . $value['hero_deaths'] . '</td>
+                                <td class="text-center">' . $value['hero_assists'] . '</td>
+                                <td class="text-center">' . $value['hero_lasthits'] . '</td>
+                                <td class="text-center">' . $value['hero_denies'] . '</td>
+                                <td class="text-center">' . $value['hero_gold'] . '</td>
+                            </tr>';
                         }
+                        echo '</table></div>';
 
-                        $heroID = $value['hero_id'];
-
-                        $heroData = $memcache->get('game_herodata' . $heroID);
-                        if (!$heroData) {
-                            $heroData = $db->q(
-                                'SELECT * FROM `game_heroes` WHERE `hero_id` = ? LIMIT 0,1;',
-                                'i',
-                                $heroID
-                            );
-
-                            if (empty($heroData)) {
-                                $heroData = array();
-                                $heroData['localized_name'] = 'aaa_blank';
-                            } else {
-                                $heroData = $heroData[0];
-                            }
-
-                            $memcache->set('game_herodata' . $heroID, $heroData, 0, 1 * 60 * 60);
-                        }
-
-                        $value['player_name'] = $value['isBot'] != 1 && !empty($value['player_name'])
-                            ? $value['player_name']
-                            : '??';
-
-                        $dbLink = !empty($value['player_sid32']) && is_numeric($value['player_sid32'])
-                            ? '<a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a>'
-                            : $value['player_name'];
-
-                        $isBot = !empty($value['isBot']) && $value['isBot'] == 1
-                            ? '<span class="glyphicon glyphicon-ok"></span>'
-                            : '<span class="glyphicon glyphicon-remove"></span>';
-
-                        echo '<tr>
-                            <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['hero_id'] . '}" /></td>
-                            <td>' . $dbLink . '</td>
-                            <td class="text-center">' . $isBot . '</td>
-                            <td class="text-center">' . $value['hero_level'] . '</td>
-                            <td class="text-center">' . $value['hero_kills'] . '</td>
-                            <td class="text-center">' . $value['hero_deaths'] . '</td>
-                            <td class="text-center">' . $value['hero_assists'] . '</td>
-                            <td class="text-center">' . $value['hero_lasthits'] . '</td>
-                            <td class="text-center">' . $value['hero_denies'] . '</td>
-                            <td class="text-center">' . $value['hero_gold'] . '</td>
-                        </tr>';
+                        echo '<hr />';
                     }
-
-                    echo '</table></div>';
-
-                    echo '<hr />';
                 } else {
                     echo bootstrapMessage('Oh Snap', 'Game ended without recording any player data!', 'danger');
                 }
