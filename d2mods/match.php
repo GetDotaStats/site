@@ -280,27 +280,27 @@ try {
                                 : '-';
 
                             $heroKills = !empty($value['hero_kills'])
-                                ? $value['hero_level']
+                                ? $value['hero_kills']
                                 : '-';
 
                             $heroDeaths = !empty($value['hero_deaths'])
-                                ? $value['hero_level']
+                                ? $value['hero_deaths']
                                 : '-';
 
                             $heroAssists = !empty($value['hero_assists'])
-                                ? $value['hero_level']
+                                ? $value['hero_assists']
                                 : '-';
 
                             $heroLastHits = !empty($value['hero_lasthits'])
-                                ? $value['hero_level']
+                                ? $value['hero_lasthits']
                                 : '-';
 
                             $heroDenies = !empty($value['hero_denies'])
-                                ? $value['hero_level']
+                                ? $value['hero_denies']
                                 : '-';
 
                             $heroGold = !empty($value['hero_gold'])
-                                ? $value['hero_level']
+                                ? $value['hero_gold']
                                 : '-';
 
                             ///////////////
