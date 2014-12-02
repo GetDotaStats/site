@@ -14,6 +14,9 @@ try {
         function dota2TeamName($teamID)
         {
             switch ($teamID) {
+                case -1:
+                    $teamName = 'No Winner';
+                    break;
                 case 2:
                     $teamName = 'Radiant';
                     break;
