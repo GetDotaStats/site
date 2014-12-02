@@ -51,7 +51,7 @@ try {
                         ? $temp['popularityRank'] = $key + 1
                         : NULL;
 
-                    !empty($value['gamesLastWeek'])
+                    !empty($value['games_last_week'])
                         ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])
                         : $temp['gamesLastWeek'] = 0;
 
