@@ -117,15 +117,19 @@ try {
 
                 $matchDetailsSorted = array();
 
-                foreach ($matchPlayerDetails as $mh_key => $mh_value) {
-                    foreach ($mh_value as $mh_key2 => $mh_value2) {
-                        $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_sid32']][$mh_key2] = $mh_value2;
+                if (!empty($matchPlayerDetails)) {
+                    foreach ($matchPlayerDetails as $mh_key => $mh_value) {
+                        foreach ($mh_value as $mh_key2 => $mh_value2) {
+                            $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_sid32']][$mh_key2] = $mh_value2;
+                        }
                     }
                 }
 
-                foreach ($matchHeroDetails as $mh_key => $mh_value) {
-                    foreach ($mh_value as $mh_key2 => $mh_value2) {
-                        $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_sid32']][$mh_key2] = $mh_value2;
+                if (!empty($matchHeroDetails)) {
+                    foreach ($matchHeroDetails as $mh_key => $mh_value) {
+                        foreach ($mh_value as $mh_key2 => $mh_value2) {
+                            $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_sid32']][$mh_key2] = $mh_value2;
+                        }
                     }
                 }
 
@@ -230,7 +234,9 @@ try {
                                 $lastTeam = $value['player_team_id'];
                             }
 
-                            $heroID = $value['hero_id'];
+                            $heroID = !empty($value['hero_id'])
+                                ? $value['hero_id']
+                                : -1;
 
                             $heroData = $memcache->get('game_herodata' . $heroID);
                             if (!$heroData) {
@@ -262,17 +268,51 @@ try {
                                 ? '<span class="glyphicon glyphicon-ok"></span>'
                                 : '<span class="glyphicon glyphicon-remove"></span>';
 
+                            ///////////////
+
+                            $img_link = '//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png';
+
+                            $heroLevel = !empty($value['hero_level'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            $heroKills = !empty($value['hero_kills'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            $heroDeaths = !empty($value['hero_deaths'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            $heroAssists = !empty($value['hero_assists'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            $heroLastHits = !empty($value['hero_lasthits'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            $heroDenies = !empty($value['hero_denies'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            $heroGold = !empty($value['hero_gold'])
+                                ? $value['hero_level']
+                                : '-';
+
+                            ///////////////
+
                             echo '<tr>
-                                <td><img class="match_overview_hero_image" src="//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png" alt="' . $heroData['localized_name'] . ' {ID: ' . $value['hero_id'] . '}" /></td>
+                                <td><img class="match_overview_hero_image" src="' . $img_link . '" alt="' . $heroData['localized_name'] . ' {ID: ' . $heroID . '}" /></td>
                                 <td>' . $dbLink . '</td>
                                 <td class="text-center">' . $isBot . '</td>
-                                <td class="text-center">' . $value['hero_level'] . '</td>
-                                <td class="text-center">' . $value['hero_kills'] . '</td>
-                                <td class="text-center">' . $value['hero_deaths'] . '</td>
-                                <td class="text-center">' . $value['hero_assists'] . '</td>
-                                <td class="text-center">' . $value['hero_lasthits'] . '</td>
-                                <td class="text-center">' . $value['hero_denies'] . '</td>
-                                <td class="text-center">' . $value['hero_gold'] . '</td>
+                                <td class="text-center">' . $heroLevel . '</td>
+                                <td class="text-center">' . $heroKills . '</td>
+                                <td class="text-center">' . $heroDeaths . '</td>
+                                <td class="text-center">' . $heroAssists . '</td>
+                                <td class="text-center">' . $heroLastHits . '</td>
+                                <td class="text-center">' . $heroDenies . '</td>
+                                <td class="text-center">' . $heroGold . '</td>
                             </tr>';
                         }
                         echo '</table></div>';
