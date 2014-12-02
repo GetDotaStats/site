@@ -32,6 +32,8 @@ try {
     }
 
     $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    $db->q('SET NAMES utf8;');
+
     if ($db) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
@@ -39,6 +41,7 @@ try {
         $matchID = empty($_GET['id']) || strlen($_GET['id']) != 32
             ? NULL
             : $_GET['id'];
+
 
         if (!empty($matchID)) {
             $matchDetails = $db->q(
@@ -148,7 +151,7 @@ try {
 
                 $schemaLink = !empty($matchDetails[0]['message_id'])
                     ? '<a href=" ./d2mods/?custom_match=' . $matchDetails[0]['message_id'] . '" target="_new">' . $matchDetails[0]['message_id'] . '</a>'
-                    : 'Workshop';
+                    : 'N/A';
 
                 echo '<div class="container">
                         <div class="col-sm-7">
@@ -225,7 +228,7 @@ try {
                                         <th class="col-sm-1">&nbsp;</th>
                                         <th>Player</th>
                                         <th class="col-sm-1 text-center">Bot?</th>
-                                        <th class="col-sm-1 text-center">Level</th>
+                                        <th class="col-sm-1 text-center">lvl</th>
                                         <th class="col-sm-1 text-center">Kills</th>
                                         <th class="col-sm-1 text-center">Deaths</th>
                                         <th class="col-sm-1 text-center">Assists</th>
