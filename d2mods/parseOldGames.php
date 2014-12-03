@@ -50,7 +50,7 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $messages = $db->q('SELECT * FROM `node_listener` WHERE `test_id` <= 39059 ORDER BY date_recorded DESC;');
+            $messages = $db->q('SELECT * FROM `node_listener` WHERE `test_id` <= 41298 ORDER BY test_id DESC;');
 
             foreach ($messages as $key => $value) {
 
@@ -308,6 +308,8 @@ try {
                                                       `match_id`,
                                                       `mod_id`,
                                                       `player_round_id`,
+                                                      `player_team_id`,
+                                                      `player_slot_id`,
                                                       `player_sid32`,
                                                       `hero_id`,
                                                       `hero_won`,
@@ -329,9 +331,11 @@ try {
                                                       `hero_total_earned_xp`,
                                                       `date_recorded`
                                                   )
-                                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+                                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                                                     `player_sid32` = VALUES(`player_sid32`),
                                                     `player_round_id` = VALUES(`player_round_id`),
+                                                    `player_team_id` = VALUES(`player_team_id`),
+                                                    `player_slot_id` = VALUES(`player_slot_id`),
                                                     `hero_id` = VALUES(`hero_id`),
                                                     `hero_won` = VALUES(`hero_won`),
                                                     `hero_level` = VALUES(`hero_level`),
@@ -351,10 +355,12 @@ try {
                                                     `hero_total_earned_gold` = VALUES(`hero_total_earned_gold`),
                                                     `hero_total_earned_xp` = VALUES(`hero_total_earned_xp`),
                                                     `date_recorded` = VALUES(`date_recorded`);',
-                                            'ssiiiiiiiiiiiiiiiiisiis',
+                                            'ssiiiiiiiiiiiiiiiiiiisiis',
                                             $matchID,
                                             $modID,
                                             $player_roundID,
+                                            $player_teamID,
+                                            $player_slotID,
                                             $player_sid32,
                                             $hero_heroID,
                                             $hero_won,
