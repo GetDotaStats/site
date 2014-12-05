@@ -50,7 +50,7 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $messages = $db->q('SELECT * FROM `node_listener` WHERE `test_id` <= 41298 ORDER BY test_id DESC;');
+            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC;');
 
             foreach ($messages as $key => $value) {
 
@@ -150,6 +150,14 @@ try {
                                         ? 1
                                         : 0;
 
+                                    $player_connection_status = 0;
+                                    if(!empty($value3['connectionStatus'])){
+                                        $player_connection_status = $value3['connectionStatus'];
+                                    }
+                                    else if(!empty($value3['leaverStatus'])){
+                                        $player_connection_status = $value3['leaverStatus'];
+                                    }
+
                                     $player_name = !empty($value3['playerName'])
                                         ? $value3['playerName']
                                         : 'N/A';
@@ -182,7 +190,7 @@ try {
                                                   `mod_id`,
                                                   `player_sid32`,
                                                   `isBot`,
-                                                  `leaver_status`,
+                                                  `connection_status`,
                                                   `player_won`,
                                                   `player_name`,
                                                   `player_round_id`,
@@ -192,7 +200,7 @@ try {
                                               )
                                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                                                 `isBot` = VALUES(`isBot`),
-                                                `leaver_status` = VALUES(`leaver_status`),
+                                                `connection_status` = VALUES(`connection_status`),
                                                 `player_won` = VALUES(`player_won`),
                                                 `player_name` = VALUES(`player_name`),
                                                 `player_team_id` = VALUES(`player_team_id`),
@@ -203,7 +211,7 @@ try {
                                         $modID,
                                         $player_sid32,
                                         $isBot,
-                                        $player_leaver_status,
+                                        $player_connection_status,
                                         $player_won,
                                         $player_name,
                                         $player_roundID,
@@ -420,9 +428,13 @@ try {
                                         ? $value3['slotID']
                                         : 0;
 
-                                    $player_leaver_status = !empty($value3['leaverStatus'])
-                                        ? $value3['leaverStatus']
-                                        : 0;
+                                    $player_connection_status = 0;
+                                    if(!empty($value3['connectionStatus'])){
+                                        $player_connection_status = $value3['connectionStatus'];
+                                    }
+                                    else if(!empty($value3['leaverStatus'])){
+                                        $player_connection_status = $value3['leaverStatus'];
+                                    }
 
                                     $player_won = $player_teamID == $winningTeam
                                         ? 1
@@ -438,7 +450,7 @@ try {
                                                   `mod_id`,
                                                   `player_sid32`,
                                                   `isBot`,
-                                                  `leaver_status`,
+                                                  `connection_status`,
                                                   `player_won`,
                                                   `player_name`,
                                                   `player_round_id`,
@@ -448,7 +460,7 @@ try {
                                               )
                                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                                                 `isBot` = VALUES(`isBot`),
-                                                `leaver_status` = VALUES(`leaver_status`),
+                                                `connection_status` = VALUES(`connection_status`),
                                                 `player_won` = VALUES(`player_won`),
                                                 `player_name` = VALUES(`player_name`),
                                                 `player_team_id` = VALUES(`player_team_id`),
@@ -459,7 +471,7 @@ try {
                                         $modID,
                                         $player_sid32,
                                         $isBot,
-                                        $player_leaver_status,
+                                        $player_connection_status,
                                         $player_won,
                                         $player_name,
                                         $player_roundID,

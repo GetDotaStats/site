@@ -77,7 +77,7 @@ try {
                           mmp.`player_sid32`,
                           mmp.`player_sid64`,
                           mmp.`isBot`,
-                          mmp.`leaver_status`,
+                          mmp.`connection_status`,
                           mmp.`player_won`,
                           mmp.`player_name`,
                           mmp.`player_round_id`,
