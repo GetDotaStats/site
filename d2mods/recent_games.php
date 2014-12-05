@@ -10,50 +10,28 @@ try {
 
     if ($db) {
         $SQLpage = !empty($_GET['p']) && is_numeric($_GET['p'])
-            ? $_GET['p']
-            : NULL;
+            ? $_GET['p'] - 1
+            : 0;
 
         $resultsPerPage = 25;
+        $SQLpageTemp = $SQLpage * $resultsPerPage;
 
-        if (!empty($SQLpage)) {
-            $SQLpageTemp = $SQLpage * $resultsPerPage;
-
-            $modListActive = simple_cached_query('d2mods_recent_games_p' . $SQLpage,
-                'SELECT
-                        mmo.`match_id`,
-                        mmo.`mod_id`,
-                        mmo.`match_duration`,
-                        mmo.`match_num_players`,
-                        mmo.`match_recorded`,
-                        ml.`mod_id` as modFakeID,
-                        ml.`mod_name`,
-                        ml.`mod_active`
-                    FROM `mod_match_overview` mmo
-                    LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
-                    ORDER BY mmo.`match_recorded` DESC
-                    LIMIT ' . $SQLpageTemp . ',' . $resultsPerPage . ';'
-                , 30
-            );
-        } else {
-            $modListActive = simple_cached_query('d2mods_recent_games',
-                //,(SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
-                'SELECT
-                        mmo.`match_id`,
-                        mmo.`mod_id`,
-                        mmo.`match_duration`,
-                        mmo.`match_num_players`,
-                        mmo.`match_recorded`,
-                        ml.`mod_id` as modFakeID,
-                        ml.`mod_name`,
-                        ml.`mod_active`
-                    FROM `mod_match_overview` mmo
-                    LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
-                    ORDER BY mmo.`match_recorded` DESC
-                    LIMIT 0,' . $resultsPerPage . ';'
-                , 30
-            );
-        }
-
+        $modListActive = simple_cached_query('d2mods_recent_games_p' . $SQLpage,
+            'SELECT
+                    mmo.`match_id`,
+                    mmo.`mod_id`,
+                    mmo.`match_duration`,
+                    mmo.`match_num_players`,
+                    mmo.`match_recorded`,
+                    ml.`mod_id` as modFakeID,
+                    ml.`mod_name`,
+                    ml.`mod_active`
+                FROM `mod_match_overview` mmo
+                LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
+                ORDER BY mmo.`match_recorded` DESC
+                LIMIT ' . $SQLpageTemp . ',' . $resultsPerPage . ';'
+            , 30
+        );
 
         $modListCount = simple_cached_query('d2mods_recent_games_count',
             'SELECT count(*) AS total_games
@@ -124,22 +102,40 @@ try {
                 $pagination .= '<nav class="text-center"><ul class="pagination pagination-md">';
                 //$pagination .= '<li><a href="#"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>';
 
-                $pagination_cap = 7;
+                $pagination_cap = 4;
 
                 if ($pages > 24) {
                     for ($i = 1; $i < $pages && $i <= $pagination_cap; $i++) {
-                        $pagination .= '<li><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                        $liClass = $i == ($SQLpage + 1)
+                            ? " class='active'"
+                            : NULL;
+                        $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                    }
+
+                    $pagination .= '<li class="disabled"><span>...</span></li>';
+
+                    for ($i = ($SQLpage); $i < $pages && $i <= ($SQLpage + $pagination_cap); $i++) {
+                        $liClass = $i == ($SQLpage + 1)
+                            ? " class='active'"
+                            : NULL;
+                        $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
                     }
 
                     $pagination .= '<li class="disabled"><span>...</span></li>';
 
                     $bottom_upper_portion = $pages - $pagination_cap;
                     for ($i = $bottom_upper_portion; $i < $pages; $i++) {
-                        $pagination .= '<li><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                        $liClass = $i == ($SQLpage + 1)
+                            ? " class='active'"
+                            : NULL;
+                        $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
                     }
                 } else {
                     for ($i = 1; $i < $pages; $i++) {
-                        $pagination .= '<li><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                        $liClass = $i == ($SQLpage + 1)
+                            ? " class='active'"
+                            : NULL;
+                        $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
                     }
                 }
 
