@@ -9,27 +9,69 @@ try {
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if ($db) {
-        $modListActive = simple_cached_query('d2mods_recent_games',
-            //,(SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
-            'SELECT
-                    mmo.`match_id`,
-                    mmo.`mod_id`,
-                    mmo.`match_duration`,
-                    mmo.`match_num_players`,
-                    mmo.`match_recorded`,
-                    ml.`mod_id` as modFakeID,
-                    ml.`mod_name`,
-                    ml.`mod_active`
+        $SQLpage = !empty($_GET['p']) && is_numeric($_GET['p'])
+            ? $_GET['p']
+            : NULL;
+
+        $resultsPerPage = 25;
+
+        if (!empty($SQLpage)) {
+            $SQLpageTemp = $SQLpage * $resultsPerPage;
+
+            $modListActive = simple_cached_query('d2mods_recent_games_p' . $SQLpage,
+                'SELECT
+                        mmo.`match_id`,
+                        mmo.`mod_id`,
+                        mmo.`match_duration`,
+                        mmo.`match_num_players`,
+                        mmo.`match_recorded`,
+                        ml.`mod_id` as modFakeID,
+                        ml.`mod_name`,
+                        ml.`mod_active`
+                    FROM `mod_match_overview` mmo
+                    LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
+                    ORDER BY mmo.`match_recorded` DESC
+                    LIMIT ' . $SQLpageTemp . ',' . $resultsPerPage . ';'
+                , 30
+            );
+        } else {
+            $modListActive = simple_cached_query('d2mods_recent_games',
+                //,(SELECT COUNT(DISTINCT mmp.`player_sid32`) FROM `mod_match_players` mmp WHERE mmp.`mod_id` = ml.`mod_identifier` GROUP BY `mod_id`) AS players_all_time
+                'SELECT
+                        mmo.`match_id`,
+                        mmo.`mod_id`,
+                        mmo.`match_duration`,
+                        mmo.`match_num_players`,
+                        mmo.`match_recorded`,
+                        ml.`mod_id` as modFakeID,
+                        ml.`mod_name`,
+                        ml.`mod_active`
+                    FROM `mod_match_overview` mmo
+                    LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
+                    ORDER BY mmo.`match_recorded` DESC
+                    LIMIT 0,' . $resultsPerPage . ';'
+                , 30
+            );
+        }
+
+
+        $modListCount = simple_cached_query('d2mods_recent_games_count',
+            'SELECT count(*) AS total_games
                 FROM `mod_match_overview` mmo
                 LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
-                ORDER BY mmo.`match_recorded` DESC
-                LIMIT 0,50;'
+                ORDER BY mmo.`match_recorded` DESC;'
             , 30
         );
 
+        $modListCount = !empty($modListCount)
+            ? $modListCount[0]['total_games']
+            : 0;
+
+        $pages = ceil($modListCount / $resultsPerPage);
+
         echo '<div class="page-header"><h2>Recent Games <small>BETA</small></h2></div>';
 
-        echo '<p>This is a directory of the last 50 games played that developers have implemented stats for.</p>';
+        echo '<p>This is a directory of the last ' . $resultsPerPage . ' games played that developers have implemented stats for.</p>';
 
         if (!empty($modListActive)) {
 
@@ -76,6 +118,37 @@ try {
             }
 
             echo '</table></div>';
+
+            $pagination = '';
+            if ($pages > 1) {
+                $pagination .= '<nav class="text-center"><ul class="pagination pagination-md">';
+                //$pagination .= '<li><a href="#"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>';
+
+                $pagination_cap = 7;
+
+                if ($pages > 24) {
+                    for ($i = 1; $i < $pages && $i <= $pagination_cap; $i++) {
+                        $pagination .= '<li><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                    }
+
+                    $pagination .= '<li class="disabled"><span>...</span></li>';
+
+                    $bottom_upper_portion = $pages - $pagination_cap;
+                    for ($i = $bottom_upper_portion; $i < $pages; $i++) {
+                        $pagination .= '<li><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                    }
+                } else {
+                    for ($i = 1; $i < $pages; $i++) {
+                        $pagination .= '<li><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                    }
+                }
+
+                //$pagination .= '<li><a href="#"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>';
+                $pagination .= '</ul></nav>';
+
+                echo $pagination;
+            }
+
         } else {
             echo bootstrapMessage('Oh Snap', 'No games played yet!');
         }
