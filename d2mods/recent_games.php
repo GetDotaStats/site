@@ -112,13 +112,23 @@ try {
                         $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
                     }
 
-                    $pagination .= '<li class="disabled"><span>...</span></li>';
+                    if($SQLpage > ($pagination_cap - 1)){
+                        $pagination .= '<li class="disabled"><span>...</span></li>';
 
-                    for ($i = ($SQLpage); $i < $pages && $i <= ($SQLpage + $pagination_cap); $i++) {
-                        $liClass = $i == ($SQLpage + 1)
-                            ? " class='active'"
-                            : NULL;
-                        $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                        for ($i = ($SQLpage); $i < $pages && $i <= ($SQLpage + $pagination_cap); $i++) {
+                            $liClass = $i == ($SQLpage + 1)
+                                ? " class='active'"
+                                : NULL;
+                            $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                        }
+                    }
+                    else if($SQLpage == ($pagination_cap - 1)){
+                        for ($i = ($SQLpage + 2); $i < $pages && $i <= ($SQLpage + $pagination_cap); $i++) {
+                            $liClass = $i == ($SQLpage + 1)
+                                ? " class='active'"
+                                : NULL;
+                            $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . '" id="' . $i . '-page">' . $i . '</a></li>';
+                        }
                     }
 
                     $pagination .= '<li class="disabled"><span>...</span></li>';
