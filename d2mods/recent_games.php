@@ -81,6 +81,12 @@ try {
         }
     }
 
+    echo '<p>
+            <div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+            </div>
+        </p>';
+
     $memcache->close();
 } catch (Exception $e) {
     echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
