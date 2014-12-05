@@ -59,6 +59,7 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">BETA</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li><a class="nav-clickable" href="#d2mods__my_games">My Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Guide</a></li>
