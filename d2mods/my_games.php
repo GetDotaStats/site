@@ -77,11 +77,11 @@ try {
 
                     $arrayGoodConnectionStatus = array(1, 2, 3, 5);
                     if (!empty($value['connection_status']) && in_array($value['connection_status'], $arrayGoodConnectionStatus)) {
-                        $connectionStatus = '<span class="glyphicon glyphicon-ok-sign"></span>';
+                        $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $value['cs_string'] . '"></span>';
                     } else if (!empty($value['connection_status']) && $value['connection_status'] == 0) {
-                        $connectionStatus = '<span class="glyphicon glyphicon-question-sign"></span>';
+                        $connectionStatus = '<span class="glyphicon glyphicon-question-sign" title="' . $value['cs_string'] . '"></span>';
                     } else {
-                        $connectionStatus = '<span class="glyphicon glyphicon-remove-sign"></span>';
+                        $connectionStatus = '<span class="glyphicon glyphicon-remove-sign" title="' . $value['cs_string'] . '"></span>';
                     }
 
                     $numPlayers = !empty($value['match_num_players'])
