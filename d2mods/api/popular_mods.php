@@ -35,6 +35,10 @@ try {
                         ? $value['mod_name']
                         : 'Unknown Mod';
 
+                    !empty($key)
+                        ? $temp['popularityRank'] = $key + 1
+                        : NULL;
+
                     !empty($value['games_last_week'])
                         ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])
                         : $temp['gamesLastWeek'] = 0;
@@ -51,16 +55,8 @@ try {
                         ? $temp['steamGroup'] = 'http://steamcommunity.com/groups/' . $value['mod_steam_group']
                         : NULL;
 
-                    !empty($value['mod_steam_group'])
-                        ? $temp['steamGroup'] = 'http://steamcommunity.com/groups/' . $value['mod_steam_group']
-                        : NULL;
-
                     !empty($value['mod_id'])
                         ? $temp['modInfo'] = 'http://getdotastats.com/#d2mods__stats?id=' . $value['mod_id']
-                        : NULL;
-
-                    !empty($key)
-                        ? $temp['popularityRank'] = $key + 1
                         : NULL;
 
                     !empty($value['user_name'])
