@@ -7,7 +7,7 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    $popularMods = $memcache->get('api_d2mods_get_popular');
+    $popularMods = $memcache->get('api_d2mods_get_popular1');
     if (!$popularMods) {
         $popularMods = array();
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
@@ -31,12 +31,24 @@ try {
                 foreach ($modListActive as $key => $value) {
                     $temp = array();
 
-                    !empty($value['mod_steam_group'])
-                        ? $temp['steamGroup'] = 'http://steamcommunity.com/groups/' . $value['mod_steam_group']
-                        : NULL;
+                    $temp['modName'] = !empty($value['mod_name'])
+                        ? $value['mod_name']
+                        : 'Unknown Mod';
+
+                    !empty($value['games_last_week'])
+                        ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])
+                        : $temp['gamesLastWeek'] = 0;
+
+                    !empty($value['games_all_time'])
+                        ? $temp['gamesAllTime'] = number_format($value['games_all_time'])
+                        : $temp['gamesAllTime'] = 0;
 
                     !empty($value['mod_workshop_link'])
                         ? $temp['workshopLink'] = 'http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link']
+                        : NULL;
+
+                    !empty($value['mod_steam_group'])
+                        ? $temp['steamGroup'] = 'http://steamcommunity.com/groups/' . $value['mod_steam_group']
                         : NULL;
 
                     !empty($value['mod_steam_group'])
@@ -47,21 +59,9 @@ try {
                         ? $temp['modInfo'] = 'http://getdotastats.com/#d2mods__stats?id=' . $value['mod_id']
                         : NULL;
 
-                    $temp['modName'] = !empty($value['mod_name'])
-                        ? $value['mod_name']
-                        : 'Unknown Mod';
-
                     !empty($key)
                         ? $temp['popularityRank'] = $key + 1
                         : NULL;
-
-                    !empty($value['games_last_week'])
-                        ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])
-                        : $temp['gamesLastWeek'] = 0;
-
-                    !empty($value['games_all_time'])
-                        ? $temp['gamesAllTime'] = number_format($value['games_all_time'])
-                        : $temp['gamesAllTime'] = 0;
 
                     !empty($value['user_name'])
                         ? $temp['modDeveloperName'] = urlencode($value['user_name'])
@@ -88,7 +88,7 @@ try {
             $popularMods['error'] = 'No DB connection!';
         }
 
-        $memcache->set('api_d2mods_get_popular', $popularMods, 0, 5 * 60);
+        $memcache->set('api_d2mods_get_popular1', $popularMods, 0, 1 * 60);
     }
 
     $memcache->close();
@@ -97,4 +97,4 @@ try {
     $popularMods['error'] = 'Caught Exception: ' . $e->getMessage() . '<br /> Contact getdotastats.com';
 }
 
-echo json_encode(utf8_encode($popularMods));
+echo utf8_encode(json_encode($popularMods));
