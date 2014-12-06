@@ -47,6 +47,10 @@ try {
                         ? $temp['modInfo'] = 'http://getdotastats.com/#d2mods__stats?id=' . $value['mod_id']
                         : NULL;
 
+                    $temp['modName'] = !empty($value['mod_name'])
+                        ? $value['mod_name']
+                        : 'Unknown Mod';
+
                     !empty($key)
                         ? $temp['popularityRank'] = $key + 1
                         : NULL;
@@ -93,4 +97,4 @@ try {
     $popularMods['error'] = 'Caught Exception: ' . $e->getMessage() . '<br /> Contact getdotastats.com';
 }
 
-echo utf8_encode(json_encode($popularMods));
+echo json_encode(utf8_encode($popularMods));
