@@ -82,8 +82,14 @@ try {
                           mmp.`player_name`,
                           mmp.`player_round_id`,
                           mmp.`player_team_id`,
-                          mmp.`player_slot_id`
+                          mmp.`player_slot_id`,
+
+                          gcs.`cs_id`,
+                          gcs.`cs_string`,
+                          gcs.`cs_name`
                         FROM `mod_match_players` mmp
+                        LEFT JOIN `game_connection_status` gcs
+                          ON mmp.`connection_status` = gcs.`cs_id`
                         WHERE mmp.`match_id` = ?
                         ORDER BY mmp.`player_round_id`, mmp.`player_team_id`, mmp.`player_slot_id`;',
                     's',
@@ -227,14 +233,11 @@ try {
                                 echo '<tr>
                                         <th class="col-sm-1">&nbsp;</th>
                                         <th>Player</th>
+                                        <th class="col-sm-1 text-center">Connection</th>
                                         <th class="col-sm-1 text-center">Bot?</th>
                                         <th class="col-sm-1 text-center">lvl</th>
-                                        <th class="col-sm-1 text-center">Kills</th>
-                                        <th class="col-sm-1 text-center">Deaths</th>
-                                        <th class="col-sm-1 text-center">Assists</th>
-                                        <th class="col-sm-1 text-center">LH</th>
-                                        <th class="col-sm-1 text-center">Denies</th>
-                                        <th class="col-sm-1 text-center">Gold</th>
+                                        <th class="col-sm-2 text-center">K / A / D <span class="glyphicon glyphicon-question-sign" title="Kills / Assists / Deaths"></span></th>
+                                        <th class="col-sm-2 text-center">LH / D <span class="glyphicon glyphicon-question-sign" title="Last Hits / Denies"></span></th>
                                 </tr>';
 
                                 $lastTeam = $value['player_team_id'];
@@ -278,6 +281,15 @@ try {
                                 ? '<span class="glyphicon glyphicon-ok"></span>'
                                 : '<span class="glyphicon glyphicon-remove"></span>';
 
+                            $arrayGoodConnectionStatus = array(1, 2, 3, 5);
+                            if (!empty($value['connection_status']) && in_array($value['connection_status'], $arrayGoodConnectionStatus)) {
+                                $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $value['cs_string'] . '"></span>';
+                            } else if (!empty($value['connection_status']) && $value['connection_status'] == 0) {
+                                $connectionStatus = '<span class="glyphicon glyphicon-question-sign" title="' . $value['cs_string'] . '"></span>';
+                            } else {
+                                $connectionStatus = '<span class="glyphicon glyphicon-remove-sign" title="' . $value['cs_string'] . '"></span>';
+                            }
+
                             ///////////////
 
                             $img_link = '//static.getdotastats.com/images/heroes/' . strtolower(str_replace('\'', '', str_replace(' ', '-', $heroData['localized_name']))) . '.png';
@@ -306,23 +318,16 @@ try {
                                 ? $value['hero_denies']
                                 : '-';
 
-                            $heroGold = !empty($value['hero_gold'])
-                                ? $value['hero_gold']
-                                : '-';
-
                             ///////////////
 
                             echo '<tr>
                                 <td><img class="match_overview_hero_image" src="' . $img_link . '" alt="' . $heroData['localized_name'] . ' {ID: ' . $heroID . '}" /></td>
                                 <td>' . $playerName . $dbLink . '</td>
+                                <td class="text-center">' . $connectionStatus . '</td>
                                 <td class="text-center">' . $isBot . '</td>
                                 <td class="text-center">' . $heroLevel . '</td>
-                                <td class="text-center">' . $heroKills . '</td>
-                                <td class="text-center">' . $heroDeaths . '</td>
-                                <td class="text-center">' . $heroAssists . '</td>
-                                <td class="text-center">' . $heroLastHits . '</td>
-                                <td class="text-center">' . $heroDenies . '</td>
-                                <td class="text-center">' . $heroGold . '</td>
+                                <td class="text-center">' . $heroKills . ' / ' . $heroAssists . ' / ' . $heroDeaths . '</td>
+                                <td class="text-center">' . $heroLastHits . ' / ' . $heroDenies . '</td>
                             </tr>';
                         }
                         echo '</table></div>';
