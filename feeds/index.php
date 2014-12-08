@@ -1,4 +1,3 @@
-<!--<link rel="alternate" href="./rss/" title="GetDotaStats Animu Feed" type="application/rss+xml"/>-->
 <?php
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
@@ -16,7 +15,7 @@ try {
             echo '<h1 class="text-center"><a href="./feeds/rss/" target="_blank">GetDotaStats Animu Feed</a></h1>';
 
             $accessCheck = $db->q('SELECT * FROM `access_list` WHERE `steam_id64` = ? LIMIT 0,1;',
-                'i',
+                's',
                 $_SESSION['user_id64']);
 
             if (!empty($accessCheck)) {

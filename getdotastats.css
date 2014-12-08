@@ -268,3 +268,8 @@ table td.bashful, table th.bashful {
     word-wrap: break-word;
     table-layout: fixed;
 }
+
+.db_link {
+    font-size: 0.6em;
+    font-weight: bold;
+}

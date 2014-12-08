@@ -437,3 +437,42 @@ if (!class_exists('SteamID')) {
         }
     }
 }
+
+if (!class_exists('steam_webapi')) {
+    class steam_webapi
+    {
+        private $steamAPIKey = NULL;
+
+        public function __construct($steamAPIKey)
+        {
+            if (empty($steamAPIKey)) {
+                throw new RuntimeException('No Steam Key Provided!');
+            } else {
+                $this->steamAPIKey = $steamAPIKey;
+            }
+        }
+
+        function ResolveVanityURL($vanityURL)
+        {
+            $APIresult = curl('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' . $this->steamAPIKey . '&vanityurl=' . $vanityURL);
+
+            $APIresult = !empty($APIresult)
+                ? json_decode($APIresult, 1)
+                : false;
+
+            return $APIresult;
+        }
+
+        function GetFriendList($steamID, $relationshipFilter = 'friend')
+        {
+            //Relationship filter. Possibles values: all, friend
+            $APIresult = curl('http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=' . $this->steamAPIKey . '&steamid=' . $steamID . '&relationship=' . $relationshipFilter);
+
+            $APIresult = !empty($APIresult)
+                ? json_decode($APIresult, 1)
+                : false;
+
+            return $APIresult;
+        }
+    }
+}

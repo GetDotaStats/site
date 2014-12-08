@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 function checkURL(hash, refresh) {
     if (!hash) {
-        loadPage('#home', refresh);
+        loadPage('#d2mods__directory', refresh);
     }
     else {
         var testElement = $('#navBarCustom');

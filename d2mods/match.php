@@ -263,12 +263,16 @@ try {
                             }
 
                             $value['player_name'] = $value['isBot'] != 1 && !empty($value['player_name'])
-                                ? $value['player_name']
+                                ? htmlentities($value['player_name'])
                                 : '??';
 
-                            $dbLink = !empty($value['player_sid32']) && is_numeric($value['player_sid32'])
-                                ? '<a href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">' . $value['player_name'] . '</a>'
+                            $playerName = !empty($value['player_sid32']) && is_numeric($value['player_sid32'])
+                                ? '<a class="nav-clickable" href="./#d2mods__search?user=' . $value['player_sid32'] . '">' . $value['player_name'] . '</a>'
                                 : $value['player_name'];
+
+                            $dbLink = !empty($value['player_sid32']) && is_numeric($value['player_sid32'])
+                                ? ' <a class="db_link" href="http://dotabuff.com/players/' . $value['player_sid32'] . '" target="_new">[DB]</a>'
+                                : '';
 
                             $isBot = !empty($value['isBot']) && $value['isBot'] == 1
                                 ? '<span class="glyphicon glyphicon-ok"></span>'
@@ -310,7 +314,7 @@ try {
 
                             echo '<tr>
                                 <td><img class="match_overview_hero_image" src="' . $img_link . '" alt="' . $heroData['localized_name'] . ' {ID: ' . $heroID . '}" /></td>
-                                <td>' . $dbLink . '</td>
+                                <td>' . $playerName . $dbLink . '</td>
                                 <td class="text-center">' . $isBot . '</td>
                                 <td class="text-center">' . $heroLevel . '</td>
                                 <td class="text-center">' . $heroKills . '</td>

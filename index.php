@@ -38,7 +38,8 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//getdotastats.com/getdotastats.css?10" rel="stylesheet">
+    <link href="//getdotastats.com/getdotastats.css?12" rel="stylesheet">
+    <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -47,14 +48,14 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?8"></script>
+    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?9"></script>
+    <!--<script type="text/javascript" src="./getdotastats.js?9"></script>-->
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div id="navBarCustom" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a class="nav-clickable" href="#home">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">BETA</span> <b class="caret"></b></a>
@@ -79,6 +80,10 @@ try {
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
+                            <li class="dropdown-header">Admin Stuff</li>
+                            <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
+                        <?php } ?>
                         <li class="dropdown-header">Economy Related</li>
                         <li><a class="nav-clickable" href="#backpack/">Card Summary</a>
                         </li>
@@ -106,17 +111,20 @@ try {
                                     class="label label-info">DEAD</span></a></a></li>
                         <li><a class="nav-clickable" href="#replays/">Replay Archive <span
                                     class="label label-info">DEAD</span></a></a></li>
+                        <?php if (empty($_SESSION['user_id64']) || empty($_SESSION['access_feeds'])) { ?>
+                            <li><a class="nav-clickable" href="#contact">Contact</a></li>
+                        <?php } else { ?>
+                            <li><a class="nav-clickable" href="#feeds/">Feeds</a></li>
+                        <?php } ?>
                     </ul>
                 </li>
-                <?php if (empty($_SESSION['user_id64']) || empty($_SESSION['access_feeds'])) { ?>
-                    <li><a class="nav-clickable" href="#contact">Contact</a></li>
-                <?php } else { ?>
-                    <li><a class="nav-clickable" href="#feeds/">Feeds</a></li>
-                <?php } ?>
-                <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
-                    <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
-                <?php } ?>
             </ul>
+            <form id="searchForm" class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input name="user" type="text" class="form-control" placeholder="Username or ID">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
             <?php if (empty($_SESSION['user_id64'])) { ?>
                 <p class="nav navbar-text"><a href="./auth/?login"><img src="./auth/assets/images/steam_small.png"
                                                                         alt="Sign in with Steam"/></a></p>
@@ -139,12 +147,19 @@ try {
 </div>
 <div class="clear"></div>
 
+<script type="application/javascript">
+    $("#searchForm").submit(function (event) {
+        event.preventDefault();
+        loadPage("#d2mods__search?user=" + $("input:first").val(), 1);
+        window.location.replace("#d2mods__search?user=" + $("input:first").val());
+    });
+</script>
+
 <div class="container">
     <div class="page-header text-center">
-        <!--<h1>GetDotaStats
-            <small> A collection of random stats</small>
-        </h1>-->
-        <img width="400px" src="//static.getdotastats.com/images/getdotastats_logo_v3.png" alt="site logo"/>
+        <a class="nav-clickable" href="#d2mods__directory"><img width="400px"
+                                                                src="//static.getdotastats.com/images/getdotastats_logo_v3.png"
+                                                                alt="site logo"/></a>
 
         <div id="loading">
             <!--<img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
