@@ -165,9 +165,6 @@ try {
         } else {
             echo bootstrapMessage('Oh Snap', 'Invalid search query!');
         }
-
-
-        $memcache->close();
     } else {
         echo bootstrapMessage('Oh Snap', 'No DB!');
     }
@@ -179,6 +176,7 @@ try {
             </div>
         </p>';
 
+    $memcache->close();
 } catch
 (Exception $e) {
     echo bootstrapMessage('Oh Snap', 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage());

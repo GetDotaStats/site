@@ -61,11 +61,11 @@ try {
                         <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
                     </div>
                 </p>';
-
-            $memcache->close();
         } else {
             echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
         }
+
+        $memcache->close();
     } else {
         echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
     }

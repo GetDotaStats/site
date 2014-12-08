@@ -107,11 +107,11 @@ try {
             } else {
                 echo bootstrapMessage('Oh Snap', 'No games played yet!');
             }
-
-            $memcache->close();
         } else {
             echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
         }
+
+        $memcache->close();
     } else {
         echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
     }

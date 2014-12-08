@@ -784,7 +784,6 @@ try {
         } else {
             echo bootstrapMessage('Oh Snap', 'Invalid modID!', 'danger');
         }
-        $memcache->close();
     } else {
         echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
     }
@@ -799,6 +798,8 @@ try {
     echo '<div id="pagerendertime" class="pagerendertime">';
     echo '<hr />Page generated in ' . (time() - $start) . 'secs';
     echo '</div>';
+
+    $memcache->close();
 } catch (Exception $e) {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
     echo bootstrapMessage('Oh Snap', $message, 'danger');
