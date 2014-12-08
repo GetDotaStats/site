@@ -75,7 +75,7 @@ try {
                         ? number_format($value['match_duration'] / 60)
                         : 'Unknown';
 
-                    $arrayGoodConnectionStatus = array(1, 2, 3, 5);
+                    $arrayGoodConnectionStatus = array(2, 3, 5);
                     if (!empty($value['connection_status']) && in_array($value['connection_status'], $arrayGoodConnectionStatus)) {
                         $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $value['cs_string'] . '"></span>';
                     } else if (!empty($value['connection_status']) && $value['connection_status'] == 0) {

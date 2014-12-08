@@ -280,7 +280,7 @@ try {
                                     ? '<span class="glyphicon glyphicon-ok"></span>'
                                     : '<span class="glyphicon glyphicon-remove"></span>';
 
-                                $arrayGoodConnectionStatus = array(1, 2, 3, 5);
+                                $arrayGoodConnectionStatus = array(2, 3, 5);
                                 if (!empty($player_value['connection_status']) && in_array($player_value['connection_status'], $arrayGoodConnectionStatus)) {
                                     $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $player_value['cs_string'] . '"></span>';
                                 } else if (!empty($player_value['connection_status']) && $player_value['connection_status'] == 0) {
