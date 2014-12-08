@@ -18,20 +18,14 @@ try {
 
         if (!empty($steamID_unknown)) {
             if (!is_numeric($steamID_unknown)) {
-                var_dump($steamID_unknown);
-                echo "<br />";
-                if (stripos($steamID_unknown, 'steamcommunity.com/id/')) {
+                if (stristr($steamID_unknown, 'steamcommunity.com/id/')) {
                     $steamID_unknown = cut_str($steamID_unknown, 'steamcommunity.com/id/');
-                    echo $steamID_unknown . " 1 <br />";
-                } else if (stripos($steamID_unknown, 'steamcommunity.com/profiles/')) {
+                    $steamID_unknown = rtrim($steamID_unknown, '/');
+                } else if (stristr($steamID_unknown, 'steamcommunity.com/profiles/')) {
                     $steamID_unknown = cut_str($steamID_unknown, 'steamcommunity.com/profiles/');
-                    echo $steamID_unknown . " 2 <br />";
+                    $steamID_unknown = rtrim($steamID_unknown, '/');
                 }
-
-                echo $steamID_unknown . "<br />";
             }
-
-            exit();
 
             $steamID_unknown = htmlentities($steamID_unknown);
 
