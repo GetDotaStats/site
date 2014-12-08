@@ -30,7 +30,7 @@ function checkURL(hash, refresh) {
 
 function loadPage(url, refresh) {
     var oldURL = url;
-    url = url.replace('#', '').replace('.', '').replace(':', '').split('__').join('/');
+    url = url.replace('#', '').replace(':', '').split('__').join('/');
 
     console.log("Loading: " + url);
 

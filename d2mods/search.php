@@ -13,10 +13,28 @@ try {
         $steamWebAPI = new steam_webapi($api_key1);
 
         $steamID_unknown = !empty($_GET['user'])
-            ? htmlentities($_GET['user'])
+            ? $_GET['user']
             : NULL;
 
         if (!empty($steamID_unknown)) {
+            if (!is_numeric($steamID_unknown)) {
+                var_dump($steamID_unknown);
+                echo "<br />";
+                if (stripos($steamID_unknown, 'steamcommunity.com/id/')) {
+                    $steamID_unknown = cut_str($steamID_unknown, 'steamcommunity.com/id/');
+                    echo $steamID_unknown . " 1 <br />";
+                } else if (stripos($steamID_unknown, 'steamcommunity.com/profiles/')) {
+                    $steamID_unknown = cut_str($steamID_unknown, 'steamcommunity.com/profiles/');
+                    echo $steamID_unknown . " 2 <br />";
+                }
+
+                echo $steamID_unknown . "<br />";
+            }
+
+            exit();
+
+            $steamID_unknown = htmlentities($steamID_unknown);
+
             if (is_numeric($steamID_unknown)) {
                 $steamID = new SteamID($steamID_unknown);
                 $steamID32 = $steamID->getSteamID32();
@@ -58,11 +76,11 @@ try {
                 if ($steamID_unknown != $steamID32) {
                     $dbLink = $steamID_unknown . ' <a class="db_link" href="http://dotabuff.com/players/' . $steamID32 . '" target="_new">' . $steamID32 . '</a>';
                 } else {
-                    $dbLink = $steamID_unknown;
+                    $dbLink = '<a href="http://dotabuff.com/players/' . $steamID32 . '" target="_new">' . $steamID32 . '</a>';
                 }
 
 
-                echo '<div class="page-header"><h2>Match Results for: <small>'.$dbLink.'</small></h2></div>';
+                echo '<div class="page-header"><h2>Match Results for: <small>' . $dbLink . '</small></h2></div>';
 
                 $gamesList = $db->q(
                     'SELECT
