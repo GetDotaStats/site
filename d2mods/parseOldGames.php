@@ -427,7 +427,6 @@ try {
                                                           `item_start_time`,
                                                           `date_recorded`
                                                       )
-                                                    SELECT
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                                                         `player_sid32` = VALUES(`player_sid32`),
                                                         `item_index` = VALUES(`item_index`),
