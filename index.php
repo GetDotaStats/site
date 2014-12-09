@@ -121,7 +121,7 @@ try {
             </ul>
             <form id="searchForm" class="navbar-form navbar-left" role="search">
                 <div class="form-group">
-                    <input name="user" type="text" class="form-control" placeholder="Username or ID">
+                    <input name="user" type="text" class="form-control" placeholder="UserID or MatchID">
                 </div>
                 <button type="submit" class="btn btn-default">Search</button>
             </form>
@@ -150,8 +150,16 @@ try {
 <script type="application/javascript">
     $("#searchForm").submit(function (event) {
         event.preventDefault();
-        loadPage("#d2mods__search?user=" + $("input:first").val(), 1);
-        window.location.replace("#d2mods__search?user=" + $("input:first").val());
+        var searchTerm = $("input:first").val();
+
+        if(searchTerm.length == 32){
+            loadPage("#d2mods__match?id=" + searchTerm, 1);
+            window.location.replace("#d2mods__match?id=" + searchTerm);
+        }
+        else{
+            loadPage("#d2mods__search?user=" + searchTerm, 1);
+            window.location.replace("#d2mods__search?user=" + searchTerm);
+        }
     });
 </script>
 
