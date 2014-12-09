@@ -100,7 +100,7 @@ try {
                         : 0;
 
                     $matchDuration = !empty($parsed['duration'])
-                        ? number_format($parsed['duration'], 2)
+                        ? round($parsed['duration'], 2)
                         : 0;
 
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -407,11 +407,11 @@ try {
 
                                             $item_name = !empty($value_items['itemName'])
                                                 ? $value_items['itemName']
-                                                : 0;
+                                                : NULL;
 
                                             $item_start_time = !empty($value_items['itemStartTime'])
                                                 ? $value_items['itemStartTime']
-                                                : 0;
+                                                : NULL;
 
                                             $db->q(
                                                 'INSERT INTO `mod_match_items`
@@ -443,6 +443,60 @@ try {
                                                 $item_index,
                                                 $item_name,
                                                 $item_start_time,
+                                                $value['date_recorded']
+                                            );
+                                        }
+                                    } else {
+                                        //echo '<strong>NO ITEM DATA!!</strong> player: ' . $player_sid32 . '<br />';
+                                    }
+
+                                    ///////////////////////////////////
+                                    //ABILITY DATA
+                                    ///////////////////////////////////
+                                    if (!empty($value3['abilities'])) {
+                                        foreach ($value3['abilities'] as $key_abilities => $value_abilities) {
+                                            $ability_index = !empty($value_abilities['index'])
+                                                ? $value_abilities['index']
+                                                : 0;
+
+                                            $ability_name = !empty($value_abilities['abilityName'])
+                                                ? $value_abilities['abilityName']
+                                                : NULL;
+
+                                            $ability_level = !empty($value_abilities['level'])
+                                                ? $value_abilities['level']
+                                                : 0;
+
+                                            $db->q(
+                                                'INSERT INTO `mod_match_abilities`
+                                                      (
+                                                          `match_id`,
+                                                          `mod_id`,
+                                                          `player_round_id`,
+                                                          `player_team_id`,
+                                                          `player_slot_id`,
+                                                          `player_sid32`,
+                                                          `ability_index`,
+                                                          `ability_name`,
+                                                          `ability_level`,
+                                                          `date_recorded`
+                                                      )
+                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+                                                        `player_sid32` = VALUES(`player_sid32`),
+                                                        `ability_index` = VALUES(`ability_index`),
+                                                        `ability_name` = VALUES(`ability_name`),
+                                                        `ability_level` = VALUES(`ability_level`),
+                                                        `date_recorded` = VALUES(`date_recorded`);',
+                                                'ssiiisisis',
+                                                $matchID,
+                                                $modID,
+                                                $player_roundID,
+                                                $player_teamID,
+                                                $player_slotID,
+                                                $player_sid32,
+                                                $ability_index,
+                                                $ability_name,
+                                                $ability_level,
                                                 $value['date_recorded']
                                             );
                                         }
