@@ -50,7 +50,7 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC;');
+            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC LIMIT 0,10;');
 
             foreach ($messages as $key => $value) {
 
@@ -151,10 +151,9 @@ try {
                                         : 0;
 
                                     $player_connection_status = 0;
-                                    if(!empty($value3['connectionStatus'])){
+                                    if (!empty($value3['connectionStatus'])) {
                                         $player_connection_status = $value3['connectionStatus'];
-                                    }
-                                    else if(!empty($value3['leaverStatus'])){
+                                    } else if (!empty($value3['leaverStatus'])) {
                                         $player_connection_status = $value3['leaverStatus'];
                                     }
 
@@ -396,6 +395,61 @@ try {
                                     } else {
                                         //echo '<strong>NO HERO DATA!!</strong> player: ' . $player_sid32 . '<br />';
                                     }
+
+                                    ///////////////////////////////////
+                                    //ITEM DATA
+                                    ///////////////////////////////////
+                                    if (!empty($value3['items'])) {
+                                        foreach ($value3['items'] as $key_items => $value_items) {
+                                            $item_index = !empty($value_items['index'])
+                                                ? $value_items['index']
+                                                : 0;
+
+                                            $item_name = !empty($value_items['itemName'])
+                                                ? $value_items['itemName']
+                                                : 0;
+
+                                            $item_start_time = !empty($value_items['itemStartTime'])
+                                                ? $value_items['itemStartTime']
+                                                : 0;
+
+                                            $db->q(
+                                                'INSERT INTO `mod_match_items`
+                                                      (
+                                                          `match_id`,
+                                                          `mod_id`,
+                                                          `player_round_id`,
+                                                          `player_team_id`,
+                                                          `player_slot_id`,
+                                                          `player_sid32`,
+                                                          `item_index`,
+                                                          `item_name`,
+                                                          `item_start_time`,
+                                                          `date_recorded`
+                                                      )
+                                                    SELECT
+                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+                                                        `player_sid32` = VALUES(`player_sid32`),
+                                                        `item_index` = VALUES(`item_index`),
+                                                        `item_name` = VALUES(`item_name`),
+                                                        `item_start_time` = VALUES(`item_start_time`),
+                                                        `date_recorded` = VALUES(`date_recorded`);',
+                                                'ssiiisisss',
+                                                $matchID,
+                                                $modID,
+                                                $player_roundID,
+                                                $player_teamID,
+                                                $player_slotID,
+                                                $player_sid32,
+                                                $item_index,
+                                                $item_name,
+                                                $item_start_time,
+                                                $value['date_recorded']
+                                            );
+                                        }
+                                    } else {
+                                        //echo '<strong>NO ITEM DATA!!</strong> player: ' . $player_sid32 . '<br />';
+                                    }
                                 }
                             } else if (is_numeric($key2)) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,10 +483,9 @@ try {
                                         : 0;
 
                                     $player_connection_status = 0;
-                                    if(!empty($value3['connectionStatus'])){
+                                    if (!empty($value3['connectionStatus'])) {
                                         $player_connection_status = $value3['connectionStatus'];
-                                    }
-                                    else if(!empty($value3['leaverStatus'])){
+                                    } else if (!empty($value3['leaverStatus'])) {
                                         $player_connection_status = $value3['leaverStatus'];
                                     }
 
@@ -678,10 +731,10 @@ try {
                 flush();
             }
         } else {
-            echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
+            echo bootstrapMessage('Oh Snap', 'No DB!');
         }
     } else {
-        echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
+        echo bootstrapMessage('Oh Snap', 'Not logged in!');
         echo '<a href="../">Go back to main site</a>';
     }
 } catch (Exception $e) {

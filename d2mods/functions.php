@@ -476,3 +476,30 @@ if (!class_exists('steam_webapi')) {
         }
     }
 }
+
+if (!class_exists('dota2_webapi')) {
+    class dota2_webapi
+    {
+        private $steamAPIKey = NULL;
+
+        public function __construct($steamAPIKey)
+        {
+            if (empty($steamAPIKey)) {
+                throw new RuntimeException('No Steam Key Provided!');
+            } else {
+                $this->steamAPIKey = $steamAPIKey;
+            }
+        }
+
+        function GetGameItems($language = 'en')
+        {
+            $APIresult = curl('http://api.steampowered.com/IEconDOTA2_570/GetGameItems/v1/?key=' . $this->steamAPIKey . '&format=json&language=' . $language);
+
+            $APIresult = !empty($APIresult)
+                ? json_decode($APIresult, 1)
+                : false;
+
+            return $APIresult;
+        }
+    }
+}
