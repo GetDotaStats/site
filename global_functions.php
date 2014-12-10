@@ -436,8 +436,7 @@ if (!function_exists("checkLogin_v2")) {
 
                 return false;
             }
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -499,5 +498,41 @@ if (!function_exists("bootstrapMessage")) {
         $formatted = '<div class="page-header"><div class="alert alert-' . $type . '" role="alert"><strong>' . $errorHeading . ':</strong> ' . $errorMessage . '</div></div>';
 
         return $formatted;
+    }
+}
+
+if (!function_exists('dota2TeamName')) {
+    function dota2TeamName($teamID)
+    {
+        switch ($teamID) {
+            case -1:
+                $teamName = 'No Winner';
+                break;
+            case 2:
+                $teamName = 'Radiant';
+                break;
+            case 3:
+                $teamName = 'Dire';
+                break;
+            default:
+                $teamName = '#' . $teamID;
+                break;
+        }
+        return $teamName;
+    }
+}
+
+if (!function_exists("secs_to_clock")) {
+    function secs_to_clock($seconds)
+    {
+        $hours = str_pad(floor($seconds / 3600), 2, '0', STR_PAD_LEFT);
+        $mins = str_pad(floor(($seconds - ($hours * 3600)) / 60), 2, '0', STR_PAD_LEFT);
+        $secs = str_pad(floor($seconds % 60), 2, '0', STR_PAD_LEFT);
+
+        if ($hours > 0) {
+            return $hours . ':' . $mins . ':' . $secs;
+        } else {
+            return $mins . ':' . $secs;
+        }
     }
 }

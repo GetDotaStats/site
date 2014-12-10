@@ -37,6 +37,26 @@ try {
                         $value['id'], $value['name'], $value['localized_name']
                     );
 
+                    $itemIcon = $value['name'];
+                    if (stristr($itemIcon, 'recipe_')) {
+                        $itemIcon = 'recipe';
+                    } else if (stristr($itemIcon, 'item_')) {
+                        $itemIcon = str_replace('item_', '', $itemIcon);
+                    }
+
+                    $db->q(
+                        'INSERT INTO `mod_items` (`mod_id`, `item_name`, `item_icon`, `item_nice_name`, `item_custom_icon`)
+                            VALUES (?, ?, ?, ?, ?)
+                         ON DUPLICATE KEY UPDATE
+                            `mod_id` = VALUES(`mod_id`),
+                            `item_name` = VALUES(`item_name`),
+                            `item_icon` = VALUES(`item_icon`),
+                            `item_nice_name` = VALUES(`item_nice_name`),
+                            `item_custom_icon` = VALUES(`item_custom_icon`);',
+                        'ssssi',
+                        0, $value['name'], $itemIcon, $value['localized_name'], 0
+                    );
+
                     echo '<strong>INSERTED:</strong>: ' . $value['id'] . ' | ' . $value['name'].'<br />';
                 }
             } else {

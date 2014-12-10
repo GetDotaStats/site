@@ -2,6 +2,8 @@
 require_once('../global_functions.php');
 require_once('./functions.php');
 require_once('../connections/parameters.php');
+require_once('./vdfparser.php');
+
 
 try {
     if (!isset($_SESSION)) {
@@ -20,28 +22,27 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $dir = '../images/abilities/default/';
-            $files1 = scandir($dir);
+            $file_path = './mod_schemas/3 - 2374504c2c518fafc9731a120e67fdf5/npc_units_custom.txt';
+            $mod_id = '2374504c2c518fafc9731a120e67fdf5';
+            $schema_type = 'npc_units_custom';
 
-            foreach ($files1 as $fileValue) {
-                $filename = str_replace('.png', '', rtrim($fileValue, '.'));
+            $schema = VDFParse($file_path);
+            $schemaJSON = json_encode($schema);
 
-                if(!empty($filename)){
-                    echo $filename . '<br />';
-                    $db->q(
-                        'INSERT INTO `game_regular_abilities` (`ability_name`)
-                            VALUES (?)
-                         ON DUPLICATE KEY UPDATE
-                            `ability_name` = VALUES(`ability_name`);',
-                        's',
-                        $filename
-                    );
-                }
-            }
+            $db->q(
+                'INSERT INTO `mod_schemas`(`mod_id`, `schema_content`, `schema_type`)
+                    VALUES (?, ?, ?)
+                 ON DUPLICATE KEY UPDATE
+                    `mod_id` = VALUES(`mod_id`),
+                    `schema_content` = VALUES(`schema_content`),
+                    `schema_type` = VALUES(`schema_type`);',
+                'sss',
+                $mod_id, $schemaJSON, $schema_type
+            );
 
-            /*echo '<pre>';
-            print_r($files1);
-            echo '</pre>';*/
+            echo '<pre>';
+            print_r($schema);
+            echo '</pre>';
         } else {
             echo bootstrapMessage('Oh Snap', 'No DB!');
         }
