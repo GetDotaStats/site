@@ -110,10 +110,19 @@ try {
 
                 $developerCombined = $developerAvatar . $developerName;
 
+                $modID_row = '';
+                if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
+                    $modID_row = '  <tr>
+                                        <th>Mod ID</th>
+                                        <td>' . $modGUID . '</td>
+                                    </tr>';
+                }
+
                 echo '<div class="container">
                         <div class="col-sm-7">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover">
+                                    ' . $modID_row . '
                                     <tr>
                                         <th>Last Week</th>
                                         <td>' . number_format($modDetails[0]['games_last_week']) . ' games played</td>
