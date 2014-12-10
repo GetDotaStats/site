@@ -58,7 +58,7 @@ if (!class_exists('user')) {
                         'i',
                         $steamID64);
 
-                    if(!empty($accountDetails)){
+                    if (!empty($accountDetails)) {
                         //SET ACCESS PERMISSION
                         $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
                         $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
@@ -88,10 +88,17 @@ if (!class_exists('user')) {
 
         public function signOut($relocate = NULL, $db)
         {
+            $sessionCookie = !empty($_COOKIE['session'])
+                ? $_COOKIE['session']
+                : NULL;
+            $sessionUserID64 = !empty($_SESSION['user_id64'])
+                ? $_SESSION['user_id64']
+                : NULL;
+
             if (!empty($_COOKIE['session']) || !empty($_SESSION['user_id64'])) {
                 $db->q("DELETE FROM `gds_users_sessions` WHERE `user_id64` = ? OR `user_cookie` = ?;",
                     'is',
-                    $_SESSION['user_id64'], $_COOKIE['session']);
+                    $sessionUserID64, $sessionCookie);
             }
 
             unset($_SESSION['user_id32']);
