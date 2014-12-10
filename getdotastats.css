@@ -274,7 +274,13 @@ table td.bashful, table th.bashful {
     font-weight: bold;
 }
 
-.match_item_placeholder{
-    width: 30px;
-    height: 15px;
+.match_item_placeholder {
+    width: 40px;
+    height: 20px;
+    margin-right: -11px;
+}
+
+.match_ability_placeholder {
+    width: 42px;
+    height: 42px;
 }

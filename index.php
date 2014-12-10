@@ -26,7 +26,7 @@ try {
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval' 'unsafe-inline';
-          img-src 'self' static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com;
+          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com;
           font-src 'self' static.getdotastats.com getdotastats.com;
           frame-src chatwing.com;
           object-src 'none';
@@ -170,8 +170,6 @@ try {
                                                                 alt="site logo"/></a>
 
         <div id="loading">
-            <!--<img id="loading_spinner1" src="./images/compendium_128_25.gif" alt="loading"/>
-            <img id="loading_spinner2" src="./images/compendium_128.png" alt="loading"/>-->
             <img id="loading_spinner1" src="//static.getdotastats.com/images/spinner_v2.gif" alt="loading"/>
         </div>
     </div>

@@ -50,7 +50,7 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC LIMIT 0,10;');
+            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC LIMIT 0,20000;');
 
             foreach ($messages as $key => $value) {
 
@@ -791,5 +791,6 @@ try {
         echo '<a href="../">Go back to main site</a>';
     }
 } catch (Exception $e) {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+    $eMsg = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $eMsg);
 }
