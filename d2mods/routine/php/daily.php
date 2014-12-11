@@ -15,11 +15,11 @@ if ($db) {
             "CREATE TABLE IF NOT EXISTS `cron_mod_heroes_temp`
                 SELECT
                   `mod_id`,
-                  `player_hero_id`,
+                  `hero_id`,
                   COUNT(*) AS numPicks
-                FROM `mod_match_players`
-                GROUP BY `mod_id`, `player_hero_id`
-                ORDER BY `mod_id`, `player_hero_id`;"
+                FROM `mod_match_heroes`
+                GROUP BY `mod_id`, `hero_id`
+                ORDER BY `mod_id`, `hero_id`;"
         );
 
         echo $sqlResult
