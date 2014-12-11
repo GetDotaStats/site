@@ -404,20 +404,20 @@ try {
                                         ////////////////////////
                                         // Grab items
                                         ////////////////////////
-                                        $regularAbilities = $memcache->get('dota2_abilities_schema' . $modID);
-                                        if (!$regularAbilities) {
-                                            $regularAbilitiesSQL = $db->q(
-                                                'SELECT `ability_id`, `ability_name` FROM `mod_abilities` WHERE `mod_id` = 0 OR `mod_id` = ?;',
+                                        $regularItems = $memcache->get('dota2_items_schema' . $modID);
+                                        if (!$regularItems) {
+                                            $regularItemsSQL = $db->q(
+                                                'SELECT `item_id`, `item_name` FROM `mod_items` WHERE `mod_id` = 0 OR `mod_id` = ?;',
                                                 's',
                                                 $modID
                                             );
 
-                                            $regularAbilities = array();
-                                            foreach ($regularAbilitiesSQL as $value) {
-                                                $regularAbilities[$value['ability_name']] = $value['ability_id'];
+                                            $regularItems = array();
+                                            foreach ($regularItemsSQL as $value) {
+                                                $regularItems[$value['item_name']] = $value['item_id'];
                                             }
 
-                                            $memcache->set('dota2_abilities_schema' . $modID, $regularAbilities, 0, 5 * 60); //5mins
+                                            $memcache->set('dota2_items_schema' . $modID, $regularItems, 0, 5 * 60); //5mins
                                         }
                                         ////////////////////////
 
@@ -475,6 +475,27 @@ try {
                                     //ABILITY DATA
                                     ///////////////////////////////////
                                     if (!empty($value3['abilities'])) {
+
+                                        ////////////////////////
+                                        // Grab abilities
+                                        ////////////////////////
+                                        $regularAbilities = $memcache->get('dota2_abilities_schema' . $modID);
+                                        if (!$regularAbilities) {
+                                            $regularAbilitiesSQL = $db->q(
+                                                'SELECT `ability_id`, `ability_name` FROM `mod_abilities` WHERE `mod_id` = 0 OR `mod_id` = ?;',
+                                                's',
+                                                $modID
+                                            );
+
+                                            $regularAbilities = array();
+                                            foreach ($regularAbilitiesSQL as $value) {
+                                                $regularAbilities[$value['ability_name']] = $value['ability_id'];
+                                            }
+
+                                            $memcache->set('dota2_abilities_schema' . $modID, $regularAbilities, 0, 5 * 60); //5mins
+                                        }
+                                        ////////////////////////
+
                                         foreach ($value3['abilities'] as $key_abilities => $value_abilities) {
                                             $ability_index = !empty($value_abilities['index'])
                                                 ? $value_abilities['index']
