@@ -13,5 +13,7 @@
   RewriteRule .* custom_404.html [L]
 </IfModule>
 
-
-
+<Files ~ "connections">
+    Order allow,deny
+    Deny from all
+ </Files>
