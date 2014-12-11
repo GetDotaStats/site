@@ -417,7 +417,7 @@ try {
                                                 $regularAbilities[$value['ability_name']] = $value['ability_id'];
                                             }
 
-                                            $memcache->set('dota2_abilities_schema' . $modID, $regularAbilities, 0, 60); //60seconds
+                                            $memcache->set('dota2_abilities_schema' . $modID, $regularAbilities, 0, 5 * 60); //5mins
                                         }
                                         ////////////////////////
 
