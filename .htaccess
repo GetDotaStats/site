@@ -1,5 +1,5 @@
 <IfModule mod_headers.c>
-  SetEnvIf Origin "^http(s)?://(.+\.)?(getdotastats\.com|dota\.solutions|dota\.technology|dota\.photography|dota2\.solutions|localhost)$" origin_is=$0
+  SetEnvIf Origin "^http(s)?://(.+\.)?(getdotastats\.com|dota\.technology|dota2\.solutions|dota\.company|dota\.photography|dota2\.photography|localhost|176\.31\.182\.87)$" origin_is=$0
   Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
 </IfModule>
 
@@ -14,6 +14,5 @@
 </IfModule>
 
 <Files ~ "connections">
-    Order allow,deny
-    Deny from all
+    Require all denied
  </Files>
