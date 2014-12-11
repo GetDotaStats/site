@@ -20,7 +20,7 @@ try {
                     : 'No description given.';
 
                 if (!empty($_POST['mod_workshop_link']) && stristr($_POST['mod_workshop_link'], 'steamcommunity.com/sharedfiles/filedetails/?id=')) {
-                    $modWork = htmlentities(rtrim(cut_str($_POST['mod_steam_group'], 'steamcommunity.com/sharedfiles/filedetails/?id='), '/'));
+                    $modWork = htmlentities(rtrim(cut_str($_POST['mod_workshop_link'], 'steamcommunity.com/sharedfiles/filedetails/?id='), '/'));
                 } else {
                     $modWork = NULL;
                 }
