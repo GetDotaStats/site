@@ -14,6 +14,8 @@ $(document).ready(function () {
     });
 });
 
+var ϰ = "Kappa";
+
 function checkURL(hash, refresh) {
     if (!hash) {
         loadPage('#d2mods__directory', refresh);
