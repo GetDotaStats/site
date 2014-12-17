@@ -22,6 +22,7 @@ try {
                   hof_gp.`user_id64`,
                   hof_gp.`user_id32`
                 FROM `hof_golden_profiles` hof_gp
+                WHERE `isParsed` = 0
                 ORDER BY auction_rank ASC;'
         );
 
@@ -58,6 +59,12 @@ try {
                     else{
                         echo ' - <strong>Failure!</strong>';
                     }
+
+                    $db->q(
+                        'UPDATE `hof_golden_profiles` SET `isParsed` = 1 WHERE `user_id64` = ?;',
+                        's',
+                        $steamID64
+                    );
 
                     echo '<br />';
                 }
