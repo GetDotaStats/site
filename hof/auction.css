@@ -43,10 +43,10 @@
     /*background-color: #223146 !important;*/
     text-align: center !important;
 
-    background: -webkit-linear-gradient(left top, black , navy); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(bottom right, black, navy); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(bottom right, black, navy); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to bottom right, black , navy); /* Standard syntax */
+    background: -webkit-linear-gradient(left top, black , navy) !important; /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, black, navy) !important; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, black, navy) !important; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, black , navy) !important; /* Standard syntax */
 }
 
 #hof_block span {
@@ -56,14 +56,19 @@
 }
 
 #hof_block h2, #hof_block p, #hof_block div{
-    color: gold;
+    color: gold !important;
 }
 
 .hof_profile_link{
-    color: #ffffff;
+    color: #ffffff !important;
 }
 
 #hof_block div{
-    margin-right: 50px;
-    margin-left: 50px;
+    margin-right: 50px !important;
+    margin-left: 50px !important;
+}
+
+.hof_avatar{
+    width: 32px !important;
+    height: 32px !important;
 }

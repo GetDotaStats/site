@@ -9,7 +9,7 @@ if (!isset($_SESSION)) {
 
 echo '
 <head>
-    <link href="./hof/auction.css?3" rel="stylesheet" type="text/css" >
+    <link href="./hof/auction.css?6" rel="stylesheet" type="text/css" >
 </head>
 ';
 
@@ -73,7 +73,7 @@ try {
                         ? '<a class="hof_profile_link" target="_blank" href="http://steamcommunity.com/profiles/' . $value['user_id64'] . '">' . $username . '</a>'
                         : $username;
 
-                    $table .= '<span class="auction_round auction_round_ended"><img class="round_bg" src="' . $holidayBackground . '"><span class="round_winner"><img src="' . $avatar . ' " alt="">' . $usernameProfileLink . '</span></span>
+                    $table .= '<span class="auction_round auction_round_ended"><img class="round_bg" src="' . $holidayBackground . '"><span class="round_winner"><img class="hof_avatar" src="' . $avatar . ' " alt="">' . $usernameProfileLink . '</span></span>
                     ';
 
                 } else {
@@ -92,6 +92,8 @@ try {
     } else {
         echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
     }
+
+    echo '<br /><br />';
 
     echo '<div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Return to Home</a>
