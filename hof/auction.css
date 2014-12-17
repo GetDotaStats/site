@@ -55,10 +55,15 @@
     box-sizing: content-box !important;
 }
 
-#hof_block h2, #hof_block p{
+#hof_block h2, #hof_block p, #hof_block div{
     color: gold;
 }
 
 .hof_profile_link{
     color: #ffffff;
+}
+
+#hof_block div{
+    margin-right: 50px;
+    margin-left: 50px;
 }
