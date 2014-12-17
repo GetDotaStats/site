@@ -84,25 +84,18 @@ try {
                             <li class="dropdown-header">Admin Stuff</li>
                             <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
                         <?php } ?>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Halls of Fame</li>
+                        <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
+                        <li class="divider"></li>
                         <li class="dropdown-header">Economy Related</li>
-                        <li><a class="nav-clickable" href="#backpack/">Card Summary</a>
-                        </li>
-                        <li><a href="./economy_analysis/">Economy Analysis <span
-                                    class="label label-info">DEAD</span></a></li>
+                        <li><a class="nav-clickable" href="#backpack/">Card Summary</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Browser Extensions</li>
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Simulations</li>
                         <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">API Scraper</li>
-                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header"><em>Dec 2013 - Feb 2014</em></li>
-                        <li><a class="nav-clickable" href="#match_analysis/">Pub Match Analysis <span
-                                    class="label label-info">DEAD</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#credits">Credits</a></li>
@@ -152,11 +145,11 @@ try {
         event.preventDefault();
         var searchTerm = $("input:first").val();
 
-        if(searchTerm.length == 32){
+        if (searchTerm.length == 32) {
             loadPage("#d2mods__match?id=" + searchTerm, 1);
             window.location.replace("#d2mods__match?id=" + searchTerm);
         }
-        else{
+        else {
             loadPage("#d2mods__search?user=" + searchTerm, 1);
             window.location.replace("#d2mods__search?user=" + searchTerm);
         }
