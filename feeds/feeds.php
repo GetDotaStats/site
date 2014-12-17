@@ -13,7 +13,7 @@ try {
         $db = new dbWrapper($hostname_gds_feeds, $username_gds_feeds, $password_gds_feeds, $database_gds_feeds, true);
         if ($db) {
             $accessCheck = $db->q('SELECT * FROM `access_list` WHERE `steam_id64` = ? LIMIT 0,1;',
-                'i',
+                's',
                 $_SESSION['user_id64']);
 
             if (!empty($accessCheck)) {

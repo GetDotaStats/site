@@ -9,17 +9,30 @@ if (!isset($_SESSION)) {
 
 echo '
 <head>
-    <link href="./hof/auction.css" rel="stylesheet" type="text/css" >
+    <link href="./hof/auction.css?2" rel="stylesheet" type="text/css" >
 </head>
 ';
 
 try {
+    checkLogin_v2();
+
     $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     $db->q('SET NAMES utf8;');
 
     if ($db) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
+        $canAccessUserProfile = false;
+        if (!empty($_SESSION['user_id64'])) {
+            $accessCheck = $db->q('SELECT * FROM `hof_golden_profiles` WHERE `user_id64` = ? LIMIT 0,1;',
+                's',
+                $_SESSION['user_id64']);
+
+            if (!empty($accessCheck) || !empty($_SESSION['isAdmin'])) {
+                $canAccessUserProfile = true;
+            }
+        }
 
         $hofDetails = simple_cached_query(
             'hof_golden_profiles_list',
@@ -50,13 +63,17 @@ try {
                 if (!empty($value['user_id64']) && $value['user_id64'] != -1) {
                     $avatar = !empty($value['user_avatar'])
                         ? $value['user_avatar']
-                        : NULL;
+                        : $avatar;
 
                     $username = !empty($value['user_name'])
                         ? htmlentities($value['user_name'])
                         : '??';
 
-                    $table .= '<span class="auction_round auction_round_ended"><img class="round_bg" src="' . $holidayBackground . '"><span class="round_winner"><img src="' . $avatar . ' " alt="">' . $username . '</span></span>
+                    $usernameProfileLink = $canAccessUserProfile && !empty($value['user_id64']) && $value['user_id64'] != -1
+                        ? '<a class="hof_profile_link" target="_blank" href="http://steamcommunity.com/profiles/' . $value['user_id64'] . '">' . $username . '</a>'
+                        : $username;
+
+                    $table .= '<span class="auction_round auction_round_ended"><img class="round_bg" src="' . $holidayBackground . '"><span class="round_winner"><img src="' . $avatar . ' " alt="">' . $usernameProfileLink . '</span></span>
                     ';
 
                 } else {
@@ -79,7 +96,8 @@ try {
     echo '<div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Return to Home</a>
             </div>';
-} catch (Exception $e) {
+} catch
+(Exception $e) {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
     echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
