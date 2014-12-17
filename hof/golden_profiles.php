@@ -41,7 +41,7 @@ try {
 
             $table = '<div id="hof_block">';
             $table .= '<h2>2014 Holiday Profile - Hall of Fame</h2>';
-            $table .= '<p>The below users are recognised for their valiant efforts in obtaining a limited edition 2014 Winter profile.</p>';
+            $table .= '<p>The below users are recognised for their valiant efforts in obtaining a limited edition <a href="http://steamcommunity.com/auction/item/1890-2014-Holiday-Profile" target="_blank">2014 Winter profile</a>.</p>';
 
             foreach ($hofDetails as $key => $value) {
                 $holidayBackground = 'http://cdn.akamai.steamstatic.com/steam/clusters/holiday2014_auction/dc9e02780a41ffde098796ac/golden_184x69_english.jpg?t=1418577448';
