@@ -11,6 +11,7 @@ checkLogin_v2();
 try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db->q('SET NAMES utf8;');
 
         if ($db) {
             ?>

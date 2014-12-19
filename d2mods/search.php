@@ -5,6 +5,7 @@ require_once('../connections/parameters.php');
 
 try {
     $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+    $db->q('SET NAMES utf8;');
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"

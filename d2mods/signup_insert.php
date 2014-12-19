@@ -11,6 +11,7 @@ try {
 
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db->q('SET NAMES utf8;');
         if ($db) {
             if (!empty($_POST['mod_name'])) {
                 $modName = htmlentities($_POST['mod_name']);
