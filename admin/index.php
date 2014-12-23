@@ -13,13 +13,12 @@ try {
 
         echo '<h2>Administrative Functions</h2>';
 
-        echo '<p>
-            <div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports">CSP Reports (Last 100)</a>
-                <a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered">CSP Reports (Filtered)</a>
-                <a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered_lw">CSP Reports (Filtered - Last Week)</a>
-            </div>
-        </p>';
+        echo '
+            <div class="container">
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports">CSP Reports (Last 100)</a></p>
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered">CSP Reports (Filtered)</a></p>
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered_lw">CSP Reports (Filtered - Last Week)</a></p>
+            </div>';
 
     } else {
         echo bootstrapMessage('Oh Snap', 'Not logged in or not admin!', 'danger');
