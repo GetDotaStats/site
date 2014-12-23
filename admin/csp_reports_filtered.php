@@ -10,6 +10,7 @@ try {
     checkLogin_v2();
 
     if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
+        echo '<h2>CSP Reports</h2>';
         echo '<p>
                 <div class="text-center">
                     <a class="nav-clickable btn btn-default btn-lg" href="#admin/">Back to Admin Panel</a>
@@ -30,8 +31,6 @@ try {
             );
 
             if (!empty($reports)) {
-                echo '<h2>CSP Reports</h2>';
-
                 echo '<div class="table-responsive">
 		            <table class="table table-striped table-hover bigTable">';
                 echo '<tr>
