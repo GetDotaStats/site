@@ -47,17 +47,22 @@ try {
                         </tr>';
                 }
                 echo '</table></div>';
-
-                echo '<p><a class="nav-clickable" href="#admin/">Back to Admin Panel</a></p>';
             } else {
                 echo bootstrapMessage('Oh Snap', 'No reports!', 'danger');
             }
         } else {
             echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
         }
+
+        echo '<p>
+                        <div class="text-center">
+                            <a class="nav-clickable btn btn-default btn-lg" href="#admin/">Back to Admin Panel</a>
+                        </div>
+                    </p>';
     } else {
         echo bootstrapMessage('Oh Snap', 'Not logged in or not admin!', 'danger');
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
