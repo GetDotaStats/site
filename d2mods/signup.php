@@ -22,7 +22,7 @@ try {
             </div>
 
             <p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to
-                implement stats for their mod. This section is a Work-In-Progress, so check back later.</p>
+                implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong></p>
 
             <div class="container">
                 <div class="col-sm-6">
@@ -60,7 +60,11 @@ try {
 
             <span id="modSignupResult" class="label label-danger"></span>
 
-            <h5><a class="nav-clickable" href="#d2mods__my_mods">Browse my mods</a></h5>
+            <br /><br />
+
+            <div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
+            </div>
 
             <script type="application/javascript">
                 $("#modSignup").submit(function (event) {

@@ -18,6 +18,7 @@ try {
             </p>';
 
         $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+        $db->q('SET NAMES utf8;');
         if ($db) {
             $reports = $db->q(
                 "SELECT

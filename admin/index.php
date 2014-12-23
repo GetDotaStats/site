@@ -15,9 +15,8 @@ try {
 
         echo '
             <div class="container">
-                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports">CSP Reports (Last 100)</a></p>
-                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered">CSP Reports (Filtered)</a></p>
-                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered_lw">CSP Reports (Filtered - Last Week)</a></p>
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__mod_approve">Approve Mods</a></p>
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered_lw">CSP Reports (Last Week)</a> <a class="nav-clickable btn btn-default btn-sm" href="#admin__csp_reports_filtered">CSP Reports</a> <a class="nav-clickable btn btn-default btn-sm" href="#admin__csp_reports">CSP Reports (Last 100)</a></p>
             </div>';
 
     } else {

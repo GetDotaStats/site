@@ -330,62 +330,6 @@ if (!function_exists("guid")) {
     }
 }
 
-if (!function_exists("checkLogin")) {
-    function checkLogin($db, $cookie)
-    {
-        $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
-            's',
-            $cookie);
-
-        if (!empty($auth)) {
-            $steamID64 = $auth[0]['user_id64'];
-            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
-                'i',
-                $steamID64);
-
-            if (!empty($accountDetails)) {
-                $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
-                $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
-                $_SESSION['user_name'] = $accountDetails[0]['user_name'];
-                $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
-                $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
-                $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
-
-                header("Location: ./");
-            } else {
-                //KILL BAD COOKIE
-                setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-                setcookie('session', '', time() - 3600, '/', 'dota.solutions');
-                setcookie('session', '', time() - 3600, '/', 'dota2.solutions');
-                setcookie('session', '', time() - 3600, '/', 'dota.technology');
-                setcookie('session', '', time() - 3600, '/', 'dota.photography');
-                setcookie('session', '', time() - 3600, '/', 'dota.company');
-                header("Location: ./");
-            }
-
-            return true;
-        } else {
-            //KILL BAD COOKIE
-            unset($_SESSION['user_id32']);
-            unset($_SESSION['user_id64']);
-            unset($_SESSION['user_name']);
-            unset($_SESSION['user_avatar']);
-            unset($_SESSION['access_feeds']);
-            unset($_SESSION['isAdmin']);
-
-            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-            setcookie('session', '', time() - 3600, '/', 'dota.solutions');
-            setcookie('session', '', time() - 3600, '/', 'dota2.solutions');
-            setcookie('session', '', time() - 3600, '/', 'dota.technology');
-            setcookie('session', '', time() - 3600, '/', 'dota.photography');
-            setcookie('session', '', time() - 3600, '/', 'dota.company');
-            header("Location: ./");
-
-            return false;
-        }
-    }
-}
-
 if (!function_exists("checkLogin_v2")) {
     function checkLogin_v2()
     {
