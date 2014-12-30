@@ -9,7 +9,7 @@ if (!isset($_SESSION)) {
 
 echo '
 <head>
-    <link href="./hof/auction.css?6" rel="stylesheet" type="text/css" >
+    <link href="./hof/auction.css?9" rel="stylesheet" type="text/css" >
 </head>
 ';
 
@@ -40,6 +40,7 @@ try {
                   hof_gp.`auction_rank`,
                   hof_gp.`user_id64`,
                   hof_gp.`user_id32`,
+                  hof_gp.`isInGroup`,
                   gdsu.`user_name`,
                   gdsu.`user_avatar`,
                   gdsu.`user_avatar_medium`,
@@ -54,7 +55,7 @@ try {
 
             $table = '<div id="hof_block">';
             $table .= '<h2>2014 Holiday Profile - Hall of Fame</h2>';
-            $table .= '<p>The below users are recognised for their valiant efforts in obtaining a limited edition <a href="http://steamcommunity.com/auction/item/1890-2014-Holiday-Profile" target="_blank">2014 Winter profile</a>.<br />A gold border indicates that the user is in the official <a href="http://steamcommunity.com/groups/golden_profiles" target="_blank">Steam Group</a> (coming soon).</p>';
+            $table .= '<p>The below users are recognised for their valiant efforts in obtaining a limited edition <a href="http://steamcommunity.com/auction/item/1890-2014-Holiday-Profile" target="_blank">2014 Winter profile</a><br />A gold border indicates that the user is in the official <a href="http://steamcommunity.com/groups/golden_profiles" target="_blank">Steam Group</a></p>';
 
             foreach ($hofDetails as $key => $value) {
                 $holidayBackground = 'http://cdn.akamai.steamstatic.com/steam/clusters/holiday2014_auction/dc9e02780a41ffde098796ac/golden_184x69_english.jpg?t=1418577448';
@@ -69,11 +70,15 @@ try {
                         ? htmlentities($value['user_name'])
                         : '??';
 
+                    $isInGroup = !empty($value['isInGroup']) && $value['isInGroup'] == 1
+                        ? ' hof_avatar_in_group'
+                        : '';
+
                     $usernameProfileLink = $canAccessUserProfile && !empty($value['user_id64']) && $value['user_id64'] != -1
                         ? '<a class="hof_profile_link" target="_blank" href="http://steamcommunity.com/profiles/' . $value['user_id64'] . '">' . $username . '</a>'
                         : $username;
 
-                    $table .= '<span class="auction_round auction_round_ended"><img class="round_bg" src="' . $holidayBackground . '"><span class="round_winner"><img class="hof_avatar" src="' . $avatar . ' " alt="">' . $usernameProfileLink . '</span></span>
+                    $table .= '<span class="auction_round auction_round_ended"><img class="round_bg" src="' . $holidayBackground . '"><span class="round_winner"><img class="hof_avatar' . $isInGroup . '" src="' . $avatar . ' " alt="">' . $usernameProfileLink . '</span></span>
                     ';
 
                 } else {

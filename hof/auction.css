@@ -72,3 +72,8 @@
     width: 32px !important;
     height: 32px !important;
 }
+
+.hof_avatar_in_group{
+    border: 4px solid gold !important;
+    border-radius: 5px !important;
+}
