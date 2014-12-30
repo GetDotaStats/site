@@ -16,4 +16,4 @@
 # */10  * * * *             /home/www-dota2/matches/routine/a_scripts/db_10min.sh > /home/www-dota2/matches/routine/log_10min 2>&1
 # @daily                    /home/www-dota2/matches/routine/a_scripts/db_1day_super.sh > /home/www-dota2/matches/routine/log_1day 2>&1
 
-@hourly   /home/www-getdotastats/hof/routine/scripts/daily.sh > /home/www-getdotastats/hof/routine/log_hourly.html 2>&1
+@daily   /home/www-getdotastats/hof/routine/scripts/daily.sh > /home/www-getdotastats/hof/routine/log_daily.html 2>&1
