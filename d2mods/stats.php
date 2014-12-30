@@ -68,6 +68,7 @@ try {
             );
 
             $modGUID = $modDetails[0]['mod_identifier'];
+            $modListID = $modDetails[0]['mod_id'];
 
             if (!empty($modDetails) && !empty($modGUID)) {
                 echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
@@ -734,7 +735,7 @@ try {
                         );
 
                         if (!empty($recentGames)) {
-                            echo '<h3>Recent Matches</h3>';
+                            echo '<h3>Recent Matches <small><a class="nav-clickable" href="#d2mods__recent_games?f=' . $modListID . '">more</a></small></h3>';
 
                             echo '<div class="table-responsive">
 		                        <table class="table table-striped table-hover">';
