@@ -57,7 +57,10 @@ try {
 
         echo 'Signatures are cached for up to 2hours. MMR stats are updated every 12hours. As long as you have the bot added, your stats will eventually update.<br /><br />';
 
-        echo '<strong>Adding MMR to your sig:</strong><br />';
+        echo '<h3>Adding MMR to your sig:</h3>';
+        echo '<p>There may be issues, as there are rumours that SteamTracks will stop providing this service soon. ';
+        echo 'Issues should be reported <a href="https://github.com/bontscho/steamtracks/issues" target="_blank">here</a>. ';
+        echo 'Let us know via the chatbox on the right if you have issues or questions.</p>';
 
         $gotDBstats = $db->q(
             'SELECT * FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
