@@ -28,7 +28,7 @@ try {
                     ml.`mod_name`,
                     ml.`mod_active`
                 FROM `mod_match_overview` mmo
-                LEFT JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
+                JOIN `mod_list` ml ON mmo.`mod_id` = ml.`mod_identifier`
                 ORDER BY mmo.`match_recorded` DESC
                 LIMIT ' . $SQLpageTemp . ',' . $resultsPerPage . ';'
             , 30
