@@ -162,7 +162,7 @@ try {
                         $pagination .= '<li ' . $liClass . '><a class="nav-clickable" href="#d2mods__recent_games?p=' . $i . $urlFilterQuery . '" id="' . $i . '-page">' . $i . '</a></li>';
                     }
 
-                    if ($SQLpage > ($pagination_cap - 1) && ($SQLpage + 4) < ($pages - $pagination_cap)) {
+                    if ($SQLpage > ($pagination_cap - 1) && ($SQLpage + $pagination_cap) < ($pages - $pagination_cap)) {
                         $pagination .= '<li class="disabled"><span>...</span></li>';
 
                         for ($i = ($SQLpage); $i < $pages && $i <= ($SQLpage + $pagination_cap); $i++) {
