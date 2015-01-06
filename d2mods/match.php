@@ -425,7 +425,7 @@ try {
                                             if (file_exists('../images/items/default/' . $imgName . '.png')) {
                                                 $img_url = '//dota2.photography/images/items/default/' . $imgName . '.png';
                                             } else {
-                                                $img_url = '//dota2.photography/images/items/default/aaa_unknown.png';
+                                                $img_url = '//dota2.photography/images/items/aaa_unknown.png';
                                             }
 
                                             $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
@@ -439,13 +439,13 @@ try {
                                             if (file_exists('../images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
                                                 $img_url = '//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
                                             } else {
-                                                $img_url = '//dota2.photography/images/items/default/aaa_unknown.png';
+                                                $img_url = '//dota2.photography/images/items/aaa_unknown.png';
                                             }
 
                                             $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
                                         }
                                     } else {
-                                        $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/default/aaa_blank.png" title="Empty slot" /> ';
+                                        $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/aaa_blank.png" title="Empty slot" /> ';
                                     }
                                 }
 
