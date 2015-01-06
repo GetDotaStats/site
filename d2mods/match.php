@@ -206,11 +206,13 @@ try {
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['items'][$mh_value['item_index']]['item_name'] = $mh_value['item_name'];
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['items'][$mh_value['item_index']]['item_start_time'] = $mh_value['item_start_time'];
                     }
-                } else if (!empty($matchSchema['rounds'])) {
+                } else if (!empty($matchSchema['rounds']) && !empty($matchSchema['rounds']['players'])) {
                     foreach ($matchSchema['rounds']['players'] as $mh_key => $mh_value) {
-                        foreach ($mh_value['items'] as $mh_key2 => $mh_value2) {
-                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['items'][$mh_value2['index']]['item_name'] = $mh_value2['itemName'];
-                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['items'][$mh_value2['index']]['item_start_time'] = $mh_value2['itemStartTime'];
+                        if (!empty($mh_value['items'])) {
+                            foreach ($mh_value['items'] as $mh_key2 => $mh_value2) {
+                                $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['items'][$mh_value2['index']]['item_name'] = $mh_value2['itemName'];
+                                $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['items'][$mh_value2['index']]['item_start_time'] = $mh_value2['itemStartTime'];
+                            }
                         }
                     }
                 }
@@ -222,13 +224,15 @@ try {
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['abilities'][$i]['ability_level'] = $mh_value['ability_level'];
                         $i++;
                     }
-                } else if (!empty($matchSchema['rounds'])) {
+                } else if (!empty($matchSchema['rounds']) && !empty($matchSchema['rounds']['players'])) {
                     foreach ($matchSchema['rounds']['players'] as $mh_key => $mh_value) {
-                        $i = 1;
-                        foreach ($mh_value['abilities'] as $mh_key2 => $mh_value2) {
-                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_name'] = $mh_value2['abilityName'];
-                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_level'] = $mh_value2['level'];
-                            $i++;
+                        if (!empty($mh_value['items'])) {
+                            $i = 1;
+                            foreach ($mh_value['abilities'] as $mh_key2 => $mh_value2) {
+                                $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_name'] = $mh_value2['abilityName'];
+                                $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_level'] = $mh_value2['level'];
+                                $i++;
+                            }
                         }
                     }
                 }
@@ -403,49 +407,52 @@ try {
                                     ? $player_value['hero_denies']
                                     : '-';
 
-                                $items = '<strong>Hero:</strong> ';
-                                $break = false;
-                                for ($i = 0; $i < 12; $i++) {
-                                    if ($i >= 6 && !$break) {
-                                        $items = rtrim($items, ' ');
-                                        $items .= '<br /><strong>Stash:</strong> ';
-                                        $break = true;
-                                    }
-
-                                    if (isset($player_value['items'][$i])) {
-                                        $imgName = $player_value['items'][$i]['item_name'];
-
-                                        if (in_array($player_value['items'][$i]['item_name'], $regularItems)) {
-                                            if (stristr($imgName, 'recipe_')) {
-                                                $imgName = 'recipe';
-                                            } else {
-                                                $imgName = str_replace('item_', '', $imgName);
-                                            }
-
-                                            if (file_exists('../images/items/default/' . $imgName . '.png')) {
-                                                $img_url = '//dota2.photography/images/items/default/' . $imgName . '.png';
-                                            } else {
-                                                $img_url = '//dota2.photography/images/items/aaa_unknown.png';
-                                            }
-
-                                            $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
-                                        } else {
-                                            if (stristr($imgName, 'recipe_')) {
-                                                $imgName = 'recipe';
-                                            } else {
-                                                $imgName = str_replace('item_', '', $imgName);
-                                            }
-
-                                            if (file_exists('../images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
-                                                $img_url = '//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
-                                            } else {
-                                                $img_url = '//dota2.photography/images/items/aaa_unknown.png';
-                                            }
-
-                                            $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                $items = '';
+                                if (!empty($player_value['items'])) {
+                                    $items = '<strong>Hero:</strong> ';
+                                    $break = false;
+                                    for ($i = 0; $i < 12; $i++) {
+                                        if ($i >= 6 && !$break) {
+                                            $items = rtrim($items, ' ');
+                                            $items .= '<br /><strong>Stash:</strong> ';
+                                            $break = true;
                                         }
-                                    } else {
-                                        $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/aaa_blank.png" title="Empty slot" /> ';
+
+                                        if (isset($player_value['items'][$i])) {
+                                            $imgName = $player_value['items'][$i]['item_name'];
+
+                                            if (in_array($player_value['items'][$i]['item_name'], $regularItems)) {
+                                                if (stristr($imgName, 'recipe_')) {
+                                                    $imgName = 'recipe';
+                                                } else {
+                                                    $imgName = str_replace('item_', '', $imgName);
+                                                }
+
+                                                if (file_exists('../images/items/default/' . $imgName . '.png')) {
+                                                    $img_url = '//dota2.photography/images/items/default/' . $imgName . '.png';
+                                                } else {
+                                                    $img_url = '//dota2.photography/images/items/aaaa_unknown.png';
+                                                }
+
+                                                $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                            } else {
+                                                if (stristr($imgName, 'recipe_')) {
+                                                    $imgName = 'recipe';
+                                                } else {
+                                                    $imgName = str_replace('item_', '', $imgName);
+                                                }
+
+                                                if (file_exists('../images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
+                                                    $img_url = '//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
+                                                } else {
+                                                    $img_url = '//dota2.photography/images/items/aaaa_unknown.png';
+                                                }
+
+                                                $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                            }
+                                        } else {
+                                            $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/aaaa_empty.png" title="Empty slot" /> ';
+                                        }
                                     }
                                 }
 
@@ -457,7 +464,7 @@ try {
                                             if (file_exists('../images/abilities/default/' . $imgName . '.png')) {
                                                 $img_url = '//dota2.photography/images/abilities/default/' . $imgName . '.png';
                                             } else {
-                                                $img_url = '//dota2.photography/images/abilities/aaa_unknown.png';
+                                                $img_url = '//dota2.photography/images/abilities/aaaa_unknown.png';
                                             }
                                             $abilities .= '<img class="match_ability_placeholder" src="' . $img_url . '" title="' . $abilities_value['ability_name'] . ' LEVEL: ' . $abilities_value['ability_level'] . '" /> ';
                                         } else {
@@ -465,13 +472,22 @@ try {
                                             if (file_exists('../images/abilities/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
                                                 $img_url = '//dota2.photography/images/abilities/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
                                             } else {
-                                                $img_url = '//dota2.photography/images/abilities/aaa_unknown.png';
+                                                $img_url = '//dota2.photography/images/abilities/aaaa_unknown.png';
                                             }
                                             $abilities .= '<img class="match_ability_placeholder" src="' . $img_url . '" title="' . $abilities_value['ability_name'] . ' LEVEL: ' . $abilities_value['ability_level'] . '" /> ';
                                         }
                                     }
                                 }
 
+                                if (empty($items) && empty($abilities)) {
+                                    $item_ability_row = '';
+                                } else {
+                                    $item_ability_row = '<tr>
+                                        <td>&nbsp;</td>
+                                        <td class="text-left" colspan="3"><div id="match_ability_container">' . $abilities . '</div></td>
+                                        <td class="text-right" colspan="3"><div id="match_item_container">' . $items . '</div></td>
+                                    </tr>';
+                                }
 
                                 ///////////////
 
@@ -483,12 +499,7 @@ try {
                                         <td class="text-center">' . $heroLevel . '</td>
                                         <td class="text-center">' . $heroKills . ' / ' . $heroAssists . ' / ' . $heroDeaths . '</td>
                                         <td class="text-center">' . $heroLastHits . ' / ' . $heroDenies . '</td>
-                                    </tr>
-                                    <tr>
-                                        <td>&nbsp;</td>
-                                        <td class="text-left" colspan="3"><div id="match_ability_container">' . $abilities . '</div></td>
-                                        <td class="text-right" colspan="3"><div id="match_item_container">' . $items . '</div></td>
-                                    </tr>';
+                                    </tr>' . $item_ability_row;
 
                             }
                             echo '</table></div>';
