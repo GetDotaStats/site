@@ -160,6 +160,20 @@ try {
                     $memcache->set('dota2_regular_abilities', $regularAbilities, 0, 10 * 60); //10minutes
                 }
 
+                $matchSchema = $memcache->get('dota2_match_schema' . $matchID);
+                if (!$matchSchema) {
+                    $matchSchemaSQL = $db->q(
+                        'SELECT `message` FROM `node_listener` WHERE `match_id` = ? LIMIT 0,1;',
+                        's',
+                        $matchID
+                    );
+
+                    if (!empty($matchSchemaSQL)) {
+                        $matchSchema = json_decode(utf8_encode($matchSchemaSQL[0]['message']),1);
+                        $memcache->set('dota2_match_schema' . $matchID, $matchSchema, 0, 1 * 60); //1minutes
+                    }
+                }
+
                 $matchDetailsSorted = array();
 
                 if (!empty($matchPlayerDetails)) {
@@ -169,6 +183,15 @@ try {
                         }
                     }
                 }
+                /*
+                //NEED TO FIX CAMEL CASE TO EXPECTED SQL COL NAMES
+                else if(!empty($matchSchema)){
+                    foreach($matchSchema['rounds']['players'] as $mh_key => $mh_value){
+                        foreach ($mh_value as $mh_key2 => $mh_value2) {
+                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']][$mh_key2] = $mh_value2;
+                        }
+                    }
+                }*/
 
                 if (!empty($matchHeroDetails)) {
                     foreach ($matchHeroDetails as $mh_key => $mh_value) {
@@ -179,11 +202,16 @@ try {
                 }
 
                 if (!empty($matchItemDetails)) {
-                    $i = 1;
                     foreach ($matchItemDetails as $mh_key => $mh_value) {
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['items'][$mh_value['item_index']]['item_name'] = $mh_value['item_name'];
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['items'][$mh_value['item_index']]['item_start_time'] = $mh_value['item_start_time'];
-                        $i++;
+                    }
+                } else if (!empty($matchSchema['rounds'])) {
+                    foreach ($matchSchema['rounds']['players'] as $mh_key => $mh_value) {
+                        foreach ($mh_value['items'] as $mh_key2 => $mh_value2) {
+                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['items'][$mh_value2['index']]['item_name'] = $mh_value2['itemName'];
+                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['items'][$mh_value2['index']]['item_start_time'] = $mh_value2['itemStartTime'];
+                        }
                     }
                 }
 
@@ -193,6 +221,15 @@ try {
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['abilities'][$i]['ability_name'] = $mh_value['ability_name'];
                         $matchDetailsSorted[$mh_value['player_round_id']][$mh_value['player_team_id']][$mh_value['player_slot_id']]['abilities'][$i]['ability_level'] = $mh_value['ability_level'];
                         $i++;
+                    }
+                } else if (!empty($matchSchema['rounds'])) {
+                    foreach ($matchSchema['rounds']['players'] as $mh_key => $mh_value) {
+                        $i = 1;
+                        foreach ($mh_value['abilities'] as $mh_key2 => $mh_value2) {
+                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_name'] = $mh_value2['abilityName'];
+                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_level'] = $mh_value2['level'];
+                            $i++;
+                        }
                     }
                 }
 
@@ -428,8 +465,8 @@ try {
                                     </tr>
                                     <tr>
                                         <td>&nbsp;</td>
-                                        <td class="text-left" colspan="3">' . $abilities . '</td>
-                                        <td class="text-right" colspan="3">' . $items . '</td>
+                                        <td class="text-left" colspan="3"><div id="match_ability_container">' . $abilities . '</div></td>
+                                        <td class="text-right" colspan="3"><div id="match_item_container">' . $items . '</div></td>
                                     </tr>';
 
                             }

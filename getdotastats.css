@@ -275,12 +275,12 @@ table td.bashful, table th.bashful {
 }
 
 .match_item_placeholder {
-    width: 40px;
-    height: 20px;
-    margin-right: -11px;
+    width: 30px;
+    height: 15px;
+    margin-right: -8px;
 }
 
 .match_ability_placeholder {
-    width: 42px;
-    height: 42px;
+    width: 30px; /*42*/
+    height: 30px;
 }
