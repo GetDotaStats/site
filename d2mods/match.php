@@ -169,7 +169,7 @@ try {
                     );
 
                     if (!empty($matchSchemaSQL)) {
-                        $matchSchema = json_decode(utf8_encode($matchSchemaSQL[0]['message']),1);
+                        $matchSchema = json_decode(utf8_encode($matchSchemaSQL[0]['message']), 1);
                         $memcache->set('dota2_match_schema' . $matchID, $matchSchema, 0, 1 * 60); //1minutes
                     }
                 }
@@ -422,7 +422,13 @@ try {
                                                 $imgName = str_replace('item_', '', $imgName);
                                             }
 
-                                            $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/default/' . $imgName . '.png" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                            if (file_exists('../images/items/default/' . $imgName . '.png')) {
+                                                $img_url = '//dota2.photography/images/items/default/' . $imgName . '.png';
+                                            } else {
+                                                $img_url = '//dota2.photography/images/items/default/aaa_unknown.png';
+                                            }
+
+                                            $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
                                         } else {
                                             if (stristr($imgName, 'recipe_')) {
                                                 $imgName = 'recipe';
@@ -430,11 +436,16 @@ try {
                                                 $imgName = str_replace('item_', '', $imgName);
                                             }
 
-                                            $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                            if (file_exists('../images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
+                                                $img_url = '//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
+                                            } else {
+                                                $img_url = '//dota2.photography/images/items/default/aaa_unknown.png';
+                                            }
+
+                                            $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
                                         }
                                     } else {
-                                        $imgName = 'aaa_blank';
-                                        $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/default/' . $imgName . '.png" title="Empty slot" /> ';
+                                        $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/default/aaa_blank.png" title="Empty slot" /> ';
                                     }
                                 }
 
@@ -443,10 +454,20 @@ try {
                                     foreach ($player_value['abilities'] as $abilities_key => $abilities_value) {
                                         if (in_array($abilities_value['ability_name'], $regularAbilities)) {
                                             $imgName = $abilities_value['ability_name'];
-                                            $abilities .= '<img class="match_ability_placeholder" src="//dota2.photography/images/abilities/default/' . $imgName . '.png" title="' . $abilities_value['ability_name'] . ' LEVEL: ' . $abilities_value['ability_level'] . '" /> ';
+                                            if (file_exists('../images/abilities/default/' . $imgName . '.png')) {
+                                                $img_url = '//dota2.photography/images/abilities/default/' . $imgName . '.png';
+                                            } else {
+                                                $img_url = '//dota2.photography/images/abilities/aaa_unknown.png';
+                                            }
+                                            $abilities .= '<img class="match_ability_placeholder" src="' . $img_url . '" title="' . $abilities_value['ability_name'] . ' LEVEL: ' . $abilities_value['ability_level'] . '" /> ';
                                         } else {
                                             $imgName = $abilities_value['ability_name'];
-                                            $abilities .= '<img class="match_ability_placeholder" src="//dota2.photography/images/abilities/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png" title="' . $abilities_value['ability_name'] . ' LEVEL: ' . $abilities_value['ability_level'] . '" /> ';
+                                            if (file_exists('../images/abilities/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
+                                                $img_url = '//dota2.photography/images/abilities/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
+                                            } else {
+                                                $img_url = '//dota2.photography/images/abilities/aaa_unknown.png';
+                                            }
+                                            $abilities .= '<img class="match_ability_placeholder" src="' . $img_url . '" title="' . $abilities_value['ability_name'] . ' LEVEL: ' . $abilities_value['ability_level'] . '" /> ';
                                         }
                                     }
                                 }
