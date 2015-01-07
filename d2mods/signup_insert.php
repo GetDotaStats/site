@@ -32,6 +32,12 @@ try {
                     $modGroup = NULL;
                 }
 
+                if (!empty($_POST['mod_maps']) && $_POST['mod_maps'] != 'One map per line') {
+                    $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['mod_maps']))));
+                } else {
+                    $modMaps = 'No maps given.';
+                }
+
                 $config = array(
                     "digest_alg" => "sha512",
                     "private_key_bits" => 1024,
@@ -43,10 +49,10 @@ try {
                 $pubKey = $pubKey["key"];
 
 
-                $insertSQL = $db->q('INSERT INTO `mod_list` (`steam_id64`, `mod_identifier`, `mod_name`, `mod_description`, `mod_workshop_link`, `mod_steam_group`, `mod_public_key`, `mod_private_key`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
-                    'ssssssss', //STUPID x64 windows PHP is actually x86
-                    $_SESSION['user_id64'], md5($modName . time()), $modName, $modDesc, $modWork, $modGroup, $pubKey, $privKey);
+                $insertSQL = $db->q('INSERT INTO `mod_list` (`steam_id64`, `mod_identifier`, `mod_name`, `mod_description`, `mod_workshop_link`, `mod_steam_group`, `mod_public_key`, `mod_private_key`, `mod_maps`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                    'sssssssss', //STUPID x64 windows PHP is actually x86
+                    $_SESSION['user_id64'], md5($modName . time()), $modName, $modDesc, $modWork, $modGroup, $pubKey, $privKey, $modMaps);
 
                 if ($insertSQL) {
                     echo 'Insert Success!';

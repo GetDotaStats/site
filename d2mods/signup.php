@@ -46,6 +46,10 @@ try {
                                     <td><input name="mod_steam_group" type="text" maxlength="70" size="45"></td>
                                 </tr>
                                 <tr>
+                                    <th>Maps</th>
+                                    <td><textarea name="mod_maps" rows="3" maxlength="255" cols="45">One map per line</textarea></td>
+                                </tr>
+                                <tr>
                                     <td colspan="2" align="center">
                                         <button id="sub">Signup</button>
                                     </td>
