@@ -82,7 +82,19 @@ try {
         } else {
             echo bootstrapMessage('Oh Snap', 'No active lobbies!', 'danger');
         }
+    } else {
+        echo bootstrapMessage('Oh Snap', 'No db!', 'danger');
     }
+
+    ?>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                loadPage("#d2mods__lobby_list", 0);
+            }, 10000);
+        });
+    </script>
+    <?php
 
     echo '<p>
             <div class="text-center">
