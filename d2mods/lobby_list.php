@@ -91,7 +91,7 @@ try {
         $(document).ready(function () {
             setTimeout(function () {
                 loadPage("#d2mods__lobby_list", 0);
-            }, 10000);
+            }, 20000);
         });
     </script>
     <?php
