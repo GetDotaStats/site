@@ -284,3 +284,9 @@ table td.bashful, table th.bashful {
     width: 30px; /*42*/
     height: 30px;
 }
+
+/*Allow class on cells in table to vertically align*/
+.table tbody>tr>td.vert-align
+{
+    vertical-align: middle;
+}

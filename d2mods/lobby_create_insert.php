@@ -46,11 +46,16 @@ try {
                 );
 
                 if (empty($sqlResult)) {
+                    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    $lobbyPass = '';
+                    for ($i = 0; $i < 5; $i++)
+                        $lobbyPass .= $characters[rand(0, 35)];
+
                     //INSERT NEW LOBBY LISTING
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`) VALUES (?, ?, ?, ?, ?, ?)',
-                        'siiiii',
-                        $_SESSION['user_id64'], $modID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic
+                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        'siiiiis',
+                        $_SESSION['user_id64'], $modID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass
                     );
 
                     if (!empty($sqlResult)) {

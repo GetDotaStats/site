@@ -12,18 +12,22 @@ try {
     if ($db) {
         $lobbyListActive = simple_cached_query('d2mods_lobby_list_active',
             'SELECT
-                    `lobby_id`,
-                    `mod_id`,
-                    `lobby_ttl`,
-                    `lobby_min_players`,
-                    `lobby_max_players`,
-                    `lobby_public`,
-                    `lobby_leader`,
-                    `lobby_active`,
-                    `date_recorded`
-                FROM `lobby_list`
-                WHERE `lobby_active` = 1
-                ORDER BY `date_recorded` ASC;'
+                    ll.`lobby_id`,
+                    ll.`mod_id`,
+                    ll.`lobby_ttl`,
+                    ll.`lobby_min_players`,
+                    ll.`lobby_max_players`,
+                    ll.`lobby_public`,
+                    ll.`lobby_leader`,
+                    ll.`lobby_pass`,
+                    ll.`date_recorded` as lobby_date_recorded,
+                    ml.*,
+                    gu.`user_name` as lobby_leader_username
+                FROM `lobby_list` ll
+                JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
+                JOIN `gds_users` gu ON ll.`lobby_leader` = gu.`user_id64`
+                WHERE ll.`lobby_active` = 1
+                ORDER BY ll.`date_recorded` ASC;'
             , 5
         );
 
@@ -35,28 +39,28 @@ try {
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
             echo '<tr>
-                        <th width="40">ID</th>
-                        <th>Mod</th>
-                        <th>Leader</th>
-                        <th>Public</th>
-                        <th>Min</th>
-                        <th>Max</th>
-                        <th>Active</th>
-                        <th>TTL</th>
-                        <th>Created</th>
+                        <th class="text-center">Mod</th>
+                        <th class="text-center">Leader</th>
+                        <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Minimum / Maximum)"></span></th>
+                        <th class="text-center col-md-2">Public <span class="glyphicon glyphicon-question-sign" title="Whether this lobby uses the public password"></span></th>
+                        <th class="text-center col-md-1">TTL <span class="glyphicon glyphicon-question-sign" title="How long this lobby is open for"></span></th>
+                        <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created"></span></th>
+                        <th class="text-center col-md-1">&nbsp;</th>
                     </tr>';
 
             foreach ($lobbyListActive as $key => $value) {
+                $lobbyPublicContextual = $value['lobby_public'] == 1
+                    ? '<span class="glyphicon glyphicon-ok"></span>'
+                    : '<span class="glyphicon glyphicon-remove"></span>';
+
                 echo '<tr>
-                        <td>' . $value['lobby_id'] . '</td>
-                        <td>' . $value['mod_id'] . '</td>
-                        <td>' . $value['lobby_leader'] . '</td>
-                        <td>' . $value['lobby_public'] . '</td>
-                        <td>' . $value['lobby_min_players'] . '</td>
-                        <td>' . $value['lobby_max_players'] . '</td>
-                        <td>' . $value['lobby_active'] . '</td>
-                        <td>' . $value['lobby_ttl'] . '</td>
-                        <td>' . $value['date_recorded'] . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
+                        <td class="vert-align">' . $value['lobby_leader_username'] . '</td>
+                        <td class="text-center vert-align">?? (' . $value['lobby_min_players'] . ' / ' . $value['lobby_max_players'] . ')</td>
+                        <td class="text-center vert-align">' . $lobbyPublicContextual . '</td>
+                        <td class="text-center vert-align">' . $value['lobby_ttl'] . ' mins</td>
+                        <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
+                        <td class="text-center vert-align"><a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
                     </tr>';
             }
 

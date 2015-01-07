@@ -88,7 +88,7 @@ try {
                                 </tr>
                                 <tr>
                                     <td colspan="4" align="center">
-                                        <input type="checkbox" name="lobby_public" value="1" checked> Public game <span class="glyphicon glyphicon-question-sign" title="Public games will use the public password. Non-public games will use a random password."></span>
+                                        <input type="checkbox" name="lobby_public" value="1" checked> Public game <span class="glyphicon glyphicon-question-sign" title="Whether this lobby will use the public password."></span>
                                     </td>
                                 </tr>
                                 <tr>

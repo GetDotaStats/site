@@ -25,6 +25,7 @@ try {
                         `lobby_public`,
                         `lobby_leader`,
                         `lobby_active`,
+                        `lobby_pass`,
                         `date_recorded`
                     FROM `lobby_list`
                     WHERE `lobby_id` = ?
