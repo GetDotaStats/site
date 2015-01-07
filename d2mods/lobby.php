@@ -34,7 +34,8 @@ try {
                             ll.`lobby_active`,
                             ll.`lobby_pass`,
                             ll.`date_recorded`,
-                            ml.`mod_name`
+                            ml.`mod_name`,
+                            ml.`mod_maps`
                         FROM `lobby_list` ll
                         JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
                         WHERE ll.`lobby_id` = ?
@@ -50,6 +51,27 @@ try {
 
                     //LOBBY DETAILS
                     {
+                        if (!empty($lobbyDetails['mod_maps'])) {
+                            $modMapsArray = json_decode($lobbyDetails['mod_maps'], 1);
+
+                            if (!empty($modMapsArray)) {
+                                $modMaps = '<select name="lobby_map" size="' . count($modMapsArray) . '">';
+                                foreach ($modMapsArray as $key => $value) {
+                                    if ($key == 0) {
+                                        $modMapsSelect = ' selected';
+                                    } else {
+                                        $modMapsSelect = '';
+                                    }
+                                    $modMaps .= '<option' . $modMapsSelect . ' value="' . $value . '">' . $value . '</option>';
+                                }
+                                $modMaps .= '</select>';
+                            } else {
+                                $modMaps = 'dota_pvp?';
+                            }
+                        } else {
+                            $modMaps = 'dota_pvp??';
+                        }
+
                         echo '<div class="container">
                             <div class="col-sm-3">
                                 <div class="table-responsive">
@@ -61,6 +83,10 @@ try {
                                         <tr>
                                             <th>Max Players</th>
                                             <td>' . $lobbyDetails['lobby_max_players'] . '</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Map</th>
+                                            <td>' . $modMaps . '</td>
                                         </tr>
                                         <tr>
                                             <th>Password</th>
