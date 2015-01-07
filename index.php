@@ -159,7 +159,7 @@ try {
 
 <div class="container">
     <div class="page-header text-center">
-        <a class="nav-clickable" href="#d2mods__lobby_list"><img width="400px"
+        <a class="nav-clickable" href="#d2mods__directory"><img width="400px"
                                                                 src="//static.getdotastats.com/images/getdotastats_logo_v3.png"
                                                                 alt="site logo"/></a>
 
