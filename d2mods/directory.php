@@ -21,7 +21,7 @@ try {
                 LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                 WHERE ml.`mod_active` = 1
                 ORDER BY games_last_week DESC, games_all_time DESC;'
-            , 30
+            , 60
         );
 
         echo '<div class="page-header"><h2>Mod Directory <small>BETA</small></h2></div>';
