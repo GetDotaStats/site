@@ -37,9 +37,17 @@ try {
             , 5
         );
 
+        $lobbyListCount = simple_cached_query('d2mods_lobby_list_count',
+            'SELECT
+                    COUNT(*) AS lobby_count
+                FROM `lobby_list` ll
+                LIMIT 0,1;'
+            , 60
+        );
+
         echo '<div class="page-header"><h2>Lobby List <small>BETA</small></h2></div>';
 
-        echo '<p>This is a list of all of the active lobbies.</p>';
+        echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created via the site. Please leave suggestions on how we can improve this tool in the chatbox. This is a work in progress, and may end up removed if it\'s not used.</p>';
 
         if (!empty($lobbyListActive)) {
             echo '<div class="table-responsive">

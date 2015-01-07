@@ -48,7 +48,7 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?11"></script>
+    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?12"></script>
     <!--<script type="text/javascript" src="./getdotastats.js?11"></script>-->
 </head>
 <body>
@@ -60,6 +60,7 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">BETA</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobbies</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_games">My Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
@@ -158,7 +159,7 @@ try {
 
 <div class="container">
     <div class="page-header text-center">
-        <a class="nav-clickable" href="#d2mods__directory"><img width="400px"
+        <a class="nav-clickable" href="#d2mods__lobby_list"><img width="400px"
                                                                 src="//static.getdotastats.com/images/getdotastats_logo_v3.png"
                                                                 alt="site logo"/></a>
 

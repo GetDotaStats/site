@@ -18,7 +18,7 @@ var ϰ = "Kappa";
 
 function checkURL(hash, refresh) {
     if (!hash) {
-        loadPage('#d2mods__directory', refresh);
+        loadPage('#d2mods__lobby_list', refresh);
     }
     else {
         var testElement = $('#navBarCustom');
