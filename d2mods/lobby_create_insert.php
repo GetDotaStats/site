@@ -53,7 +53,7 @@ try {
 
                     //INSERT NEW LOBBY LISTING
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`) VALUES (?, ?, ?, ?, ?, ?, ?);',
                         'siiiiis',
                         $_SESSION['user_id64'], $modID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass
                     );

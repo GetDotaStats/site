@@ -120,12 +120,12 @@ try {
                                 }
                             }
                             catch (err) {
-                                $("#lobbyCreateResult").html("Failed to create lobby");
+                                $("#lobbyCreateResult").html("Failed to create lobby." + err.message);
                                 console.log("Failed to parse JSON");
                             }
                         }
                         else {
-                            $("#lobbyCreateResult").html("Failed to create lobby. " + err.message);
+                            $("#lobbyCreateResult").html("Failed to create lobby.");
                         }
                     }, "text");
                 });

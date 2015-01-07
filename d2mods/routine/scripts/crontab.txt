@@ -21,3 +21,4 @@
 @daily   /home/www-getdotastats/d2moddin/routine/scripts/daily.sh > /home/www-getdotastats/d2moddin/routine/log_daily.html 2>&1
 
 @daily   /home/www-getdotastats/d2mods/routine/scripts/daily.sh > /home/www-getdotastats/d2mods/routine/log_daily.html 2>&1
+* * * * *   /home/www-getdotastats/d2mods/routine/scripts/lobby_list.sh > /home/www-getdotastats/d2mods/routine/log_lobby_list.html 2>&1

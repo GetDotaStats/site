@@ -22,10 +22,17 @@ try {
                     ll.`lobby_pass`,
                     ll.`date_recorded` as lobby_date_recorded,
                     ml.*,
-                    gu.`user_name` as lobby_leader_username
+                    gu.`user_name` as lobby_leader_username,
+                    (
+                      SELECT
+                          COUNT(`user_id64`)
+                        FROM `lobby_list_players`
+                        WHERE `lobby_id` = ll.`lobby_id`
+                        LIMIT 0,1
+                    ) AS lobby_current_players
                 FROM `lobby_list` ll
-                JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
-                JOIN `gds_users` gu ON ll.`lobby_leader` = gu.`user_id64`
+                LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
+                LEFT JOIN `gds_users` gu ON ll.`lobby_leader` = gu.`user_id64`
                 WHERE ll.`lobby_active` = 1
                 ORDER BY ll.`date_recorded` ASC;'
             , 5
@@ -56,7 +63,7 @@ try {
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
                         <td class="vert-align">' . $value['lobby_leader_username'] . '</td>
-                        <td class="text-center vert-align">?? (' . $value['lobby_min_players'] . ' / ' . $value['lobby_max_players'] . ')</td>
+                        <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_min_players'] . ' / ' . $value['lobby_max_players'] . ')</td>
                         <td class="text-center vert-align">' . $lobbyPublicContextual . '</td>
                         <td class="text-center vert-align">' . $value['lobby_ttl'] . ' mins</td>
                         <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
