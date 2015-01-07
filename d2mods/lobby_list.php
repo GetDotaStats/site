@@ -56,22 +56,16 @@ try {
                         <th class="text-center">Mod</th>
                         <th class="text-center">Leader</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
-                        <th class="text-center col-md-2">Public <span class="glyphicon glyphicon-question-sign" title="Whether this lobby uses the public password"></span></th>
                         <th class="text-center col-md-1">TTL <span class="glyphicon glyphicon-question-sign" title="How long this lobby is open for"></span></th>
                         <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created"></span></th>
                         <th class="text-center col-md-1">&nbsp;</th>
                     </tr>';
 
             foreach ($lobbyListActive as $key => $value) {
-                $lobbyPublicContextual = $value['lobby_public'] == 1
-                    ? '<span class="glyphicon glyphicon-ok"></span>'
-                    : '<span class="glyphicon glyphicon-remove"></span>';
-
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
                         <td class="vert-align">' . $value['lobby_leader_username'] . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-center vert-align">' . $lobbyPublicContextual . '</td>
                         <td class="text-center vert-align">' . $value['lobby_ttl'] . ' mins</td>
                         <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
                         <td class="text-center vert-align"><a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>

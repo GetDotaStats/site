@@ -34,8 +34,8 @@ try {
                 : NULL;
 
             $lobbyIsPublic = !empty($_POST['lobby_public']) && is_numeric($_POST['lobby_public'])
-                ? $_POST['lobby_public']
-                : NULL;
+                ? 1
+                : 0;
 
             if (!empty($modID) && !empty($lobbyTTL) && !empty($lobbyMinPlayers) && !empty($lobbyMaxPlayers) && !empty($lobbyIsPublic)) {
                 //CHECK IF USER HAS AN ACTIVE LOBBY
@@ -71,7 +71,7 @@ try {
                     $json['lobby_id'] = $sqlResult[0]['lobby_id'];
                 }
             } else {
-                $json['error'] = 'Missing fields!';
+                $json['error'] = 'Missing fields! '.json_encode($_POST);
             }
         } else {
             $json['error'] = 'No DB!';

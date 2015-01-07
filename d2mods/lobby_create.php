@@ -57,22 +57,8 @@ try {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="col-md-2">Min Players <span class="glyphicon glyphicon-question-sign" title="The minimum number of players required before the game will start"></span></th>
-                                    <td class="col-md-4">
-                                        <select name="lobby_min_players" size="4" required>
-                                            <option selected value="2">2 players</option>
-                                            <option value="3">3 players</option>
-                                            <option value="4">4 players</option>
-                                            <option value="5">5 players</option>
-                                            <option value="6">6 players</option>
-                                            <option value="7">7 players</option>
-                                            <option value="8">8 players</option>
-                                            <option value="9">9 players</option>
-                                            <option value="10">10 players</option>
-                                        </select>
-                                    </td>
                                     <th class="col-md-2">Max Players <span class="glyphicon glyphicon-question-sign" title="The maximum number of slots in the game."></span></th>
-                                    <td class="col-md-4">
+                                    <td class="col-md-4" colspan="3">
                                         <select name="lobby_max_players" size="4" required>
                                             <option value="10">10 players</option>
                                             <option value="9">9 players</option>
@@ -84,11 +70,8 @@ try {
                                             <option value="3">3 players</option>
                                             <option value="2">2 players</option>
                                         </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" align="center">
-                                        <input type="checkbox" name="lobby_public" value="1" checked> Public game <span class="glyphicon glyphicon-question-sign" title="Whether this lobby will use the public password."></span>
+                                        <input type="hidden" name="lobby_public" value="1"><!-- Public game <span class="glyphicon glyphicon-question-sign" title="Whether this lobby will use the public password."></span>-->
+                                        <input type="hidden" name="lobby_min_players" value="2">
                                     </td>
                                 </tr>
                                 <tr>
