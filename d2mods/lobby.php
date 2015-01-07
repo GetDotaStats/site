@@ -59,8 +59,8 @@ try {
                                             <td>' . $lobbyDetails['mod_name'] . '</td>
                                         </tr>
                                         <tr>
-                                            <th>Min / Max Players</th>
-                                            <td>' . $lobbyDetails['lobby_min_players'] . ' / ' . $lobbyDetails['lobby_max_players'] . '</td>
+                                            <th>Max Players</th>
+                                            <td>' . $lobbyDetails['lobby_max_players'] . '</td>
                                         </tr>
                                         <tr>
                                             <th>Password</th>
@@ -101,32 +101,36 @@ try {
 
                     //LOBBY ACTION BUTTONS
                     {
-                        echo '<div class="col-sm-3">';
-                        echo '<div class="panel panel-primary" id="lobby_user_actions">';
-                        echo '<div class="panel-body">';
+                        if ($lobbyDetails['lobby_active'] == 1) {
+                            echo '<div class="col-sm-3">';
+                            echo '<div class="panel panel-primary" id="lobby_user_actions">';
+                            echo '<div class="panel-body">';
 
-                        if ($lobbyDetails['lobby_active'] == 1 && $lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
-                            echo '<form id="lobbyClose" class="pull-left">
+                            if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
+                                echo '<form id="lobbyClose" class="pull-left">
                                 <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                 <button>Close</button>
                             </form>';
-                        }
+                            }
 
-                        if ($lobbyDetails['lobby_active'] == 1 && !in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                            echo '<form id="lobbyJoin" class="pull-left">
+                            if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
+                                echo '<form id="lobbyJoin" class="pull-left">
                                 <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                 <button>Join</button>
                             </form>';
-                        }
+                            }
 
-                        if ($lobbyDetails['lobby_active'] == 1 && in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                            echo '<form id="lobbyLeave" class="pull-left">
+                            if (in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
+                                echo '<form id="lobbyLeave" class="pull-left">
                                 <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                 <button>Leave</button>
                             </form>';
+                            }
+
+                            echo '</div></div></div>';
                         }
 
-                        echo '</div></div></div></div></div>';
+                        echo '</div>';
                     }
 
                     echo '<div class="container"><span id="lobbyResult" class="label label-danger"></span></div>';
