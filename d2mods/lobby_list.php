@@ -89,9 +89,15 @@ try {
     ?>
     <script>
         $(document).ready(function () {
-            setTimeout(function () {
-                loadPage("#d2mods__lobby_list", 0);
-            }, 20000);
+            var pageReloader;
+            pageReloader = setTimeout(function () {
+                if(document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list"){
+                    loadPage("#d2mods__lobby_list", 0);
+                }
+                else{
+                    clearTimeout(pageReloader);
+                }
+            }, 10000);
         });
     </script>
     <?php
