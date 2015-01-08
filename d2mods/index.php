@@ -48,13 +48,10 @@ try {
 
                     echo '<pre>';
                     echo '<h3>Recorded from ' . $messages['remote_ip'] . ':' . $messages['remote_port'] . ' <small>' . relative_time($messages['date_recorded']) . '</small></h3>';
-                    //echo json_encode(json_decode($messages['message'],1), JSON_PRETTY_PRINT);
 
-                    //echo '<hr />';
-
-                    //echo '<h3>Fallback for when there are wanky characters</h3>';
-
-                    print_r(json_decode(utf8_encode($messages['message']),1));
+                    $message = json_decode(utf8_encode($messages['message']), 1);
+                    $new_array = array_map_recursive('htmlentities', $message);
+                    print_r($new_array);
 
                     echo '</pre>';
                 } else {

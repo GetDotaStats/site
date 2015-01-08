@@ -330,62 +330,6 @@ if (!function_exists("guid")) {
     }
 }
 
-if (!function_exists("checkLogin")) {
-    function checkLogin($db, $cookie)
-    {
-        $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
-            's',
-            $cookie);
-
-        if (!empty($auth)) {
-            $steamID64 = $auth[0]['user_id64'];
-            $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
-                'i',
-                $steamID64);
-
-            if (!empty($accountDetails)) {
-                $_SESSION['user_id32'] = $accountDetails[0]['user_id32'];
-                $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
-                $_SESSION['user_name'] = $accountDetails[0]['user_name'];
-                $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
-                $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
-                $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
-
-                header("Location: ./");
-            } else {
-                //KILL BAD COOKIE
-                setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-                setcookie('session', '', time() - 3600, '/', 'dota.solutions');
-                setcookie('session', '', time() - 3600, '/', 'dota2.solutions');
-                setcookie('session', '', time() - 3600, '/', 'dota.technology');
-                setcookie('session', '', time() - 3600, '/', 'dota.photography');
-                setcookie('session', '', time() - 3600, '/', 'dota.company');
-                header("Location: ./");
-            }
-
-            return true;
-        } else {
-            //KILL BAD COOKIE
-            unset($_SESSION['user_id32']);
-            unset($_SESSION['user_id64']);
-            unset($_SESSION['user_name']);
-            unset($_SESSION['user_avatar']);
-            unset($_SESSION['access_feeds']);
-            unset($_SESSION['isAdmin']);
-
-            setcookie('session', '', time() - 3600, '/', 'getdotastats.com');
-            setcookie('session', '', time() - 3600, '/', 'dota.solutions');
-            setcookie('session', '', time() - 3600, '/', 'dota2.solutions');
-            setcookie('session', '', time() - 3600, '/', 'dota.technology');
-            setcookie('session', '', time() - 3600, '/', 'dota.photography');
-            setcookie('session', '', time() - 3600, '/', 'dota.company');
-            header("Location: ./");
-
-            return false;
-        }
-    }
-}
-
 if (!function_exists("checkLogin_v2")) {
     function checkLogin_v2()
     {
@@ -436,8 +380,7 @@ if (!function_exists("checkLogin_v2")) {
 
                 return false;
             }
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -500,4 +443,52 @@ if (!function_exists("bootstrapMessage")) {
 
         return $formatted;
     }
+}
+
+if (!function_exists('dota2TeamName')) {
+    function dota2TeamName($teamID)
+    {
+        switch ($teamID) {
+            case -1:
+                $teamName = 'No Winner';
+                break;
+            case 2:
+                $teamName = 'Radiant';
+                break;
+            case 3:
+                $teamName = 'Dire';
+                break;
+            default:
+                $teamName = '#' . $teamID;
+                break;
+        }
+        return $teamName;
+    }
+}
+
+if (!function_exists("secs_to_clock")) {
+    function secs_to_clock($seconds)
+    {
+        $hours = str_pad(floor($seconds / 3600), 2, '0', STR_PAD_LEFT);
+        $mins = str_pad(floor(($seconds - ($hours * 3600)) / 60), 2, '0', STR_PAD_LEFT);
+        $secs = str_pad(floor($seconds % 60), 2, '0', STR_PAD_LEFT);
+
+        if ($hours > 0) {
+            return $hours . ':' . $mins . ':' . $secs;
+        } else {
+            return $mins . ':' . $secs;
+        }
+    }
+}
+
+function array_map_recursive($callback, $array) {
+    foreach ($array as $key => $value) {
+        if (is_array($array[$key])) {
+            $array[$key] = array_map_recursive($callback, $array[$key]);
+        }
+        else {
+            $array[$key] = call_user_func($callback, $array[$key]);
+        }
+    }
+    return $array;
 }

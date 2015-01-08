@@ -10,7 +10,15 @@ try {
     checkLogin_v2();
 
     if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
+        echo '<h2>CSP Reports (Over Last Week)</h2>';
+        echo '<p>
+                <div class="text-center">
+                    <a class="nav-clickable btn btn-default btn-lg" href="#admin/">Back to Admin Panel</a>
+                </div>
+            </p>';
+
         $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+        $db->q('SET NAMES utf8;');
         if ($db) {
             $reports = $db->q(
                 "SELECT
@@ -25,8 +33,6 @@ try {
             );
 
             if (!empty($reports)) {
-                echo '<h2>CSP Reports (Over Last Week)</h2>';
-
                 echo '<div class="table-responsive">
 		            <table class="table table-striped table-hover bigTable">';
                 echo '<tr>
@@ -47,17 +53,22 @@ try {
                         </tr>';
                 }
                 echo '</table></div>';
-
-                echo '<p><a class="nav-clickable" href="#admin/">Back to Admin Panel</a></p>';
             } else {
                 echo bootstrapMessage('Oh Snap', 'No reports!', 'danger');
             }
         } else {
             echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
         }
+
+        echo '<p>
+                <div class="text-center">
+                    <a class="nav-clickable btn btn-default btn-lg" href="#admin/">Back to Admin Panel</a>
+                </div>
+            </p>';
     } else {
         echo bootstrapMessage('Oh Snap', 'Not logged in or not admin!', 'danger');
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }

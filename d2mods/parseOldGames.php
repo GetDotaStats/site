@@ -50,7 +50,7 @@ try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         if ($db) {
-            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC LIMIT 0,20000;');
+            $messages = $db->q('SELECT * FROM `node_listener` ORDER BY test_id DESC LIMIT 20000,40000;');
 
             foreach ($messages as $key => $value) {
 
@@ -400,6 +400,27 @@ try {
                                     //ITEM DATA
                                     ///////////////////////////////////
                                     if (!empty($value3['items'])) {
+
+                                        ////////////////////////
+                                        // Grab items
+                                        ////////////////////////
+                                        $regularItems = $memcache->get('dota2_items_schema' . $modID);
+                                        if (!$regularItems) {
+                                            $regularItemsSQL = $db->q(
+                                                'SELECT `item_id`, `item_name` FROM `mod_items` WHERE `mod_id` = 0 OR `mod_id` = ?;',
+                                                's',
+                                                $modID
+                                            );
+
+                                            $regularItems = array();
+                                            foreach ($regularItemsSQL as $value) {
+                                                $regularItems[$value['item_name']] = $value['item_id'];
+                                            }
+
+                                            $memcache->set('dota2_items_schema' . $modID, $regularItems, 0, 5 * 60); //5mins
+                                        }
+                                        ////////////////////////
+
                                         foreach ($value3['items'] as $key_items => $value_items) {
                                             $item_index = !empty($value_items['index'])
                                                 ? $value_items['index']
@@ -454,6 +475,27 @@ try {
                                     //ABILITY DATA
                                     ///////////////////////////////////
                                     if (!empty($value3['abilities'])) {
+
+                                        ////////////////////////
+                                        // Grab abilities
+                                        ////////////////////////
+                                        $regularAbilities = $memcache->get('dota2_abilities_schema' . $modID);
+                                        if (!$regularAbilities) {
+                                            $regularAbilitiesSQL = $db->q(
+                                                'SELECT `ability_id`, `ability_name` FROM `mod_abilities` WHERE `mod_id` = 0 OR `mod_id` = ?;',
+                                                's',
+                                                $modID
+                                            );
+
+                                            $regularAbilities = array();
+                                            foreach ($regularAbilitiesSQL as $value) {
+                                                $regularAbilities[$value['ability_name']] = $value['ability_id'];
+                                            }
+
+                                            $memcache->set('dota2_abilities_schema' . $modID, $regularAbilities, 0, 5 * 60); //5mins
+                                        }
+                                        ////////////////////////
+
                                         foreach ($value3['abilities'] as $key_abilities => $value_abilities) {
                                             $ability_index = !empty($value_abilities['index'])
                                                 ? $value_abilities['index']

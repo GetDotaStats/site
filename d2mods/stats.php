@@ -11,6 +11,7 @@ if (!isset($_SESSION)) {
 
 try {
     $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    $db->q('SET NAMES utf8;');
     if ($db) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
@@ -67,6 +68,7 @@ try {
             );
 
             $modGUID = $modDetails[0]['mod_identifier'];
+            $modListID = $modDetails[0]['mod_id'];
 
             if (!empty($modDetails) && !empty($modGUID)) {
                 echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
@@ -733,7 +735,7 @@ try {
                         );
 
                         if (!empty($recentGames)) {
-                            echo '<h3>Recent Matches</h3>';
+                            echo '<h3>Recent Matches <small><a class="nav-clickable" href="#d2mods__recent_games?f=' . $modListID . '">more</a></small></h3>';
 
                             echo '<div class="table-responsive">
 		                        <table class="table table-striped table-hover">';

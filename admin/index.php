@@ -10,18 +10,19 @@ try {
     checkLogin_v2();
 
     if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
-        ?>
-        <h2>Administrative Functions</h2>
 
-        <ul>
-            <li><a class="nav-clickable" href="#admin__csp_reports">CSP Reports (Last 100)</a></li>
-            <li><a class="nav-clickable" href="#admin__csp_reports_filtered">CSP Reports (Filtered)</a></li>
-            <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">CSP Reports (Filtered - Last Week)</a></li>
-        </ul>
-    <?php
+        echo '<h2>Administrative Functions</h2>';
+
+        echo '
+            <div class="container">
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__mod_approve">Approve Mods</a></p>
+                <p><a class="nav-clickable btn btn-default btn-lg" href="#admin__csp_reports_filtered_lw">CSP Reports (Last Week)</a> <a class="nav-clickable btn btn-default btn-sm" href="#admin__csp_reports_filtered">CSP Reports</a> <a class="nav-clickable btn btn-default btn-sm" href="#admin__csp_reports">CSP Reports (Last 100)</a></p>
+            </div>';
+
     } else {
         echo bootstrapMessage('Oh Snap', 'Not logged in or not admin!', 'danger');
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }

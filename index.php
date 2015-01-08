@@ -38,7 +38,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//getdotastats.com/getdotastats.css?13" rel="stylesheet">
+    <link href="//getdotastats.com/getdotastats.css?15" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -48,8 +48,8 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?10"></script>
-    <!--<script type="text/javascript" src="./getdotastats.js?9"></script>-->
+    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?12"></script>
+    <!--<script type="text/javascript" src="./getdotastats.js?11"></script>-->
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -60,11 +60,12 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">BETA</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobbies</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_games">My Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__signup">Registration</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__signup">Add a Mod</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recent Games</a></li>
                     </ul>
                 </li>
@@ -84,25 +85,18 @@ try {
                             <li class="dropdown-header">Admin Stuff</li>
                             <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
                         <?php } ?>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Halls of Fame</li>
+                        <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
+                        <li class="divider"></li>
                         <li class="dropdown-header">Economy Related</li>
-                        <li><a class="nav-clickable" href="#backpack/">Card Summary</a>
-                        </li>
-                        <li><a href="./economy_analysis/">Economy Analysis <span
-                                    class="label label-info">DEAD</span></a></li>
+                        <li><a class="nav-clickable" href="#backpack/">Card Summary</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Browser Extensions</li>
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Simulations</li>
                         <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">API Scraper</li>
-                        <li><a class="nav-clickable" href="#match_analysis__worker_progress">Data Collector Status</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header"><em>Dec 2013 - Feb 2014</em></li>
-                        <li><a class="nav-clickable" href="#match_analysis/">Pub Match Analysis <span
-                                    class="label label-info">DEAD</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#credits">Credits</a></li>
@@ -152,11 +146,11 @@ try {
         event.preventDefault();
         var searchTerm = $("input:first").val();
 
-        if(searchTerm.length == 32){
+        if (searchTerm.length == 32) {
             loadPage("#d2mods__match?id=" + searchTerm, 1);
             window.location.replace("#d2mods__match?id=" + searchTerm);
         }
-        else{
+        else {
             loadPage("#d2mods__search?user=" + searchTerm, 1);
             window.location.replace("#d2mods__search?user=" + searchTerm);
         }

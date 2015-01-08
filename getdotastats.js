@@ -14,9 +14,11 @@ $(document).ready(function () {
     });
 });
 
+var ϰ = "Kappa";
+
 function checkURL(hash, refresh) {
     if (!hash) {
-        loadPage('#d2mods__directory', refresh);
+        loadPage('#d2mods__lobby_list', refresh);
     }
     else {
         var testElement = $('#navBarCustom');
@@ -32,7 +34,7 @@ function loadPage(url, refresh) {
     var oldURL = url;
     url = url.replace('#', '').replace(':', '').split('__').join('/');
 
-    console.log("Loading: " + url);
+    //console.log("Loading: " + url);
 
     if (url.indexOf('?') > -1 && url.indexOf('/?') < 0) {
         url = url.replace('?', '.php?');
@@ -65,6 +67,7 @@ function loadPage(url, refresh) {
                     setTimeout(function () {
                         $('#loading').hide({
                             complete: function () {
+                                window.history.pushState("", "", oldURL);
                                 if (parseInt(msg) != 0) {
                                     $('#main_content').html(msg);
                                 }

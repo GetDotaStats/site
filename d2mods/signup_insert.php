@@ -11,6 +11,7 @@ try {
 
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db->q('SET NAMES utf8;');
         if ($db) {
             if (!empty($_POST['mod_name'])) {
                 $modName = htmlentities($_POST['mod_name']);
@@ -20,7 +21,7 @@ try {
                     : 'No description given.';
 
                 if (!empty($_POST['mod_workshop_link']) && stristr($_POST['mod_workshop_link'], 'steamcommunity.com/sharedfiles/filedetails/?id=')) {
-                    $modWork = htmlentities(rtrim(cut_str($_POST['mod_steam_group'], 'steamcommunity.com/sharedfiles/filedetails/?id='), '/'));
+                    $modWork = htmlentities(rtrim(cut_str($_POST['mod_workshop_link'], 'steamcommunity.com/sharedfiles/filedetails/?id='), '/'));
                 } else {
                     $modWork = NULL;
                 }
@@ -29,6 +30,12 @@ try {
                     $modGroup = htmlentities(rtrim(cut_str($_POST['mod_steam_group'], 'groups/'), '/'));
                 } else {
                     $modGroup = NULL;
+                }
+
+                if (!empty($_POST['mod_maps']) && $_POST['mod_maps'] != 'One map per line') {
+                    $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['mod_maps']))));
+                } else {
+                    $modMaps = 'No maps given.';
                 }
 
                 $config = array(
@@ -42,10 +49,10 @@ try {
                 $pubKey = $pubKey["key"];
 
 
-                $insertSQL = $db->q('INSERT INTO `mod_list` (`steam_id64`, `mod_identifier`, `mod_name`, `mod_description`, `mod_workshop_link`, `mod_steam_group`, `mod_public_key`, `mod_private_key`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
-                    'ssssssss', //STUPID x64 windows PHP is actually x86
-                    $_SESSION['user_id64'], md5($modName . time()), $modName, $modDesc, $modWork, $modGroup, $pubKey, $privKey);
+                $insertSQL = $db->q('INSERT INTO `mod_list` (`steam_id64`, `mod_identifier`, `mod_name`, `mod_description`, `mod_workshop_link`, `mod_steam_group`, `mod_public_key`, `mod_private_key`, `mod_maps`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                    'sssssssss', //STUPID x64 windows PHP is actually x86
+                    $_SESSION['user_id64'], md5($modName . time()), $modName, $modDesc, $modWork, $modGroup, $pubKey, $privKey, $modMaps);
 
                 if ($insertSQL) {
                     echo 'Insert Success!';

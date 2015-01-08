@@ -11,6 +11,7 @@ checkLogin_v2();
 try {
     if (!empty($_SESSION['user_id64'])) {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db->q('SET NAMES utf8;');
 
         if ($db) {
             ?>
@@ -21,7 +22,7 @@ try {
             </div>
 
             <p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to
-                implement stats for their mod. This section is a Work-In-Progress, so check back later.</p>
+                implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong></p>
 
             <div class="container">
                 <div class="col-sm-6">
@@ -45,6 +46,10 @@ try {
                                     <td><input name="mod_steam_group" type="text" maxlength="70" size="45"></td>
                                 </tr>
                                 <tr>
+                                    <th>Maps</th>
+                                    <td><textarea name="mod_maps" rows="3" maxlength="255" cols="45">One map per line</textarea></td>
+                                </tr>
+                                <tr>
                                     <td colspan="2" align="center">
                                         <button id="sub">Signup</button>
                                     </td>
@@ -59,7 +64,11 @@ try {
 
             <span id="modSignupResult" class="label label-danger"></span>
 
-            <h5><a class="nav-clickable" href="#d2mods__my_mods">Browse my mods</a></h5>
+            <br /><br />
+
+            <div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
+            </div>
 
             <script type="application/javascript">
                 $("#modSignup").submit(function (event) {
