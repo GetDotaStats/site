@@ -194,82 +194,94 @@ try {
 
                     ?>
                     <script type="application/javascript">
-                        $("#lobbyClose").submit(function (event) {
-                            event.preventDefault();
+                        $(document).ready(function () {
+                            var pageReloader;
+                            pageReloader = setTimeout(function () {
+                                if(document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>"){
+                                    loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 1);
+                                }
+                                else{
+                                    clearTimeout(pageReloader);
+                                }
+                            }, 5000);
 
-                            $.post("./d2mods/lobby_close.php", $("#lobbyClose").serialize(), function (data) {
-                                if (data) {
-                                    try {
-                                        data = JSON.parse(data);
+                            $("#lobbyClose").submit(function (event) {
+                                event.preventDefault();
 
-                                        if (data.error) {
-                                            $("#lobbyResult").html(data.error);
+                                $.post("./d2mods/lobby_close.php", $("#lobbyClose").serialize(), function (data) {
+                                    if (data) {
+                                        try {
+                                            data = JSON.parse(data);
+
+                                            if (data.error) {
+                                                $("#lobbyResult").html(data.error);
+                                            }
+                                            else {
+                                                loadPage("#d2mods__lobby_list", 0);
+                                            }
                                         }
-                                        else {
-                                            loadPage("#d2mods__lobby_list", 0);
+                                        catch (err) {
+                                            $("#lobbyResult").html("Failed to close lobby.");
+                                            console.log("Failed to parse JSON. " + err.message);
                                         }
                                     }
-                                    catch (err) {
+                                    else {
                                         $("#lobbyResult").html("Failed to close lobby.");
-                                        console.log("Failed to parse JSON. " + err.message);
                                     }
-                                }
-                                else {
-                                    $("#lobbyResult").html("Failed to close lobby.");
-                                }
-                            }, "text");
-                        });
+                                }, "text");
+                            });
 
-                        $("#lobbyJoin").submit(function (event) {
-                            event.preventDefault();
+                            $("#lobbyJoin").submit(function (event) {
+                                event.preventDefault();
 
-                            $.post("./d2mods/lobby_join.php", $("#lobbyJoin").serialize(), function (data) {
-                                if (data) {
-                                    try {
-                                        data = JSON.parse(data);
+                                $.post("./d2mods/lobby_join.php", $("#lobbyJoin").serialize(), function (data) {
+                                    if (data) {
+                                        try {
+                                            data = JSON.parse(data);
 
-                                        if (data.error) {
-                                            $("#lobbyResult").html(data.error);
+                                            if (data.error) {
+                                                $("#lobbyResult").html(data.error);
+                                            }
+                                            else {
+                                                loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 0);
+                                            }
                                         }
-                                        else {
-                                            loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 0);
+                                        catch (err) {
+                                            $("#lobbyResult").html("Failed to join lobby.");
+                                            console.log("Failed to parse JSON. " + err.message);
                                         }
                                     }
-                                    catch (err) {
+                                    else {
                                         $("#lobbyResult").html("Failed to join lobby.");
-                                        console.log("Failed to parse JSON. " + err.message);
                                     }
-                                }
-                                else {
-                                    $("#lobbyResult").html("Failed to join lobby.");
-                                }
-                            }, "text");
-                        });
+                                }, "text");
+                            });
 
-                        $("#lobbyLeave").submit(function (event) {
-                            event.preventDefault();
+                            $("#lobbyLeave").submit(function (event) {
+                                event.preventDefault();
 
-                            $.post("./d2mods/lobby_leave.php", $("#lobbyLeave").serialize(), function (data) {
-                                if (data) {
-                                    try {
-                                        data = JSON.parse(data);
+                                $.post("./d2mods/lobby_leave.php", $("#lobbyLeave").serialize(), function (data) {
+                                    if (data) {
+                                        try {
+                                            data = JSON.parse(data);
 
-                                        if (data.error) {
-                                            $("#lobbyResult").html(data.error);
+                                            if (data.error) {
+                                                $("#lobbyResult").html(data.error);
+                                            }
+                                            else {
+                                                loadPage("#d2mods__lobby_list", 0);
+                                            }
                                         }
-                                        else {
-                                            loadPage("#d2mods__lobby_list", 0);
+                                        catch (err) {
+                                            $("#lobbyResult").html("Failed to leave lobby.");
+                                            console.log("Failed to parse JSON. " + err.message);
                                         }
                                     }
-                                    catch (err) {
+                                    else {
                                         $("#lobbyResult").html("Failed to leave lobby.");
-                                        console.log("Failed to parse JSON. " + err.message);
                                     }
-                                }
-                                else {
-                                    $("#lobbyResult").html("Failed to leave lobby.");
-                                }
-                            }, "text");
+                                }, "text");
+                            });
                         });
                     </script>
                 <?php
