@@ -165,12 +165,12 @@ try {
                         //LOBBY PLAYER LIST
                         {
                             echo '<div class="container">';
-                            echo '<div class="col-sm-4">';
+                            echo '<div class="col-sm-3">';
                             echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
                             echo '<tr>
                                 <th class="text-center">Player</th>
-                                <th class="col-sm-1 text-center">Confirmed</th>
+                                <!--<th class="col-sm-1 text-center">Confirmed</th>-->
                             </tr>';
 
                             foreach ($lobbyPlayers as $key => $value) {
@@ -180,7 +180,7 @@ try {
 
                                 echo '<tr>
                                     <td class="vert-align">' . $value['user_name'] . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
-                                    <td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>
+                                    <!--<td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>-->
                                 </tr>';
                             }
 
@@ -195,16 +195,6 @@ try {
                     ?>
                     <script type="application/javascript">
                         $(document).ready(function () {
-                            var pageReloader;
-                            pageReloader = setTimeout(function () {
-                                if(document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>"){
-                                    loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 1);
-                                }
-                                else{
-                                    clearTimeout(pageReloader);
-                                }
-                            }, 5000);
-
                             $("#lobbyClose").submit(function (event) {
                                 event.preventDefault();
 
@@ -282,6 +272,15 @@ try {
                                     }
                                 }, "text");
                             });
+
+                            pageReloader = setTimeout(function () {
+                                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>") {
+                                    loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 1);
+                                }
+                                else {
+                                    clearTimeout(pageReloader);
+                                }
+                            }, 5000);
                         });
                     </script>
                 <?php

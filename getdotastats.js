@@ -15,6 +15,7 @@ $(document).ready(function () {
 });
 
 var ϰ = "Kappa";
+var pageReloader;
 
 function checkURL(hash, refresh) {
     if (!hash) {
@@ -31,6 +32,10 @@ function checkURL(hash, refresh) {
 }
 
 function loadPage(url, refresh) {
+    if(pageReloader){
+        clearTimeout(pageReloader);
+    }
+
     var oldURL = url;
     url = url.replace('#', '').replace(':', '').split('__').join('/');
 
