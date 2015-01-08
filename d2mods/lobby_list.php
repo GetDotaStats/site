@@ -86,12 +86,12 @@ try {
             var pageReloader;
             pageReloader = setTimeout(function () {
                 if(document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list"){
-                    loadPage("#d2mods__lobby_list", 0);
+                    loadPage("#d2mods__lobby_list", 1);
                 }
                 else{
                     clearTimeout(pageReloader);
                 }
-            }, 10000);
+            }, 15000);
         });
     </script>
     <?php
