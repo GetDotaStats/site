@@ -120,6 +120,13 @@ try {
                                     </tr>';
                 }
 
+                if (!empty($modDetails[0]['mod_maps'])) {
+                    $modMaps = implode(", ", json_decode($modDetails[0]['mod_maps'], 1));
+                }
+                else{
+                    $modMaps = 'unknown';
+                }
+
                 echo '<div class="container">
                         <div class="col-sm-7">
                             <div class="table-responsive">
@@ -148,6 +155,10 @@ try {
                                     <tr>
                                         <th>Developer</th>
                                         <td>' . $developerCombined . '</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Maps</th>
+                                        <td>' . $modMaps . '</td>
                                     </tr>
                                     <tr>
                                         <th>Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
