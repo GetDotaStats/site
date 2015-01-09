@@ -76,11 +76,18 @@ try {
                         $lobbyMap = 'dota_pvp';
                     }
 
+                    if (!empty($modDetails['mod_workshop_link'])) {
+                        $workshopID = $modDetails['mod_workshop_link'];
+                    }
+                    else{
+                        $workshopID = NULL;
+                    }
+
                     //INSERT NEW LOBBY LISTING
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
-                        'siiiiiss',
-                        $_SESSION['user_id64'], $modID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap
+                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `workshop_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                        'sisiiiiss',
+                        $_SESSION['user_id64'], $modID, $workshopID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap
                     );
 
                     if (!empty($sqlResult)) {
