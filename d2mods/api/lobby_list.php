@@ -38,7 +38,7 @@ try {
                     $lobbyList[] = $value;
                 }
             } else {
-                $lobbyList['error'] = 'Not in active lobby!';
+                $lobbyList['error'] = 'No active lobbies!';
             }
         } else {
             $lobbyList['error'] = 'No DB connection!';
