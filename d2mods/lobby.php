@@ -33,6 +33,7 @@ try {
                             ll.`lobby_leader`,
                             ll.`lobby_active`,
                             ll.`lobby_pass`,
+                            ll.`lobby_map`,
                             ll.`date_recorded`,
                             ml.`mod_name`,
                             ml.`mod_maps`
@@ -51,31 +52,39 @@ try {
 
                     //LOBBY DETAILS
                     {
-                        if (!empty($lobbyDetails['mod_maps'])) {
-                            $modMapsArray = json_decode($lobbyDetails['mod_maps'], 1);
+                        if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
+                            if (!empty($lobbyDetails['mod_maps'])) {
+                                $modMapsArray = json_decode($lobbyDetails['mod_maps'], 1);
 
-                            if (!empty($modMapsArray)) {
-                                $modMaps = '<select name="lobby_map" size="' . count($modMapsArray) . '">';
-                                foreach ($modMapsArray as $key => $value) {
-                                    if ($key == 0) {
-                                        $modMapsSelect = ' selected';
-                                    } else {
-                                        $modMapsSelect = '';
+                                if (!empty($modMapsArray)) {
+                                    $modMaps = '<select name="lobby_map" size="' . count($modMapsArray) . '" onchange="changeMap(this.value)">';
+                                    foreach ($modMapsArray as $key => $value) {
+                                        if ($value == $lobbyDetails['lobby_map']) {
+                                            $modMapsSelect = ' selected';
+                                        } else {
+                                            $modMapsSelect = '';
+                                        }
+                                        $modMaps .= '<option' . $modMapsSelect . ' value="' . $value . '">' . $value . '</option>';
                                     }
-                                    $modMaps .= '<option' . $modMapsSelect . ' value="' . $value . '">' . $value . '</option>';
+                                    $modMaps .= '</select>';
+                                } else {
+                                    $modMaps = 'dota_pvp?';
                                 }
-                                $modMaps .= '</select>';
                             } else {
                                 $modMaps = 'dota_pvp?';
                             }
                         } else {
-                            $modMaps = 'dota_pvp??';
+                            if (!empty($lobbyDetails['lobby_map'])) {
+                                $modMaps = $lobbyDetails['lobby_map'];
+                            } else {
+                                $modMaps = 'dota_pvp??';
+                            }
                         }
 
                         echo '<div class="container">
                             <div class="col-sm-3">
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-hover">
+                                    <table class="table">
                                         <tr>
                                             <th>Mod</th>
                                             <td>' . $lobbyDetails['mod_name'] . '</td>
@@ -165,7 +174,7 @@ try {
                         //LOBBY PLAYER LIST
                         {
                             echo '<div class="container">';
-                            echo '<div class="col-sm-3">';
+                            echo '<div class="col-sm-4">';
                             echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
                             echo '<tr>
@@ -179,7 +188,7 @@ try {
                                     : '<span class="glyphicon glyphicon-remove"></span>';
 
                                 echo '<tr>
-                                    <td class="vert-align">' . $value['user_name'] . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                                    <td class="vert-align"><span class="glyphicon glyphicon-asterisk"></span> ' . $value['user_name'] . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
                                     <!--<td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>-->
                                 </tr>';
                             }
@@ -194,6 +203,32 @@ try {
 
                     ?>
                     <script type="application/javascript">
+                        function changeMap(mapName) {
+                            console.log("triggered!!!");
+                            clearTimeout(pageReloader);
+                            $.post("./d2mods/lobby_update_map.php", {"lobby_map": mapName, "lobby_id" : <?=$lobbyID?>}, function (data) {
+                                if (data) {
+                                    try {
+                                        data = JSON.parse(data);
+
+                                        if (data.error) {
+                                            $("#lobbyResult").html(data.error);
+                                        }
+                                        else {
+                                            loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 0);
+                                        }
+                                    }
+                                    catch (err) {
+                                        $("#lobbyResult").html("Failed to update lobby map.");
+                                        console.log("Failed to parse JSON. " + err.message);
+                                    }
+                                }
+                                else {
+                                    $("#lobbyResult").html("Failed to update lobby map.");
+                                }
+                            }, "text");
+                        }
+
                         $(document).ready(function () {
                             $("#lobbyClose").submit(function (event) {
                                 event.preventDefault();

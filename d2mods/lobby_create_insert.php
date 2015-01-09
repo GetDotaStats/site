@@ -14,6 +14,9 @@ try {
     checkLogin_v2();
 
     if (!empty($_SESSION['user_id64'])) {
+        $memcache = new Memcache;
+        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
         $db->q('SET NAMES utf8;');
         if ($db) {
@@ -48,14 +51,36 @@ try {
                 if (empty($sqlResult)) {
                     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                     $lobbyPass = '';
-                    for ($i = 0; $i < 5; $i++)
+                    for ($i = 0; $i < 10; $i++)
                         $lobbyPass .= $characters[rand(0, 35)];
+
+                    //GRAB MOD DETAILS
+                    $modDetails = $memcache->get('d2mods_mod_details' . $modID);
+                    if (!$modDetails) {
+                        $modDetails = $db->q(
+                            'SELECT * FROM `mod_list` WHERE `mod_id` = ? LIMIT 0,1;',
+                            'i',
+                            $modID
+                        );
+                        if (!empty($modDetails)) {
+                            $modDetails = $modDetails[0];
+                        }
+                        $memcache->set('d2mods_mod_details' . $modID, $modDetails, 0, 5 * 60);
+                    }
+
+                    if (!empty($modDetails['mod_maps'])) {
+                        $modMaps = json_decode($modDetails['mod_maps'], 1);
+                        $lobbyMap = $modMaps[0];
+                    }
+                    else{
+                        $lobbyMap = 'dota_pvp';
+                    }
 
                     //INSERT NEW LOBBY LISTING
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`) VALUES (?, ?, ?, ?, ?, ?, ?);',
-                        'siiiiis',
-                        $_SESSION['user_id64'], $modID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass
+                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
+                        'siiiiiss',
+                        $_SESSION['user_id64'], $modID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap
                     );
 
                     if (!empty($sqlResult)) {
@@ -71,11 +96,13 @@ try {
                     $json['lobby_id'] = $sqlResult[0]['lobby_id'];
                 }
             } else {
-                $json['error'] = 'Missing fields! '.json_encode($_POST);
+                $json['error'] = 'Missing fields! ' . json_encode($_POST);
             }
         } else {
             $json['error'] = 'No DB!';
         }
+
+        $memcache->close();
     } else {
         $json['error'] = 'Not logged in!';
     }
