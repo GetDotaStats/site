@@ -51,6 +51,21 @@ try {
                 if (!empty($lobbyDetails)) {
                     $lobbyDetails = $lobbyDetails[0];
 
+                    $modID = $lobbyDetails['mod_id'];
+
+                    $modDetails = $memcache->get('d2mods_mod_details' . $modID);
+                    if (!$modDetails) {
+                        $modDetails = $db->q(
+                            'SELECT * FROM `mod_list` WHERE `mod_id` = ? LIMIT 0,1;',
+                            'i',
+                            $modID
+                        );
+                        if (!empty($modDetails)) {
+                            $modDetails = $modDetails[0];
+                        }
+                        $memcache->set('d2mods_mod_details' . $lobbyDetails['mod_id'], $modDetails, 0, 5 * 60);
+                    }
+
                     //LOBBY DETAILS
                     {
                         if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
@@ -82,33 +97,38 @@ try {
                             }
                         }
 
+                        $wg = !empty($modDetails['mod_workshop_link'])
+                            ? '<strong><a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $modDetails['mod_workshop_link'] . '" target="_new">WS</a></strong>'
+                            : '<strong>WS</strong>';
+
                         echo '<div class="container">
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <tr>
                                             <th>Mod</th>
-                                            <td>' . $lobbyDetails['mod_name'] . '</td>
+                                            <td width="20"><span class="glyphicon glyphicon-question-sign" title="The mod this lobby will be for."></span></td>
+                                            <td><a class="nav-clickable" href="#d2mods__stats?id=' . $modID .'">' . $lobbyDetails['mod_name'] . '</a> ' . $wg . '</td>
                                         </tr>
                                         <tr>
                                             <th>Max Players</th>
+                                            <td><span class="glyphicon glyphicon-question-sign" title="The maximum number of players this host will wait for."></span></td>
                                             <td>' . $lobbyDetails['lobby_max_players'] . '</td>
                                         </tr>
                                         <tr>
                                             <th>Map</th>
+                                            <td><span class="glyphicon glyphicon-question-sign" title="The map that the host has selected."></span></td>
                                             <td>' . $modMaps . '</td>
                                         </tr>
                                         <tr>
                                             <th>Password</th>
+                                            <td><span class="glyphicon glyphicon-question-sign" title="The password people must use to enter the lobby in-game"></span></td>
                                             <td>' . $lobbyDetails['lobby_pass'] . '</td>
                                         </tr>
                                         <tr>
-                                            <th>TTL</th>
-                                            <td>' . $lobbyDetails['lobby_ttl'] . ' mins</td>
-                                        </tr>
-                                        <tr>
                                             <th>Created</th>
-                                            <td>' . relative_time($lobbyDetails['date_recorded']) . '</td>
+                                            <td><span class="glyphicon glyphicon-question-sign" title="When this mod was created. (How long it will be advertised)."></span></td>
+                                            <td>' . relative_time($lobbyDetails['date_recorded']) . ' <strong>(' . $lobbyDetails['lobby_ttl'] . ' mins)</strong></td>
                                         </tr>
                                     </table>
                                 </div>
