@@ -32,6 +32,7 @@ try {
                             ll.`lobby_public`,
                             ll.`lobby_leader`,
                             ll.`lobby_active`,
+                            ll.`lobby_hosted`,
                             ll.`lobby_pass`,
                             ll.`lobby_map`,
                             ll.`date_recorded`,
@@ -170,16 +171,20 @@ try {
 
                     echo '<div class="container"><span id="lobbyResult" class="label label-danger"></span></div>';
 
+                    if (!empty($lobbyDetails) && $lobbyDetails['lobby_hosted'] == 1) {
+                        echo '<div class="alert alert-success" role="alert">Lobby is ready to join!</div>';
+                    }
+
                     if (!empty($lobbyPlayers)) {
                         //LOBBY PLAYER LIST
                         {
                             echo '<div class="container">';
-                            echo '<div class="col-sm-4">';
+                            echo '<div class="col-sm-5">';
                             echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
                             echo '<tr>
                                 <th class="text-center">Player</th>
-                                <!--<th class="col-sm-1 text-center">Confirmed</th>-->
+                                <th class="col-sm-1 text-center">Confirmed</th>
                             </tr>';
 
                             foreach ($lobbyPlayers as $key => $value) {
@@ -187,10 +192,24 @@ try {
                                     ? '<span class="glyphicon glyphicon-ok"></span>'
                                     : '<span class="glyphicon glyphicon-remove"></span>';
 
+                                $lobbyLeaderMark = $lobbyDetails['lobby_leader'] == $_SESSION['user_id64']
+                                    ? '<span class="glyphicon glyphicon-asterisk"></span> '
+                                    : '';
+
                                 echo '<tr>
-                                    <td class="vert-align"><span class="glyphicon glyphicon-asterisk"></span> ' . $value['user_name'] . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
-                                    <!--<td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>-->
+                                    <td class="vert-align">' . $lobbyLeaderMark . $value['user_name'] . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                                    <td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>
                                 </tr>';
+                            }
+
+                            $playersInLobby = count($lobbyPlayers);
+                            if ($playersInLobby < $lobbyDetails['lobby_max_players']) {
+                                for ($i = 1; $i < $lobbyDetails['lobby_max_players']; $i++) {
+                                    echo '<tr>
+                                            <td class="vert-align">EMPTY</td>
+                                            <td class="text-center vert-align">&nbsp;</td>
+                                        </tr>';
+                                }
                             }
 
                             echo '</table></div>';
@@ -206,7 +225,7 @@ try {
                         function changeMap(mapName) {
                             console.log("triggered!!!");
                             clearTimeout(pageReloader);
-                            $.post("./d2mods/lobby_update_map.php", {"lobby_map": mapName, "lobby_id" : <?=$lobbyID?>}, function (data) {
+                            $.post("./d2mods/lobby_update_map.php", {"lobby_map": mapName, "lobby_id": <?=$lobbyID?>}, function (data) {
                                 if (data) {
                                     try {
                                         data = JSON.parse(data);
