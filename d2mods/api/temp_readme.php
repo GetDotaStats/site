@@ -21,3 +21,8 @@
 <h2>popular_mods GET {}</h2>
 - Call this for a list of mods on the site<br/>
 # modName, popularityRank, gamesLastWeek, gamesAllTime, workshopLink, steamGroup, modInfo, modDeveloperName, modDeveloperAvatar, modDateAdded, modDescription, mod_maps
+<br/>
+<br/>
+<h2>lobby_created GET {uid, mid, wid, map, p, mp}</h2>
+* userid32, modID (GDS digit style), workshop id, map name, password, max players
+- No output, so input parameters explained below<br/>
