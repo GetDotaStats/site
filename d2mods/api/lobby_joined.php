@@ -105,7 +105,7 @@ try {
         }
         $memcache->close();
     } else {
-        $lobbyStatus['error'] = 'Missing field!';
+        $lobbyStatus['error'] = 'Missing field! Received: {lid: ' . $lobbyID . ' | uid: ' . $userID . '}';
     }
 
 } catch (Exception $e) {
