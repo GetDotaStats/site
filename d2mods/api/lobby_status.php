@@ -42,11 +42,14 @@ try {
                 if (!empty($lobbyDetails)) {
                     $lobbyDetails = $lobbyDetails[0];
 
+                    $steamIDLeader = new SteamID($lobbyDetails['lobby_leader']);
+                    $lobbyLeader = $steamIDLeader->getSteamID32();
+
                     $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
                     $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
                     $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
                     $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
-                    $lobbyStatus['lobby_leader'] = $lobbyDetails['lobby_leader'];
+                    $lobbyStatus['lobby_leader'] = $lobbyLeader;
                     $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];

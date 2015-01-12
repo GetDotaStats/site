@@ -37,7 +37,20 @@ try {
 
             if (!empty($lobbyListSQL)) {
                 foreach ($lobbyListSQL as $key => $value) {
-                    $lobbyList[] = $value;
+                    $steamIDLeader = new SteamID($value['lobby_leader']);
+                    $lobbyLeader = $steamIDLeader->getSteamID32();
+
+                    $lobbyList[] = array(
+                        'lobby_id' => $value['lobby_id'],
+                        'mod_id' => $value['mod_id'],
+                        'workshop_id' => $value['workshop_id'],
+                        'lobby_max_players' => $value['lobby_max_players'],
+                        'lobby_leader' => $lobbyLeader,
+                        'lobby_hosted' => $value['lobby_hosted'],
+                        'lobby_pass' => $value['lobby_pass'],
+                        'lobby_map' => $value['lobby_map'],
+                        'lobby_current_players' => $value['lobby_current_players']
+                    );
                 }
             } else {
                 $lobbyList['error'] = 'No active lobbies!';
