@@ -1,5 +1,6 @@
 <?php
 require_once('../../global_functions.php');
+require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
 //List of all the active lobbies on the site

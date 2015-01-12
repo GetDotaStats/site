@@ -1,5 +1,6 @@
 <?php
 require_once('../../global_functions.php');
+require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
 //THIS LISTS ALL THE ACTIVE MODS ON THE SITE
