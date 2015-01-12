@@ -1,5 +1,6 @@
 <?php
 require_once('../../global_functions.php');
+require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
 //Allow a user to join a specific lobby
@@ -12,6 +13,9 @@ try {
     $lobbyID = !empty($_POST['lid']) && is_numeric($_POST['lid'])
         ? $_POST['lid']
         : NULL;
+
+    $steamID = new SteamID($userID);
+    $userID = $steamID->getSteamID64();
 
     if (!empty($userID) && !empty($lobbyID)) {
         $memcache = new Memcache;

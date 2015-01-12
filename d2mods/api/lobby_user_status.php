@@ -1,5 +1,6 @@
 <?php
 require_once('../../global_functions.php');
+require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
 //Get the lobby details of a specific user
@@ -8,6 +9,9 @@ try {
     $userID = !empty($_GET['uid']) && is_numeric($_GET['uid'])
         ? $_GET['uid']
         : NULL;
+
+    $steamID = new SteamID($userID);
+    $userID = $steamID->getSteamID64();
 
     if (!empty($userID)) {
         $memcache = new Memcache;
