@@ -108,7 +108,7 @@ try {
                                         <tr>
                                             <th>Mod</th>
                                             <td width="20"><span class="glyphicon glyphicon-question-sign" title="The mod this lobby will be for."></span></td>
-                                            <td><a class="nav-clickable" href="#d2mods__stats?id=' . $modID .'">' . $lobbyDetails['mod_name'] . '</a></td>
+                                            <td><a class="nav-clickable" href="#d2mods__stats?id=' . $modID . '">' . $lobbyDetails['mod_name'] . '</a></td>
                                             <td width="20">' . $wg . '</td>
                                         </tr>
                                         <tr>
@@ -196,7 +196,9 @@ try {
 
                     echo '<div class="container"><span id="lobbyResult" class="label label-danger"></span></div>';
 
-                    if (!empty($lobbyDetails) && $lobbyDetails['lobby_hosted'] == 1) {
+                    if (!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 0) {
+                        echo '<div class="alert alert-danger" role="alert">Lobby has now expired!</div>';
+                    } else if (!empty($lobbyDetails) && $lobbyDetails['lobby_hosted'] == 1) {
                         echo '<div class="alert alert-success" role="alert">Lobby is ready to join!</div>';
                     }
 
@@ -353,7 +355,7 @@ try {
                             });
 
                             pageReloader = setTimeout(function () {
-                                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>") {
+                                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>" && <?=!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 1 ? 1 : 0?> == 1) {
                                     loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 1);
                                 }
                                 else {
