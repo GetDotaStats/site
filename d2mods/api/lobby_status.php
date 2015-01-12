@@ -51,7 +51,7 @@ try {
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
                     $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
                 } else {
-                    $lobbyStatus['error'] = 'Not in active lobby!';
+                    $lobbyStatus['error'] = 'No lobby with that ID!';
                 }
             } else {
                 $lobbyStatus['error'] = 'No DB connection!';
@@ -61,7 +61,7 @@ try {
         }
         $memcache->close();
     } else {
-        $lobbyStatus['error'] = 'Invalid user id!';
+        $lobbyStatus['error'] = 'Invalid lobby id!';
     }
 
 } catch (Exception $e) {
