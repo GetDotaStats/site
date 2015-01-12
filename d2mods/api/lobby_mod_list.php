@@ -43,11 +43,11 @@ try {
                         : NULL;
 
                     !empty($value['games_last_week'])
-                        ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])
+                        ? $temp['gamesLastWeek'] = $value['games_last_week']
                         : $temp['gamesLastWeek'] = 0;
 
                     !empty($value['games_all_time'])
-                        ? $temp['gamesAllTime'] = number_format($value['games_all_time'])
+                        ? $temp['gamesAllTime'] = $value['games_all_time']
                         : $temp['gamesAllTime'] = 0;
 
                     !empty($value['mod_maps'])
