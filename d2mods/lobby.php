@@ -217,7 +217,7 @@ try {
                                     ? '<span class="glyphicon glyphicon-ok"></span>'
                                     : '<span class="glyphicon glyphicon-remove"></span>';
 
-                                $lobbyLeaderMark = $lobbyDetails['lobby_leader'] == $_SESSION['user_id64']
+                                $lobbyLeaderMark = $lobbyDetails['lobby_leader'] == $value['user_id64']
                                     ? '<span class="glyphicon glyphicon-asterisk"></span> '
                                     : '';
 
