@@ -108,27 +108,32 @@ try {
                                         <tr>
                                             <th>Mod</th>
                                             <td width="20"><span class="glyphicon glyphicon-question-sign" title="The mod this lobby will be for."></span></td>
-                                            <td><a class="nav-clickable" href="#d2mods__stats?id=' . $modID .'">' . $lobbyDetails['mod_name'] . '</a> ' . $wg . '</td>
+                                            <td><a class="nav-clickable" href="#d2mods__stats?id=' . $modID .'">' . $lobbyDetails['mod_name'] . '</a></td>
+                                            <td width="20">' . $wg . '</td>
                                         </tr>
                                         <tr>
                                             <th>Max Players</th>
                                             <td><span class="glyphicon glyphicon-question-sign" title="The maximum number of players this host will wait for."></span></td>
                                             <td>' . $lobbyDetails['lobby_max_players'] . '</td>
+                                            <td>&nbsp;</td>
                                         </tr>
                                         <tr>
                                             <th>Map</th>
                                             <td><span class="glyphicon glyphicon-question-sign" title="The map that the host has selected."></span></td>
                                             <td>' . $modMaps . '</td>
+                                            <td>&nbsp;</td>
                                         </tr>
                                         <tr>
                                             <th>Password</th>
                                             <td><span class="glyphicon glyphicon-question-sign" title="The password people must use to enter the lobby in-game"></span></td>
                                             <td>' . $lobbyDetails['lobby_pass'] . '</td>
+                                            <td>&nbsp;</td>
                                         </tr>
                                         <tr>
                                             <th>Created</th>
                                             <td><span class="glyphicon glyphicon-question-sign" title="When this mod was created. (How long it will be advertised)."></span></td>
                                             <td>' . relative_time($lobbyDetails['date_recorded']) . ' <strong>(' . $lobbyDetails['lobby_ttl'] . ' mins)</strong></td>
+                                            <td>&nbsp;</td>
                                         </tr>
                                     </table>
                                 </div>
