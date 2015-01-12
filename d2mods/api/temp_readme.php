@@ -1,13 +1,19 @@
-<h2>lobby_joined POST {uid, lid}</h2>
-* user id32, lobby id<br/>
-- Call this after joining a lobby (hosts included)<br/>
-# lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map<br/>
+<h2>lobby_mod_list GET {}</h2>
+* No input<br/>
+- Call this to get a list of mods that we can make lobbies for<br/>
+# modName, workshopID, gamesLastWeek, gamesAllTime, mod_maps
+<br/>
 <br/>
 <h2>lobby_list GET {}</h2>
 * No input<br/>
 - Call this to get a list of lobbies. lobby_hosted (0,1) indicates if the lobby is ready to join<br/>
 # lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
 <br/>
+<br/>
+<h2>lobby_joined POST {uid, lid}</h2>
+* user id32, lobby id<br/>
+- Call this after joining a lobby (hosts included)<br/>
+# lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map<br/>
 <br/>
 <h2>lobby_status GET {lid}</h2>
 * lobby id<br/>
