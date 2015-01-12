@@ -6,12 +6,12 @@ require_once('../../connections/parameters.php');
 //Allow a user to join a specific lobby
 
 try {
-    $userID = !empty($_POST['uid']) && is_numeric($_POST['uid'])
-        ? $_POST['uid']
+    $userID = !empty($_GET['uid']) && is_numeric($_GET['uid'])
+        ? $_GET['uid']
         : NULL;
 
-    $lobbyID = !empty($_POST['lid']) && is_numeric($_POST['lid'])
-        ? $_POST['lid']
+    $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])
+        ? $_GET['lid']
         : NULL;
 
     $steamID = new SteamID($userID);
