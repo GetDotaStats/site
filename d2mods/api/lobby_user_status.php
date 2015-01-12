@@ -2,21 +2,17 @@
 require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
-//Allow a user to join a specific lobby
+//Get the lobby details of a specific user
 
 try {
-    $userID = !empty($_POST['uid']) && is_numeric($_POST['uid'])
-        ? $_POST['uid']
+    $userID = !empty($_GET['uid']) && is_numeric($_GET['uid'])
+        ? $_GET['uid']
         : NULL;
 
-    $lobbyID = !empty($_POST['lid']) && is_numeric($_POST['lid'])
-        ? $_POST['lid']
-        : NULL;
-
-    if (!empty($userID) && !empty($lobbyID)) {
+    if (!empty($userID)) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
-        $lobbyStatus = $memcache->get('api_d2mods_lobby_joined' . $userID);
+        $lobbyStatus = $memcache->get('api_d2mods_lobby_user_status' . $userID);
         if (!$lobbyStatus) {
             $lobbyStatus = array();
             $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
@@ -39,11 +35,11 @@ try {
                             llp.`user_confirmed`
                         FROM `lobby_list_players` llp
                         LEFT JOIN `lobby_list` ll ON llp.`lobby_id` = ll.`lobby_id`
-                        WHERE ll.`lobby_active` = 1 AND llp.`user_id64` = ? AND llp.`lobby_id` = ?
+                        WHERE ll.`lobby_active` = 1 AND llp.`user_id64` = ?
                         ORDER BY `lobby_id` DESC
                         LIMIT 0,1;',
-                    'si',
-                    $userID, $lobbyID
+                    's',
+                    $userID
                 );
 
                 if (!empty($lobbyUserDetails)) {
@@ -57,36 +53,6 @@ try {
                     $lobbyStatus['lobby_hosted'] = $lobbyUserDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyUserDetails['lobby_pass'];
                     $lobbyStatus['lobby_map'] = $lobbyUserDetails['lobby_map'];
-
-                    $sqlResult = $db->q(
-                        'UPDATE `lobby_list_players` SET `user_confirmed` = 1 WHERE `lobby_id` = ? AND `user_id64` = ?;',
-                        'is',
-                        $lobbyID, $userID
-                    );
-
-                    if (!empty($sqlResult)) {
-                        //RETURN LOBBY ID
-                        $json['result'] = 'Lobby ' . $lobbyID . ' updated!';
-                    } else {
-                        //SOMETHING FUNKY HAPPENED
-                        $json['error'] = 'Unknown error!';
-                    }
-
-                    if ($lobbyUserDetails['lobby_leader'] == $userID) {
-                        $sqlResult = $db->q(
-                            'UPDATE `lobby_list` SET `lobby_hosted` = 1 WHERE `lobby_id` = ?;',
-                            'i',
-                            $lobbyID
-                        );
-
-                        if (!empty($sqlResult)) {
-                            //RETURN LOBBY ID
-                            $json['result2'] = 'Lobby ' . $lobbyID . ' hosted!';
-                        } else {
-                            //SOMETHING FUNKY HAPPENED
-                            $json['error2'] = 'Unknown error!';
-                        }
-                    }
                 } else {
                     $lobbyStatus['error'] = 'Not in active lobby!';
                 }
@@ -94,11 +60,11 @@ try {
                 $lobbyStatus['error'] = 'No DB connection!';
             }
 
-            $memcache->set('api_d2mods_lobby_joined' . $userID, $lobbyStatus, 0, 1);
+            $memcache->set('api_d2mods_lobby_user_status' . $userID, $lobbyStatus, 0, 1);
         }
         $memcache->close();
     } else {
-        $lobbyStatus['error'] = 'Missing field!';
+        $lobbyStatus['error'] = 'Invalid user id!';
     }
 
 } catch (Exception $e) {

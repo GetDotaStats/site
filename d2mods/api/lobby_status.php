@@ -2,20 +2,22 @@
 require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
+//Get the lobby details of a specific lobby
+
 try {
-    $userID = !empty($_GET['uid']) && is_numeric($_GET['uid'])
-        ? $_GET['uid']
+    $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])
+        ? $_GET['lid']
         : NULL;
 
-    if (!empty($userID)) {
+    if (!empty($lobbyID)) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
-        $lobbyStatus = $memcache->get('api_d2mods_lobby_status' . $userID);
+        $lobbyStatus = $memcache->get('api_d2mods_lobby_status' . $lobbyID);
         if (!$lobbyStatus) {
             $lobbyStatus = array();
             $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
             if ($db) {
-                $lobbyUserDetails = $db->q(
+                $lobbyDetails = $db->q(
                     'SELECT
                             ll.`lobby_id`,
                             ll.`mod_id`,
@@ -28,29 +30,26 @@ try {
                             ll.`lobby_active`,
                             ll.`lobby_hosted`,
                             ll.`lobby_pass`,
-                            ll.`lobby_map`,
-                            llp.`user_id64`,
-                            llp.`user_confirmed`
-                        FROM `lobby_list_players` llp
-                        LEFT JOIN `lobby_list` ll ON llp.`lobby_id` = ll.`lobby_id`
-                        WHERE ll.`lobby_active` = 1 AND llp.`user_id64` = ?
+                            ll.`lobby_map`
+                        FROM `lobby_list` ll
+                        WHERE ll.`lobby_active` = 1 AND ll.`lobby_id` = ?
                         ORDER BY `lobby_id` DESC
                         LIMIT 0,1;',
-                    's',
-                    $userID
+                    'i',
+                    $lobbyID
                 );
 
-                if (!empty($lobbyUserDetails)) {
-                    $lobbyUserDetails = $lobbyUserDetails[0];
+                if (!empty($lobbyDetails)) {
+                    $lobbyDetails = $lobbyDetails[0];
 
-                    $lobbyStatus['lobby_id'] = $lobbyUserDetails['lobby_id'];
-                    $lobbyStatus['mod_id'] = $lobbyUserDetails['mod_id'];
-                    $lobbyStatus['workshop_id'] = $lobbyUserDetails['workshop_id'];
-                    $lobbyStatus['lobby_max_players'] = $lobbyUserDetails['lobby_max_players'];
-                    $lobbyStatus['lobby_leader'] = $lobbyUserDetails['lobby_leader'];
-                    $lobbyStatus['lobby_hosted'] = $lobbyUserDetails['lobby_hosted'];
-                    $lobbyStatus['lobby_pass'] = $lobbyUserDetails['lobby_pass'];
-                    $lobbyStatus['lobby_map'] = $lobbyUserDetails['lobby_map'];
+                    $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
+                    $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
+                    $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
+                    $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
+                    $lobbyStatus['lobby_leader'] = $lobbyDetails['lobby_leader'];
+                    $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
+                    $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
+                    $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
                 } else {
                     $lobbyStatus['error'] = 'Not in active lobby!';
                 }
@@ -58,7 +57,7 @@ try {
                 $lobbyStatus['error'] = 'No DB connection!';
             }
 
-            $memcache->set('api_d2mods_lobby_status' . $userID, $lobbyStatus, 0, 1);
+            $memcache->set('api_d2mods_lobby_status' . $lobbyID, $lobbyStatus, 0, 1);
         }
         $memcache->close();
     } else {

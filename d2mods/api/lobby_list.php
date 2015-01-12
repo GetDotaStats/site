@@ -2,6 +2,8 @@
 require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
+//List of all the active lobbies on the site
+
 try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
