@@ -32,7 +32,7 @@ try {
                             ll.`lobby_pass`,
                             ll.`lobby_map`
                         FROM `lobby_list` ll
-                        WHERE ll.`lobby_active` = 1 AND ll.`lobby_id` = ?
+                        WHERE ll.`lobby_id` = ?
                         ORDER BY `lobby_id` DESC
                         LIMIT 0,1;',
                     'i',
@@ -47,6 +47,7 @@ try {
                     $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
                     $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
                     $lobbyStatus['lobby_leader'] = $lobbyDetails['lobby_leader'];
+                    $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
                     $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
