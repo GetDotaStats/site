@@ -1,40 +1,48 @@
 <h2>lobby_mod_list GET {}</h2>
 * No input<br/>
 - Call this to get a list of mods that we can make lobbies for<br/>
-# modName, workshopID, gamesLastWeek, gamesAllTime, mod_maps
+# error, modName, workshopID, gamesLastWeek, gamesAllTime, mod_maps
 <br/>
 <br/>
 <h2>lobby_list GET {}</h2>
 * No input<br/>
 - Call this to get a list of lobbies. lobby_hosted (0,1) indicates if the lobby is ready to join<br/>
-# lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
 <br/>
 <br/>
 <h2>lobby_joined POST {uid, lid}</h2>
 * user id32, lobby id<br/>
 - Call this after joining a lobby (hosts included)<br/>
-# lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map<br/>
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map<br/>
 <br/>
 <h2>lobby_status GET {lid}</h2>
 * lobby id<br/>
 - Call this to get details about a specific lobby. lobby_active (0,1) indicates that the lobby is still being advertised
 <br/>
-# lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_active, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_active, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
 <br/>
 <br/>
 <h2>lobby_user_status GET {uid}</h2>
 * userid32<br/>
 - Call this to get details about the lobby a user is expected to join<br/>
-# lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
 <br/>
 <br/>
 <h2>popular_mods GET {}</h2>
 * No input<br/>
 - Call this for a list of mods on the site<br/>
-# modName, popularityRank, gamesLastWeek, gamesAllTime, workshopLink, steamGroup, modInfo, modDeveloperName, modDeveloperAvatar, modDateAdded, modDescription, mod_maps
+# error, modName, popularityRank, gamesLastWeek, gamesAllTime, workshopLink, steamGroup, modInfo, modDeveloperName, modDeveloperAvatar, modDateAdded, modDescription, mod_maps
 <br/>
 <br/>
-<h2>lobby_created GET {uid, mid, wid, map, p, mp}</h2>
-* userid32, modID (GDS digit style), workshop id, map name, password, max players<br/>
+<h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln}</h2>
+* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name<br/>
 - No output, so input parameters explained below<br/>
-# No output
+# error, result, token<br/>
+* string describing what happened, string describing success, secure token<br/>
+<br/>
+<h2>lobby_update GET {lid, map, mp, r, ln, t}</h2>
+* lobbyID, map name, max players, region, lobby name, secure token<br/>
+- Call this to update the details of a lobby<br/>
+# error, result, token<br/>
+* string describing what happened, string describing success, secure token<br/>
+<br/>

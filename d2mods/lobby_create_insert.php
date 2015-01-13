@@ -54,6 +54,10 @@ try {
                     for ($i = 0; $i < 10; $i++)
                         $lobbyPass .= $characters[rand(0, 35)];
 
+                    $lobbySecureToken = '';
+                    for ($i = 0; $i < 10; $i++)
+                        $lobbySecureToken .= $characters[rand(0, 35)];
+
                     //GRAB MOD DETAILS
                     $modDetails = $memcache->get('d2mods_mod_details' . $modID);
                     if (!$modDetails) {
@@ -85,9 +89,9 @@ try {
 
                     //INSERT NEW LOBBY LISTING
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `workshop_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
-                        'sisiiiiss',
-                        $_SESSION['user_id64'], $modID, $workshopID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap
+                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `workshop_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                        'sisiiiisss',
+                        $_SESSION['user_id64'], $modID, $workshopID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap, $lobbySecureToken
                     );
 
                     if (!empty($sqlResult)) {

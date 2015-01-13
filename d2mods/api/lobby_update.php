@@ -6,24 +6,12 @@ require_once('../../connections/parameters.php');
 //Allow client plugin to communicate new lobbies to site
 
 try {
-    $userID = !empty($_GET['uid']) && is_numeric($_GET['uid'])
-        ? $_GET['uid']
-        : NULL;
-
-    $modID = !empty($_GET['mid']) && is_numeric($_GET['mid'])
-        ? $_GET['mid']
-        : NULL;
-
-    $workshopID = !empty($_GET['wid']) && is_numeric($_GET['wid'])
-        ? $_GET['wid']
+    $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])
+        ? $_GET['lid']
         : NULL;
 
     $map = !empty($_GET['map'])
         ? htmlentities($_GET['map'])
-        : NULL;
-
-    $pass = !empty($_GET['p'])
-        ? htmlentities($_GET['p'])
         : NULL;
 
     $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp'])
@@ -38,6 +26,10 @@ try {
         ? htmlentities($_GET['ln'])
         : NULL;
 
+    $token = !empty($_GET['t'])
+        ? htmlentities($_GET['t'])
+        : NULL;
+
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $lobbySecureToken = '';
     for ($i = 0; $i < 10; $i++)
@@ -46,7 +38,7 @@ try {
     $steamID = new SteamID($userID);
     $userID = $steamID->getSteamID64();
 
-    if (!empty($userID) && !empty($modID) && !empty($workshopID) && !empty($map) && !empty($pass) && !empty($maxPlayers)) {
+    if (!empty($userID) && !empty($modID) && !empty($workshopID) && !empty($map) && !empty($pass) && !empty($maxPlayers) && !empty($token)) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
@@ -54,14 +46,14 @@ try {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
         if ($db) {
             $sqlResult = $db->q(
-                'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_max_players`, `lobby_leader`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, 1, 1, ?, ?, ?);',
-                'isissss',
-                $modID, $workshopID, $maxPlayers, $userID, $pass, $map, $lobbySecureToken
+                'UPDATE `lobby_list` SET `lobby_max_players`, `lobby_map`) VALUES (?, ?) WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+                'isis',
+                $maxPlayers, $map, $lobbyID, $lobbySecureToken
             );
 
             if (!empty($sqlResult)) {
                 //RETURN LOBBY ID
-                $json['result'] = 'Lobby ' . $db->last_index() . ' created!';
+                $json['result'] = 'Lobby ' . $lobbyID . ' updated!';
                 $json['token'] = $lobbySecureToken;
             } else {
                 //SOMETHING FUNKY HAPPENED
