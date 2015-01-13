@@ -14,10 +14,14 @@ try {
         ? $_GET['lid']
         : NULL;
 
+    $token = !empty($_GET['t'])
+        ? $_GET['t']
+        : NULL;
+
     $steamID = new SteamID($userID);
     $userID = $steamID->getSteamID64();
 
-    if (!empty($userID) && !empty($lobbyID)) {
+    if (!empty($userID) && !empty($lobbyID) && !empty($token)) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
         $lobbyStatus = $memcache->get('api_d2mods_lobby_joined' . $userID);
@@ -46,11 +50,11 @@ try {
                             llp.`user_confirmed`
                         FROM `lobby_list_players` llp
                         LEFT JOIN `lobby_list` ll ON llp.`lobby_id` = ll.`lobby_id`
-                        WHERE ll.`lobby_active` = 1 AND llp.`user_id64` = ? AND llp.`lobby_id` = ?
+                        WHERE ll.`lobby_active` = 1 AND llp.`user_id64` = ? AND llp.`lobby_id` = ? AND ll.`lobby_secure_token` = ?
                         ORDER BY `lobby_id` DESC
                         LIMIT 0,1;',
-                    'si',
-                    $userID, $lobbyID
+                    'sis',
+                    $userID, $lobbyID, $token
                 );
 
                 if (!empty($lobbyUserDetails)) {
@@ -98,7 +102,7 @@ try {
                         }
                     }
                 } else {
-                    $lobbyStatus['error'] = 'Not in active lobby!';
+                    $lobbyStatus['error'] = 'Not in active lobby or bad token!';
                 }
             } else {
                 $lobbyStatus['error'] = 'No DB connection!';

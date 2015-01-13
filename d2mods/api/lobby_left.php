@@ -69,7 +69,7 @@ try {
                     $lobbyStatus['error'] = 'Unknown error!';
                 }
             } else {
-                $lobbyStatus['error'] = 'Not in active lobby!';
+                $lobbyStatus['error'] = 'Not in active lobby or bad token!';
             }
         } else {
             $lobbyStatus['error'] = 'No DB connection!';
