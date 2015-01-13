@@ -21,6 +21,8 @@ try {
                         ll.`lobby_id`,
                         ll.`mod_id`,
                         ll.`workshop_id`,
+                        ll.`lobby_name`,
+                        ll.`lobby_region`,
                         ll.`lobby_max_players`,
                         ll.`lobby_leader`,
                         ll.`lobby_hosted`,
@@ -44,10 +46,20 @@ try {
                     $steamIDLeader = new SteamID($value['lobby_leader']);
                     $lobbyLeader = $steamIDLeader->getSteamID32();
 
+                    $lobbyName = !empty($value['lobby_name'])
+                        ? $value['lobby_name']
+                        : 'Custom Lobby #' . $value['lobby_id'];
+
+                    $lobbyRegion = !empty($value['lobby_region'])
+                        ? $value['lobby_region']
+                        : 0;
+
                     $lobbyList[] = array(
                         'lobby_id' => $value['lobby_id'],
                         'mod_id' => $value['mod_id'],
                         'workshop_id' => $value['workshop_id'],
+                        'lobby_name' => $lobbyName,
+                        'lobby_region' => $lobbyRegion,
                         'lobby_max_players' => $value['lobby_max_players'],
                         'lobby_leader' => $lobbyLeader,
                         'lobby_hosted' => $value['lobby_hosted'],

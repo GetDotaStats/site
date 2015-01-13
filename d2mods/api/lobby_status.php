@@ -26,6 +26,8 @@ try {
                             ll.`lobby_id`,
                             ll.`mod_id`,
                             ll.`workshop_id`,
+                            ll.`lobby_name`,
+                            ll.`lobby_region`,
                             ll.`lobby_ttl`,
                             ll.`lobby_min_players`,
                             ll.`lobby_max_players`,
@@ -80,6 +82,15 @@ try {
                     $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
                     $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
                     $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
+
+                    $lobbyStatus['lobby_name'] = !empty($lobbyDetails['lobby_name'])
+                        ? $lobbyDetails['lobby_name']
+                        : 'Custom Lobby #' . $lobbyDetails['lobby_id'];
+
+                    $lobbyStatus['lobby_region'] = !empty($lobbyDetails['lobby_region'])
+                        ? $lobbyDetails['lobby_region']
+                        : 0;
+
                     $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
                     $lobbyStatus['lobby_leader'] = $lobbyLeader;
                     $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
