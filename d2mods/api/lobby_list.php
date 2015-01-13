@@ -72,9 +72,9 @@ try {
 }
 
 try {
-    echo utf8_encode(json_encode($lobbyStatus));
+    echo utf8_encode(json_encode($lobbyList));
 } catch (Exception $e) {
-    unset($lobbyStatus);
-    $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
-    echo utf8_encode(json_encode($lobbyStatus));
+    unset($lobbyList);
+    $lobbyList['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
+    echo utf8_encode(json_encode($lobbyList));
 }
