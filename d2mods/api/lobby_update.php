@@ -30,18 +30,7 @@ try {
         ? htmlentities($_GET['t'])
         : NULL;
 
-    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $lobbySecureToken = '';
-    for ($i = 0; $i < 10; $i++)
-        $lobbySecureToken .= $characters[rand(0, 35)];
-
-    $steamID = new SteamID($userID);
-    $userID = $steamID->getSteamID64();
-
-    if (!empty($userID) && !empty($modID) && !empty($workshopID) && !empty($map) && !empty($pass) && !empty($maxPlayers) && !empty($token)) {
-        $memcache = new Memcache;
-        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
-
+    if (!empty($lobbyID) && !empty($map) && !empty($maxPlayers) && !empty($token)) {
         $lobbyStatus = array();
 
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
@@ -49,24 +38,22 @@ try {
 
         if ($db) {
             $sqlResult = $db->q(
-                'UPDATE `lobby_list` SET `lobby_max_players`, `lobby_map`, `lobby_region`, `lobby_name`) VALUES (?, ?, ?, ?) WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+                'UPDATE `lobby_list` SET `lobby_max_players` = ?, `lobby_map` = ?, `lobby_region` = ?, `lobby_name` = ? WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
                 'isisis',
-                $maxPlayers, $map, $region, $lobbyName, $lobbyID, $lobbySecureToken
+                $maxPlayers, $map, $region, $lobbyName, $lobbyID, $token
             );
 
             if (!empty($sqlResult)) {
                 //RETURN LOBBY ID
                 $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' updated!';
-                $lobbyStatus['token'] = $lobbySecureToken;
+                $lobbyStatus['token'] = $token;
             } else {
                 //SOMETHING FUNKY HAPPENED
-                $lobbyStatus['error'] = 'Unknown error!';
+                $lobbyStatus['error'] = 'Unknown error! Fields: {mp: ' . $maxPlayers . ', map: ' . $map . ', region: ' . $region . ', lobbyName: ' . $lobbyName . ', lid: ' . $lobbyID . ', token: ' . $token . '}';
             }
         } else {
             $lobbyStatus['error'] = 'No DB connection!';
         }
-
-        $memcache->close();
     } else {
         $lobbyStatus['error'] = 'Missing field!';
     }
