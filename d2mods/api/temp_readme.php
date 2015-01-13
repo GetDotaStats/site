@@ -1,7 +1,7 @@
-<h2>lobby_mod_list GET {}</h2>
-* No input<br/>
+<h2>lobby_mod_list GET {r}</h2>
+* region (optional)<br/>
 - Call this to get a list of mods that we can make lobbies for<br/>
-# error, modName, workshopID, gamesLastWeek, gamesAllTime, mod_maps
+# error, lobby_id, mod_id, workshop_id, lobby_name, lobby_region, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
 <br/>
 <br/>
 <h2>lobby_list GET {}</h2>
