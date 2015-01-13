@@ -16,7 +16,10 @@ try {
         $lobbyStatus = $memcache->get('api_d2mods_lobby_status' . $lobbyID);
         if (!$lobbyStatus) {
             $lobbyStatus = array();
+
             $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+            $db->q('SET NAMES utf8;');
+
             if ($db) {
                 $lobbyDetails = $db->q(
                     'SELECT
@@ -40,11 +43,39 @@ try {
                     $lobbyID
                 );
 
+                $lobbyPlayers = $db->q(
+                    'SELECT
+                            llp.`lobby_id`,
+                            llp.`user_id64`,
+                            llp.`user_confirmed`,
+                            gu.`user_name`
+                        FROM `lobby_list_players` llp
+                        JOIN `gds_users` gu ON llp.`user_id64` = gu.`user_id64`
+                        WHERE lobby_id = ?;',
+                    'i',
+                    $lobbyID
+                );
+
                 if (!empty($lobbyDetails)) {
                     $lobbyDetails = $lobbyDetails[0];
 
                     $steamIDLeader = new SteamID($lobbyDetails['lobby_leader']);
                     $lobbyLeader = $steamIDLeader->getSteamID32();
+
+                    $lobbyPlayersArray = array();
+                    if (!empty($lobbyPlayers)) {
+                        foreach ($lobbyPlayers as $key => $value) {
+                            $userName = !empty($value['user_name'])
+                                ? $value['user_name']
+                                : 'Unknown??';
+
+                            $lobbyPlayersArray = array(
+                                'user_id64' => $value['user_id64'],
+                                'user_name' => $userName,
+                                'user_confirmed' => $value['user_confirmed']
+                            );
+                        }
+                    }
 
                     $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
                     $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
@@ -55,6 +86,7 @@ try {
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
                     $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
+                    $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
                 } else {
                     $lobbyStatus['error'] = 'No lobby with that ID!';
                 }
@@ -74,4 +106,10 @@ try {
     $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
 }
 
-echo utf8_encode(json_encode($lobbyStatus));
+try {
+    echo utf8_encode(json_encode($lobbyStatus));
+} catch (Exception $e) {
+    unset($lobbyStatus);
+    $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
+    echo utf8_encode(json_encode($lobbyStatus));
+}

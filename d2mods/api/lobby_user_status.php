@@ -19,7 +19,10 @@ try {
         $lobbyStatus = $memcache->get('api_d2mods_lobby_user_status' . $userID);
         if (!$lobbyStatus) {
             $lobbyStatus = array();
+
             $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+            $db->q('SET NAMES utf8;');
+
             if ($db) {
                 $lobbyUserDetails = $db->q(
                     'SELECT
@@ -79,4 +82,10 @@ try {
     $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
 }
 
-echo utf8_encode(json_encode($lobbyStatus));
+try {
+    echo utf8_encode(json_encode($lobbyStatus));
+} catch (Exception $e) {
+    unset($lobbyStatus);
+    $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
+    echo utf8_encode(json_encode($lobbyStatus));
+}

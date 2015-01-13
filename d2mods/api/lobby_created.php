@@ -51,7 +51,10 @@ try {
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
         $lobbyStatus = array();
+
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+        $db->q('SET NAMES utf8;');
+
         if ($db) {
             $sqlResult = $db->q(
                 'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_max_players`, `lobby_leader`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, 1, 1, ?, ?, ?);',
@@ -81,4 +84,10 @@ try {
     $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
 }
 
-echo utf8_encode(json_encode($lobbyStatus));
+try {
+    echo utf8_encode(json_encode($lobbyStatus));
+} catch (Exception $e) {
+    unset($lobbyStatus);
+    $lobbyStatus['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
+    echo utf8_encode(json_encode($lobbyStatus));
+}

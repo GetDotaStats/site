@@ -12,7 +12,10 @@ try {
     $popularMods = $memcache->get('api_lobby_d2mods_list');
     if (!$popularMods) {
         $popularMods = array();
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+
+        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+        $db->q('SET NAMES utf8;');
+
         if ($db) {
             $modListActive = simple_cached_query('api_lobby_d2mods_list_active',
                 'SELECT
@@ -76,4 +79,10 @@ try {
     $popularMods['error'] = 'Caught Exception: ' . $e->getMessage() . '<br /> Contact getdotastats.com';
 }
 
-echo utf8_encode(json_encode($popularMods));
+try {
+    echo utf8_encode(json_encode($popularMods));
+} catch (Exception $e) {
+    unset($popularMods);
+    $popularMods['error'] = 'Contact getdotastats.com - Caught Exception: ' . $e->getMessage();
+    echo utf8_encode(json_encode($popularMods));
+}
