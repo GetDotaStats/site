@@ -20,11 +20,11 @@ try {
 
     $region = !empty($_GET['r']) && is_numeric($_GET['r'])
         ? $_GET['r']
-        : NULL;
+        : 0;
 
     $lobbyName = !empty($_GET['ln'])
         ? htmlentities($_GET['ln'])
-        : NULL;
+        : 'Custom Lobby #' . $lobbyID;
 
     $token = !empty($_GET['t'])
         ? htmlentities($_GET['t'])
@@ -49,9 +49,9 @@ try {
 
         if ($db) {
             $sqlResult = $db->q(
-                'UPDATE `lobby_list` SET `lobby_max_players`, `lobby_map`) VALUES (?, ?) WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
-                'isis',
-                $maxPlayers, $map, $lobbyID, $lobbySecureToken
+                'UPDATE `lobby_list` SET `lobby_max_players`, `lobby_map`, `lobby_region`, `lobby_name`) VALUES (?, ?, ?, ?) WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+                'isisis',
+                $maxPlayers, $map, $region, $lobbyName, $lobbyID, $lobbySecureToken
             );
 
             if (!empty($sqlResult)) {
