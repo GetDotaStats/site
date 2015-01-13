@@ -38,6 +38,10 @@ try {
                         ? $value['mod_workshop_link']
                         : 0;
 
+                    $temp['modID'] = !empty($value['mod_id'])
+                        ? $value['mod_id']
+                        : 0;
+
                     !empty($key)
                         ? $temp['popularityRank'] = $key + 1
                         : NULL;
