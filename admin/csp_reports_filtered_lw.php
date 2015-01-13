@@ -19,8 +19,12 @@ try {
 
         $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
         $db->q('SET NAMES utf8;');
+
+        $memcache = new Memcache;
+        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
         if ($db) {
-            $reports = $db->q(
+            $reports = simple_cached_query(
+                'csp_reports_filtered_lw',
                 "SELECT
                         `violated-directive`,
                         `blocked-uri`,
@@ -29,8 +33,37 @@ try {
                     FROM `reports_csp_filter`
                     WHERE `dateRecorded` >= now() - INTERVAL 7 DAY
                     GROUP BY 1,2,3
-                    ORDER BY sumReports DESC;"
+                    ORDER BY sumReports DESC;",
+                60
             );
+
+            $reportsStats = simple_cached_query(
+                'csp_report_stats',
+                "SELECT
+                    (
+                        SELECT
+                            COUNT(*) as total_reports_lw
+                        FROM `reports_csp_filter`
+                        WHERE `dateRecorded` >= now() - INTERVAL 7 DAY
+                        LIMIT 0,1
+                    ) AS total_reports_lw,
+                    (
+                        SELECT
+                            COUNT(*) as total_reports_lw
+                        FROM `reports_csp_filter`
+                        LIMIT 0,1
+                    ) AS total_reports;",
+                60
+            );
+
+            if (!empty($reportsStats)) {
+                echo
+                    '<div class="alert alert-danger">
+                        <span class="h3">Reports</span><br />
+                        <strong>Total:</strong> ' . number_format($reportsStats[0]['total_reports']) . '<br />
+                        <strong>Last Week:</strong> ' . number_format($reportsStats[0]['total_reports_lw']) . '
+                    </div>';
+            }
 
             if (!empty($reports)) {
                 echo '<div class="table-responsive">
@@ -59,6 +92,8 @@ try {
         } else {
             echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
         }
+
+        $memcache->close();
 
         echo '<p>
                 <div class="text-center">
