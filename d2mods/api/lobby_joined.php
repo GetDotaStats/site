@@ -76,10 +76,10 @@ try {
 
                     if (!empty($sqlResult)) {
                         //RETURN LOBBY ID
-                        $json['result'] = 'Lobby ' . $lobbyID . ' updated!';
+                        $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' updated!';
                     } else {
                         //SOMETHING FUNKY HAPPENED
-                        $json['error'] = 'Unknown error!';
+                        $lobbyStatus['error'] = 'Unknown error!';
                     }
 
                     if ($lobbyUserDetails['lobby_leader'] == $userID) {
@@ -91,10 +91,10 @@ try {
 
                         if (!empty($sqlResult)) {
                             //RETURN LOBBY ID
-                            $json['result2'] = 'Lobby ' . $lobbyID . ' hosted!';
+                            $lobbyStatus['result2'] = 'Lobby ' . $lobbyID . ' hosted!';
                         } else {
                             //SOMETHING FUNKY HAPPENED
-                            $json['error2'] = 'Unknown error!';
+                            $lobbyStatus['error2'] = 'Unknown error!';
                         }
                     }
                 } else {

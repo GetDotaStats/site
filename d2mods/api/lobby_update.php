@@ -56,11 +56,11 @@ try {
 
             if (!empty($sqlResult)) {
                 //RETURN LOBBY ID
-                $json['result'] = 'Lobby ' . $lobbyID . ' updated!';
-                $json['token'] = $lobbySecureToken;
+                $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' updated!';
+                $lobbyStatus['token'] = $lobbySecureToken;
             } else {
                 //SOMETHING FUNKY HAPPENED
-                $json['error'] = 'Unknown error!';
+                $lobbyStatus['error'] = 'Unknown error!';
             }
         } else {
             $lobbyStatus['error'] = 'No DB connection!';

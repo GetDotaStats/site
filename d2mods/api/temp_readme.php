@@ -10,8 +10,8 @@
 # error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
 <br/>
 <br/>
-<h2>lobby_joined POST {uid, lid}</h2>
-* user id32, lobby id<br/>
+<h2>lobby_joined POST {uid, lid, t}</h2>
+* user id32, lobby id, secure token<br/>
 - Call this after joining a lobby (hosts included)<br/>
 # error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map<br/>
 <br/>
@@ -42,6 +42,12 @@
 <br/>
 <h2>lobby_update GET {lid, map, mp, r, ln, t}</h2>
 * lobbyID, map name, max players, region, lobby name, secure token<br/>
+- Call this to update the details of a lobby<br/>
+# error, result, token<br/>
+* string describing what happened, string describing success, secure token<br/>
+<br/>
+<h2>lobby_left GET {uid, lid, t}</h2>
+* user id32, lobby id, secure token<br/>
 - Call this to update the details of a lobby<br/>
 # error, result, token<br/>
 * string describing what happened, string describing success, secure token<br/>
