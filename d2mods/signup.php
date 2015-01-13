@@ -35,11 +35,12 @@ try {
                                 </tr>
                                 <tr>
                                     <th>Description</th>
-                                    <td><textarea name="mod_description" rows="4" cols="47"></textarea></td>
+                                    <td><textarea name="mod_description" rows="4" cols="47" required></textarea></td>
                                 </tr>
                                 <tr>
                                     <th>Workshop Link</th>
-                                    <td><input name="mod_workshop_link" type="text" maxlength="70" size="45"></td>
+                                    <td><input name="mod_workshop_link" type="text" maxlength="70" size="45" required>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Steam Group</th>
@@ -47,7 +48,9 @@ try {
                                 </tr>
                                 <tr>
                                     <th>Maps</th>
-                                    <td><textarea name="mod_maps" rows="3" maxlength="255" cols="45">One map per line</textarea></td>
+                                    <td><textarea name="mod_maps" rows="3" maxlength="255" cols="45" required>One map
+                                            per line. Have a look at the map field in the in-game client
+                                            lobby.</textarea></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="center">
@@ -64,7 +67,7 @@ try {
 
             <span id="modSignupResult" class="label label-danger"></span>
 
-            <br /><br />
+            <br/><br/>
 
             <div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
