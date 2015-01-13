@@ -69,7 +69,7 @@ try {
                                 ? $value['user_name']
                                 : 'Unknown??';
 
-                            $lobbyPlayersArray = array(
+                            $lobbyPlayersArray[] = array(
                                 'user_id64' => $value['user_id64'],
                                 'user_name' => $userName,
                                 'user_confirmed' => $value['user_confirmed']
