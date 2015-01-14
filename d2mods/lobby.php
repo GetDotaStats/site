@@ -174,7 +174,7 @@ try {
                             </form>';
                             }
 
-                            if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
+                            /*if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
                                 echo '<form id="lobbyJoin" class="pull-left">
                                 <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                 <button>Join</button>
@@ -186,7 +186,7 @@ try {
                                 <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                 <button>Leave</button>
                             </form>';
-                            }
+                            }*/
 
                             echo '</div></div></div>';
                         }
@@ -302,7 +302,7 @@ try {
                                 }, "text");
                             });
 
-                            $("#lobbyJoin").submit(function (event) {
+                            /**$("#lobbyJoin").submit(function (event) {
                                 event.preventDefault();
 
                                 $.post("./d2mods/lobby_join.php", $("#lobbyJoin").serialize(), function (data) {
@@ -352,7 +352,7 @@ try {
                                         $("#lobbyResult").html("Failed to leave lobby.");
                                     }
                                 }, "text");
-                            });
+                            });*/
 
                             pageReloader = setTimeout(function () {
                                 if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>" && <?=!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 1 ? 1 : 0?> == 1) {
