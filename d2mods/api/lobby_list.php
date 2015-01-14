@@ -21,57 +21,65 @@ try {
 
         if ($db) {
             if (!empty($region)) {
-                $lobbyListSQL = $db->q(
-                    'SELECT
-                            ll.`lobby_id`,
-                            ll.`mod_id`,
-                            ll.`workshop_id`,
-                            ll.`lobby_name`,
-                            ll.`lobby_region`,
-                            ll.`lobby_max_players`,
-                            ll.`lobby_leader`,
-                            ll.`lobby_hosted`,
-                            ll.`lobby_pass`,
-                            ll.`lobby_map`,
-                            (
-                              SELECT
-                                  COUNT(`user_id64`)
-                                FROM `lobby_list_players`
-                                WHERE `lobby_id` = ll.`lobby_id`
-                                LIMIT 0,1
-                            ) AS lobby_current_players
-                        FROM `lobby_list` ll
-                        WHERE ll.`lobby_active` = 1 AND ll.`lobby_region` = ?
-                        ORDER BY `lobby_id` DESC
-                        LIMIT 0,50;',
-                    'i',
-                    $region
-                );
+                $lobbyListSQL = $memcache->get('d2mods_api_lobby_list1_r' . $region);
+                if (!$lobbyListSQL) {
+                    $lobbyListSQL = $db->q(
+                        'SELECT
+                                ll.`lobby_id`,
+                                ll.`mod_id`,
+                                ll.`workshop_id`,
+                                ll.`lobby_name`,
+                                ll.`lobby_region`,
+                                ll.`lobby_max_players`,
+                                ll.`lobby_leader`,
+                                ll.`lobby_hosted`,
+                                ll.`lobby_pass`,
+                                ll.`lobby_map`,
+                                (
+                                  SELECT
+                                      COUNT(`user_id64`)
+                                    FROM `lobby_list_players`
+                                    WHERE `lobby_id` = ll.`lobby_id`
+                                    LIMIT 0,1
+                                ) AS lobby_current_players
+                            FROM `lobby_list` ll
+                            WHERE ll.`lobby_active` = 1 AND ll.`lobby_region` = ?
+                            ORDER BY `lobby_id` DESC
+                            LIMIT 0,50;',
+                        'i',
+                        $region
+                    );
+                    $memcache->set('d2mods_api_lobby_list1_r' . $region, $lobbyListSQL, 0, 5);
+                }
             } else {
-                $lobbyListSQL = $db->q(
-                    'SELECT
-                            ll.`lobby_id`,
-                            ll.`mod_id`,
-                            ll.`workshop_id`,
-                            ll.`lobby_name`,
-                            ll.`lobby_region`,
-                            ll.`lobby_max_players`,
-                            ll.`lobby_leader`,
-                            ll.`lobby_hosted`,
-                            ll.`lobby_pass`,
-                            ll.`lobby_map`,
-                            (
-                              SELECT
-                                  COUNT(`user_id64`)
-                                FROM `lobby_list_players`
-                                WHERE `lobby_id` = ll.`lobby_id`
-                                LIMIT 0,1
-                            ) AS lobby_current_players
-                        FROM `lobby_list` ll
-                        WHERE ll.`lobby_active` = 1
-                        ORDER BY `lobby_id` DESC
-                        LIMIT 0,50;'
-                );
+                $lobbyListSQL = $memcache->get('d2mods_api_lobby_list1_r' . $region);
+                if (!$lobbyListSQL) {
+                    $lobbyListSQL = $db->q(
+                        'SELECT
+                                ll.`lobby_id`,
+                                ll.`mod_id`,
+                                ll.`workshop_id`,
+                                ll.`lobby_name`,
+                                ll.`lobby_region`,
+                                ll.`lobby_max_players`,
+                                ll.`lobby_leader`,
+                                ll.`lobby_hosted`,
+                                ll.`lobby_pass`,
+                                ll.`lobby_map`,
+                                (
+                                  SELECT
+                                      COUNT(`user_id64`)
+                                    FROM `lobby_list_players`
+                                    WHERE `lobby_id` = ll.`lobby_id`
+                                    LIMIT 0,1
+                                ) AS lobby_current_players
+                            FROM `lobby_list` ll
+                            WHERE ll.`lobby_active` = 1
+                            ORDER BY `lobby_id` DESC
+                            LIMIT 0,50;'
+                    );
+                    $memcache->set('d2mods_api_lobby_list1_r' . $region, $lobbyListSQL, 0, 5);
+                }
             }
 
 
