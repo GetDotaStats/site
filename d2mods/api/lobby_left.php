@@ -68,6 +68,22 @@ try {
                     //SOMETHING FUNKY HAPPENED
                     $lobbyStatus['error'] = 'Unknown error!';
                 }
+
+                if ($lobbyUserDetails['lobby_leader'] == $userID) {
+                    $sqlResult = $db->q(
+                        'UPDATE `lobby_list` SET `lobby_active` = 0 WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+                        'is',
+                        $lobbyID, $token
+                    );
+
+                    if (!empty($sqlResult)) {
+                        //RETURN LOBBY ID
+                        $lobbyStatus['result2'] = 'Lobby ' . $lobbyID . ' closed!';
+                    } else {
+                        //SOMETHING FUNKY HAPPENED
+                        $lobbyStatus['error2'] = 'Unknown error!';
+                    }
+                }
             } else {
                 $lobbyStatus['error'] = 'Not in active lobby or bad token!';
             }
