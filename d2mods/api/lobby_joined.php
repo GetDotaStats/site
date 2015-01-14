@@ -47,7 +47,7 @@ try {
                             ll.`lobby_pass`,
                             ll.`lobby_map`
                         FROM `lobby_list` ll
-                        WHERE ll.`lobby_active` = 1 AND llp.`lobby_id` = ? AND ll.`lobby_secure_token` = ?
+                        WHERE ll.`lobby_active` = 1 AND ll.`lobby_id` = ? AND ll.`lobby_secure_token` = ?
                         ORDER BY `lobby_id` DESC
                         LIMIT 0,1;',
                     'is',
