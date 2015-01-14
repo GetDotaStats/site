@@ -43,8 +43,8 @@
 <h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln}</h2>
 * userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name<br/>
 - No output, so input parameters explained below<br/>
-# error, result, token<br/>
-* string describing what happened, string describing success, secure token<br/>
+# error, result, lobby_id, token<br/>
+* string describing what happened, string describing success, lobby id, secure token<br/>
 <br/>
 <h2>lobby_update GET {lid, map, mp, r, ln, t}</h2>
 * lobbyID, map name, max players, region, lobby name, secure token<br/>
