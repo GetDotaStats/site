@@ -45,7 +45,7 @@ try {
                         ? $value['mod_id']
                         : 0;
 
-                    !empty($key)
+                    isset($key)
                         ? $temp['popularityRank'] = $key + 1
                         : NULL;
 

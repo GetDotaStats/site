@@ -40,7 +40,7 @@ try {
                         ? $value['mod_name']
                         : 'Unknown Mod';
 
-                    !empty($key)
+                    isset($key)
                         ? $temp['popularityRank'] = $key + 1
                         : NULL;
 
