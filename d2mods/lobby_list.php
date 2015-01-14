@@ -85,7 +85,6 @@ try {
     ?>
     <script>
         $(document).ready(function () {
-            var pageReloader;
             pageReloader = setTimeout(function () {
                 if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list") {
                     loadPage("#d2mods__lobby_list", 1);
