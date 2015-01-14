@@ -87,11 +87,15 @@ try {
                         $workshopID = NULL;
                     }
 
+                    $userName = !empty($_SESSION['user_name'])
+                        ? htmlentities($_SESSION['user_id64'])
+                        : 'Unknown??';
+
                     //INSERT NEW LOBBY LISTING
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list`(`lobby_leader`, `mod_id`, `workshop_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
-                        'sisiiiisss',
-                        $_SESSION['user_id64'], $modID, $workshopID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap, $lobbySecureToken
+                        'INSERT INTO `lobby_list`(`lobby_leader`, `lobby_leader_name`, `mod_id`, `workshop_id`, `lobby_ttl`, `lobby_min_players`, `lobby_max_players`, `lobby_public`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                        'ssisiiiisss',
+                        $_SESSION['user_id64'], $userName, $modID, $workshopID, $lobbyTTL, $lobbyMinPlayers, $lobbyMaxPlayers, $lobbyIsPublic, $lobbyPass, $lobbyMap, $lobbySecureToken
                     );
 
                     if (!empty($sqlResult)) {
@@ -103,7 +107,6 @@ try {
                     }
                 } else {
                     //RETURN LOBBY ID OF EXISTING ACTIVE LOBBY
-                    //TODO MAKE A CHECK FOR ANY GAMES THAT HAVE RECENTLY FINISHED WITH THIS LOBBY LEADER IN THEM. IF SO, MARK LOBBY AS IN-ACTIVE
                     $json['lobby_id'] = $sqlResult[0]['lobby_id'];
                 }
             } else {

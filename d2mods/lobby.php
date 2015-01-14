@@ -145,9 +145,8 @@ try {
                                     llp.`lobby_id`,
                                     llp.`user_id64`,
                                     llp.`user_confirmed`,
-                                    gu.`user_name`
+                                    llp.`user_name`
                                 FROM `lobby_list_players` llp
-                                JOIN `gds_users` gu ON llp.`user_id64` = gu.`user_id64`
                                 WHERE lobby_id = ?;',
                             'i',
                             $lobbyID

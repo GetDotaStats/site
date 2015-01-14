@@ -14,14 +14,16 @@ try {
             'SELECT
                     ll.`lobby_id`,
                     ll.`mod_id`,
+                    ll.`lobby_name`,
+                    ll.`lobby_region`,
                     ll.`lobby_ttl`,
                     ll.`lobby_max_players`,
                     ll.`lobby_public`,
                     ll.`lobby_leader`,
+                    ll.`lobby_leader_name`,
                     ll.`lobby_pass`,
                     ll.`date_recorded` as lobby_date_recorded,
                     ml.*,
-                    gu.`user_name` as lobby_leader_username,
                     (
                       SELECT
                           COUNT(`user_id64`)
@@ -31,7 +33,6 @@ try {
                     ) AS lobby_current_players
                 FROM `lobby_list` ll
                 LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
-                LEFT JOIN `gds_users` gu ON ll.`lobby_leader` = gu.`user_id64`
                 WHERE ll.`lobby_active` = 1
                 ORDER BY ll.`date_recorded` ASC;'
             , 5
@@ -66,7 +67,7 @@ try {
             foreach ($lobbyListActive as $key => $value) {
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
-                        <td class="vert-align">' . $value['lobby_leader_username'] . '</td>
+                        <td class="vert-align">' . $value['lobby_leader_name'] . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
                         <td class="text-center vert-align">' . $value['lobby_ttl'] . ' mins</td>
                         <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>

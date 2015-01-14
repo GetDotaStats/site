@@ -69,10 +69,14 @@ try {
                     $sqlResult[0]['lobby_active'] == 1 &&
                     $sqlResult[0]['lobby_current_players'] < $sqlResult[0]['lobby_max_players']
                 ) {
+                    $userName = !empty($_SESSION['user_name'])
+                        ? htmlentities($_SESSION['user_id64'])
+                        : 'Unknown??';
+
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list_players` (`lobby_id`, `user_id64`) VALUES (?, ?);',
-                        'is',
-                        $lobbyID, $_SESSION['user_id64']
+                        'INSERT INTO `lobby_list_players` (`lobby_id`, `user_id64`, `user_name`) VALUES (?, ?, ?);',
+                        'iss',
+                        $lobbyID, $_SESSION['user_id64'], $userName
                     );
 
                     if (!empty($sqlResult)) {
