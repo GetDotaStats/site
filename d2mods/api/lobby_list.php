@@ -44,7 +44,7 @@ try {
                                     LIMIT 0,1
                                 ) AS lobby_current_players
                             FROM `lobby_list` ll
-                            WHERE ll.`lobby_active` = 1 AND ll.`lobby_region` = ?
+                            WHERE ll.`lobby_active` = 1 AND ll.`lobby_hosted` = 1 AND ll.`lobby_region` = ?
                             ORDER BY `lobby_id` DESC
                             LIMIT 0,50;',
                         'i',
@@ -76,7 +76,7 @@ try {
                                     LIMIT 0,1
                                 ) AS lobby_current_players
                             FROM `lobby_list` ll
-                            WHERE ll.`lobby_active` = 1
+                            WHERE ll.`lobby_active` = 1 AND ll.`lobby_hosted` = 1
                             ORDER BY `lobby_id` DESC
                             LIMIT 0,50;'
                     );
