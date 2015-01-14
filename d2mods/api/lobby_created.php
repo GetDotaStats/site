@@ -65,6 +65,7 @@ try {
             if (!empty($sqlResult)) {
                 //RETURN LOBBY ID
                 $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
+                $lobbyStatus['lobby_id'] = $db->last_index();
                 $lobbyStatus['token'] = $lobbySecureToken;
             } else {
                 //SOMETHING FUNKY HAPPENED
