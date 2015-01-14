@@ -49,7 +49,7 @@ try {
 
         echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created. Please leave suggestions on how we can improve this tool in the chatbox.</p>';
 
-        echo '<div class="alert alert-danger" role="alert">Lobby maintenance! We are close to implementing a client integrated version of this tool. In the mean time, functionality to join and leave a lobby has been removed.</div>';
+        echo '<div class="alert alert-info" role="alert"><strong>Lobby maintenance!</strong> We are close to implementing a client integrated version of this tool. Watch this space!</div>';
 
         if (!empty($lobbyListActive)) {
             echo '<div class="table-responsive">

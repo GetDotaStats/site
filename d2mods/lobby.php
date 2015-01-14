@@ -170,31 +170,31 @@ try {
 
                     //LOBBY ACTION BUTTONS
                     {
-                        //if ($lobbyDetails['lobby_active'] == 1) {
-                        if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
-
+                        if ($lobbyDetails['lobby_active'] == 1) {
                             echo '<div class="col-sm-3">';
                             echo '<div class="panel panel-primary" id="lobby_user_actions">';
                             echo '<div class="panel-body">';
 
-                            echo '<form id="lobbyClose" class="pull-left">
+                            if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
+                                echo '<form id="lobbyClose" class="pull-left">
                                     <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                     <button>Close</button>
                                 </form>';
+                            }
 
-                            /*if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                                    echo '<form id="lobbyJoin" class="pull-left">
+                            if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
+                                echo '<form id="lobbyJoin" class="pull-left">
                                     <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                     <button>Join</button>
                                 </form>';
                             }
 
                             if (in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                                    echo '<form id="lobbyLeave" class="pull-left">
+                                echo '<form id="lobbyLeave" class="pull-left">
                                     <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                     <button>Leave</button>
                                 </form>';
-                            }*/
+                            }
 
                             echo '</div></div></div>';
                         }
@@ -310,7 +310,7 @@ try {
                                 }, "text");
                             });
 
-                            /**$("#lobbyJoin").submit(function (event) {
+                            $("#lobbyJoin").submit(function (event) {
                                 event.preventDefault();
 
                                 $.post("./d2mods/lobby_join.php", $("#lobbyJoin").serialize(), function (data) {
@@ -336,7 +336,7 @@ try {
                                 }, "text");
                             });
 
-                             $("#lobbyLeave").submit(function (event) {
+                            $("#lobbyLeave").submit(function (event) {
                                 event.preventDefault();
 
                                 $.post("./d2mods/lobby_leave.php", $("#lobbyLeave").serialize(), function (data) {
@@ -360,7 +360,7 @@ try {
                                         $("#lobbyResult").html("Failed to leave lobby.");
                                     }
                                 }, "text");
-                            });*/
+                            });
 
                             pageReloader = setTimeout(function () {
                                 if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>" && <?=!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 1 ? 1 : 0?> == 1
