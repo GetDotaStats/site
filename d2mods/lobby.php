@@ -22,29 +22,33 @@ try {
                 : NULL;
 
             if (!empty($lobbyID)) {
-                $lobbyDetails = $db->q(
-                    'SELECT
-                            ll.`lobby_id`,
-                            ll.`mod_id`,
-                            ll.`lobby_ttl`,
-                            ll.`lobby_min_players`,
-                            ll.`lobby_max_players`,
-                            ll.`lobby_public`,
-                            ll.`lobby_leader`,
-                            ll.`lobby_active`,
-                            ll.`lobby_hosted`,
-                            ll.`lobby_pass`,
-                            ll.`lobby_map`,
-                            ll.`date_recorded`,
-                            ml.`mod_name`,
-                            ml.`mod_maps`
-                        FROM `lobby_list` ll
-                        JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
-                        WHERE ll.`lobby_id` = ?
-                        LIMIT 0,1;',
-                    'i',
-                    $lobbyID
-                );
+                $lobbyDetails = $memcache->get('d2mods_lobby_details1_' . $lobbyID);
+                if (!$lobbyDetails) {
+                    $lobbyDetails = $db->q(
+                        'SELECT
+                                ll.`lobby_id`,
+                                ll.`mod_id`,
+                                ll.`lobby_ttl`,
+                                ll.`lobby_min_players`,
+                                ll.`lobby_max_players`,
+                                ll.`lobby_public`,
+                                ll.`lobby_leader`,
+                                ll.`lobby_active`,
+                                ll.`lobby_hosted`,
+                                ll.`lobby_pass`,
+                                ll.`lobby_map`,
+                                ll.`date_recorded`,
+                                ml.`mod_name`,
+                                ml.`mod_maps`
+                            FROM `lobby_list` ll
+                            JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
+                            WHERE ll.`lobby_id` = ?
+                            LIMIT 0,1;',
+                        'i',
+                        $lobbyID
+                    );
+                    $memcache->set('d2mods_lobby_details1_' . $lobbyID, $lobbyDetails, 0, 5);
+                }
 
                 echo '<div class="page-header"><h2>Lobby Details <small>BETA</small></h2></div>';
 
@@ -140,18 +144,22 @@ try {
                             </div>';
                     }
 
-                    $lobbyPlayers = $db->q(
-                        'SELECT
-                                llp.`lobby_id`,
-                                llp.`user_id64`,
-                                llp.`user_confirmed`,
-                                gu.`user_name`
-                            FROM `lobby_list_players` llp
-                            JOIN `gds_users` gu ON llp.`user_id64` = gu.`user_id64`
-                            WHERE lobby_id = ?;',
-                        'i',
-                        $lobbyID
-                    );
+                    $lobbyPlayers = $memcache->get('d2mods_lobby_players1_' . $lobbyID);
+                    if (!$lobbyPlayers) {
+                        $lobbyPlayers = $db->q(
+                            'SELECT
+                                    llp.`lobby_id`,
+                                    llp.`user_id64`,
+                                    llp.`user_confirmed`,
+                                    gu.`user_name`
+                                FROM `lobby_list_players` llp
+                                JOIN `gds_users` gu ON llp.`user_id64` = gu.`user_id64`
+                                WHERE lobby_id = ?;',
+                            'i',
+                            $lobbyID
+                        );
+                        $memcache->set('d2mods_lobby_players1_' . $lobbyID, $lobbyPlayers, 0, 5);
+                    }
 
                     $lobbyPlayersArray = array();
                     if (!empty($lobbyPlayers)) {
@@ -199,7 +207,7 @@ try {
                     if (!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 0) {
                         echo '<div class="alert alert-danger" role="alert">Lobby has now expired!</div>';
                     } else if (!empty($lobbyDetails) && $lobbyDetails['lobby_hosted'] == 1) {
-                        echo '<div class="alert alert-success" role="alert">Lobby is ready to join! <a class="btn btn-default btn-lg btn-success" href="steam://launch/570 ">START DOTA CLIENT IF NOT ALREADY</a></div>';
+                        echo '<div class="alert alert-success" role="alert">Lobby is ready to join! <a class="btn btn-sm btn-success" href="steam://launch/570 ">START DOTA CLIENT</a></div>';
                     }
 
                     if (!empty($lobbyPlayers)) {
@@ -364,7 +372,7 @@ try {
                                 {
                                     clearTimeout(pageReloader);
                                 }
-                            }, 5000);
+                            }, 10000);
                         });
                     </script>
                 <?php
