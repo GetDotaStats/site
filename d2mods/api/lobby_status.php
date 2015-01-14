@@ -4,6 +4,7 @@ require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
 //Get the lobby details of a specific lobby
+//TODO: needs caching
 
 try {
     $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])
