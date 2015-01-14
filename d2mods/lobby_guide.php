@@ -58,14 +58,14 @@
     to welcome new Custom Games onto the site!</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/2-2.png" width="500px"/></div>
 
-<h2>Install the GetDotaStats Lobby Finder</h2>
+<h2>Install the GetDotaStats Lobby Explorer</h2>
 <p><strong>1.</strong> You will need to download our
     <a target="_blank" href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.swf">Lobby
         Finder via Github</a>.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-1.png" width="500px"/></div>
 <p><strong>2.</strong> While this downloads, now is a good time to login in to our site via steam's OpenID. Click on the
     big login button at
-    the top of this page. Signing in will ensure that you obtain full functionality of our Lobby Finder. Not logging in
+    the top of this page. Signing in will ensure that you obtain full functionality of our Lobby Explorer. Not logging in
     may exclude you from some functionality.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-2.png" width="500px"/></div>
 <p><strong>3.</strong> Extract the play_weekend_tourney.swf that sits in the root directory of this zip into your Dota 2
@@ -75,7 +75,7 @@
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-3.png" width="500px"/></div>
 
 <h2>Find/Join Lobbies</h2>
-<p>Now that you have installed the Dota 2 Workshop Tools, installed the Lobby Finder and logged into the site; it is now
+<p>Now that you have installed the Dota 2 Workshop Tools, installed the Lobby Explorer and logged into the site; it is now
     time for you to make use of our system!</p>
 <p><strong>1.</strong> Start your Dota 2 client.</p>
 
