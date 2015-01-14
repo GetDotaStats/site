@@ -88,7 +88,7 @@ try {
                     }
 
                     $userName = !empty($_SESSION['user_name'])
-                        ? htmlentities($_SESSION['user_id64'])
+                        ? htmlentities($_SESSION['user_name'])
                         : 'Unknown??';
 
                     //INSERT NEW LOBBY LISTING
