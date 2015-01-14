@@ -1,4 +1,4 @@
-<h1>Guide for playing Custom Games via GetDotaStats</h1>
+<h1>Guide for using GetDotaStat's Lobby Explorer</h1>
 
 <div class="alert alert-info" role="alert"><p><strong>Credits</strong></p>
 
