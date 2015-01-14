@@ -47,7 +47,9 @@ try {
 
         echo '<div class="page-header"><h2>Lobby List <small>BETA</small></h2></div>';
 
-        echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created via the site. Please leave suggestions on how we can improve this tool in the chatbox. This is a work in progress, and may end up removed if it\'s not used.</p>';
+        echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created. Please leave suggestions on how we can improve this tool in the chatbox.</p>';
+
+        echo '<div class="alert alert-danger" role="alert">Lobby maintenance! We are close to implementing a client integrated version of this tool. In the mean time, functionality to join and leave a lobby has been removed.</div>';
 
         if (!empty($lobbyListActive)) {
             echo '<div class="table-responsive">
@@ -85,10 +87,10 @@ try {
         $(document).ready(function () {
             var pageReloader;
             pageReloader = setTimeout(function () {
-                if(document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list"){
+                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list") {
                     loadPage("#d2mods__lobby_list", 1);
                 }
-                else{
+                else {
                     clearTimeout(pageReloader);
                 }
             }, 15000);

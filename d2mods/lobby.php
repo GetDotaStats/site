@@ -162,30 +162,30 @@ try {
 
                     //LOBBY ACTION BUTTONS
                     {
-                        if ($lobbyDetails['lobby_active'] == 1) {
+                        //if ($lobbyDetails['lobby_active'] == 1) {
+                        if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
+
                             echo '<div class="col-sm-3">';
                             echo '<div class="panel panel-primary" id="lobby_user_actions">';
                             echo '<div class="panel-body">';
 
-                            if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
-                                echo '<form id="lobbyClose" class="pull-left">
-                                <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
-                                <button>Close</button>
-                            </form>';
-                            }
+                            echo '<form id="lobbyClose" class="pull-left">
+                                    <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
+                                    <button>Close</button>
+                                </form>';
 
                             /*if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                                echo '<form id="lobbyJoin" class="pull-left">
-                                <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
-                                <button>Join</button>
-                            </form>';
+                                    echo '<form id="lobbyJoin" class="pull-left">
+                                    <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
+                                    <button>Join</button>
+                                </form>';
                             }
 
                             if (in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                                echo '<form id="lobbyLeave" class="pull-left">
-                                <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
-                                <button>Leave</button>
-                            </form>';
+                                    echo '<form id="lobbyLeave" class="pull-left">
+                                    <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
+                                    <button>Leave</button>
+                                </form>';
                             }*/
 
                             echo '</div></div></div>';
@@ -199,7 +199,7 @@ try {
                     if (!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 0) {
                         echo '<div class="alert alert-danger" role="alert">Lobby has now expired!</div>';
                     } else if (!empty($lobbyDetails) && $lobbyDetails['lobby_hosted'] == 1) {
-                        echo '<div class="alert alert-success" role="alert">Lobby is ready to join!</div>';
+                        echo '<div class="alert alert-success" role="alert">Lobby is ready to join! <a class="btn btn-default btn-lg btn-success" href="steam://launch/570 ">START DOTA CLIENT IF NOT ALREADY</a></div>';
                     }
 
                     if (!empty($lobbyPlayers)) {
@@ -328,7 +328,7 @@ try {
                                 }, "text");
                             });
 
-                            $("#lobbyLeave").submit(function (event) {
+                             $("#lobbyLeave").submit(function (event) {
                                 event.preventDefault();
 
                                 $.post("./d2mods/lobby_leave.php", $("#lobbyLeave").serialize(), function (data) {
@@ -355,10 +355,13 @@ try {
                             });*/
 
                             pageReloader = setTimeout(function () {
-                                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>" && <?=!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 1 ? 1 : 0?> == 1) {
+                                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby?id=<?=$lobbyID?>" && <?=!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 1 ? 1 : 0?> == 1
+                                )
+                                {
                                     loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 1);
                                 }
-                                else {
+                                else
+                                {
                                     clearTimeout(pageReloader);
                                 }
                             }, 5000);
