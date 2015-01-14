@@ -49,7 +49,7 @@ try {
 
         echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created. Please leave suggestions on how we can improve this tool in the chatbox.</p>';
 
-        echo '<div class="alert alert-info" role="alert"><strong>Lobby maintenance!</strong> We are close to implementing a client integrated version of this tool. Watch this space!</div>';
+        echo '<div class="alert alert-info" role="alert"><strong>Notice:</strong> We are close to releasing an in-game lobby browser. Keep an eye on our <strong><a class="nav-clickable" href="#d2mods__lobby_guide">guide to playing custom games</a></strong>!</div>';
 
         if (!empty($lobbyListActive)) {
             echo '<div class="table-responsive">
