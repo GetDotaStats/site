@@ -39,7 +39,7 @@ if (!class_exists('user')) {
 
                     $_SESSION['user_id32'] = $steamID32;
                     $_SESSION['user_id64'] = $steamID64;
-                    $_SESSION['user_name'] = $userName;
+                    $_SESSION['user_name'] = htmlentities($userName);
                     $_SESSION['user_avatar'] = $userAvatar;
 
                     $db->q("INSERT INTO `gds_users`(`user_id32`, `user_id64`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`) VALUES (?, ?, ?, ?, ?, ?)

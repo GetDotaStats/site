@@ -341,6 +341,7 @@ if (!function_exists("checkLogin_v2")) {
             global $database_gds_site;
 
             $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+            $db->q('SET NAMES utf8;');
 
             $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
                 's',

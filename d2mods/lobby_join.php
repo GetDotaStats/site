@@ -70,7 +70,7 @@ try {
                     $sqlResult[0]['lobby_current_players'] < $sqlResult[0]['lobby_max_players']
                 ) {
                     $userName = !empty($_SESSION['user_name'])
-                        ? htmlentities($_SESSION['user_name'])
+                        ? $_SESSION['user_name']
                         : 'Unknown??';
 
                     $sqlResult = $db->q(
