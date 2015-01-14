@@ -55,6 +55,8 @@ try {
             );
 
             if (!empty($lobbyUserDetails)) {
+                $lobbyUserDetails = $lobbyUserDetails[0];
+
                 $sqlResult = $db->q(
                     'DELETE FROM `lobby_list_players` WHERE `lobby_id` = ? AND `user_id64` = ?;',
                     'is',
