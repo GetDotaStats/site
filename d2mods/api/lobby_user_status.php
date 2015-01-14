@@ -4,7 +4,6 @@ require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
 //Get the lobby details of a specific user
-//TODO: needs caching
 
 try {
     $userID = !empty($_GET['uid']) && is_numeric($_GET['uid'])
