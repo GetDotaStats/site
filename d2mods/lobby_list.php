@@ -92,7 +92,7 @@ try {
                 else {
                     clearTimeout(pageReloader);
                 }
-            }, 15000);
+            }, 20000);
         });
     </script>
     <?php
