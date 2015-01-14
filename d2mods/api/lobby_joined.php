@@ -32,7 +32,7 @@ try {
             $db->q('SET NAMES utf8;');
 
             if ($db) {
-                $lobbyUserDetails = $db->q(
+                $lobbyDetails = $db->q(
                     'SELECT
                             ll.`lobby_id`,
                             ll.`mod_id`,
@@ -45,48 +45,45 @@ try {
                             ll.`lobby_active`,
                             ll.`lobby_hosted`,
                             ll.`lobby_pass`,
-                            ll.`lobby_map`,
-                            llp.`user_id64`,
-                            llp.`user_confirmed`
-                        FROM `lobby_list_players` llp
-                        LEFT JOIN `lobby_list` ll ON llp.`lobby_id` = ll.`lobby_id`
-                        WHERE ll.`lobby_active` = 1 AND llp.`user_id64` = ? AND llp.`lobby_id` = ? AND ll.`lobby_secure_token` = ?
+                            ll.`lobby_map`
+                        FROM `lobby_list` ll
+                        WHERE ll.`lobby_active` = 1 AND llp.`lobby_id` = ? AND ll.`lobby_secure_token` = ?
                         ORDER BY `lobby_id` DESC
                         LIMIT 0,1;',
-                    'sis',
-                    $userID, $lobbyID, $token
+                    'is',
+                    $lobbyID, $token
                 );
 
-                if (!empty($lobbyUserDetails)) {
-                    $lobbyUserDetails = $lobbyUserDetails[0];
+                if (!empty($lobbyDetails)) {
+                    $lobbyDetails = $lobbyDetails[0];
 
-                    $steamIDLeader = new SteamID($lobbyUserDetails['lobby_leader']);
+                    $steamIDLeader = new SteamID($lobbyDetails['lobby_leader']);
                     $lobbyLeader = $steamIDLeader->getSteamID32();
 
-                    $lobbyStatus['lobby_id'] = $lobbyUserDetails['lobby_id'];
-                    $lobbyStatus['mod_id'] = $lobbyUserDetails['mod_id'];
-                    $lobbyStatus['workshop_id'] = $lobbyUserDetails['workshop_id'];
-                    $lobbyStatus['lobby_max_players'] = $lobbyUserDetails['lobby_max_players'];
+                    $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
+                    $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
+                    $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
+                    $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
                     $lobbyStatus['lobby_leader'] = $lobbyLeader;
-                    $lobbyStatus['lobby_hosted'] = $lobbyUserDetails['lobby_hosted'];
-                    $lobbyStatus['lobby_pass'] = $lobbyUserDetails['lobby_pass'];
-                    $lobbyStatus['lobby_map'] = $lobbyUserDetails['lobby_map'];
+                    $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
+                    $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
+                    $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
 
                     $sqlResult = $db->q(
-                        'UPDATE `lobby_list_players` SET `user_confirmed` = 1 WHERE `lobby_id` = ? AND `user_id64` = ?;',
+                        'INSERT INTO `lobby_list_players` (`lobby_id`, `user_id64`, `user_confirmed`) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE `user_confirmed` = 1;',
                         'is',
                         $lobbyID, $userID
                     );
 
                     if (!empty($sqlResult)) {
                         //RETURN LOBBY ID
-                        $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' updated!';
+                        $lobbyStatus['result'] = 'User ' . $userID . ' joined lobby #' . $lobbyID . '!';
                     } else {
                         //SOMETHING FUNKY HAPPENED
                         $lobbyStatus['error'] = 'Unknown error!';
                     }
 
-                    if ($lobbyUserDetails['lobby_leader'] == $userID) {
+                    if ($lobbyDetails['lobby_leader'] == $userID) {
                         $sqlResult = $db->q(
                             'UPDATE `lobby_list` SET `lobby_hosted` = 1 WHERE `lobby_id` = ?;',
                             'i',
@@ -102,7 +99,7 @@ try {
                         }
                     }
                 } else {
-                    $lobbyStatus['error'] = 'Not in active lobby or bad token!';
+                    $lobbyStatus['error'] = 'Lobby not active or bad token!';
                 }
             } else {
                 $lobbyStatus['error'] = 'No DB connection!';
