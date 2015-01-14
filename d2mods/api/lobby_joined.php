@@ -10,6 +10,10 @@ try {
         ? $_GET['uid']
         : NULL;
 
+    $username = !empty($_GET['un'])
+        ? htmlentities($_GET['un'])
+        : 'Unknown??';
+
     $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])
         ? $_GET['lid']
         : NULL;
@@ -42,6 +46,7 @@ try {
                             ll.`lobby_max_players`,
                             ll.`lobby_public`,
                             ll.`lobby_leader`,
+                            ll.`lobby_leader_name`,
                             ll.`lobby_active`,
                             ll.`lobby_hosted`,
                             ll.`lobby_pass`,
@@ -65,14 +70,19 @@ try {
                     $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
                     $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
                     $lobbyStatus['lobby_leader'] = $lobbyLeader;
+
+                    $lobbyStatus['lobby_leader_name'] = !empty($lobbyDetails['lobby_leader_name'])
+                        ? $lobbyDetails['lobby_leader_name']
+                        : 'Unknown??';
+
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
                     $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
 
                     $sqlResult = $db->q(
-                        'INSERT INTO `lobby_list_players` (`lobby_id`, `user_id64`, `user_confirmed`) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE `user_confirmed` = 1;',
-                        'is',
-                        $lobbyID, $userID
+                        'INSERT INTO `lobby_list_players` (`lobby_id`, `user_id64`, `user_confirmed`, `user_name`) VALUES (?, ?, 1, ?) ON DUPLICATE KEY UPDATE `user_confirmed` = 1;',
+                        'iss',
+                        $lobbyID, $userID, $username
                     );
 
                     if (!empty($sqlResult)) {

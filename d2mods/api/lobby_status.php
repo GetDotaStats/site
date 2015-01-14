@@ -34,6 +34,7 @@ try {
                             ll.`lobby_max_players`,
                             ll.`lobby_public`,
                             ll.`lobby_leader`,
+                            ll.`lobby_leader_name`,
                             ll.`lobby_active`,
                             ll.`lobby_hosted`,
                             ll.`lobby_pass`,
@@ -50,10 +51,9 @@ try {
                     'SELECT
                             llp.`lobby_id`,
                             llp.`user_id64`,
-                            llp.`user_confirmed`,
-                            gu.`user_name`
+                            llp.`user_name`,
+                            llp.`user_confirmed`
                         FROM `lobby_list_players` llp
-                        JOIN `gds_users` gu ON llp.`user_id64` = gu.`user_id64`
                         WHERE lobby_id = ?;',
                     'i',
                     $lobbyID
@@ -94,6 +94,11 @@ try {
 
                     $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
                     $lobbyStatus['lobby_leader'] = $lobbyLeader;
+
+                    $lobbyStatus['lobby_leader_name'] = !empty($lobbyDetails['lobby_leader_name'])
+                        ? $lobbyDetails['lobby_leader_name']
+                        : 'Unknown??';
+
                     $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];

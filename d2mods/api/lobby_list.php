@@ -32,6 +32,7 @@ try {
                                 ll.`lobby_region`,
                                 ll.`lobby_max_players`,
                                 ll.`lobby_leader`,
+                                ll.`lobby_leader_name`,
                                 ll.`lobby_hosted`,
                                 ll.`lobby_pass`,
                                 ll.`lobby_map`,
@@ -63,6 +64,7 @@ try {
                                 ll.`lobby_region`,
                                 ll.`lobby_max_players`,
                                 ll.`lobby_leader`,
+                                ll.`lobby_leader_name`,
                                 ll.`lobby_hosted`,
                                 ll.`lobby_pass`,
                                 ll.`lobby_map`,
@@ -96,6 +98,10 @@ try {
                         ? $value['lobby_region']
                         : 0;
 
+                    $lobbyLeaderName = !empty($value['lobby_leader_name'])
+                        ? $value['lobby_leader_name']
+                        : 'Unknown??';
+
                     $lobbyList[] = array(
                         'lobby_id' => $value['lobby_id'],
                         'mod_id' => $value['mod_id'],
@@ -104,6 +110,7 @@ try {
                         'lobby_region' => $lobbyRegion,
                         'lobby_max_players' => $value['lobby_max_players'],
                         'lobby_leader' => $lobbyLeader,
+                        'lobby_leader_name' => $lobbyLeaderName,
                         'lobby_hosted' => $value['lobby_hosted'],
                         'lobby_pass' => $value['lobby_pass'],
                         'lobby_map' => $value['lobby_map'],

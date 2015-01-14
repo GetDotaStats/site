@@ -10,6 +10,10 @@ try {
         ? $_GET['uid']
         : NULL;
 
+    $username = !empty($_GET['un'])
+        ? htmlentities($_GET['un'])
+        : 'Unknown??';
+
     $modID = !empty($_GET['mid']) && is_numeric($_GET['mid'])
         ? $_GET['mid']
         : NULL;
@@ -57,9 +61,9 @@ try {
 
         if ($db) {
             $sqlResult = $db->q(
-                'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, 1, 1, ?, ?, ?);',
-                'issiissss',
-                $modID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $pass, $map, $lobbySecureToken
+                'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, ?);',
+                'issiissiisss',
+                $modID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken
             );
 
             if (!empty($sqlResult)) {
