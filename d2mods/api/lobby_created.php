@@ -30,11 +30,11 @@ try {
         ? htmlentities($_GET['p'])
         : NULL;
 
-    $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp'])
+    $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp']) && $_GET['mp'] > 1 && $_GET['mp'] <= 20
         ? $_GET['mp']
         : NULL;
 
-    $region = !empty($_GET['r']) && is_numeric($_GET['r'])
+    $region = !empty($_GET['r']) && is_numeric($_GET['r']) && $_GET['r'] <= 100
         ? $_GET['r']
         : NULL;
 
