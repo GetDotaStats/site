@@ -60,20 +60,37 @@ try {
         $db->q('SET NAMES utf8;');
 
         if ($db) {
-            $sqlResult = $db->q(
-                'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?);',
-                'issiisssss',
-                $modID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken
+            $lobbyUserDetails = $db->q(
+                'SELECT
+                        ll.`lobby_id`,
+                        ll.`lobby_leader`,
+                        ll.`lobby_active`,
+                        ll.`lobby_hosted`
+                    FROM `lobby_list` ll
+                    WHERE ll.`lobby_active` = 1 AND ll.`lobby_leader` = ?
+                    LIMIT 0,1;',
+                's',
+                $userID
             );
 
-            if (!empty($sqlResult)) {
-                //RETURN LOBBY ID
-                $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
-                $lobbyStatus['lobby_id'] = $db->last_index();
-                $lobbyStatus['token'] = $lobbySecureToken;
+            if (empty($lobbyUserDetails)) {
+                $sqlResult = $db->q(
+                    'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`) VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?);',
+                    'issiisssss',
+                    $modID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken
+                );
+
+                if (!empty($sqlResult)) {
+                    //RETURN LOBBY ID
+                    $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
+                    $lobbyStatus['lobby_id'] = $db->last_index();
+                    $lobbyStatus['token'] = $lobbySecureToken;
+                } else {
+                    //SOMETHING FUNKY HAPPENED
+                    $lobbyStatus['error'] = 'Unknown error!';
+                }
             } else {
-                //SOMETHING FUNKY HAPPENED
-                $lobbyStatus['error'] = 'Unknown error!';
+                $lobbyStatus['error'] = 'Already created an active lobby!';
             }
         } else {
             $lobbyStatus['error'] = 'No DB connection!';
