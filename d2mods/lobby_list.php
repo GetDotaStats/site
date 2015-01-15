@@ -50,7 +50,8 @@ try {
 
         echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created. Please leave suggestions on how we can improve this tool in the chatbox.</p>';
 
-        echo '<div class="alert alert-info" role="alert">Check out our <strong><a class="nav-clickable" href="#d2mods__lobby_guide">guide to playing custom games</a></strong>!</div>';
+        echo '<div class="alert alert-info" role="alert"><strong><a class="nav-clickable" href="#d2mods__lobby_guide">Check out our guide to installing the Lobby Explorer</a></strong> OR hop right in and
+        <a target="_blank" class="btn btn-success btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.swf">Download the Lobby Explorer</a></div>';
 
         if (!empty($lobbyListActive)) {
             echo '<div class="table-responsive">
