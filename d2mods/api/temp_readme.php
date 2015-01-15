@@ -58,3 +58,9 @@
 # error, result<br/>
 * string describing what happened, string describing success<br/>
 <br/>
+<h2>lobby_keep_alive GET {lid, t}</h2>
+* lobbyID, secure token<br/>
+- No output<br/>
+# error, result<br/>
+* string describing what happened, string describing success<br/>
+<br/>
