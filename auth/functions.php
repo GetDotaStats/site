@@ -7,9 +7,18 @@ if (!class_exists('user')) {
 
         public function GetPlayerSummaries($steamid)
         {
-            $response = file_get_contents('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->apikey . '&steamids=' . $steamid);
-            $json = json_decode($response);
-            return $json->response->players[0];
+            try {
+                $response = curl('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->apikey . '&steamids=' . $steamid);
+                $json = json_decode($response);
+                if (!empty($json)) {
+                    return $json->response->players[0];
+                }
+            } catch (Exception $e) {
+                $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+                echo bootstrapMessage('Oh Snap', $message, 'danger');
+            }
+
+            return false;
         }
 
         public function signIn($relocate = NULL, $db)
