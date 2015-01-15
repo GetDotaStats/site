@@ -91,7 +91,7 @@ try {
                     $lobbyLeader = $steamIDLeader->getSteamID32();
 
                     $lobbyName = !empty($value['lobby_name'])
-                        ? $value['lobby_name']
+                        ? urldecode($value['lobby_name'])
                         : 'Custom Lobby #' . $value['lobby_id'];
 
                     $lobbyRegion = !empty($value['lobby_region'])
@@ -99,7 +99,7 @@ try {
                         : 0;
 
                     $lobbyLeaderName = !empty($value['lobby_leader_name'])
-                        ? $value['lobby_leader_name']
+                        ? urldecode($value['lobby_leader_name'])
                         : 'Unknown??';
 
                     $lobbyList[] = array(
@@ -113,7 +113,7 @@ try {
                         'lobby_leader_name' => $lobbyLeaderName,
                         'lobby_hosted' => $value['lobby_hosted'],
                         'lobby_pass' => $value['lobby_pass'],
-                        'lobby_map' => $value['lobby_map'],
+                        'lobby_map' => urldecode($value['lobby_map']),
                         'lobby_current_players' => $value['lobby_current_players']
                     );
                 }

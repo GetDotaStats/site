@@ -11,7 +11,7 @@ try {
         : NULL;
 
     $username = !empty($_GET['un'])
-        ? htmlentities($_GET['un'])
+        ? urlencode($_GET['un'])
         : NULL;
 
     $modID = !empty($_GET['mid']) && is_numeric($_GET['mid'])
@@ -23,11 +23,11 @@ try {
         : NULL;
 
     $map = !empty($_GET['map'])
-        ? htmlentities($_GET['map'])
+        ? urlencode($_GET['map'])
         : NULL;
 
     $pass = !empty($_GET['p'])
-        ? htmlentities($_GET['p'])
+        ? urlencode($_GET['p'])
         : NULL;
 
     $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp']) && $_GET['mp'] > 1 && $_GET['mp'] <= 20
@@ -39,7 +39,7 @@ try {
         : NULL;
 
     $lobbyName = !empty($_GET['ln'])
-        ? htmlentities($_GET['ln'])
+        ? urlencode($_GET['ln'])
         : NULL;
 
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';

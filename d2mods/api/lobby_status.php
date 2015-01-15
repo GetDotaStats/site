@@ -68,7 +68,7 @@ try {
                     if (!empty($lobbyPlayers)) {
                         foreach ($lobbyPlayers as $key => $value) {
                             $userName = !empty($value['user_name'])
-                                ? $value['user_name']
+                                ? urldecode($value['user_name'])
                                 : 'Unknown??';
 
                             $lobbyPlayersArray[] = array(
@@ -84,7 +84,7 @@ try {
                     $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
 
                     $lobbyStatus['lobby_name'] = !empty($lobbyDetails['lobby_name'])
-                        ? $lobbyDetails['lobby_name']
+                        ? urldecode($lobbyDetails['lobby_name'])
                         : 'Custom Lobby #' . $lobbyDetails['lobby_id'];
 
                     $lobbyStatus['lobby_region'] = !empty($lobbyDetails['lobby_region'])
@@ -95,13 +95,13 @@ try {
                     $lobbyStatus['lobby_leader'] = $lobbyLeader;
 
                     $lobbyStatus['lobby_leader_name'] = !empty($lobbyDetails['lobby_leader_name'])
-                        ? $lobbyDetails['lobby_leader_name']
+                        ? urldecode($lobbyDetails['lobby_leader_name'])
                         : 'Unknown??';
 
                     $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
-                    $lobbyStatus['lobby_map'] = $lobbyDetails['lobby_map'];
+                    $lobbyStatus['lobby_map'] = urldecode($lobbyDetails['lobby_map']);
                     $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
                 } else {
                     $lobbyStatus['error'] = 'No lobby with that ID!';
