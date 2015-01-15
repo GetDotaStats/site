@@ -45,7 +45,7 @@ try {
                                 ) AS lobby_current_players
                             FROM `lobby_list` ll
                             WHERE ll.`lobby_active` = 1 AND ll.`lobby_hosted` = 1 AND ll.`lobby_region` = ?
-                            ORDER BY `lobby_id` DESC
+                            ORDER BY lobby_current_players DESC, `lobby_id` DESC
                             LIMIT 0,50;',
                         'i',
                         $region
@@ -77,7 +77,7 @@ try {
                                 ) AS lobby_current_players
                             FROM `lobby_list` ll
                             WHERE ll.`lobby_active` = 1 AND ll.`lobby_hosted` = 1
-                            ORDER BY `lobby_id` DESC
+                            ORDER BY lobby_current_players DESC, `lobby_id` DESC
                             LIMIT 0,50;'
                     );
                     $memcache->set('d2mods_api_lobby_list1_r' . $region, $lobbyListSQL, 0, 5);

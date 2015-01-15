@@ -34,7 +34,7 @@ try {
                 FROM `lobby_list` ll
                 LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
                 WHERE ll.`lobby_active` = 1
-                ORDER BY ll.`date_recorded` ASC;'
+                ORDER BY lobby_current_players DESC;'
             , 5
         );
 
@@ -56,21 +56,25 @@ try {
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
             echo '<tr>
-                        <th class="text-center">Mod</th>
+                        <th class="text-center">Lobby</th>
                         <th class="text-center">Leader</th>
+                        <th class="text-center">Mod</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
-                        <th class="text-center col-md-1">TTL <span class="glyphicon glyphicon-question-sign" title="How long this lobby is open for"></span></th>
-                        <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created"></span></th>
+                        <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this mod was created. (How long it will be advertised)."></span></th>
                         <th class="text-center col-md-1">&nbsp;</th>
                     </tr>';
 
             foreach ($lobbyListActive as $key => $value) {
+                $lobbyName = !empty($value['lobby_name'])
+                    ? htmlentities($value['lobby_name'])
+                    : 'Custom Game #' . $value['lobby_id'];
+
                 echo '<tr>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
                         <td class="vert-align">' . $value['lobby_leader_name'] . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-center vert-align">' . $value['lobby_ttl'] . ' mins</td>
-                        <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
+                        <td class="text-center vert-align">' . relative_time($value['lobby_date_recorded']) . ' <strong>(' . $value['lobby_ttl'] . ')</td>
                         <td class="text-center vert-align"><a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
                     </tr>';
             }
