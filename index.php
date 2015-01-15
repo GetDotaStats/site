@@ -55,13 +55,14 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">BETA</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobbies</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__my_games">My Games</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby Explorer</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__signup">Add a Mod</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recent Games</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__my_games">My Games</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__guide">Adding Stats</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__signup">Add a Mod</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

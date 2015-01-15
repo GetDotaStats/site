@@ -72,33 +72,10 @@ try {
 
                     //LOBBY DETAILS
                     {
-                        if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
-                            if (!empty($lobbyDetails['mod_maps'])) {
-                                $modMapsArray = json_decode($lobbyDetails['mod_maps'], 1);
-
-                                if (!empty($modMapsArray)) {
-                                    $modMaps = '<select name="lobby_map" size="' . count($modMapsArray) . '" onchange="changeMap(this.value)">';
-                                    foreach ($modMapsArray as $key => $value) {
-                                        if ($value == $lobbyDetails['lobby_map']) {
-                                            $modMapsSelect = ' selected';
-                                        } else {
-                                            $modMapsSelect = '';
-                                        }
-                                        $modMaps .= '<option' . $modMapsSelect . ' value="' . $value . '">' . $value . '</option>';
-                                    }
-                                    $modMaps .= '</select>';
-                                } else {
-                                    $modMaps = 'dota_pvp?';
-                                }
-                            } else {
-                                $modMaps = 'dota_pvp?';
-                            }
+                        if (!empty($lobbyDetails['lobby_map'])) {
+                            $modMaps = $lobbyDetails['lobby_map'];
                         } else {
-                            if (!empty($lobbyDetails['lobby_map'])) {
-                                $modMaps = $lobbyDetails['lobby_map'];
-                            } else {
-                                $modMaps = 'dota_pvp??';
-                            }
+                            $modMaps = 'dota_pvp??';
                         }
 
                         $wg = !empty($modDetails['mod_workshop_link'])
@@ -163,31 +140,15 @@ try {
 
                     //LOBBY ACTION BUTTONS
                     {
-                        if ($lobbyDetails['lobby_active'] == 1) {
+                        if ($lobbyDetails['lobby_active'] == 1 && $lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
                             echo '<div class="col-sm-3">';
                             echo '<div class="panel panel-primary" id="lobby_user_actions">';
                             echo '<div class="panel-body">';
 
-                            if ($lobbyDetails['lobby_leader'] == $_SESSION['user_id64']) {
-                                echo '<form id="lobbyClose" class="pull-left">
+                            echo '<form id="lobbyClose" class="pull-left">
                                     <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
                                     <button>Close</button>
                                 </form>';
-                            }
-
-                            if (!in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                                echo '<form id="lobbyJoin" class="pull-left">
-                                    <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
-                                    <button>Join</button>
-                                </form>';
-                            }
-
-                            if (in_array($_SESSION['user_id64'], $lobbyPlayersArray)) {
-                                echo '<form id="lobbyLeave" class="pull-left">
-                                    <input type="hidden" name="lobby_id" value="' . $lobbyID . '">
-                                    <button>Leave</button>
-                                </form>';
-                            }
 
                             echo '</div></div></div>';
                         }
@@ -250,32 +211,6 @@ try {
 
                     ?>
                     <script type="application/javascript">
-                        function changeMap(mapName) {
-                            console.log("triggered!!!");
-                            clearTimeout(pageReloader);
-                            $.post("./d2mods/lobby_update_map.php", {"lobby_map": mapName, "lobby_id": <?=$lobbyID?>}, function (data) {
-                                if (data) {
-                                    try {
-                                        data = JSON.parse(data);
-
-                                        if (data.error) {
-                                            $("#lobbyResult").html(data.error);
-                                        }
-                                        else {
-                                            loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 0);
-                                        }
-                                    }
-                                    catch (err) {
-                                        $("#lobbyResult").html("Failed to update lobby map.");
-                                        console.log("Failed to parse JSON. " + err.message);
-                                    }
-                                }
-                                else {
-                                    $("#lobbyResult").html("Failed to update lobby map.");
-                                }
-                            }, "text");
-                        }
-
                         $(document).ready(function () {
                             $("#lobbyClose").submit(function (event) {
                                 event.preventDefault();
@@ -299,58 +234,6 @@ try {
                                     }
                                     else {
                                         $("#lobbyResult").html("Failed to close lobby.");
-                                    }
-                                }, "text");
-                            });
-
-                            $("#lobbyJoin").submit(function (event) {
-                                event.preventDefault();
-
-                                $.post("./d2mods/lobby_join.php", $("#lobbyJoin").serialize(), function (data) {
-                                    if (data) {
-                                        try {
-                                            data = JSON.parse(data);
-
-                                            if (data.error) {
-                                                $("#lobbyResult").html(data.error);
-                                            }
-                                            else {
-                                                loadPage("#d2mods__lobby?id=<?=$lobbyID?>", 0);
-                                            }
-                                        }
-                                        catch (err) {
-                                            $("#lobbyResult").html("Failed to join lobby.");
-                                            console.log("Failed to parse JSON. " + err.message);
-                                        }
-                                    }
-                                    else {
-                                        $("#lobbyResult").html("Failed to join lobby.");
-                                    }
-                                }, "text");
-                            });
-
-                            $("#lobbyLeave").submit(function (event) {
-                                event.preventDefault();
-
-                                $.post("./d2mods/lobby_leave.php", $("#lobbyLeave").serialize(), function (data) {
-                                    if (data) {
-                                        try {
-                                            data = JSON.parse(data);
-
-                                            if (data.error) {
-                                                $("#lobbyResult").html(data.error);
-                                            }
-                                            else {
-                                                loadPage("#d2mods__lobby_list", 0);
-                                            }
-                                        }
-                                        catch (err) {
-                                            $("#lobbyResult").html("Failed to leave lobby.");
-                                            console.log("Failed to parse JSON. " + err.message);
-                                        }
-                                    }
-                                    else {
-                                        $("#lobbyResult").html("Failed to leave lobby.");
                                     }
                                 }, "text");
                             });
@@ -386,8 +269,8 @@ try {
 
     echo '<p>
             <div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_create">Create Lobby</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>
         </p>';
 
