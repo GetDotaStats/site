@@ -12,7 +12,7 @@ try {
 
     $username = !empty($_GET['un'])
         ? htmlentities($_GET['un'])
-        : 'Unknown??';
+        : NULL;
 
     $modID = !empty($_GET['mid']) && is_numeric($_GET['mid'])
         ? $_GET['mid']
@@ -50,7 +50,7 @@ try {
     $steamID = new SteamID($userID);
     $userID = $steamID->getSteamID64();
 
-    if (!empty($userID) && !empty($modID) && !empty($workshopID) && !empty($map) && !empty($pass) && !empty($maxPlayers)) {
+    if (!empty($userID) && !empty($modID) && !empty($workshopID) && !empty($map) && !empty($pass) && !empty($maxPlayers) && !empty($username)) {
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
