@@ -73,7 +73,7 @@ try {
                     //LOBBY DETAILS
                     {
                         if (!empty($lobbyDetails['lobby_map'])) {
-                            $modMaps = $lobbyDetails['lobby_map'];
+                            $modMaps = urldecode($lobbyDetails['lobby_map']);
                         } else {
                             $modMaps = 'dota_pvp??';
                         }
@@ -186,7 +186,7 @@ try {
                                     : '';
 
                                 echo '<tr>
-                                    <td class="vert-align">' . $lobbyLeaderMark . $value['user_name'] . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                                    <td class="vert-align">' . $lobbyLeaderMark . urldecode($value['user_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
                                     <td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>
                                 </tr>';
                             }
