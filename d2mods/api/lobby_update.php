@@ -11,7 +11,7 @@ try {
         : NULL;
 
     $map = !empty($_GET['map'])
-        ? urlencode($_GET['map'])
+        ? urlencode(unicodeToUTF_8($_GET['map']))
         : NULL;
 
     $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp'])
@@ -23,7 +23,7 @@ try {
         : 0;
 
     $lobbyName = !empty($_GET['ln'])
-        ? urlencode($_GET['ln'])
+        ? urlencode(unicodeToUTF_8($_GET['ln']))
         : 'Custom Lobby #' . $lobbyID;
 
     $token = !empty($_GET['t'])

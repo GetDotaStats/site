@@ -100,7 +100,7 @@ try {
 
                     $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
-                    $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
+                    $lobbyStatus['lobby_pass'] = urldecode($lobbyDetails['lobby_pass']);
                     $lobbyStatus['lobby_map'] = urldecode($lobbyDetails['lobby_map']);
                     $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
                 } else {

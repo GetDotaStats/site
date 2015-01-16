@@ -482,14 +482,26 @@ if (!function_exists("secs_to_clock")) {
     }
 }
 
-function array_map_recursive($callback, $array) {
-    foreach ($array as $key => $value) {
-        if (is_array($array[$key])) {
-            $array[$key] = array_map_recursive($callback, $array[$key]);
+if (!function_exists("array_map_recursive")) {
+    function array_map_recursive($callback, $array)
+    {
+        foreach ($array as $key => $value) {
+            if (is_array($array[$key])) {
+                $array[$key] = array_map_recursive($callback, $array[$key]);
+            } else {
+                $array[$key] = call_user_func($callback, $array[$key]);
+            }
         }
-        else {
-            $array[$key] = call_user_func($callback, $array[$key]);
-        }
+        return $array;
     }
-    return $array;
+}
+
+if (!function_exists("unicodeToUTF_8")) {
+    function unicodeToUTF_8($string)
+    {
+        if (!empty($string)) {
+            return preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", $string);
+    }
+        return false;
+    }
 }

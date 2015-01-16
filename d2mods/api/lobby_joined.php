@@ -11,7 +11,7 @@ try {
         : NULL;
 
     $username = !empty($_GET['un'])
-        ? urlencode($_GET['un'])
+        ? urlencode(unicodeToUTF_8($_GET['un']))
         : 'Unknown??';
 
     $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])
@@ -76,7 +76,7 @@ try {
                         : 'Unknown??';
 
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
-                    $lobbyStatus['lobby_pass'] = $lobbyDetails['lobby_pass'];
+                    $lobbyStatus['lobby_pass'] = urldecode($lobbyDetails['lobby_pass']);
                     $lobbyStatus['lobby_map'] = urldecode($lobbyDetails['lobby_map']);
 
                     $sqlResult = $db->q(

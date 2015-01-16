@@ -62,7 +62,7 @@ try {
                     $lobbyStatus['workshop_id'] = $lobbyUserDetails['workshop_id'];
 
                     $lobbyStatus['lobby_name'] = !empty($lobbyUserDetails['lobby_name'])
-                        ? $lobbyUserDetails['lobby_name']
+                        ? urldecode($lobbyUserDetails['lobby_name'])
                         : 'Custom Lobby #' . $lobbyUserDetails['lobby_id'];
 
                     $lobbyStatus['lobby_region'] = !empty($lobbyUserDetails['lobby_region'])
@@ -72,8 +72,8 @@ try {
                     $lobbyStatus['lobby_max_players'] = $lobbyUserDetails['lobby_max_players'];
                     $lobbyStatus['lobby_leader'] = $lobbyLeader;
                     $lobbyStatus['lobby_hosted'] = $lobbyUserDetails['lobby_hosted'];
-                    $lobbyStatus['lobby_pass'] = $lobbyUserDetails['lobby_pass'];
-                    $lobbyStatus['lobby_map'] = $lobbyUserDetails['lobby_map'];
+                    $lobbyStatus['lobby_pass'] = urldecode($lobbyUserDetails['lobby_pass']);
+                    $lobbyStatus['lobby_map'] = urldecode($lobbyUserDetails['lobby_map']);
                 } else {
                     $lobbyStatus['error'] = 'Not in active lobby!';
                 }

@@ -112,7 +112,7 @@ try {
                         'lobby_leader' => $lobbyLeader,
                         'lobby_leader_name' => $lobbyLeaderName,
                         'lobby_hosted' => $value['lobby_hosted'],
-                        'lobby_pass' => $value['lobby_pass'],
+                        'lobby_pass' => urldecode($value['lobby_pass']),
                         'lobby_map' => urldecode($value['lobby_map']),
                         'lobby_current_players' => $value['lobby_current_players']
                     );
