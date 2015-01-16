@@ -193,7 +193,7 @@ try {
 
                             $playersInLobby = count($lobbyPlayers);
                             if ($playersInLobby < $lobbyDetails['lobby_max_players']) {
-                                for ($i = 1; $i < $lobbyDetails['lobby_max_players']; $i++) {
+                                for ($i = $playersInLobby; $i < $lobbyDetails['lobby_max_players']; $i++) {
                                     echo '<tr>
                                             <td class="vert-align">EMPTY</td>
                                             <td class="text-center vert-align">&nbsp;</td>
