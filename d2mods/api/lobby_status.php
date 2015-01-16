@@ -71,8 +71,11 @@ try {
                                 ? urldecode($value['user_name'])
                                 : 'Unknown??';
 
+                            $steamIDLeader = new SteamID($value['user_id64']);
+                            $userID_32 = $steamIDLeader->getSteamID32();
+
                             $lobbyPlayersArray[] = array(
-                                'user_id64' => $value['user_id64'],
+                                'user_id64' => $userID_32,
                                 'user_name' => $userName,
                                 'user_confirmed' => $value['user_confirmed']
                             );
