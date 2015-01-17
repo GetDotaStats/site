@@ -72,6 +72,8 @@
     located somewhere like
     C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-3.png" width="500px"/></div>
+<p>&nbsp;</p>
+<div class="alert alert-danger">Make sure the downloaded file is named correctly! It must be "<strong>play_weekend_tourney.swf</strong>"</div>
 
 <h2>Find/Join Lobbies</h2>
 <p>Now that you have installed the Dota 2 Workshop Tools, installed the Lobby Explorer and logged into the site; it is
