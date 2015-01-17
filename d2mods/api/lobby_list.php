@@ -68,6 +68,7 @@ try {
                                 ll.`lobby_hosted`,
                                 ll.`lobby_pass`,
                                 ll.`lobby_map`,
+                                ll.`lobby_options`,
                                 (
                                   SELECT
                                       COUNT(`user_id64`)
@@ -102,6 +103,10 @@ try {
                         ? urldecode($value['lobby_leader_name'])
                         : 'Unknown??';
 
+                    $lobbyOptions = !empty($value['lobby_options'])
+                        ? json_decode($value['lobby_options'], 1)
+                        : NULL;
+
                     $lobbyList[] = array(
                         'lobby_id' => $value['lobby_id'],
                         'mod_id' => $value['mod_id'],
@@ -114,7 +119,8 @@ try {
                         'lobby_hosted' => $value['lobby_hosted'],
                         'lobby_pass' => urldecode($value['lobby_pass']),
                         'lobby_map' => urldecode($value['lobby_map']),
-                        'lobby_current_players' => $value['lobby_current_players']
+                        'lobby_current_players' => $value['lobby_current_players'],
+                        'lobby_options' => $lobbyOptions
                     );
                 }
             } else {

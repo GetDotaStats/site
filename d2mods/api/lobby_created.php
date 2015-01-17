@@ -1,6 +1,7 @@
 <?php
 require_once('../../global_functions.php');
 require_once('../functions.php');
+require_once('./functions.php');
 require_once('../../connections/parameters.php');
 
 //Allow client plugin to communicate new lobbies to site
@@ -42,6 +43,9 @@ try {
         ? urlencode(unicodeToUTF_8($_GET['ln']))
         : NULL;
 
+    //$lobbyOptions
+    ////[{type:"textbox",label:"Text Label",name:"text_name",width:"30",default="default stuff"},{type:"dropdown",label:"Dropdown Label",name:"dropdown1",default="Number 1",options:[{label:"Number 1",data:"1"},{label:"Second",data:"Second"}]},{type:"checkbox",label:"Checkbox Label",name:"checkbox_name",default:true}]
+
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $lobbySecureToken = '';
     for ($i = 0; $i < 10; $i++)
@@ -74,11 +78,17 @@ try {
             );
 
             if (empty($lobbyUserDetails)) {
+                $modDetails = getModDetails($memcache, $db, $modID);
+
+                $modGUID = !empty($modDetails['mod_guid'])
+                    ? $modDetails['mod_guid']
+                    : 1;
+
                 $sqlResult = $db->q(
-                    'INSERT INTO `lobby_list`(`mod_id`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL);',
-                    'issiisssss',
-                    $modID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken
+                    'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL);',
+                    'isssiisssss',
+                    $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken
                 );
 
                 if (!empty($sqlResult)) {

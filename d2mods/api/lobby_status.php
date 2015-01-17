@@ -37,7 +37,8 @@ try {
                             ll.`lobby_active`,
                             ll.`lobby_hosted`,
                             ll.`lobby_pass`,
-                            ll.`lobby_map`
+                            ll.`lobby_map`,
+                            ll.`lobby_options`
                         FROM `lobby_list` ll
                         WHERE ll.`lobby_id` = ?
                         ORDER BY `lobby_id` DESC
@@ -106,6 +107,10 @@ try {
                     $lobbyStatus['lobby_pass'] = urldecode($lobbyDetails['lobby_pass']);
                     $lobbyStatus['lobby_map'] = urldecode($lobbyDetails['lobby_map']);
                     $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
+
+                    $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
+                        ? json_decode($lobbyDetails['lobby_options'], 1)
+                        : NULL;
                 } else {
                     $lobbyStatus['error'] = 'No lobby with that ID!';
                 }

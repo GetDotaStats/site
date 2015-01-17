@@ -186,7 +186,7 @@ try {
                                     : '';
 
                                 echo '<tr>
-                                    <td class="vert-align">' . $lobbyLeaderMark . urldecode($value['user_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                                    <td class="vert-align">' . $lobbyLeaderMark . htmlentities(urldecode($value['user_name'])) . ' <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
                                     <td class="text-center vert-align">' . $lobbyConfirmedContextual . '</td>
                                 </tr>';
                             }
