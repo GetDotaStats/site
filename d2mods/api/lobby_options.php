@@ -40,6 +40,8 @@ try {
                 $userID, $modGUID
             );
 
+            //TODO: Timeout the options to match the TTL
+
             if (!empty($lobbyDetails)) {
                 $lobbyDetails = $lobbyDetails[0];
 
