@@ -1,13 +1,13 @@
 <h2>lobby_mod_list GET {r}</h2>
 * region (optional)<br/>
 - Call this to get a list of mods that we can make lobbies for<br/>
-# error, lobby_id, mod_id, workshop_id, lobby_name, lobby_region, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
+# error, lobby_id, mod_id, workshop_id, lobby_name, lobby_region, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players, mod_options
 <br/>
 <br/>
 <h2>lobby_list GET {}</h2>
 * No input<br/>
 - Call this to get a list of lobbies. lobby_hosted (0,1) indicates if the lobby is ready to join<br/>
-# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_hosted, lobby_pass, lobby_map, lobby_current_players, lobby_options
 <br/>
 <br/>
 <h2>lobby_joined GET {uid, lid, t}</h2>
@@ -25,7 +25,7 @@
 * lobby id<br/>
 - Call this to get details about a specific lobby. lobby_active (0,1) indicates that the lobby is still being advertised
 <br/>
-# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_active, lobby_hosted, lobby_pass, lobby_map, lobby_current_players
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_active, lobby_hosted, lobby_pass, lobby_map, lobby_current_players, lobby_options
 <br/>
 <br/>
 <h2>lobby_user_status GET {uid}</h2>
@@ -40,8 +40,8 @@
 # error, modName, popularityRank, gamesLastWeek, gamesAllTime, workshopLink, steamGroup, modInfo, modDeveloperName, modDeveloperAvatar, modDateAdded, modDescription, mod_maps
 <br/>
 <br/>
-<h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln}</h2>
-* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name<br/>
+<h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln, lo}</h2>
+* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name, lobby options<br/>
 - No output<br/>
 # error, result, lobby_id, token<br/>
 * string describing what happened, string describing success, lobby id, secure token<br/>
