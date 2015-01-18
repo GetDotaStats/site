@@ -61,6 +61,10 @@ try {
                         ? $temp['mod_maps'] = $value['mod_maps']
                         : NULL;
 
+                    $temp['mod_options_enabled'] = !empty($value['mod_options_enabled']) && $temp['mod_options_enabled'] == 1
+                        ? $value['mod_options_enabled']
+                        : 0;
+
                     !empty($value['mod_options'])
                         ? $temp['mod_options'] = $value['mod_options']
                         : NULL;
