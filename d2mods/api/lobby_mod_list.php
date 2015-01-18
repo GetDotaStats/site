@@ -61,6 +61,10 @@ try {
                         ? $temp['mod_maps'] = $value['mod_maps']
                         : NULL;
 
+                    !empty($value['mod_options'])
+                        ? $temp['mod_options'] = $value['mod_options']
+                        : NULL;
+
                     $popularMods[] = $temp;
                 }
             } else {
