@@ -17,7 +17,7 @@ try {
         $db->q('SET NAMES utf8;');
 
         if ($db) {
-            $modListActive = simple_cached_query('api_lobby_d2mods_list_active',
+            $modListActive = simple_cached_query('api_lobby_d2mods_list_active1',
                 'SELECT
                         ml.*,
                         (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_last_week,
@@ -61,11 +61,11 @@ try {
                         ? $temp['mod_maps'] = $value['mod_maps']
                         : NULL;
 
-                    $temp['mod_options_enabled'] = !empty($value['mod_options_enabled']) && $temp['mod_options_enabled'] == 1
+                    $temp['mod_options_enabled'] = !empty($value['mod_options_enabled']) && $value['mod_options_enabled'] == 1
                         ? $value['mod_options_enabled']
                         : 0;
 
-                    !empty($value['mod_options'])
+                    !empty($value['mod_options']) && $temp['mod_options_enabled'] == 1
                         ? $temp['mod_options'] = $value['mod_options']
                         : NULL;
 
