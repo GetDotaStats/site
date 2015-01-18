@@ -30,27 +30,39 @@ try {
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <tr>
-                                    <th width="120">Name</th>
-                                    <td><input name="mod_name" type="text" maxlength="35" size="45" required></td>
+                                    <th width="160">Name <span class="glyphicon glyphicon-question-sign"
+                                                               title="The name of your mod, as listed in the workshop."></span>
+                                    </th>
+                                    <td><input name="mod_name" type="text" maxlength="35" size="55" required></td>
                                 </tr>
                                 <tr>
-                                    <th>Description</th>
-                                    <td><textarea name="mod_description" rows="4" cols="47" required></textarea></td>
+                                    <th>Description <span class="glyphicon glyphicon-question-sign"
+                                                          title="A brief description of your mod. Site moderators may improve your description."></span>
+                                    </th>
+                                    <td><textarea name="mod_description" rows="4" cols="57" required></textarea></td>
                                 </tr>
                                 <tr>
-                                    <th>Workshop Link</th>
-                                    <td><input name="mod_workshop_link" type="text" maxlength="70" size="45" required>
+                                    <th>Workshop Link <span class="glyphicon glyphicon-question-sign"
+                                                            title="The full link to your mod in the workshop. This will allow users to subscribe to your mod."></span>
+                                    </th>
+                                    <td><input name="mod_workshop_link" type="text" maxlength="70" size="55" required value="http://steamcommunity.com/sharedfiles/filedetails/?id=XXXXXXXXX">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Steam Group</th>
-                                    <td><input name="mod_steam_group" type="text" maxlength="70" size="45"></td>
+                                    <th>Steam Group <span class="glyphicon glyphicon-question-sign"
+                                                          title="(OPTIONAL) The full link to your game group, should you wish to create a community around your mod."></span>
+                                    </th>
+                                    <td><input name="mod_steam_group" type="text" maxlength="70" size="55" value="http://steamcommunity.com/groups/XXXXX"></td>
                                 </tr>
                                 <tr>
-                                    <th>Maps</th>
-                                    <td><textarea name="mod_maps" rows="3" maxlength="255" cols="45" required>One map
-                                            per line. Have a look at the map field in the in-game client
-                                            lobby.</textarea></td>
+                                    <th>Maps <span class="glyphicon glyphicon-question-sign"
+                                                   title="Grab this from the lobby settings in-game. Failing to add this field will prevent users from playing the map via the Lobby Explorer!"></span>
+                                        <br/><a target="_blank"
+                                                href="//dota2.photography/images/misc/add_mod/map_name.png">EXAMPLE</a>
+                                    </th>
+                                    <td>
+                                        <textarea name="mod_maps" rows="3" maxlength="255" cols="57" required>One map per line!</textarea>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="center">
