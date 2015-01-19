@@ -38,7 +38,8 @@ try {
                             ll.`lobby_hosted`,
                             ll.`lobby_pass`,
                             ll.`lobby_map`,
-                            ll.`lobby_options`
+                            ll.`lobby_options`,
+                            ll.`lobby_version`
                         FROM `lobby_list` ll
                         WHERE ll.`lobby_id` = ?
                         ORDER BY `lobby_id` DESC
@@ -111,6 +112,10 @@ try {
                     $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
                         ? json_decode($lobbyDetails['lobby_options'], 1)
                         : NULL;
+
+                    $lobbyStatus['lobby_version'] = !empty($lobbyDetails['lobby_version'])
+                        ? $lobbyDetails['lobby_version']
+                        : '?';
                 } else {
                     $lobbyStatus['error'] = 'No lobby with that ID!';
                 }
