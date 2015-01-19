@@ -103,8 +103,12 @@ try {
                         ? urldecode($value['lobby_leader_name'])
                         : 'Unknown??';
 
+                    $lobbyMap = !empty($value['lobby_map'])
+                        ? urldecode($value['lobby_map'])
+                        : NULL;
+
                     $lobbyOptions = !empty($value['lobby_options'])
-                        ? json_decode(urldecode($value['lobby_options']), 1)
+                        ? urldecode($value['lobby_options'])
                         : NULL;
 
                     $lobbyList[] = array(
@@ -118,7 +122,7 @@ try {
                         'lobby_leader_name' => $lobbyLeaderName,
                         'lobby_hosted' => $value['lobby_hosted'],
                         'lobby_pass' => urldecode($value['lobby_pass']),
-                        'lobby_map' => urldecode($value['lobby_map']),
+                        'lobby_map' => $lobbyMap,
                         'lobby_current_players' => $value['lobby_current_players'],
                         'lobby_options' => $lobbyOptions
                     );

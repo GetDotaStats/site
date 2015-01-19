@@ -106,11 +106,15 @@ try {
                     $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
                     $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
                     $lobbyStatus['lobby_pass'] = urldecode($lobbyDetails['lobby_pass']);
-                    $lobbyStatus['lobby_map'] = urldecode($lobbyDetails['lobby_map']);
+
+                    $lobbyStatus['lobby_map']  = !empty($lobbyDetails['lobby_map'])
+                        ? urldecode($lobbyDetails['lobby_map'])
+                        : NULL;
+
                     $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
 
                     $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
-                        ? json_decode(urldecode($lobbyDetails['lobby_options']), 1)
+                        ? urldecode($lobbyDetails['lobby_options'])
                         : NULL;
 
                     $lobbyStatus['lobby_version'] = !empty($lobbyDetails['lobby_version'])
