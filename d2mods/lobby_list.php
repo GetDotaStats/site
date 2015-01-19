@@ -72,7 +72,7 @@ try {
 
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . urldecode($lobbyName) . '</a></td>
-                        <td class="vert-align">' . urldecode($value['lobby_leader_name']) . '</td>
+                        <td class="vert-align">' . urldecode($value['lobby_leader_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
                         <td class="text-center vert-align">' . relative_time($value['lobby_date_recorded']) . ' <strong>(' . $value['lobby_ttl'] . ')</td>
