@@ -104,7 +104,7 @@ try {
                         : 'Unknown??';
 
                     $lobbyOptions = !empty($value['lobby_options'])
-                        ? json_decode($value['lobby_options'], 1)
+                        ? json_decode(urldecode($value['lobby_options']), 1)
                         : NULL;
 
                     $lobbyList[] = array(

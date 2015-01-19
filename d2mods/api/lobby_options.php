@@ -51,7 +51,7 @@ try {
                 $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
 
                 $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
-                    ? json_decode($lobbyDetails['lobby_options'], 1)
+                    ? json_decode(urldecode($lobbyDetails['lobby_options']), 1)
                     : NULL;
             } else {
                 $lobbyStatus['error'] = 'No lobby with those fields!';

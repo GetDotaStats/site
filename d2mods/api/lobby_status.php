@@ -110,7 +110,7 @@ try {
                     $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
 
                     $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
-                        ? json_decode($lobbyDetails['lobby_options'], 1)
+                        ? json_decode(urldecode($lobbyDetails['lobby_options']), 1)
                         : NULL;
 
                     $lobbyStatus['lobby_version'] = !empty($lobbyDetails['lobby_version'])
