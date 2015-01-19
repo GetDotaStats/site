@@ -25,7 +25,7 @@
 * lobby id<br/>
 - Call this to get details about a specific lobby. lobby_active (0,1) indicates that the lobby is still being advertised
 <br/>
-# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_active, lobby_hosted, lobby_pass, lobby_map, lobby_current_players, lobby_options
+# error, lobby_id, mod_id, workshop_id, lobby_max_players, lobby_leader, lobby_active, lobby_hosted, lobby_pass, lobby_map, lobby_current_players, lobby_options, lobby_version
 <br/>
 <br/>
 <h2>lobby_user_status GET {uid}</h2>
