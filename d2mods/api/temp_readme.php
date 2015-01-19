@@ -41,7 +41,8 @@
 <br/>
 <br/>
 <h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln, lo, lv}</h2>
-* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name, lobby options, lobby version<br/>
+* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name, lobby options, lobby version
+<br/>
 - No output<br/>
 # error, result, lobby_id, token<br/>
 * string describing what happened, string describing success, lobby id, secure token<br/>
@@ -61,6 +62,7 @@
 <h2>lobby_keep_alive GET {lid, t}</h2>
 * lobbyID, secure token<br/>
 - No output<br/>
-# error, result<br/>
-* string describing what happened, string describing success<br/>
+# error, result, token, lobby_ttl, lobby_active, date_keep_alive, date_recorded<br/>
+* string describing what happened, string describing success, secure token, how long the lobby is alive in minutes, whether the lobby is currently active, when the last keep_alive was sent (string), when the lobby was made (string)
+<br/>
 <br/>
