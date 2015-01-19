@@ -479,14 +479,14 @@ try {
                                     }
                                 }
 
-                                if (empty($items) && empty($abilities)) {
-                                    $item_ability_row = '';
-                                } else {
+                                if (!empty($items) || !empty($abilities)) {
                                     $item_ability_row = '<tr>
                                         <td>&nbsp;</td>
                                         <td class="text-left" colspan="3"><div id="match_ability_container">' . $abilities . '</div></td>
                                         <td class="text-right" colspan="3"><div id="match_item_container">' . $items . '</div></td>
                                     </tr>';
+                                } else {
+                                    $item_ability_row = '';
                                 }
 
                                 ///////////////
