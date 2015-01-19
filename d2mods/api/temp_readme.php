@@ -40,8 +40,8 @@
 # error, modName, popularityRank, gamesLastWeek, gamesAllTime, workshopLink, steamGroup, modInfo, modDeveloperName, modDeveloperAvatar, modDateAdded, modDescription, mod_maps
 <br/>
 <br/>
-<h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln, lo}</h2>
-* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name, lobby options<br/>
+<h2>lobby_created GET {uid, mid, wid, map, p, mp, r, ln, lo, lv}</h2>
+* userid32, modID (GDS digit style), workshop id, map name, password, max players, region, lobby name, lobby options, lobby version<br/>
 - No output<br/>
 # error, result, lobby_id, token<br/>
 * string describing what happened, string describing success, lobby id, secure token<br/>

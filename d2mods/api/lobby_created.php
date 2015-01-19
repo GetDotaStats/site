@@ -47,6 +47,10 @@ try {
         ? urlencode(unicodeToUTF_8($_GET['lo']))
         : NULL;
 
+    $lobbyVersion = !empty($_GET['lv'])
+        ? urlencode(unicodeToUTF_8($_GET['lv']))
+        : NULL;
+
     //$lobbyOptions
     ////[{type:"textbox",label:"Text Label",name:"text_name",width:"30",default="default stuff"},{type:"dropdown",label:"Dropdown Label",name:"dropdown1",default="Number 1",options:[{label:"Number 1",data:"1"},{label:"Second",data:"Second"}]},{type:"checkbox",label:"Checkbox Label",name:"checkbox_name",default:true}]
 
@@ -89,10 +93,10 @@ try {
                     : 1;
 
                 $sqlResult = $db->q(
-                    'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`, `lobby_options`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL, ?);',
-                    'isssiissssss',
-                    $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken, $lobbyOptions
+                    'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`, `lobby_options`, `lobby_version`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL, ?, ?);',
+                    'isssiisssssss',
+                    $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken, $lobbyOptions, $lobbyVersion
                 );
 
                 if (!empty($sqlResult)) {
