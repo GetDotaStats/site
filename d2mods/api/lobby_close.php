@@ -22,7 +22,7 @@ try {
 
         if ($db) {
             $sqlResult = $db->q(
-                'UPDATE `lobby_list` SET `lobby_active` = 0 WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+                'UPDATE `lobby_list` SET `lobby_active` = 0, `lobby_hosted` = 0 WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
                 'is',
                 $lobbyID, $token
             );
