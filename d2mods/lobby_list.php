@@ -82,7 +82,7 @@ try {
 
             echo '</table></div>';
         } else {
-            echo bootstrapMessage('Oh Snap', 'No active lobbies!', 'danger');
+            echo bootstrapMessage('Oh Snap', 'No active lobbies! You should probably go make one.', 'danger');
         }
     } else {
         echo bootstrapMessage('Oh Snap', 'No db!', 'danger');
