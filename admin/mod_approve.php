@@ -57,6 +57,13 @@ try {
                         ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new">WS</a>'
                         : 'WG';
 
+                    if (!empty($value['mod_maps']) && $value['mod_maps'] != 'One map per line!') {
+                        $modMaps = implode(", ", json_decode($value['mod_maps'], 1));
+                    } else {
+                        $modMaps = 'unknown';
+                    }
+
+
                     echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <th>' . $value['mod_name'] . '</th>
@@ -66,7 +73,8 @@ try {
                     <tr class="warning">
                         <td colspan="6">
                             <div class="text-right"><strong>' . relative_time($value['date_recorded']) . '</strong> <span class="glyphicon glyphicon-question-sign" title="This mod was added ' . relative_time($value['date_recorded']) . '"></span></div>
-                            ' . $value['mod_description'] . '<br />
+                            <div><strong>Maps:</strong> ' . $modMaps . '</div>
+                            <div><strong>Description:</strong> ' . $value['mod_description'] . '</div>
                         </td>
                     </tr>';
                 }
