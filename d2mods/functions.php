@@ -474,6 +474,21 @@ if (!class_exists('steam_webapi')) {
 
             return $APIresult;
         }
+
+        function GetPlayerSummariesV2($steamID)
+        {
+            try {
+                $APIresult = curl('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=' . $this->steamAPIKey . '&steamids=' . $steamID);
+
+                $APIresult = !empty($APIresult)
+                    ? json_decode($APIresult, 1)
+                    : false;
+
+                return $APIresult;
+            } catch (Exception $e) {
+                return $e->getMessage();
+            }
+        }
     }
 }
 
