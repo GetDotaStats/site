@@ -12,6 +12,7 @@ header("Expires: " . date(DATE_RFC822, strtotime(" 2 hours")));
 //!empty($_GET["base"]) && is_file($base_img_dir_sig . $_GET["base"]) ? $base_img_name = $_GET["base"] : $base_img_name = 'base2.png';
 @$_GET["flush_acc"] == 1 ? $flush_acc = 1 : $flush_acc = 0;
 $banned = false;
+$rate_limited = !empty($_GET["r"]) && $_GET["r"] == 1 ? 1 : 0;
 
 $base_img_name = 'base2.png';
 $file_name_location = './images/generated/' . $account_id . '.png';
@@ -49,311 +50,334 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
     list($src_width, $src_height, $src_type, $src_attr) = getimagesize($base_img_dir_sig . $base_img_name);
 
     if ($sig_stats_winrate != 'Timeout' && $sig_stats_most_played != 'Timeout') {
-        if (!empty($sig_stats_winrate) || !empty($sig_stats_most_played)) {
-            $overlay_initial_spacing_x = 5;
-            $overlay_initial_spacing_y = 5;
+        if (empty($rate_limited) && $sig_stats_winrate != 'Rate-limited' && $sig_stats_most_played != 'Rate-limited') {
+            if (!empty($sig_stats_winrate) || !empty($sig_stats_most_played)) {
+                $overlay_initial_spacing_x = 5;
+                $overlay_initial_spacing_y = 5;
 
-            $overlay_default_spacing_x = 5;
-            $overlay_default_spacing_y = 5;
+                $overlay_default_spacing_x = 5;
+                $overlay_default_spacing_y = 5;
 
-            $overlay_width = 54;
-            $overlay_height = 30;
+                $overlay_width = 54;
+                $overlay_height = 30;
 
-            //////////////////////////////////////////////
-            // Apply the overlays for mostplayed
-            //////////////////////////////////////////////
-            if (isset($sig_stats_most_played['heroes'])) {
-                $x = $y = 0;
-                for ($i = 0; $i < count($sig_stats_most_played['heroes']); $i++) {
-                    $image_file = './images/' . $sig_stats_most_played['heroes'][$i]['pic'] . '.png';
+                //////////////////////////////////////////////
+                // Apply the overlays for mostplayed
+                //////////////////////////////////////////////
+                if (isset($sig_stats_most_played['heroes'])) {
+                    $x = $y = 0;
+                    for ($i = 0; $i < count($sig_stats_most_played['heroes']); $i++) {
+                        $image_file = './images/' . $sig_stats_most_played['heroes'][$i]['pic'] . '.png';
 
-                    if (file_exists($image_file)) {
-                        $image = imagecreatefrompng($image_file);
-                    } else {
-                        $image = './images/bases/hero_default.png';
+                        if (file_exists($image_file)) {
+                            $image = imagecreatefrompng($image_file);
+                        } else {
+                            $image = './images/bases/hero_default.png';
+                        }
+
+                        //list($overlay_width, $overlay_height) = getimagesize($image_file);
+
+                        if ($i > 0) {
+                            $x = $x + $overlay_width + 5;
+                        } else {
+                            $x = 18;
+                        }
+
+                        $y = 56;
+
+                        imagecopy($base_img,
+                            $image,
+                            $x,
+                            $y,
+                            0,
+                            0,
+                            $overlay_width,
+                            $overlay_height);
+                        imagedestroy($image);
+
+                        ///////////////////////////////////
+                        //APPLY TEXT FOR OVERLAY
+                        ///////////////////////////////////
+                        $overlay_text = $sig_stats_most_played['heroes'][$i]['gamesplayed'] . ' (' . round($sig_stats_most_played['heroes'][$i]['winrate'], 0) . '%)';
+
+                        $text_colour = imagecolorallocate($base_img, 255, 255, 0);
+
+                        strlen($overlay_text) > 10 ? $font_size = 7 : $font_size = 8; //SMALLER FONT IF TOO MANY NUMBERS
+                        $tb = imagettfbbox($font_size, 0, $font_norm, $overlay_text);
+
+                        $text_box_height = abs($tb[1] - $tb[7]);
+
+                        $overlay_text_offset_x = 2;
+                        $overlay_text_offset_y = 2;
+
+                        imagettftext($base_img,
+                            $font_size,
+                            0,
+                            ($x + $overlay_text_offset_x),
+                            ($y + $overlay_height + $text_box_height + 5),
+                            $text_colour,
+                            $font_norm,
+                            $overlay_text);
                     }
-
-                    //list($overlay_width, $overlay_height) = getimagesize($image_file);
-
-                    if ($i > 0) {
-                        $x = $x + $overlay_width + 5;
-                    } else {
-                        $x = 18;
-                    }
-
-                    $y = 56;
-
-                    imagecopy($base_img,
-                        $image,
-                        $x,
-                        $y,
-                        0,
-                        0,
-                        $overlay_width,
-                        $overlay_height);
-                    imagedestroy($image);
-
-                    ///////////////////////////////////
-                    //APPLY TEXT FOR OVERLAY
-                    ///////////////////////////////////
-                    $overlay_text = $sig_stats_most_played['heroes'][$i]['gamesplayed'] . ' (' . round($sig_stats_most_played['heroes'][$i]['winrate'], 0) . '%)';
-
-                    $text_colour = imagecolorallocate($base_img, 255, 255, 0);
-
-                    strlen($overlay_text) > 10 ? $font_size = 7 : $font_size = 8; //SMALLER FONT IF TOO MANY NUMBERS
-                    $tb = imagettfbbox($font_size, 0, $font_norm, $overlay_text);
-
-                    $text_box_height = abs($tb[1] - $tb[7]);
-
-                    $overlay_text_offset_x = 2;
-                    $overlay_text_offset_y = 2;
-
-                    imagettftext($base_img,
-                        $font_size,
-                        0,
-                        ($x + $overlay_text_offset_x),
-                        ($y + $overlay_height + $text_box_height + 5),
-                        $text_colour,
-                        $font_norm,
-                        $overlay_text);
                 }
-            }
 
-            //////////////////////////////////////////////
-            // Apply the overlays for winrate
-            //////////////////////////////////////////////
-            if (isset($sig_stats_winrate['heroes'])) {
-                $x = $y = 0;
-                for ($i = 0; $i < count($sig_stats_winrate['heroes']); $i++) {
-                    $image_file = './images/' . $sig_stats_winrate['heroes'][$i]['pic'] . '.png';
+                //////////////////////////////////////////////
+                // Apply the overlays for winrate
+                //////////////////////////////////////////////
+                if (isset($sig_stats_winrate['heroes'])) {
+                    $x = $y = 0;
+                    for ($i = 0; $i < count($sig_stats_winrate['heroes']); $i++) {
+                        $image_file = './images/' . $sig_stats_winrate['heroes'][$i]['pic'] . '.png';
 
-                    if (file_exists($image_file)) {
-                        $image = imagecreatefrompng($image_file);
-                    } else {
-                        $image = './images/bases/hero_default.png';
+                        if (file_exists($image_file)) {
+                            $image = imagecreatefrompng($image_file);
+                        } else {
+                            $image = './images/bases/hero_default.png';
+                        }
+
+                        //list($overlay_width, $overlay_height) = getimagesize($image_file);
+
+                        if ($i > 0) {
+                            $x = $x + $overlay_width + 5;
+                        } else {
+                            $x = 301;
+                        }
+
+                        $y = 56;
+
+                        imagecopy($base_img,
+                            $image,
+                            $x,
+                            $y,
+                            0,
+                            0,
+                            $overlay_width,
+                            $overlay_height);
+                        imagedestroy($image);
+
+                        ///////////////////////////////////
+                        //APPLY TEXT FOR OVERLAY
+                        ///////////////////////////////////
+                        $overlay_text = round($sig_stats_winrate['heroes'][$i]['winrate'], 0) . '% (' . $sig_stats_winrate['heroes'][$i]['gamesplayed'] . ')';
+
+                        $text_colour = imagecolorallocate($base_img, 255, 255, 0);
+
+                        strlen($overlay_text) > 10 ? $font_size = 7 : $font_size = 8; //SMALLER FONT IF TOO MANY NUMBERS
+                        $tb = imagettfbbox($font_size, 0, $font_norm, $overlay_text);
+
+                        $text_box_height = abs($tb[1] - $tb[7]);
+
+                        $overlay_text_offset_x = 2;
+                        $overlay_text_offset_y = 2;
+
+                        imagettftext($base_img,
+                            $font_size,
+                            0,
+                            ($x + $overlay_text_offset_x),
+                            ($y + $overlay_height + $text_box_height + 5),
+                            $text_colour,
+                            $font_norm,
+                            $overlay_text);
                     }
-
-                    //list($overlay_width, $overlay_height) = getimagesize($image_file);
-
-                    if ($i > 0) {
-                        $x = $x + $overlay_width + 5;
-                    } else {
-                        $x = 301;
-                    }
-
-                    $y = 56;
-
-                    imagecopy($base_img,
-                        $image,
-                        $x,
-                        $y,
-                        0,
-                        0,
-                        $overlay_width,
-                        $overlay_height);
-                    imagedestroy($image);
-
-                    ///////////////////////////////////
-                    //APPLY TEXT FOR OVERLAY
-                    ///////////////////////////////////
-                    $overlay_text = round($sig_stats_winrate['heroes'][$i]['winrate'], 0) . '% (' . $sig_stats_winrate['heroes'][$i]['gamesplayed'] . ')';
-
-                    $text_colour = imagecolorallocate($base_img, 255, 255, 0);
-
-                    strlen($overlay_text) > 10 ? $font_size = 7 : $font_size = 8; //SMALLER FONT IF TOO MANY NUMBERS
-                    $tb = imagettfbbox($font_size, 0, $font_norm, $overlay_text);
-
-                    $text_box_height = abs($tb[1] - $tb[7]);
-
-                    $overlay_text_offset_x = 2;
-                    $overlay_text_offset_y = 2;
-
-                    imagettftext($base_img,
-                        $font_size,
-                        0,
-                        ($x + $overlay_text_offset_x),
-                        ($y + $overlay_height + $text_box_height + 5),
-                        $text_colour,
-                        $font_norm,
-                        $overlay_text);
                 }
-            }
 
-            ////////////////////////////
-            //ADD Steam Avatar
-            ////////////////////////////
-            $image_file = $sig_stats_winrate['user_pic'];
+                ////////////////////////////
+                //ADD Steam Avatar
+                ////////////////////////////
+                $image_file = $sig_stats_winrate['user_pic'];
 
-            if (!empty($image_file)) {
-                $image_file = LoadJPEG($image_file);
-            } else {
-                $image_file = imagecreatefrompng('./images/bases/steam_overlay.png');
-            }
-            list($overlay_width, $overlay_height) = getimagesize($image_file);
+                if (!empty($image_file)) {
+                    $image_file = LoadJPEG($image_file);
+                } else {
+                    $image_file = imagecreatefrompng('./images/bases/steam_overlay.png');
+                }
+                list($overlay_width, $overlay_height) = getimagesize($image_file);
 
-            $steam_avatar_offset_x = 10;
-            $steam_avatar_offset_y = 10;
+                $steam_avatar_offset_x = 10;
+                $steam_avatar_offset_y = 10;
 
-            $steam_avatar_dimension = 30;
+                $steam_avatar_dimension = 30;
 
-            imagecopyresampled($base_img,
-                $image_file,
-                $steam_avatar_offset_x,
-                $steam_avatar_offset_y,
-                0,
-                0,
-                $steam_avatar_dimension,
-                $steam_avatar_dimension,
-                64,
-                64);
+                imagecopyresampled($base_img,
+                    $image_file,
+                    $steam_avatar_offset_x,
+                    $steam_avatar_offset_y,
+                    0,
+                    0,
+                    $steam_avatar_dimension,
+                    $steam_avatar_dimension,
+                    64,
+                    64);
 
-            imagedestroy($image_file);
+                imagedestroy($image_file);
 
-            /////////////////////
-            //USERNAME
-            /////////////////////
-            $list_of_mods = array();
-            $list_of_mods[] = '28755155'; //jimmydorry
+                /////////////////////
+                //USERNAME
+                /////////////////////
+                $list_of_mods = array();
+                $list_of_mods[] = '28755155'; //jimmydorry
 
-            if (in_array($account_id, $list_of_mods)) {
-                $text_colour = imagecolorallocate($base_img, 228, 114, 151);
-            } else {
+                if (in_array($account_id, $list_of_mods)) {
+                    $text_colour = imagecolorallocate($base_img, 228, 114, 151);
+                } else {
+                    $text_colour = imagecolorallocate($base_img, 78, 213, 84);
+                }
+
+                $font_size = 15;
+                strlen($sig_stats_winrate['username']) > 40 ? $username = substr($sig_stats_winrate['username'], 0, 40) . '...' : $username = $sig_stats_winrate['username'];
+                $tb = imagettfbbox($font_size, 0, $font, $username);
+
+                $overlay_text_offset_x = 7;
+                $overlay_text_offset_y = 10;
+
+                $x_a_un = $steam_avatar_dimension + $steam_avatar_offset_x + $overlay_text_offset_x;
+                $y_a_un = (abs($tb[7]) - $tb[1]) / 2 + ($steam_avatar_dimension / 2) + $steam_avatar_offset_y;
+
+                imagettftext($base_img,
+                    $font_size,
+                    0,
+                    $x_a_un,
+                    $y_a_un,
+                    $text_colour,
+                    $font,
+                    $username);
+
+                /////////////////////////////
+                //ACCOUNT WIN %
+                /////////////////////////////
+                $mmr_stats = $db->q(
+                    'SELECT `rank_solo`, `rank_team`, `dota_wins`, `last_updated` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
+                    'i',
+                    $account_id
+                );
+
+                $timeSinceUpdated = !empty($mmr_stats[0]['last_updated'])
+                    ? time() - $mmr_stats[0]['last_updated']
+                    : 0;
+
+                //Only use SteamTracks data for wins if they have updated within last 2weeks
+                if (!empty($mmr_stats[0]['dota_wins']) && $timeSinceUpdated != 0 && $timeSinceUpdated <= 1209600) {
+                    $dota_wins = $mmr_stats[0]['dota_wins'];
+                } else if (!empty($sig_stats_winrate['account_win'])) {
+                    $dota_wins = $sig_stats_winrate['account_win'];
+                } else {
+                    $dota_wins = '???';
+                }
+
+                $font_size = 16;
                 $text_colour = imagecolorallocate($base_img, 78, 213, 84);
-            }
+                $overlay_text = $sig_stats_winrate['account_percent'] . ' (' . $dota_wins . ' wins)';
+                $tb = imagettfbbox($font_size, 0, $font, $overlay_text);
 
-            $font_size = 15;
-            strlen($sig_stats_winrate['username']) > 40 ? $username = substr($sig_stats_winrate['username'], 0, 40) . '...' : $username = $sig_stats_winrate['username'];
-            $tb = imagettfbbox($font_size, 0, $font, $username);
+                $overlay_text_offset_x = 10;
+                $overlay_text_offset_y = 10;
 
-            $overlay_text_offset_x = 7;
-            $overlay_text_offset_y = 10;
+                $x_a_wr = $src_width - $tb[2] - $overlay_text_offset_x;
+                $y_a_wr = abs($tb[7]) - $tb[1] + $overlay_text_offset_y;
 
-            $x_a_un = $steam_avatar_dimension + $steam_avatar_offset_x + $overlay_text_offset_x;
-            $y_a_un = (abs($tb[7]) - $tb[1]) / 2 + ($steam_avatar_dimension / 2) + $steam_avatar_offset_y;
+                imagettftext($base_img,
+                    $font_size,
+                    0,
+                    $x_a_wr,
+                    $y_a_wr,
+                    $text_colour,
+                    $font,
+                    $overlay_text);
 
-            imagettftext($base_img,
-                $font_size,
-                0,
-                $x_a_un,
-                $y_a_un,
-                $text_colour,
-                $font,
-                $username);
+                //////////////////////////
+                //ACCOUNT MMR
+                //////////////////////////
+                if (!empty($mmr_stats)) {
+                    $rank_solo = !empty($mmr_stats[0]['rank_solo'])
+                        ? $mmr_stats[0]['rank_solo']
+                        : '???';
+                    $rank_team = !empty($mmr_stats[0]['rank_team'])
+                        ? $mmr_stats[0]['rank_team']
+                        : '???';
 
-            /////////////////////////////
-            //ACCOUNT WIN %
-            /////////////////////////////
-            $mmr_stats = $db->q(
-                'SELECT `rank_solo`, `rank_team`, `dota_wins`, `last_updated` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
-                'i',
-                $account_id
-            );
+                    $font_size = 9;
+                    $overlay_text = $rank_solo . ' | ' . $rank_team;
+                } else {
+                    $font_size = 7;
+                    $overlay_text = 'Visit our webpage to add MMR';
+                }
 
-            $timeSinceUpdated = !empty($mmr_stats[0]['last_updated'])
-                ? time() - $mmr_stats[0]['last_updated']
-                : 0;
+                $text_colour = imagecolorallocate($base_img, 78, 213, 84);
+                //$overlay_text = $sig_stats_winrate['account_win'] . ' wins';
+                $tb = imagettfbbox($font_size, 0, $font, $overlay_text);
 
-            //Only use SteamTracks data for wins if they have updated within last 2weeks
-            if (!empty($mmr_stats[0]['dota_wins']) && $timeSinceUpdated != 0 && $timeSinceUpdated <= 1209600) {
-                $dota_wins = $mmr_stats[0]['dota_wins'];
-            } else if (!empty($sig_stats_winrate['account_win'])) {
-                $dota_wins = $sig_stats_winrate['account_win'];
+                $overlay_text_offset_x = 10;
+                $overlay_text_offset_y = 10;
+
+                $x_a_wn = $src_width - $tb[2] - $overlay_text_offset_x;
+                $y_a_wn = abs($tb[7]) - $tb[1] + $overlay_text_offset_y + $y_a_wr;
+
+                imagettftext($base_img,
+                    $font_size,
+                    0,
+                    $x_a_wn,
+                    $y_a_wn,
+                    $text_colour,
+                    $font,
+                    $overlay_text);
+
+                //////////////////////////
+                //VALVE MMR LOGO
+                //////////////////////////
+                $image_file_src = './images/bases/mmr_logo_v2.png';
+                $image_file = imagecreatefrompng($image_file_src);
+
+                list($overlay_width, $overlay_height) = getimagesize($image_file_src);
+
+                $steam_avatar_offset_x = 10;
+                $steam_avatar_offset_y = 5;
+
+                $mmr_overlay_final_pos_x = $x_a_wn - $overlay_width;
+                $mmr_overlay_final_pos_y = $y_a_wn - ($overlay_height / 2);
+
+                $steam_avatar_dimension = 16;
+
+                imagecopyresampled($base_img,
+                    $image_file,
+                    $mmr_overlay_final_pos_x,
+                    $mmr_overlay_final_pos_y,
+                    0,
+                    0,
+                    $steam_avatar_dimension,
+                    $steam_avatar_dimension,
+                    24,
+                    24);
+
+                imagedestroy($image_file);
+
+
             } else {
-                $dota_wins = '???';
+                //NO USERACCOUNT FOUND
+                $font_size = 14;
+                $text_colour = imagecolorallocate($base_img, 78, 213, 84);
+                $overlay_text = 'User does not exist or has not shared history.';
+                $tb = imagettfbbox($font_size, 0, $font, $overlay_text);
+
+                $overlay_text_offset_x = 0;
+                $overlay_text_offset_y = 0;
+
+                $x_a_nu = ($src_width - $tb[2]) / 2;
+                $y_a_nu = abs($tb[7] - $tb[1]) + 10;
+
+                imagettftext($base_img,
+                    $font_size,
+                    0,
+                    $x_a_nu,
+                    $y_a_nu,
+                    $text_colour,
+                    $font,
+                    $overlay_text);
             }
-
-            $font_size = 16;
-            $text_colour = imagecolorallocate($base_img, 78, 213, 84);
-            $overlay_text = $sig_stats_winrate['account_percent'] . ' (' . $dota_wins . ' wins)';
-            $tb = imagettfbbox($font_size, 0, $font, $overlay_text);
-
-            $overlay_text_offset_x = 10;
-            $overlay_text_offset_y = 10;
-
-            $x_a_wr = $src_width - $tb[2] - $overlay_text_offset_x;
-            $y_a_wr = abs($tb[7]) - $tb[1] + $overlay_text_offset_y;
-
-            imagettftext($base_img,
-                $font_size,
-                0,
-                $x_a_wr,
-                $y_a_wr,
-                $text_colour,
-                $font,
-                $overlay_text);
-
-            //////////////////////////
-            //ACCOUNT MMR
-            //////////////////////////
-            if (!empty($mmr_stats)) {
-                $rank_solo = !empty($mmr_stats[0]['rank_solo'])
-                    ? $mmr_stats[0]['rank_solo']
-                    : '???';
-                $rank_team = !empty($mmr_stats[0]['rank_team'])
-                    ? $mmr_stats[0]['rank_team']
-                    : '???';
-
-                $font_size = 9;
-                $overlay_text = $rank_solo . ' | ' . $rank_team;
-            } else {
-                $font_size = 7;
-                $overlay_text = 'Visit our webpage to add MMR';
-            }
-
-            $text_colour = imagecolorallocate($base_img, 78, 213, 84);
-            //$overlay_text = $sig_stats_winrate['account_win'] . ' wins';
-            $tb = imagettfbbox($font_size, 0, $font, $overlay_text);
-
-            $overlay_text_offset_x = 10;
-            $overlay_text_offset_y = 10;
-
-            $x_a_wn = $src_width - $tb[2] - $overlay_text_offset_x;
-            $y_a_wn = abs($tb[7]) - $tb[1] + $overlay_text_offset_y + $y_a_wr;
-
-            imagettftext($base_img,
-                $font_size,
-                0,
-                $x_a_wn,
-                $y_a_wn,
-                $text_colour,
-                $font,
-                $overlay_text);
-
-            //////////////////////////
-            //VALVE MMR LOGO
-            //////////////////////////
-            $image_file_src = './images/bases/mmr_logo_v2.png';
-            $image_file = imagecreatefrompng($image_file_src);
-
-            list($overlay_width, $overlay_height) = getimagesize($image_file_src);
-
-            $steam_avatar_offset_x = 10;
-            $steam_avatar_offset_y = 5;
-
-            $mmr_overlay_final_pos_x = $x_a_wn - $overlay_width;
-            $mmr_overlay_final_pos_y = $y_a_wn - ($overlay_height / 2);
-
-            $steam_avatar_dimension = 16;
-
-            imagecopyresampled($base_img,
-                $image_file,
-                $mmr_overlay_final_pos_x,
-                $mmr_overlay_final_pos_y,
-                0,
-                0,
-                $steam_avatar_dimension,
-                $steam_avatar_dimension,
-                24,
-                24);
-
-            imagedestroy($image_file);
-
-
         } else {
-            //NO USERACCOUNT FOUND
+            //RATE-LIMITED
             $font_size = 14;
             $text_colour = imagecolorallocate($base_img, 78, 213, 84);
-            $overlay_text = 'User does not exist or has not shared history.';
+            $overlay_text = 'Limited stats while site is rate-limited';
             $tb = imagettfbbox($font_size, 0, $font, $overlay_text);
 
             $overlay_text_offset_x = 0;

@@ -3,8 +3,8 @@ require_once('../connections/parameters.php');
 require_once('./functions.php');
 set_time_limit(60);
 
-!empty($_GET["aid"]) && is_numeric($_GET["aid"]) ? $account_id = $_GET["aid"] : $account_id = 28755155;
-@$_GET["flush_acc"] == 1 ? $flush_acc = 1 : $flush_acc = 0;
+$account_id = !empty($_GET["aid"]) && is_numeric($_GET["aid"]) ? $_GET["aid"] : 28755155;
+$flush_acc = !empty($_GET["flush_acc"]) && $_GET["flush_acc"] == 1 ? 1 : 0;
 
 $db = new dbWrapper($hostname_sig, $username_sig, $password_sig, $database_sig, false);
 
@@ -19,5 +19,9 @@ echo '</pre>';
 echo '<hr />';
 
 echo '<pre>';
-print_r($sig_stats_winrate);
+print_r($sig_stats_most_played);
 echo '</pre>';
+
+echo '<hr />';
+
+echo htmlentities(curl('http://www.dotabuff.com/players/' . $account_id, NULL, NULL, NULL, NULL, 10));

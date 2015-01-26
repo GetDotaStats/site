@@ -248,12 +248,16 @@ if (!function_exists("curl")) {
 if (!function_exists("cut_str")) {
     function cut_str($str, $left, $right = NULL)
     {
-        $str = substr(stristr($str, $left), strlen($left));
+        try {
+            $str = substr(stristr($str, $left), strlen($left));
 
-        if ($right) {
-            $leftLen = strlen(stristr($str, $right));
-            $leftLen = $leftLen ? -($leftLen) : strlen($str);
-            $str = substr($str, 0, $leftLen);
+            if ($right) {
+                $leftLen = strlen(stristr($str, $right));
+                $leftLen = $leftLen ? -($leftLen) : strlen($str);
+                $str = substr($str, 0, $leftLen);
+            }
+        } catch (Exception $e) {
+            return false;
         }
 
         return $str;
@@ -501,7 +505,7 @@ if (!function_exists("unicodeToUTF_8")) {
     {
         if (!empty($string)) {
             return preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", $string);
-    }
+        }
         return false;
     }
 }
