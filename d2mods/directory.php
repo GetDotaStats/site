@@ -47,7 +47,7 @@ try {
 
                 $wg = !empty($value['mod_workshop_link'])
                     ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new">WS</a>'
-                    : 'WG';
+                    : 'WS';
 
                 echo '<tr>
                         <td>' . ($key + 1) . '</td>
