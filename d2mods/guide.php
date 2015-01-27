@@ -248,8 +248,9 @@
 
 <p>Some custom games have runtime configurations (or flags). As of writing, this data is collected but not displayed on
     the site. In the interest of data integrity, it is better to record this data now, than want it later. Flags are
-    used for mod settings that a user has no control over. You could use this to indicate which other modules you are
-    using, what engine it's running on, etc. All data must be strings or integers!</p>
+    used for mod settings that a user has no control over. You could use this to indicate environment variables like
+    which source engine it's running on, whether it's on one of the dedicated servers you set up for your mod, etc. All
+    data must be strings or integers!</p>
 
 <pre class="pre-scrollable">
     -- Add flags to our stat collector
@@ -262,10 +263,10 @@
         href="https://github.com/ash47/LegendsOfDota/blob/fa672ce56159569089734caf09708307def6e73d/lod/scripts/vscripts/addon_game_mode.lua#L1365"
         target="_blank">GitHub</a></h4>
 
-<p>Some custom games have host defined choices (or modes). As of writing, this data is collected but not displayed on the site. In
-    the interest of data integrity, it is better to record this data now, than want it later. Modes are used for mod
-    settings that a user has control over. You could use this to indicate settings such as: starting gold, level cap,
-    number of skills, etc. All data must be strings or integers!</p>
+<p>Some custom games have host defined choices (or modes). As of writing, this data is collected but not displayed on
+    the site. In the interest of data integrity, it is better to record this data now, than want it later. Modes are
+    used for mod settings that a user has control over. You could use this to indicate settings such as: starting gold,
+    level cap, number of skills, etc. All data must be strings or integers!</p>
 
 <pre class="pre-scrollable">
     -- Add settings to our stat collector
@@ -286,6 +287,26 @@
             maxUlts = maxUlts
         }
     })
+</pre>
+
+<h4>Add module stats on your modules - <a
+        href="https://github.com/ash47/LegendsOfDota/blob/9bd94ec2a5830c352fce3af13d8568ab32f6f2ff/lod/scripts/vscripts/lib/loadhelper.lua#L91"
+        target="_blank">GitHub</a></h4>
+
+<p>If you ever make a module and want to track which mods implement it, we have you covered! If they have implemented
+    our stat module as well, then simply make a call to the addModuleStats() method. You can track what specific module
+    options they have enabled, and depending on the module, you may want to record additional variables. All data must
+    be strings or integers!</p>
+
+<pre class="pre-scrollable">
+    -- If they have stats, record that our system is in use
+    if statcollection then
+        -- Add the stats
+        statcollection.addModuleStats('loadHelper', {
+            enabled = true,
+            hostSlotID = hostID,
+        })
+    end
 </pre>
 
 <h4>Finally!</h4>
