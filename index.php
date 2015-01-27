@@ -64,7 +64,7 @@ try {
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Setup Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__signup">Request a Mod</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">My Custom Games</li>
                         <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>

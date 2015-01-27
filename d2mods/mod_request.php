@@ -1,4 +1,5 @@
 <?php
+require_once('./functions.php');
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
@@ -13,34 +14,16 @@ try {
         $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
         $db->q('SET NAMES utf8;');
 
+        echo '<h2>Request a Mod be Accepted for Stats <small>BETA</small></h2>';
+
+        echo '<p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong> Only the developer of said mod will be able to add it to the site.</p>';
+
         if ($db) {
-            ?>
-            <div class="page-header">
-                <h2>Add a new Mod for Stats
-                    <small>BETA</small>
-                </h2>
-            </div>
 
-            <p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to
-                implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong></p>
-
-            <div class="container">
-                <div class="col-sm-6">
-                    <form id="modSignup">
+            echo '<div class="container"><div class="col-sm-6">';
+            echo '<form id="modSignup">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
-                                <tr>
-                                    <th width="160">Name <span class="glyphicon glyphicon-question-sign"
-                                                               title="The name of your mod, as listed in the workshop."></span>
-                                    </th>
-                                    <td><input name="mod_name" type="text" maxlength="35" size="55" required></td>
-                                </tr>
-                                <tr>
-                                    <th>Description <span class="glyphicon glyphicon-question-sign"
-                                                          title="A brief description of your mod. Site moderators may improve your description."></span>
-                                    </th>
-                                    <td><textarea name="mod_description" rows="4" cols="57" required></textarea></td>
-                                </tr>
                                 <tr>
                                     <th>Workshop Link <span class="glyphicon glyphicon-question-sign"
                                                             title="The full link to your mod in the workshop. This will allow users to subscribe to your mod."></span>
@@ -66,39 +49,55 @@ try {
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="center">
-                                        <button id="sub">Signup</button>
+                                        <button id="sub">Request</button>
                                     </td>
                                 </tr>
                             </table>
                         </div>
-                    </form>
-                </div>
-            </div>
+                    </form>';
+            echo '</div></div>';
 
-            <br/>
+            echo '<br/>';
 
-            <span id="modSignupResult" class="label label-danger"></span>
+            echo '<span id="modSignupResult" class="label label-danger"></span>';
 
-            <br/><br/>
+            echo '<p>
+                    <div class="text-center">
+                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
+                   </div>
+                </p>';
 
-            <div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
-            </div>
+            echo '<script type="application/javascript">
+                    $("#modSignup").submit(function (event) {
+                        event.preventDefault();
 
-            <script type="application/javascript">
-                $("#modSignup").submit(function (event) {
-                    event.preventDefault();
+                        $.post("./d2mods/mod_request_ajax.php", $("#modSignup").serialize(), function (data) {
+                            $("#modSignup :input").each(function () {
+                                $(this).val("");
+                            });
 
-                    $.post("./d2mods/signup_insert.php", $("#modSignup").serialize(), function (data) {
-                        $("#modSignup :input").each(function () {
-                            $(this).val('');
-                        });
-                        $('#modSignupResult').html(data);
-                    }, 'text');
-                });
-            </script>
+                            if(data){
+                                try {
+                                    var response = JSON.parse(data);
+                                    if(response && response.error){
+                                        $("#modSignupResult").html(response.error);
+                                    }
+                                    else if(response && response.result){
+                                        $("#modSignupResult").html(response.result);
+                                    }
+                                    else{
+                                        $("#modSignupResult").html(data);
+                                    }
+                                }
+                                catch(err) {
+                                    $("#modSignupResult").html("Parsing Error: " + err.message + "<br />" + data);
+                                }
+                            }
+                        }, "text");
+                    });
+                </script>';
 
-        <?php
         } else {
             echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
         }

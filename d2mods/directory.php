@@ -74,7 +74,7 @@ try {
     echo '<p>
             <div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__signup">Add a new mod</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
            </div>
         </p>';
 

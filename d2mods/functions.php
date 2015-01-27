@@ -489,6 +489,29 @@ if (!class_exists('steam_webapi')) {
                 return $e->getMessage();
             }
         }
+
+        function GetPublishedFileDetails($wid)
+        {
+            try {
+                $postFields = array(
+                    'key' => $this->steamAPIKey,
+                    'itemcount' => 1,
+                    'format' => 'json',
+                    'publishedfileids[0]' => $wid
+                );
+                $postFields = http_build_query($postFields);
+
+                $APIresult = curl('http://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/', $postFields);
+
+                $APIresult = !empty($APIresult)
+                    ? json_decode($APIresult, 1)
+                    : false;
+
+                return $APIresult;
+            } catch (Exception $e) {
+                return $e->getMessage();
+            }
+        }
     }
 }
 
