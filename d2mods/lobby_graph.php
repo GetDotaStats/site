@@ -44,8 +44,8 @@ try {
                     ),
                     'height' => 300,
                     'chartArea' => array(
-                        'width' => '80%',
-                        'height' => '75%',
+                        'width' => '100%',
+                        'height' => '85%',
                         'left' => 80,
                         'top' => 10,
                     ),
@@ -62,8 +62,8 @@ try {
                         ),
                     ),
                     'legend' => array(
-                        'position' => 'bottom',
-                        'alignment' => 'center',
+                        'position' => 'none',
+                        //'alignment' => 'center',
                     ),
                     'seriesType' => 'bars',
                     'series' => array(
@@ -148,8 +148,8 @@ try {
                     ),
                     'height' => 300,
                     'chartArea' => array(
-                        'width' => '80%',
-                        'height' => '75%',
+                        'width' => '100%',
+                        'height' => '85%',
                         'left' => 80,
                         'top' => 10,
                     ),
@@ -166,8 +166,8 @@ try {
                         ),
                     ),
                     'legend' => array(
-                        'position' => 'bottom',
-                        'alignment' => 'center',
+                        'position' => 'none',
+                        //'alignment' => 'center',
                     ),
                     'seriesType' => 'bars',
                     'series' => array(
