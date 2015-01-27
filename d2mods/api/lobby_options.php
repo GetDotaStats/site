@@ -33,14 +33,15 @@ try {
                         ll.`lobby_leader`,
                         ll.`lobby_options`
                     FROM `lobby_list` ll
-                    WHERE ll.`lobby_leader` = ? AND ll.`mod_guid` = ?
+                    WHERE
+                        ll.`date_keep_alive` > now() - INTERVAL 10 MINUTE
+                        AND ll.`lobby_leader` = ?
+                        AND ll.`mod_guid` = ?
                     ORDER BY `lobby_id` DESC
                     LIMIT 0,1;',
                 'ss',
                 $userID, $modGUID
             );
-
-            //TODO: Timeout the options to match the TTL
 
             if (!empty($lobbyDetails)) {
                 $lobbyDetails = $lobbyDetails[0];
