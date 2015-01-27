@@ -187,7 +187,11 @@ if (!file_exists($file_name_location) || (filemtime($file_name_location) <= strt
                 } else {
                     $image_file = imagecreatefrompng('./images/bases/steam_overlay.png');
                 }
-                list($overlay_width, $overlay_height) = getimagesize($image_file);
+
+                //list($overlay_width, $overlay_height) = getimagesize($image_file);
+                $overlay_width = imagesx($image_file);
+                $overlay_height = imagesy($image_file);
+
 
                 $steam_avatar_offset_x = 10;
                 $steam_avatar_offset_y = 10;
