@@ -55,14 +55,20 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-default">BETA</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby Explorer</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__directory">Mod Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__recent_games">Recent Games</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__my_games">My Games</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Adding Stats</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__signup">Add a Mod</a></li>
+                        <li class="dropdown-header">Lobby Explorer</li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Setup Guide</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Mod Section</li>
+                        <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__guide">Setup Guide</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__signup">Request a Mod</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">My Custom Games</li>
+                        <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__my_mods">My Added Mods</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
