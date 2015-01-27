@@ -28,8 +28,9 @@ try {
                         $modName = $mod_details['response']['publishedfiledetails'][0]['title'];
                         $modDesc = $mod_details['response']['publishedfiledetails'][0]['description'];
                         $modOwner = $mod_details['response']['publishedfiledetails'][0]['creator'];
+                        $modApp = $mod_details['response']['publishedfiledetails'][0]['consumer_app_id'];
 
-                        if ($_SESSION['user_id64'] != $modOwner) {
+                        if ($_SESSION['user_id64'] == $modOwner && $modApp == 570) {
                             if (!empty($_POST['mod_steam_group']) && stristr($_POST['mod_steam_group'], 'steamcommunity.com/groups/')) {
                                 $modGroup = htmlentities(rtrim(cut_str($_POST['mod_steam_group'], 'groups/'), '/'));
                             } else {
