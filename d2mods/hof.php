@@ -16,56 +16,64 @@ require_once('../connections/parameters.php');
             <div class="text-center">
                 <span class="h3">Connections</span>
             </div>
-            <span class="h4">&nbsp;</span>
-
-            <p>Only the worthy are able to successfully connect to games, and only the legendary remain connected to the
-                game until the very end. Are you one of those legendary few?</p>
-
-            <p>
-                <img src="<?= $imageCDN ?>/images/misc/hof/d2mods/hof1_preview.png?v2"
-                     alt="Hall of Fame 1: Connections; preview image" class="img-responsive img-thumbnail"/>
-            </p>
         </a>
+
+        <span class="h4">&nbsp;</span>
+
+        <p>Only the worthy are able to successfully connect to games, and only the legendary remain connected to the
+            game until the very end. Are you one of those legendary few?</p>
     </div>
     <div class="col-md-6">
         <a class="nav-clickable link_no_decoration" href="#d2mods__hof2_kills">
             <div class="text-center">
                 <span class="h3">Kills</span>
             </div>
-            <span class="h4">&nbsp;</span>
-
-            <p>Only the meanest of the bunch have what it takes to ruthlessly slaughter their opponents. Only the
-                legendary are able to rack up a sufficient number of kills to cause even the seasoned veterans to quake
-                in their boots. Are you one of those legendary few?</p>
-
-            <p>
-                <img src="<?= $imageCDN ?>/images/misc/hof/d2mods/hof2_preview.png?v3"
-                     alt="Hall of Fame 2: Kills; preview image" class="img-responsive img-thumbnail"/>
-            </p>
         </a>
+
+        <span class="h4">&nbsp;</span>
+
+        <p>Only the meanest of the bunch have what it takes to ruthlessly slaughter their opponents. Only the
+            legendary are able to rack up a sufficient number of kills to cause even the seasoned veterans to quake
+            in their boots. Are you one of those legendary few?</p>
     </div>
 </div>
-<span class="h3">&nbsp;</span>
+<div class="row">
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof1_connects">View HoF</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof2_kills">View HoF</a>
+        </div>
+    </div>
+</div>
+<span class="h1">&nbsp;</span>
 <div class="row">
     <div class="col-md-6">
         <div class="text-center">
             <span class="h3">Achievement Leaderboard</span>
         </div>
         <span class="h4">&nbsp;</span>
-
-        <h3 class="text-center">
-            <span class="label label-danger">Coming Soon</span>
-        </h3>
     </div>
     <div class="col-md-6">
         <div class="text-center">
             <span class="h3">GDS Points</span>
         </div>
         <span class="h4">&nbsp;</span>
-
-        <h3 class="text-center">
-            <span class="label label-danger">Coming Soon</span>
-        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable btn btn-danger btn-lg disabled">COMING SOON</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable btn btn-danger btn-lg disabled">COMING SOON</a>
+        </div>
     </div>
 </div>
 
