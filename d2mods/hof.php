@@ -22,7 +22,7 @@ require_once('../connections/parameters.php');
                 game until the very end. Are you one of those legendary few?</p>
 
             <p>
-                <img src="<?= $imageCDN ?>/images/misc/hof/d2mods/hof1_preview.png"
+                <img src="<?= $imageCDN ?>/images/misc/hof/d2mods/hof1_preview.png?v2"
                      alt="Hall of Fame 1: Connections; preview image" class="img-responsive img-thumbnail"/>
             </p>
         </a>
