@@ -72,44 +72,27 @@ try {
         $db->q('SET NAMES utf8;');
 
         if ($db) {
-            $lobbyUserDetails = $db->q(
-                'SELECT
-                        ll.`lobby_id`,
-                        ll.`lobby_leader`,
-                        ll.`lobby_active`,
-                        ll.`lobby_hosted`
-                    FROM `lobby_list` ll
-                    WHERE ll.`lobby_active` = 1 AND ll.`lobby_leader` = ?
-                    LIMIT 0,1;',
-                's',
-                $userID
+            $modDetails = getModDetails($memcache, $db, $modID);
+
+            $modGUID = !empty($modDetails['mod_guid'])
+                ? $modDetails['mod_guid']
+                : 1;
+
+            $sqlResult = $db->q(
+                'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`, `lobby_options`, `lobby_version`)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL, ?, ?);',
+                'isssiisssssss',
+                $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken, $lobbyOptions, $lobbyVersion
             );
 
-            if (empty($lobbyUserDetails)) {
-                $modDetails = getModDetails($memcache, $db, $modID);
-
-                $modGUID = !empty($modDetails['mod_guid'])
-                    ? $modDetails['mod_guid']
-                    : 1;
-
-                $sqlResult = $db->q(
-                    'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`, `lobby_options`, `lobby_version`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL, ?, ?);',
-                    'isssiisssssss',
-                    $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken, $lobbyOptions, $lobbyVersion
-                );
-
-                if (!empty($sqlResult)) {
-                    //RETURN LOBBY ID
-                    $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
-                    $lobbyStatus['lobby_id'] = $db->last_index();
-                    $lobbyStatus['token'] = $lobbySecureToken;
-                } else {
-                    //SOMETHING FUNKY HAPPENED
-                    $lobbyStatus['error'] = 'Unknown error!';
-                }
+            if (!empty($sqlResult)) {
+                //RETURN LOBBY ID
+                $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
+                $lobbyStatus['lobby_id'] = $db->last_index();
+                $lobbyStatus['token'] = $lobbySecureToken;
             } else {
-                $lobbyStatus['error'] = 'Already created an active lobby!';
+                //SOMETHING FUNKY HAPPENED
+                $lobbyStatus['error'] = 'Unknown error!';
             }
         } else {
             $lobbyStatus['error'] = 'No DB connection!';
