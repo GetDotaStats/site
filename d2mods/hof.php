@@ -12,7 +12,7 @@ require_once('../connections/parameters.php');
 
 <div class="row">
     <div class="col-md-6">
-        <a class="nav-clickable link_no_decoration" href="#d2mods__hof_connects">
+        <a class="nav-clickable link_no_decoration" href="#d2mods__hof1_connects">
             <div class="text-center">
                 <span class="h3">Connections</span>
             </div>
@@ -28,14 +28,21 @@ require_once('../connections/parameters.php');
         </a>
     </div>
     <div class="col-md-6">
-        <div class="text-center">
-            <span class="h3">Minutes Played</span>
-        </div>
-        <span class="h4">&nbsp;</span>
+        <a class="nav-clickable link_no_decoration" href="#d2mods__hof2_kills">
+            <div class="text-center">
+                <span class="h3">Kills</span>
+            </div>
+            <span class="h4">&nbsp;</span>
 
-        <h3 class="text-center">
-            <span class="label label-danger">Coming Soon</span>
-        </h3>
+            <p>Only the meanest of the bunch have what it takes to ruthlessly slaughter their opponents. Only the
+                legendary are able to rack up a sufficient number of kills to cause even the seasoned veterans to quake
+                in their boots. Are you one of those legendary few?</p>
+
+            <p>
+                <img src="<?= $imageCDN ?>/images/misc/hof/d2mods/hof2_preview.png?v3"
+                     alt="Hall of Fame 2: Kills; preview image" class="img-responsive img-thumbnail"/>
+            </p>
+        </a>
     </div>
 </div>
 <span class="h3">&nbsp;</span>

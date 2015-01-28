@@ -24,7 +24,7 @@ try {
         echo '<span class="h4">&nbsp;</span>';
 
         $hof1_users = cached_query(
-            'hof1_connects_users1',
+            'hof1_connects_users',
             'SELECT
                     mmp.`player_sid32`,
                     mmp.`player_name`,
@@ -34,7 +34,7 @@ try {
                 GROUP BY mmp.`player_sid32`
                 ORDER BY num_games DESC
                 LIMIT 0,50;',
-            5
+            1 * 60
         );
 
         if (!empty($hof1_users)) {
@@ -64,7 +64,7 @@ try {
                         LIMIT 0,1;',
                         's',
                         $value['player_sid32'],
-                        15
+                        1 * 60
                     );
 
                     if (empty($hof1_user_details)) {
@@ -112,12 +112,12 @@ try {
                     $userName = !empty($hof1_user_details[0]['user_name'])
                         ? '<span class="h3">
                             <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
-                                ' . $hof1_user_details[0]['user_name'] . '
+                                ' . htmlentities($hof1_user_details[0]['user_name']) . '
                             </a>
                         </span>'
                         : '<span class="h3">
                             <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
-                                ' . $value['player_name'] . '
+                                ' . htmlentities($value['player_name']) . '
                             </a>
                             <small>Sign in to update profile!</small>
                         </span>';
