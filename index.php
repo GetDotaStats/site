@@ -53,17 +53,19 @@ try {
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-warning">NEW</span> <b class="caret"></b></a>
+                            class="label label-warning">UPDATED</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Setup Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_graph"><strong>Trends</strong></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends <span
+                                    class="label label-warning">NEW</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__hof"><strong>Hall of Fame</strong></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame <span
+                                class="label label-warning">NEW</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Setup Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
