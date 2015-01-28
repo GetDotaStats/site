@@ -33,7 +33,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//getdotastats.com/getdotastats.css?15" rel="stylesheet">
+    <link href="//getdotastats.com/getdotastats.css?16" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -53,16 +53,17 @@ try {
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-default">BETA</span> <b class="caret"></b></a>
+                            class="label label-warning">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Setup Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_graph"><strong>Trends</strong></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__hof"><strong>Hall of Fame</strong></a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Setup Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
@@ -72,8 +73,7 @@ try {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Signatures <span
-                            class="label label-danger">HOT</span> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Signatures <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a class="nav-clickable" href="#steamtracks/">Generator <span
                                     class="label label-danger">HOT</span></a></li>

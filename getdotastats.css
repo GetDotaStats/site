@@ -286,7 +286,19 @@ table td.bashful, table th.bashful {
 }
 
 /*Allow class on cells in table to vertically align*/
-.table tbody>tr>td.vert-align
-{
+.table tbody > tr > td.vert-align {
     vertical-align: middle;
+}
+
+.valign {
+    vertical-align: middle;
+}
+
+.hof_avatar {
+    margin: 0 auto;
+    height: 26px !important;
+}
+
+.link_no_decoration:hover, .link_no_decoration:visited , .link_no_decoration:active, .link_no_decoration:link{
+    text-decoration: none;
 }

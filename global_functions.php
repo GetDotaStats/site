@@ -655,3 +655,141 @@ if (!function_exists("unicodeToUTF_8")) {
         return false;
     }
 }
+
+if (!class_exists('steam_webapi')) {
+    class steam_webapi
+    {
+        private $steamAPIKey = NULL;
+
+        public function __construct($steamAPIKey)
+        {
+            if (empty($steamAPIKey)) {
+                throw new RuntimeException('No Steam Key Provided!');
+            } else {
+                $this->steamAPIKey = $steamAPIKey;
+            }
+        }
+
+        function ResolveVanityURL($vanityURL)
+        {
+            $APIresult = curl('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' . $this->steamAPIKey . '&vanityurl=' . $vanityURL);
+
+            $APIresult = !empty($APIresult)
+                ? json_decode($APIresult, 1)
+                : false;
+
+            return $APIresult;
+        }
+
+        function GetFriendList($steamID, $relationshipFilter = 'friend')
+        {
+            //Relationship filter. Possibles values: all, friend
+            $APIresult = curl('http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=' . $this->steamAPIKey . '&steamid=' . $steamID . '&relationship=' . $relationshipFilter);
+
+            $APIresult = !empty($APIresult)
+                ? json_decode($APIresult, 1)
+                : false;
+
+            return $APIresult;
+        }
+
+        function GetPlayerSummariesV2($steamID)
+        {
+            /*
+             Array
+            (
+                [response] => Array
+                    (
+                        [players] => Array
+                            (
+                                [0] => Array
+                                    (
+                                        [steamid] => 76561198005952231
+                                        [communityvisibilitystate] => 3
+                                        [profilestate] => 1
+                                        [personaname] => D Jexah
+                                        [lastlogoff] => 1422384134
+                                        [profileurl] => http://steamcommunity.com/id/Jexah/
+                                        [avatar] => http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/39/397a93607b4292485b3181c564096e9731bf69b6.jpg
+                                        [avatarmedium] => http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/39/397a93607b4292485b3181c564096e9731bf69b6_medium.jpg
+                                        [avatarfull] => http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/39/397a93607b4292485b3181c564096e9731bf69b6_full.jpg
+                                        [personastate] => 3
+                                        [primaryclanid] => 103582791433015252
+                                        [timecreated] => 1233904234
+                                        [personastateflags] => 0
+                                        [gameextrainfo] => Dota 2
+                                        [gameid] => 570
+                                        [loccountrycode] => AU
+                                        [locstatecode] => ACT
+                                    )
+
+                            )
+
+                    )
+
+            )
+             */
+            try {
+                $APIresult = curl('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=' . $this->steamAPIKey . '&steamids=' . $steamID);
+
+                $APIresult = !empty($APIresult)
+                    ? json_decode($APIresult, 1)
+                    : false;
+
+                return $APIresult;
+            } catch (Exception $e) {
+                return $e->getMessage();
+            }
+        }
+
+        function GetPublishedFileDetails($wid)
+        {
+            try {
+                $postFields = array(
+                    'key' => $this->steamAPIKey,
+                    'itemcount' => 1,
+                    'format' => 'json',
+                    'publishedfileids[0]' => $wid
+                );
+                $postFields = http_build_query($postFields);
+
+                $APIresult = curl('http://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/', $postFields);
+
+                $APIresult = !empty($APIresult)
+                    ? json_decode($APIresult, 1)
+                    : false;
+
+                return $APIresult;
+            } catch (Exception $e) {
+                return $e->getMessage();
+            }
+        }
+    }
+}
+
+if (!class_exists('dota2_webapi')) {
+    class dota2_webapi
+    {
+        private $steamAPIKey = NULL;
+
+        public function __construct($steamAPIKey)
+        {
+            if (empty($steamAPIKey)) {
+                throw new RuntimeException('No Steam Key Provided!');
+            } else {
+                $this->steamAPIKey = $steamAPIKey;
+            }
+        }
+
+        function GetGameItems($language = 'en')
+        {
+            $APIresult = curl('http://api.steampowered.com/IEconDOTA2_570/GetGameItems/v1/?key=' . $this->steamAPIKey . '&format=json&language=' . $language);
+
+            $APIresult = !empty($APIresult)
+                ? json_decode($APIresult, 1)
+                : false;
+
+            return $APIresult;
+        }
+    }
+}

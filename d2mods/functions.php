@@ -353,10 +353,17 @@ if (!class_exists('SteamID')) {
         private $steamID32 = '';
         private $steamID64 = '';
 
-        public function __construct($steam_id)
+        public function __construct($steam_id = NULL)
+        {
+            if(!empty($steam_id)){
+                $this->setSteamID($steam_id);
+            }
+        }
+
+        public function setSteamID($steam_id)
         {
             if (empty($steam_id)) {
-                //$this->steamID = $this->steamID64 = '';
+                throw new RuntimeException('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
             } elseif (ctype_digit($steam_id) && strlen($steam_id) === 17) {
                 $this->steamID64 = $steam_id;
                 $this->steamID32 = $this->convert64to32($steam_id);
@@ -438,106 +445,3 @@ if (!class_exists('SteamID')) {
     }
 }
 
-if (!class_exists('steam_webapi')) {
-    class steam_webapi
-    {
-        private $steamAPIKey = NULL;
-
-        public function __construct($steamAPIKey)
-        {
-            if (empty($steamAPIKey)) {
-                throw new RuntimeException('No Steam Key Provided!');
-            } else {
-                $this->steamAPIKey = $steamAPIKey;
-            }
-        }
-
-        function ResolveVanityURL($vanityURL)
-        {
-            $APIresult = curl('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' . $this->steamAPIKey . '&vanityurl=' . $vanityURL);
-
-            $APIresult = !empty($APIresult)
-                ? json_decode($APIresult, 1)
-                : false;
-
-            return $APIresult;
-        }
-
-        function GetFriendList($steamID, $relationshipFilter = 'friend')
-        {
-            //Relationship filter. Possibles values: all, friend
-            $APIresult = curl('http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=' . $this->steamAPIKey . '&steamid=' . $steamID . '&relationship=' . $relationshipFilter);
-
-            $APIresult = !empty($APIresult)
-                ? json_decode($APIresult, 1)
-                : false;
-
-            return $APIresult;
-        }
-
-        function GetPlayerSummariesV2($steamID)
-        {
-            try {
-                $APIresult = curl('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=' . $this->steamAPIKey . '&steamids=' . $steamID);
-
-                $APIresult = !empty($APIresult)
-                    ? json_decode($APIresult, 1)
-                    : false;
-
-                return $APIresult;
-            } catch (Exception $e) {
-                return $e->getMessage();
-            }
-        }
-
-        function GetPublishedFileDetails($wid)
-        {
-            try {
-                $postFields = array(
-                    'key' => $this->steamAPIKey,
-                    'itemcount' => 1,
-                    'format' => 'json',
-                    'publishedfileids[0]' => $wid
-                );
-                $postFields = http_build_query($postFields);
-
-                $APIresult = curl('http://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/', $postFields);
-
-                $APIresult = !empty($APIresult)
-                    ? json_decode($APIresult, 1)
-                    : false;
-
-                return $APIresult;
-            } catch (Exception $e) {
-                return $e->getMessage();
-            }
-        }
-    }
-}
-
-if (!class_exists('dota2_webapi')) {
-    class dota2_webapi
-    {
-        private $steamAPIKey = NULL;
-
-        public function __construct($steamAPIKey)
-        {
-            if (empty($steamAPIKey)) {
-                throw new RuntimeException('No Steam Key Provided!');
-            } else {
-                $this->steamAPIKey = $steamAPIKey;
-            }
-        }
-
-        function GetGameItems($language = 'en')
-        {
-            $APIresult = curl('http://api.steampowered.com/IEconDOTA2_570/GetGameItems/v1/?key=' . $this->steamAPIKey . '&format=json&language=' . $language);
-
-            $APIresult = !empty($APIresult)
-                ? json_decode($APIresult, 1)
-                : false;
-
-            return $APIresult;
-        }
-    }
-}
