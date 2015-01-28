@@ -20,7 +20,8 @@ try {
     ';
 
     if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+
         if ($db) {
             $file_path = './mod_schemas/3 - 2374504c2c518fafc9731a120e67fdf5/npc_units_custom.txt';
             $mod_id = '2374504c2c518fafc9731a120e67fdf5';

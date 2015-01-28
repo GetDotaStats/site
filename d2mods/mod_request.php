@@ -11,8 +11,7 @@ checkLogin_v2();
 
 try {
     if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
-        $db->q('SET NAMES utf8;');
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
         echo '<h2>Request a Mod be Accepted for Stats <small>BETA</small></h2>';
 

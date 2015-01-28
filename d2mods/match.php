@@ -10,8 +10,7 @@ if (!isset($_SESSION)) {
 }
 
 try {
-    $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
-    $db->q('SET NAMES utf8;');
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
     if ($db) {
         $memcache = new Memcache;

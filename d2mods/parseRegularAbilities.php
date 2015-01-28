@@ -18,7 +18,8 @@ try {
     ';
 
     if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+
         if ($db) {
             $dir = '../images/abilities/default/';
             $files1 = scandir($dir);

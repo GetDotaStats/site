@@ -203,6 +203,119 @@ if (!class_exists("dbWrapper_v2")) {
     }
 }
 
+if (!class_exists("dbWrapper_v3")) {
+    Class dbWrapper_v3
+    {
+        protected $_mysqli;
+        protected $_debug;
+
+        public function __construct($host, $username, $password, $database, $debug = true)
+        {
+            $this->_mysqli = new mysqli($host, $username, $password, $database);
+            $this->_debug = (bool)$debug;
+            if (mysqli_connect_errno()) {
+                if ($this->_debug) {
+                    //echo mysqli_connect_error();
+                    //debug_print_backtrace();
+                    throw new Exception(mysqli_connect_error());
+                }
+                return false;
+            }
+            $this->q('SET NAMES utf8;');
+            return true;
+        }
+
+        public function escape($query)
+        {
+            return $this->_mysqli->real_escape_string($query);
+        }
+
+        public function ping()
+        {
+            if ($this->_mysqli->ping()) {
+                return true;
+            } else {
+                throw new Exception($this->_mysqli->error);
+            }
+        }
+
+        public function q($query)
+        {
+            if ($query = $this->_mysqli->prepare($query)) {
+                if (func_num_args() > 1) {
+                    $x = func_get_args();
+
+                    if (!is_array($x[2])) {
+                        $args = array_merge(array(func_get_arg(1)),
+                            array_slice($x, 2));
+                        $args_ref = array();
+                        foreach ($args as $k => &$arg) {
+                            $args_ref[$k] = & $arg;
+                        }
+                    } else {
+                        $args_ref = array();
+                        $args_ref[] = func_get_arg(1);
+                        foreach ($x[2] as $k => &$arg) {
+                            $args_ref[] = & $arg;
+                        }
+                    }
+
+                    call_user_func_array(array($query, 'bind_param'), $args_ref);
+                }
+                $query->execute();
+
+                if ($query->errno) {
+                    if ($this->_debug) {
+                        //echo mysqli_error($this->_mysqli);
+                        //debug_print_backtrace();
+                        throw new Exception(mysqli_error($this->_mysqli));
+                    }
+                    return false;
+                }
+
+                if ($query->affected_rows > -1) {
+                    return $query->affected_rows;
+                }
+                $params = array();
+                $meta = $query->result_metadata();
+                while ($field = $meta->fetch_field()) {
+                    $params[] = & $row[$field->name];
+                }
+                call_user_func_array(array($query, 'bind_result'), $params);
+
+                $result = array();
+                while ($query->fetch()) {
+                    $r = array();
+                    foreach ($row as $key => $val) {
+                        $r[$key] = $val;
+                    }
+                    $result[] = $r;
+                }
+                $query->close();
+                return $result;
+            } else {
+                if ($this->_debug) {
+                    //echo $this->_mysqli->error;
+                    //debug_print_backtrace();
+                    throw new Exception($this->_mysqli->error);
+                }
+                return false;
+            }
+        }
+
+        public function handle()
+        {
+            return $this->_mysqli;
+        }
+
+        public function last_index()
+        {
+            return $this->_mysqli->insert_id;
+        }
+    }
+}
+
+
 if (!function_exists("curl")) {
     function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeout = false)
     {
@@ -310,6 +423,39 @@ if (!function_exists("simple_cached_query")) {
             }
         }
         return $variable;
+    }
+}
+
+if (!function_exists("cached_query")) {
+    function cached_query($memcached_name, $sqlQuery, $declarationArray = NULL, $parameterArray = NULL, $cache_time_secs = 600)
+    {
+        global $memcache, $db;
+
+        if ($memcache) {
+            $variable = $memcache->get($memcached_name);
+            if (!$variable) {
+                if ($sqlQuery) {
+                    if (!empty($declarationArray) && !empty($parameterArray)) {
+                        $variable = $db->q(
+                            $sqlQuery,
+                            $declarationArray,
+                            $parameterArray
+                        );
+                    } else {
+                        $variable = $db->q(
+                            $sqlQuery
+                        );
+                    }
+
+                    $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
+                } else {
+                    return 'No DB provided!!!';
+                }
+            }
+            return $variable;
+        } else {
+            return 'No memcached provided!!!';
+        }
     }
 }
 
