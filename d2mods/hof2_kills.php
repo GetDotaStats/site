@@ -42,7 +42,7 @@ try {
                                 <span class="h4">Rank</span>
                             </div>
                             <div class="col-md-2 text-center">
-                                <span class="h4">Connections</span>
+                                <span class="h4">Kills</span>
                             </div>
                         </div>';
             echo '<span class="h4">&nbsp;</span>';
