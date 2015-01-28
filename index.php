@@ -205,9 +205,8 @@ try {
 <div id="footer">
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
-            Steam.
-            <small><a target="_blank" href="//github.com/GetDotaStats/site/issues">Issues/Feature Requests
-                    here</a></small>
+            Steam. <small><a target="_blank" href="//github.com/GetDotaStats/GetDotaLobby/issues">Lobby Explorer Issues</a></small> ||
+            <small><a target="_blank" href="//github.com/GetDotaStats/site/issues">Site Issues</a></small>
         </p>
     </div>
 </div>
