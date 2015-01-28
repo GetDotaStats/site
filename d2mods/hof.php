@@ -49,7 +49,7 @@ require_once('../connections/parameters.php');
 <div class="row">
     <div class="col-md-6">
         <div class="text-center">
-            <span class="h3">Games Played</span>
+            <span class="h3">Achievement Leaderboard</span>
         </div>
         <span class="h4">&nbsp;</span>
 
@@ -68,3 +68,10 @@ require_once('../connections/parameters.php');
         </h3>
     </div>
 </div>
+
+<span class="h4">&nbsp;</span>
+<div class="text-center">
+    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+</div>
+<span class="h4">&nbsp;</span>
