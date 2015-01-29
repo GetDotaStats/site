@@ -88,8 +88,8 @@ try {
                         <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
                             <li class="dropdown-header">Admin Stuff</li>
                             <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
+                            <li class="divider"></li>
                         <?php } ?>
-                        <li class="divider"></li>
                         <li class="dropdown-header">Halls of Fame</li>
                         <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
                         <li class="divider"></li>

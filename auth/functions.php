@@ -40,10 +40,21 @@ if (!class_exists('user')) {
 
                     $user_details = $this->GetPlayerSummaries($steamID64);
 
-                    $userName = $user_details->personaname;
-                    $userAvatar = $user_details->avatar;
-                    $userAvatarMedium = $user_details->avatarmedium;
-                    $userAvatarLarge = $user_details->avatarfull;
+                    $userName = !empty($user_details->personaname)
+                        ? htmlentities($user_details->personaname)
+                        : 'UNKNOWN USERNAME';
+
+                    $userAvatar = !empty($user_details->avatar)
+                        ? $user_details->avatar
+                        : NULL;
+
+                    $userAvatarMedium = !empty($user_details->avatarmedium)
+                        ? $user_details->avatarmedium
+                        : NULL;
+
+                    $userAvatarLarge = !empty($user_details->avatarfull)
+                        ? $user_details->avatarfull
+                        : NULL;
 
 
                     $_SESSION['user_id32'] = $steamID32;
@@ -51,8 +62,13 @@ if (!class_exists('user')) {
                     $_SESSION['user_name'] = htmlentities($userName);
                     $_SESSION['user_avatar'] = $userAvatar;
 
-                    $db->q("INSERT INTO `gds_users`(`user_id32`, `user_id64`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`) VALUES (?, ?, ?, ?, ?, ?)
-                                ON DUPLICATE KEY UPDATE `user_name` = VALUES(`user_name`), `user_avatar` = VALUES(`user_avatar`), `user_avatar_medium` = VALUES(`user_avatar_medium`), `user_avatar_large` = VALUES(`user_avatar_large`);",
+                    $db->q("INSERT INTO `gds_users`(`user_id32`, `user_id64`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
+                                VALUES (?, ?, ?, ?, ?, ?)
+                                ON DUPLICATE KEY UPDATE
+                                    `user_name` = VALUES(`user_name`),
+                                    `user_avatar` = VALUES(`user_avatar`),
+                                    `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                                    `user_avatar_large` = VALUES(`user_avatar_large`);",
                         'iissss',
                         $steamID32, $steamID64, $userName, $userAvatar, $userAvatarMedium, $userAvatarLarge);
 
