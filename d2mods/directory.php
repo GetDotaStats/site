@@ -53,7 +53,7 @@ try {
                     : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
                 $userName = !empty($value['user_name'])
-                    ? htmlentities($value['user_name'])
+                    ? $value['user_name']
                     : 'Unknown Developer';
 
                 echo '<tr>
