@@ -12,7 +12,7 @@ try {
     if ($db) {
         echo '<div class="page-header"><h2>Lobby Creation Trends</h2></div>';
 
-        echo '<p>This graph captures how many lobbies have been created over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
+        echo '<p>This graph captures how many lobbies have been created, and how many custom games have been played; over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
 
         $lobbiesMadeSQL = simple_cached_query(
             'd2mods_lobby_graph',
@@ -23,41 +23,64 @@ try {
                 COUNT(*) as num_lobbies
             FROM `lobby_list` ll
             GROUP BY 3,2,1
-            ORDER BY 3,2,1;',
+            ORDER BY 3 DESC, 2 DESC, 1 DESC;',
+            1 * 60
+        );
+
+        $gamesPlayedSQL = simple_cached_query(
+            'd2mods_custom_games_played_graph',
+            'SELECT
+                DAY(mmo.`match_recorded`) as day,
+                MONTH(mmo.`match_recorded`) as month,
+                YEAR(mmo.`match_recorded`) as year,
+                COUNT(*) as num_customs
+            FROM `mod_match_overview` mmo
+            GROUP BY 3,2,1
+            ORDER BY 3 DESC, 2 DESC, 1 DESC;',
             1 * 60
         );
 
         //LOBBIES MADE
         {
-            if (!empty($lobbiesMadeSQL)) {
+            if (!empty($lobbiesMadeSQL) || !empty($gamesPlayedSQL)) {
                 $testArray = array();
-                foreach ($lobbiesMadeSQL as $key => $value) {
-                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
 
-                    $testArray[$modDate]['num_lobbies'] = $value['num_lobbies'];
+                if (!empty($lobbiesMadeSQL)) {
+                    foreach ($lobbiesMadeSQL as $key => $value) {
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+                        $testArray[$modDate]['num_lobbies'] = $value['num_lobbies'];
+                    }
+                }
+
+                if (!empty($gamesPlayedSQL)) {
+                    foreach ($gamesPlayedSQL as $key => $value) {
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+                        $testArray[$modDate]['num_customs'] = $value['num_customs'];
+                    }
                 }
 
                 $options = array(
                     'bar' => array(
-                        'groupWidth' => 8,
+                        'groupWidth' => 6,
                     ),
                     'height' => 300,
                     'chartArea' => array(
-                        'width' => '100%',
+                        'width' => '87%',
                         'height' => '85%',
                         'left' => 80,
                         'top' => 10,
                     ),
                     'hAxis' => array(
                         'textPosition' => 'none',
-                        'direction' => -1,
-                        //'title' => 'Date',
                     ),
                     'vAxes' => array(
                         0 => array(
                             'title' => 'Num. of Lobbies',
                             //'textPosition' => 'in',
                             //'logScale' => 1,
+                        ),
+                        1 => array(
+                            'title' => 'Num. of Games'
                         ),
                     ),
                     'legend' => array(
@@ -69,6 +92,10 @@ try {
                         0 => array(
                             'type' => 'bar',
                             'targetAxisIndex' => 0,
+                        ),
+                        1 => array(
+                            'type' => 'line',
+                            'targetAxisIndex' => 1,
                         ),
                     ),
                     'tooltip' => array( //'isHtml' => 1,
@@ -85,10 +112,16 @@ try {
                         ? $value2['num_lobbies']
                         : 0;
 
+                    $numActualGames = !empty($value2['num_customs'])
+                        ? $value2['num_customs']
+                        : 0;
+
                     $super_array[] = array('c' => array(
                         array('v' => $key2),
                         array('v' => $numActualLobbies),
                         array('v' => number_format($numActualLobbies)),
+                        array('v' => $numActualGames),
+                        array('v' => number_format($numActualGames)),
                     ));
                 }
 
@@ -97,11 +130,13 @@ try {
                         array('id' => '', 'label' => 'Date', 'type' => 'string'),
                         array('id' => '', 'label' => 'Lobbies', 'type' => 'number'),
                         array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                        array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                        array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
                     ),
                     'rows' => $super_array
                 );
 
-                $chart_width = max(count($super_array) * 10, 700);
+                $chart_width = max(count($super_array) * 8, 700);
                 $options['width'] = $chart_width;
                 $options['hAxis']['gridlines']['count'] = count($super_array);
 
@@ -111,110 +146,6 @@ try {
                 echo $chart->draw('breakdown_num_lobbies_per_day', $options);
             } else {
                 echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
-            }
-        }
-
-        echo '<div class="page-header"><h2>Custom Games Played Trends</h2></div>';
-
-        echo '<p>This graph captures how many custom games have been played over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
-
-        $gamesPlayedSQL = simple_cached_query(
-            'd2mods_custom_games_played_graph',
-            'SELECT
-                DAY(mmo.`match_recorded`) as day,
-                MONTH(mmo.`match_recorded`) as month,
-                YEAR(mmo.`match_recorded`) as year,
-                COUNT(*) as num_customs
-            FROM `mod_match_overview` mmo
-            GROUP BY 3,2,1
-            ORDER BY 3,2,1;',
-            1 * 60
-        );
-
-        //GAMES PLAYED
-        {
-            if (!empty($gamesPlayedSQL)) {
-                $testArray = array();
-                foreach ($gamesPlayedSQL as $key => $value) {
-                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
-
-                    $testArray[$modDate]['num_customs'] = $value['num_customs'];
-                }
-
-                $options = array(
-                    'bar' => array(
-                        'groupWidth' => 8,
-                    ),
-                    'height' => 300,
-                    'chartArea' => array(
-                        'width' => '100%',
-                        'height' => '85%',
-                        'left' => 80,
-                        'top' => 10,
-                    ),
-                    'hAxis' => array(
-                        'textPosition' => 'none',
-                        'direction' => -1,
-                        //'title' => 'Date',
-                    ),
-                    'vAxes' => array(
-                        0 => array(
-                            'title' => 'Num. of Customs',
-                            //'textPosition' => 'in',
-                            //'logScale' => 1,
-                        ),
-                    ),
-                    'legend' => array(
-                        'position' => 'none',
-                        //'alignment' => 'center',
-                    ),
-                    'seriesType' => 'bars',
-                    'series' => array(
-                        0 => array(
-                            'type' => 'bar',
-                            'targetAxisIndex' => 0,
-                        ),
-                    ),
-                    'tooltip' => array( //'isHtml' => 1,
-                    ),
-                    'isStacked' => 1,
-                    'focusTarget' => 'category',
-                );
-
-                $chart = new chart2('ComboChart');
-
-                $super_array = array();
-                foreach ($testArray as $key2 => $value2) {
-                    $numActualCustoms = !empty($value2['num_customs'])
-                        ? $value2['num_customs']
-                        : 0;
-
-                    $super_array[] = array('c' => array(
-                        array('v' => $key2),
-                        array('v' => $numActualCustoms),
-                        array('v' => number_format($numActualCustoms)),
-                    ));
-                }
-
-                $data = array(
-                    'cols' => array(
-                        array('id' => '', 'label' => 'Date', 'type' => 'string'),
-                        array('id' => '', 'label' => 'Customs', 'type' => 'number'),
-                        array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
-                    ),
-                    'rows' => $super_array
-                );
-
-                $chart_width = max(count($super_array) * 10, 700);
-                $options['width'] = $chart_width;
-                $options['hAxis']['gridlines']['count'] = count($super_array);
-
-                echo '<div id="breakdown_num_customs_per_day" class="d2mods-graph d2mods-graph-overflow"></div>';
-
-                $chart->load(json_encode($data));
-                echo $chart->draw('breakdown_num_customs_per_day', $options);
-            } else {
-                echo bootstrapMessage('Oh Snap', 'No custom games data!', 'danger');
             }
         }
     } else {
