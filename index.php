@@ -192,7 +192,7 @@ try {
                 </div>
                 <br/>
                 <!-- Begin chatwing.com chatbox -->
-                <iframe src="//chatwing.com/chatbox/f220203c-c1fa-4ce9-a840-c90a3a2edb9d" width="100%" height="600"
+                <iframe src="//chatwing.com/chatbox/e7f2bbd0-e292-4596-ab15-1667b4319e95" width="100%" height="650"
                         frameborder="0" scrolling="0">Embedded chat
                 </iframe>
                 <!-- End chatwing.com chatbox -->
