@@ -61,7 +61,7 @@
 <h2>Install the GetDotaStats Lobby Explorer</h2>
 <p><strong>1.</strong>
     <a target="_blank" class="btn btn-success btn-sm"
-       href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.swf">Download the Lobby Explorer</a>
+       href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Download the Lobby Explorer</a>
 </p>
 <p><strong>2.</strong> While this downloads, now is a good time to login in to our site via steam's OpenID. Click on the
     big login button at the top of this page. Signing in will ensure that you obtain full functionality of our Lobby
