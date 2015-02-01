@@ -61,19 +61,22 @@
 <h2>Install the GetDotaStats Lobby Explorer</h2>
 <p><strong>1.</strong>
     <a target="_blank" class="btn btn-success btn-sm"
-       href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Download the Lobby Explorer</a>
+       href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Download the Lobby
+        Explorer Pack</a>
 </p>
 <p><strong>2.</strong> While this downloads, now is a good time to login in to our site via steam's OpenID. Click on the
     big login button at the top of this page. Signing in will ensure that you obtain full functionality of our Lobby
-    Explorer. Not logging in
-    may exclude you from some functionality.</p>
+    Explorer. Not logging in may exclude you from some functionality.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-2.png" width="500px"/></div>
-<p><strong>3.</strong> Add the play_weekend_tourney.swf from our GitHub to your Dota 2 flash directory. This is normally
-    located somewhere like
-    C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</p>
+<p><strong>3.</strong> Add the play_weekend_tourney.swf from the ZIP you just downloaded to your Dota 2 flash directory.
+    This is normally located somewhere like:</p>
+<code>C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code>
+<p>&nbsp;</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-3.png" width="500px"/></div>
 <p>&nbsp;</p>
-<div class="alert alert-danger">Make sure the downloaded file is named correctly! It must be "<strong>play_weekend_tourney.swf</strong>". If the folder does not exist, make it!</div>
+<div class="alert alert-danger">Make sure the downloaded file is named correctly! It must be "<strong>play_weekend_tourney.swf</strong>".
+    If the folder does not exist, make it!
+</div>
 
 <h2>Find/Join Lobbies</h2>
 <p>Now that you have installed the Dota 2 Workshop Tools, installed the Lobby Explorer and logged into the site; it is
@@ -96,7 +99,8 @@
         #getdotastats</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/getdotaenterprises">Site
         Chatbox</a>
-    <a target="_blank" class="btn btn-danger btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/issues">Github Issues</a>
+    <a target="_blank" class="btn btn-danger btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/issues">Github
+        Issues</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="http://steamcommunity.com/id/jimmydorry/">Steam</a>
 </p>
 <p>I don't add randoms on steam, so leave a comment before adding me.</p>
