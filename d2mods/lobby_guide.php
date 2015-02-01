@@ -19,6 +19,11 @@
         shout out to him too.</p>
 </div>
 
+<div class="text-center">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/gO6xIw4PKKg" frameborder="0"
+            allowfullscreen></iframe>
+</div>
+
 <h2>System Requirements</h2>
 <p>The current release of the Alpha tools are only compatible with the following system configurations. You also need
     the following requirements to play Custom Games in Dota 2 currently.</p>

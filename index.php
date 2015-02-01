@@ -23,7 +23,7 @@ try {
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval' 'unsafe-inline';
           img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com;
           font-src 'self' static.getdotastats.com getdotastats.com;
-          frame-src chatwing.com;
+          frame-src chatwing.com *.youtube.com;
           object-src 'none';
           media-src 'none';
           report-uri ./csp_reports.php;">
