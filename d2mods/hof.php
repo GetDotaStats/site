@@ -61,8 +61,8 @@ require_once('../connections/parameters.php');
         <span class="h4">&nbsp;</span>
 
         <p>Only the most excellent of the swarm of consumers have what it takes to successfully create lobbies. Only the
-            legendary are able to rack up a sufficient number of lobbies with more than a single player to steal the
-            admiration of even the leechers of the community. Are you one of those legendary few?</p>
+            legendary are able to rack up a sufficient number of lobbies, with more than a single player, to steal the
+            admiration of even the most apathetic of leechers in the community. Are you one of those legendary few?</p>
     </div>
     <div class="col-md-6">
         <div class="text-center">
