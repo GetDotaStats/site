@@ -12,6 +12,8 @@ try {
     if ($db) {
         $steamWebAPI = new steam_webapi($api_key1);
 
+        $steamIDconvertor = new SteamID();
+
         $steamID_unknown = !empty($_GET['user'])
             ? $_GET['user']
             : NULL;
@@ -30,21 +32,21 @@ try {
             $steamID_unknown = htmlentities($steamID_unknown);
 
             if (is_numeric($steamID_unknown)) {
-                $steamID = new SteamID($steamID_unknown);
-                $steamID32 = $steamID->getSteamID32();
+                $steamIDconvertor->setSteamID($steamID_unknown);
+                $steamID32 = $steamIDconvertor->getSteamID32();
             } else {
                 $vanitySQL = $db->q('SELECT * FROM `mod_match_players_names` WHERE `player_vanity_url` = ? LIMIT 0,1;',
                     's',
                     $steamID_unknown);
 
                 if (!empty($vanitySQL) && !empty($vanitySQL[0]['player_sid32'])) {
-                    $steamID = new SteamID($vanitySQL[0]['player_sid32']);
-                    $steamID32 = $steamID->getSteamID32();
+                    $steamIDconvertor->setSteamID($vanitySQL[0]['player_sid32']);
+                    $steamID32 = $steamIDconvertor->getSteamID32();
                 } else {
                     $customURL = $steamWebAPI->ResolveVanityURL($steamID_unknown);
                     if (!empty($customURL) && !empty($customURL['response']['success']) && $customURL['response']['success'] == 1 && !empty($customURL['response']['steamid'])) {
-                        $steamID = new SteamID($customURL['response']['steamid']);
-                        $steamID32 = $steamID->getSteamID32();
+                        $steamIDconvertor->setSteamID($customURL['response']['steamid']);
+                        $steamID32 = $steamIDconvertor->getSteamID32();
 
                         $vanitySQLinsert = $db->q(
                             'INSERT INTO `mod_match_players_names` (`player_sid32`, `player_vanity_url`)
@@ -67,16 +69,11 @@ try {
             }
 
             if (!empty($steamID32)) {
-                if ($steamID_unknown != $steamID32) {
-                    $dbLink = $steamID_unknown . ' <a class="db_link" href="http://dotabuff.com/players/' . $steamID32 . '" target="_new">' . $steamID32 . '</a>';
-                } else {
-                    $dbLink = '<a href="http://dotabuff.com/players/' . $steamID32 . '" target="_new">' . $steamID32 . '</a>';
-                }
+                $dbLink = $steamIDconvertor->getSteamID64() . ' <a class="db_link" href="http://dotabuff.com/players/' . $steamIDconvertor->getSteamID32() . '" target="_new">' . $steamIDconvertor->getSteamID32() . '</a>';
+                echo '<div class="page-header"><h2>User Profile for: <small>' . $dbLink . '</small></h2></div>';
 
-
-                echo '<div class="page-header"><h2>Match Results for: <small>' . $dbLink . '</small></h2></div>';
-
-                $gamesList = $db->q(
+                $gamesList = cached_query(
+                    'user_profile_matches_list_' . $steamID32,
                     'SELECT
                             mmp.*,
                             mmo.*,
@@ -96,12 +93,16 @@ try {
                         LEFT JOIN `game_connection_status` gcs
                             ON mmp.`connection_status` = gcs.`cs_id`
                         WHERE `player_sid32` = ?
-                        ORDER BY `date_recorded` DESC;',
+                        ORDER BY `date_recorded` DESC
+                        LIMIT 0,50;',
                     's', //STUPID x64 windows PHP is actually x86
-                    $steamID32);
+                    $steamID32,
+                    60
+                );
+
+                echo '<h3>Matches <small>Last 50</small></h3>';
 
                 if (!empty($gamesList)) {
-
                     echo '<div class="table-responsive">
 		                    <table class="table table-striped table-hover">';
                     echo '
@@ -159,6 +160,72 @@ try {
                 } else {
                     echo bootstrapMessage('Oh Snap', 'No games played yet!');
                 }
+
+                $lobbiesList = cached_query(
+                    'user_profile_lobbies_list_' . $steamID32,
+                    'SELECT
+                            ll.`lobby_id`,
+                            ll.`mod_id`,
+                            ll.`lobby_name`,
+                            ll.`lobby_region`,
+                            ll.`lobby_ttl`,
+                            ll.`lobby_max_players`,
+                            ll.`lobby_public`,
+                            ll.`lobby_leader`,
+                            ll.`lobby_leader_name`,
+                            ll.`lobby_pass`,
+                            ll.`date_recorded` as lobby_date_recorded,
+                            ml.*,
+                            (
+                              SELECT
+                                  COUNT(`user_id64`)
+                                FROM `lobby_list_players`
+                                WHERE `lobby_id` = ll.`lobby_id`
+                                LIMIT 0,1
+                            ) AS lobby_current_players
+                        FROM `lobby_list` ll
+                        LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
+                        WHERE ll.`lobby_leader` = ?
+                        ORDER BY lobby_date_recorded DESC
+                        LIMIT 0,50;',
+                    's', //STUPID x64 windows PHP is actually x86
+                    $steamIDconvertor->getSteamID64(),
+                    60
+                );
+
+                echo '<hr />';
+
+                echo '<h3>Lobbies <small>Last 50</small></h3>';
+
+                if (!empty($lobbiesList)) {
+                    echo '<div class="table-responsive">
+		                <table class="table table-striped table-hover">';
+                    echo '<tr>
+                            <th class="text-center">Lobby</th>
+                            <th class="text-center">Leader</th>
+                            <th class="text-center">Mod</th>
+                            <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
+                            <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
+                        </tr>';
+
+                    foreach ($lobbiesList as $key => $value) {
+                        $lobbyName = !empty($value['lobby_name'])
+                            ? htmlentities($value['lobby_name'])
+                            : 'Custom Game #' . $value['lobby_id'];
+
+                        echo '<tr>
+                                <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . urldecode($lobbyName) . '</a></td>
+                                <td class="vert-align">' . urldecode($value['lobby_leader_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                                <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
+                                <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
+                                <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
+                            </tr>';
+                    }
+
+                    echo '</table></div>';
+                } else {
+                    echo bootstrapMessage('Oh Snap', 'No lobbies made yet!');
+                }
             } else {
                 echo bootstrapMessage('Oh Snap', 'Invalid SteamID');
             }
@@ -169,12 +236,11 @@ try {
         echo bootstrapMessage('Oh Snap', 'No DB!');
     }
 
-    echo '<p>
+    echo '<p>&nbsp;</p>
             <div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-            </div>
-        </p>';
+            </div>';
 
     $memcache->close();
 } catch

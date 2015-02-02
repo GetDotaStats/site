@@ -43,6 +43,8 @@ try {
                 GROUP BY lobby_leader
                 ORDER BY num_lobbies DESC
                 LIMIT 0,50;',
+            NULL,
+            NULL,
             30 * 60
         );
 

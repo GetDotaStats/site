@@ -33,6 +33,8 @@ try {
                 GROUP BY mmh.`player_sid32`
                 ORDER BY num_kills DESC
                 LIMIT 0,50;',
+            NULL,
+            NULL,
             30 * 60
         );
 

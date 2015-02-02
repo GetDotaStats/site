@@ -427,7 +427,7 @@ if (!function_exists("simple_cached_query")) {
 }
 
 if (!function_exists("cached_query")) {
-    function cached_query($memcached_name, $sqlQuery, $declarationArray = NULL, $parameterArray = NULL, $cache_time_secs = 600)
+    function cached_query($memcached_name, $sqlQuery, $declarationString = NULL, $parameterArray = NULL, $cache_time_secs = 600)
     {
         global $memcache, $db;
 
@@ -435,10 +435,10 @@ if (!function_exists("cached_query")) {
             $variable = $memcache->get($memcached_name);
             if (!$variable) {
                 if ($sqlQuery) {
-                    if (!empty($declarationArray) && !empty($parameterArray)) {
+                    if (!empty($declarationString) && !empty($parameterArray)) {
                         $variable = $db->q(
                             $sqlQuery,
-                            $declarationArray,
+                            $declarationString,
                             $parameterArray
                         );
                     } else {

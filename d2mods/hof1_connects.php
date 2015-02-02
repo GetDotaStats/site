@@ -34,6 +34,8 @@ try {
                 GROUP BY mmp.`player_sid32`
                 ORDER BY num_games DESC
                 LIMIT 0,50;',
+            NULL,
+            NULL,
             30 * 60
         );
 
