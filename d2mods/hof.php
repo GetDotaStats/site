@@ -66,7 +66,7 @@ require_once('../connections/parameters.php');
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable link_no_decoration" href="#d2mods__hof3_lobbies">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof4_wins">
                 <span class="h3">Wins</span>
             </a>
         </div>
