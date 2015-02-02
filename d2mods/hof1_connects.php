@@ -117,6 +117,10 @@ try {
                         ? $hof1_user_details[0]['user_avatar']
                         : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
+                    if(!empty($hof1_user_details[0]['user_name']) && strlen($hof1_user_details[0]['user_name']) > 21){
+                        $hof1_user_details[0]['user_name'] = substr($hof1_user_details[0]['user_name'], 0, 17) . '...';
+                    }
+
                     $userName = !empty($hof1_user_details[0]['user_name'])
                         ? '<span class="h3">
                             <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">

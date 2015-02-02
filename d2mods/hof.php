@@ -66,9 +66,14 @@ require_once('../connections/parameters.php');
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <span class="h3">Wins</span>
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof3_lobbies">
+                <span class="h3">Wins</span>
+            </a>
         </div>
         <span class="h4">&nbsp;</span>
+
+        <p>Only those that try the hardest can hope to win games. Only the legendary are able to consistently win,
+            despite their team. Are you one of those legendary few?</p>
     </div>
 </div>
 <div class="row">
@@ -79,7 +84,7 @@ require_once('../connections/parameters.php');
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable btn btn-danger btn-lg disabled">COMING SOON</a>
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof4_wins">View HoF</a>
         </div>
     </div>
 </div>

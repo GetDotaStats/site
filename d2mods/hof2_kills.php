@@ -111,6 +111,10 @@ try {
                             ? $hof2_user_details[0]['user_avatar']
                             : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
+                        if(!empty($hof2_user_details[0]['user_name']) && strlen($hof2_user_details[0]['user_name']) > 21){
+                            $hof2_user_details[0]['user_name'] = substr($hof2_user_details[0]['user_name'], 0, 17) . '...';
+                        }
+
                         $userName = !empty($hof2_user_details[0]['user_name'])
                             ? '<span class="h3">
                             <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
@@ -126,7 +130,7 @@ try {
                     }
                     else{
                         $userAvatar = $imageCDN . '/images/misc/steam/blank_avatar.jpg';
-                        $userName = '<span class="h3">[NPC] Dota 2 Bots</span>';
+                        $userName = '<span class="h3">Bots</span>';
                     }
 
                     $numKills = !empty($value['num_kills'])
