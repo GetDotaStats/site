@@ -132,12 +132,12 @@ try {
 
             foreach ($lobbyListDead as $key => $value) {
                 $lobbyName = !empty($value['lobby_name'])
-                    ? urldecode($value['lobby_name'])
+                    ? strip_tags(urldecode($value['lobby_name']))
                     : 'Custom Game #' . $value['lobby_id'];
 
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
-                        <td class="vert-align">' . urldecode($value['lobby_leader_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                        <td class="vert-align">' . strip_tags(urldecode($value['lobby_leader_name'])) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
                         <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
