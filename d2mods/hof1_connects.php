@@ -34,7 +34,7 @@ try {
                 GROUP BY mmp.`player_sid32`
                 ORDER BY num_games DESC
                 LIMIT 0,50;',
-            1 * 60
+            30 * 60
         );
 
         if (!empty($hof1_users)) {
@@ -68,6 +68,12 @@ try {
                     );
 
                     if (empty($hof1_user_details)) {
+                        echo '<div class="row">
+                            <div class="col-md-1 text-center">
+                                <span>Next user was looked up!</span>
+                            </div>
+                        </div>';
+
                         if (!isset($steamID)) {
                             $steamID = new SteamID();
                         }

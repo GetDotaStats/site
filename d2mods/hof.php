@@ -12,11 +12,11 @@ require_once('../connections/parameters.php');
 
 <div class="row">
     <div class="col-md-6">
-        <a class="nav-clickable link_no_decoration" href="#d2mods__hof1_connects">
-            <div class="text-center">
+        <div class="text-center">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof1_connects">
                 <span class="h3">Connections</span>
-            </div>
-        </a>
+            </a>
+        </div>
 
         <span class="h4">&nbsp;</span>
 
@@ -24,11 +24,11 @@ require_once('../connections/parameters.php');
             game until the very end. Are you one of those legendary few?</p>
     </div>
     <div class="col-md-6">
-        <a class="nav-clickable link_no_decoration" href="#d2mods__hof2_kills">
-            <div class="text-center">
+        <div class="text-center">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof2_kills">
                 <span class="h3">Kills</span>
-            </div>
-        </a>
+            </a>
+        </div>
 
         <span class="h4">&nbsp;</span>
 
@@ -46,6 +46,40 @@ require_once('../connections/parameters.php');
     <div class="col-md-6">
         <div class="text-center">
             <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof2_kills">View HoF</a>
+        </div>
+    </div>
+</div>
+<span class="h1">&nbsp;</span>
+<div class="row">
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof3_lobbies">
+                <span class="h3">Lobbies</span>
+            </a>
+        </div>
+
+        <span class="h4">&nbsp;</span>
+
+        <p>Only the most excellent of the swarm of consumers have what it takes to successfully create lobbies. Only the
+            legendary are able to rack up a sufficient number of lobbies with more than a single player to steal the
+            admiration of even the leechers of the community. Are you one of those legendary few?</p>
+    </div>
+    <div class="col-md-6">
+        <div class="text-center">
+            <span class="h3">Wins</span>
+        </div>
+        <span class="h4">&nbsp;</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof3_lobbies">View HoF</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="text-center">
+            <a class="nav-clickable btn btn-danger btn-lg disabled">COMING SOON</a>
         </div>
     </div>
 </div>

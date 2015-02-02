@@ -10,11 +10,11 @@ try {
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if ($db) {
-        echo '<h2>Kills - Hall of Fame</h2>';
+        echo '<h2>Lobbies - Hall of Fame</h2>';
 
-        echo '<p>Only the meanest of the bunch have what it takes to ruthlessly slaughter their opponents. Only the
-                legendary are able to rack up a sufficient number of kills to cause even the seasoned veterans to quake
-                in their boots. Are you one of those legendary few?</p>';
+        echo '<p>Only the most excellent of the swarm of consumers have what it takes to successfully create lobbies. Only the
+                legendary are able to rack up a sufficient number of lobbies with more than a single player to steal the admiration of even the leechers
+                of the community. Are you one of those legendary few?</p>';
 
         echo '<span class="h4">&nbsp;</span>';
         echo '<div class="text-center">
@@ -24,34 +24,44 @@ try {
            </div>';
         echo '<span class="h4">&nbsp;</span>';
 
-        $hof2_users = cached_query(
-            'hof2_kills_users',
+        $hof3_users = cached_query(
+            'hof2_lobbies_users',
             'SELECT
-                    mmh.`player_sid32`,
-                    SUM(mmh.`hero_kills`) as num_kills
-                FROM `mod_match_heroes` mmh
-                GROUP BY mmh.`player_sid32`
-                ORDER BY num_kills DESC
+                    lobby_leader,
+                    SUM(num_players) as num_lobbies
+                FROM (
+                    SELECT
+                        ll.`lobby_leader`,
+                        ll.`lobby_id`,
+                        COUNT(*) AS num_players
+                    FROM `lobby_list` ll
+                    JOIN `lobby_list_players` llp ON ll.`lobby_id` = llp.`lobby_id`
+                    GROUP BY ll.`lobby_leader`, llp.`lobby_id`
+                    HAVING num_players > 1
+                    ORDER BY ll.`lobby_leader`
+                ) as t1
+                GROUP BY lobby_leader
+                ORDER BY num_lobbies DESC
                 LIMIT 0,50;',
             30 * 60
         );
 
-        if (!empty($hof2_users)) {
+        if (!empty($hof3_users)) {
             echo '<div class="row">
                             <div class="col-md-1 text-center">
                                 <span class="h4">Rank</span>
                             </div>
                             <div class="col-md-2 text-center">
-                                <span class="h4">Kills</span>
+                                <span class="h4">Lobbies</span>
                             </div>
                         </div>';
             echo '<span class="h4">&nbsp;</span>';
 
-            foreach ($hof2_users as $key => $value) {
+            foreach ($hof3_users as $key => $value) {
                 try {
-                    if ($value['player_sid32'] != 0) {
-                        $hof2_user_details = cached_query(
-                            'hof2_kills_users_details' . $value['player_sid32'],
+                    if ($value['lobby_leader'] != 0) {
+                        $hof3_user_details = cached_query(
+                            'hof3_lobbies_users_details' . $value['lobby_leader'],
                             'SELECT
                                     `user_id64`,
                                     `user_id32`,
@@ -60,30 +70,30 @@ try {
                                     `user_avatar_medium`,
                                     `user_avatar_large`
                             FROM `gds_users`
-                            WHERE `user_id32` = ?
+                            WHERE `user_id64` = ?
                             LIMIT 0,1;',
                             's',
-                            $value['player_sid32'],
+                            $value['lobby_leader'],
                             1 * 60
                         );
 
-                        if (empty($hof2_user_details)) {
+                        if (empty($hof3_user_details)) {
                             if (!isset($steamID)) {
                                 $steamID = new SteamID();
                             }
 
-                            $steamID->setSteamID($value['player_sid32']);
+                            $steamID->setSteamID($value['lobby_leader']);
 
                             $steamWebAPI = new steam_webapi($api_key1);
-                            $hof2_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
+                            $hof3_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
 
-                            if (!empty($hof2_user_details_temp)) {
-                                $hof2_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                $hof2_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                $hof2_user_details[0]['user_name'] = $hof2_user_details_temp['response']['players'][0]['personaname'];
-                                $hof2_user_details[0]['user_avatar'] = $hof2_user_details_temp['response']['players'][0]['avatar'];
-                                $hof2_user_details[0]['user_avatar_medium'] = $hof2_user_details_temp['response']['players'][0]['avatarmedium'];
-                                $hof2_user_details[0]['user_avatar_large'] = $hof2_user_details_temp['response']['players'][0]['avatarfull'];
+                            if (!empty($hof3_user_details_temp)) {
+                                $hof3_user_details[0]['user_id64'] = $steamID->getSteamID64();
+                                $hof3_user_details[0]['user_id32'] = $steamID->getSteamID32();
+                                $hof3_user_details[0]['user_name'] = $hof3_user_details_temp['response']['players'][0]['personaname'];
+                                $hof3_user_details[0]['user_avatar'] = $hof3_user_details_temp['response']['players'][0]['avatar'];
+                                $hof3_user_details[0]['user_avatar_medium'] = $hof3_user_details_temp['response']['players'][0]['avatarmedium'];
+                                $hof3_user_details[0]['user_avatar_large'] = $hof3_user_details_temp['response']['players'][0]['avatarfull'];
 
 
                                 $db->q(
@@ -92,43 +102,42 @@ try {
                                         VALUES (?, ?, ?, ?, ?, ?)',
                                     'ssssss',
                                     array(
-                                        $hof2_user_details[0]['user_id64'],
-                                        $hof2_user_details[0]['user_id32'],
-                                        $hof2_user_details[0]['user_name'],
-                                        $hof2_user_details[0]['user_avatar'],
-                                        $hof2_user_details[0]['user_avatar_medium'],
-                                        $hof2_user_details[0]['user_avatar_large']
+                                        $hof3_user_details[0]['user_id64'],
+                                        $hof3_user_details[0]['user_id32'],
+                                        $hof3_user_details[0]['user_name'],
+                                        $hof3_user_details[0]['user_avatar'],
+                                        $hof3_user_details[0]['user_avatar_medium'],
+                                        $hof3_user_details[0]['user_avatar_large']
                                     )
                                 );
 
-                                $memcache->set('hof2_kills_users_details' . $value['player_sid32'], $hof2_user_details, 0, 15);
+                                $memcache->set('hof3_lobbies_users_details' . $value['lobby_leader'], $hof3_user_details, 0, 15);
                             }
                         }
 
-                        $userAvatar = !empty($hof2_user_details[0]['user_avatar'])
-                            ? $hof2_user_details[0]['user_avatar']
+                        $userAvatar = !empty($hof3_user_details[0]['user_avatar'])
+                            ? $hof3_user_details[0]['user_avatar']
                             : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
-                        $userName = !empty($hof2_user_details[0]['user_name'])
+                        $userName = !empty($hof3_user_details[0]['user_name'])
                             ? '<span class="h3">
-                            <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
-                                ' . htmlentities($hof2_user_details[0]['user_name']) . '
+                            <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '">
+                                ' . htmlentities($hof3_user_details[0]['user_name']) . '
                             </a>
                         </span>'
                             : '<span class="h3">
-                            <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
+                            <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '">
                                 ??
                             </a>
                             <small>Sign in to update profile!</small>
                         </span>';
-                    }
-                    else{
+                    } else {
                         $userAvatar = $imageCDN . '/images/misc/steam/blank_avatar.jpg';
                         $userName = '<span class="h3">[NPC] Dota 2 Bots</span>';
                     }
 
-                    $numKills = !empty($value['num_kills'])
-                        ? number_format($value['num_kills'])
+                    $numLobbies = !empty($value['num_lobbies'])
+                        ? number_format($value['num_lobbies'])
                         : '??';
 
                     echo '<div class="row">
@@ -136,7 +145,7 @@ try {
                                 <span class="h3">' . ($key + 1) . '</span>
                             </div>
                             <div class="col-md-2 text-center">
-                                <span class="h3">' . $numKills . '</span>
+                                <span class="h3">' . $numLobbies . '</span>
                             </div>
                             <div class="col-md-1">
                                 <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
