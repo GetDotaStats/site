@@ -25,10 +25,10 @@ try {
         echo '<span class="h4">&nbsp;</span>';
 
         $hof3_users = cached_query(
-            'hof2_lobbies_users',
+            'hof2_lobbies_users1',
             'SELECT
                     lobby_leader,
-                    SUM(num_players) as num_lobbies
+                    COUNT(num_players) as num_lobbies
                 FROM (
                     SELECT
                         ll.`lobby_leader`,
