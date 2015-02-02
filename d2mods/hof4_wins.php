@@ -35,7 +35,7 @@ try {
                 LIMIT 0,50;',
             NULL,
             NULL,
-            1 * 10
+            30 * 60
         );
 
         if (!empty($hof4_users)) {
