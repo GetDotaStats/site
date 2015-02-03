@@ -1,6 +1,7 @@
 <h1>Guide for using GetDotaStat's Lobby Explorer</h1>
 
-<div class="alert alert-info" role="alert"><p><strong>Credits</strong></p>
+<div class="alert alert-info" role="alert">
+    <p><strong>Credits</strong></p>
 
     <p>This wouldn't have been possible without the hard
         work put in by
@@ -17,6 +18,13 @@
         <a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=298142924">Wyk's</a>, so here is
         a
         shout out to him too.</p>
+</div>
+
+<div class="alert alert-warning alert-dismissible fade in" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Note:</strong> Workshop tools are not required if you only want the mini-games. Skip down
+    to Lobby Explorer Installation
 </div>
 
 <div class="text-center">
