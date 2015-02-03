@@ -158,7 +158,7 @@ try {
                     echo '<div class="container"><span id="lobbyResult" class="label label-danger"></span></div>';
 
                     if (!empty($lobbyDetails) && $lobbyDetails['lobby_active'] == 0) {
-                        echo '<div class="alert alert-danger" role="alert">Lobby has now expired!</div>';
+                        echo '<div class="alert alert-danger" role="alert">Lobby has now expired! <a class="nav-clickable btn btn-danger btn-md" href="#d2mods__lobby_list">Lobby List</a></div>';
                     } else if (!empty($lobbyDetails) && $lobbyDetails['lobby_hosted'] == 1) {
                         echo '<div class="alert alert-success" role="alert">Lobby is ready to join! <a class="btn btn-sm btn-success" href="steam://launch/570 ">START DOTA CLIENT</a></div>';
                     }
