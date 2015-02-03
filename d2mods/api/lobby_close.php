@@ -14,6 +14,10 @@ try {
         ? $_GET['t']
         : NULL;
 
+    $lobbyStarted = !empty($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] == 1
+        ? 1
+        : 0;
+
     if (!empty($lobbyID) && !empty($token)) {
         $lobbyStatus = array();
 
@@ -22,9 +26,9 @@ try {
 
         if ($db) {
             $sqlResult = $db->q(
-                'UPDATE `lobby_list` SET `lobby_active` = 0, `lobby_hosted` = 0 WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
-                'is',
-                $lobbyID, $token
+                'UPDATE `lobby_list` SET `lobby_active` = 0, `lobby_hosted` = 0, `lobby_started` = ? WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+                'iis',
+                $lobbyStarted, $lobbyID, $token
             );
 
             if (!empty($sqlResult)) {
