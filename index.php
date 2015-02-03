@@ -32,7 +32,7 @@ try {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
+    <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
     <link href="//static.getdotastats.com/getdotastats.css?17" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
