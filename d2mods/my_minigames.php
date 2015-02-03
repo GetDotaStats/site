@@ -64,25 +64,23 @@ try {
                 }
 
             } else {
-                echo '<div class="alert alert-danger" role = "alert" ><strong > Oh Snap:</strong > You don\'t have any mods added yet!</div>';
+                echo bootstrapMessage('Oh Snap', 'You don\'t have any mini games added yet!', 'danger');
             }
 
             echo '<p>
                     <div class="text-center">
-                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
-                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
-                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_request">Add a new mini game</a>
                     </div>
                 </p>';
         } else {
-            echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
+            echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
         }
 
         $memcache->close();
     } else {
-        echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
+        echo bootstrapMessage('Oh Snap', 'Not logged in!', 'danger');
     }
-} catch
-(Exception $e) {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+} catch (Exception $e) {
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }

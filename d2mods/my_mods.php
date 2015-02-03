@@ -51,7 +51,7 @@ try {
                 }
 
             } else {
-                echo '<div class="alert alert-danger" role = "alert" ><strong > Oh Snap:</strong > You don\'t have any mods added yet!</div>';
+                echo bootstrapMessage('Oh Snap', 'You don\'t have any mods added yet!', 'danger');
             }
 
             echo '<p>
@@ -62,14 +62,14 @@ try {
                     </div>
                 </p>';
         } else {
-            echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No DB!</div></div>';
+            echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
         }
 
         $memcache->close();
     } else {
-        echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Not logged in!</div></div>';
+        echo bootstrapMessage('Oh Snap', 'Not logged in!', 'danger');
     }
-} catch
-(Exception $e) {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+} catch (Exception $e) {
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
