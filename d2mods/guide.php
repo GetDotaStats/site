@@ -237,7 +237,7 @@
     print( "Example stat collection game mode loaded." )
 </pre>
 
-<h4>Add flags to indicate mod settings - <a
+<h4>Add flags to indicate mod settings <strong>(OPTIONAL)</strong> - <a
         href="https://github.com/ash47/LegendsOfDota/blob/fa672ce56159569089734caf09708307def6e73d/lod/scripts/vscripts/addon_game_mode.lua#L22"
         target="_blank">GitHub</a></h4>
 
@@ -254,7 +254,7 @@
     })
 </pre>
 
-<h4>Add modes to indicate host options - <a
+<h4>Add modes to indicate host options <strong>(OPTIONAL)</strong> - <a
         href="https://github.com/ash47/LegendsOfDota/blob/fa672ce56159569089734caf09708307def6e73d/lod/scripts/vscripts/addon_game_mode.lua#L1365"
         target="_blank">GitHub</a></h4>
 
@@ -284,7 +284,7 @@
     })
 </pre>
 
-<h4>Add module stats on your modules - <a
+<h4>Add module stats on your modules <strong>(OPTIONAL)</strong> - <a
         href="https://github.com/ash47/LegendsOfDota/blob/9bd94ec2a5830c352fce3af13d8568ab32f6f2ff/lod/scripts/vscripts/lib/loadhelper.lua#L91"
         target="_blank">GitHub</a></h4>
 
