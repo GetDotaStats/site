@@ -32,8 +32,8 @@ try {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//getdotastats.com/getdotastats.css?16" rel="stylesheet">
+    <link href="//static.getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css?17" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -42,8 +42,8 @@ try {
     <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//getdotastats.com/getdotastats.js?13"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/bootstrap/js/jquery.min.js?1"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?14"></script>
     <!--<script type="text/javascript" src="./getdotastats.js?11"></script>-->
 </head>
 <body>
@@ -216,7 +216,7 @@ try {
     </div>
 </div>
 
-<script src="//getdotastats.com/bootstrap/js/jquery-1-11-0.min.js"></script>
-<script src="//getdotastats.com/bootstrap/js/bootstrap.min.js"></script>
+<script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js?1"></script>
+<script src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js?1"></script>
 </body>
 </html>
