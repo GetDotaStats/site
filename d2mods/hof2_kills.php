@@ -24,21 +24,17 @@ try {
            </div>';
         echo '<span class="h4">&nbsp;</span>';
 
-        $hof2_users = cached_query(
+        $hof_users = cached_query(
             'hof2_kills_users',
-            'SELECT
-                    mmh.`player_sid32`,
-                    SUM(mmh.`hero_kills`) as num_kills
-                FROM `mod_match_heroes` mmh
-                GROUP BY mmh.`player_sid32`
-                ORDER BY num_kills DESC
-                LIMIT 0,50;',
+            'SELECT `player_sid32`, `num_kills` FROM `cron_hof2`;',
             NULL,
             NULL,
-            30 * 60
+            1 * 60
         );
 
-        if (!empty($hof2_users)) {
+        $scoreName = 'num_kills';
+
+        if (!empty($hof_users)) {
             echo '<div class="row">
                             <div class="col-md-1 text-center">
                                 <span class="h4">Rank</span>
@@ -49,126 +45,91 @@ try {
                         </div>';
             echo '<span class="h4">&nbsp;</span>';
 
-            foreach ($hof2_users as $key => $value) {
-                try {
-                    if ($value['player_sid32'] != 0) {
-                        $hof2_user_details = cached_query(
-                            'hof2_kills_users_details' . $value['player_sid32'],
-                            'SELECT
-                                    `user_id64`,
-                                    `user_id32`,
-                                    `user_name`,
-                                    `user_avatar`,
-                                    `user_avatar_medium`,
-                                    `user_avatar_large`
-                            FROM `gds_users`
-                            WHERE `user_id32` = ?
-                            LIMIT 0,1;',
-                            's',
-                            $value['player_sid32'],
-                            1 * 60
-                        );
+            foreach ($hof_users as $key => $value) {
+                $score = !empty($value[$scoreName])
+                    ? number_format($value[$scoreName])
+                    : '??';
 
-                        if (empty($hof2_user_details)) {
-                            if (!isset($steamID)) {
-                                $steamID = new SteamID();
-                            }
+                if ($value['player_sid32'] != 0) {
+                    $hof_user_details = cached_query(
+                        'hof_user_details' . $value['player_sid32'],
+                        'SELECT
+                                `user_id64`,
+                                `user_id32`,
+                                `user_name`,
+                                `user_avatar`,
+                                `user_avatar_medium`,
+                                `user_avatar_large`
+                        FROM `gds_users`
+                        WHERE `user_id32` = ?
+                        LIMIT 0,1;',
+                        's',
+                        $value['player_sid32'],
+                        1 * 60
+                    );
+                } else {
+                    $hof_user_details = false;
+                }
 
-                            $steamID->setSteamID($value['player_sid32']);
+                if (!empty($hof_user_details)) {
+                    $userAvatar = !empty($hof_user_details[0]['user_avatar'])
+                        ? $hof_user_details[0]['user_avatar']
+                        : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
-                            $steamWebAPI = new steam_webapi($api_key1);
-                            $hof2_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
+                    if (!empty($hof_user_details[0]['user_name']) && strlen($hof_user_details[0]['user_name']) > 21) {
+                        $hof_user_details[0]['user_name'] = substr($hof_user_details[0]['user_name'], 0, 17) . '...';
+                    }
 
-                            if (!empty($hof2_user_details_temp)) {
-                                $hof2_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                $hof2_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                $hof2_user_details[0]['user_name'] = $hof2_user_details_temp['response']['players'][0]['personaname'];
-                                $hof2_user_details[0]['user_avatar'] = $hof2_user_details_temp['response']['players'][0]['avatar'];
-                                $hof2_user_details[0]['user_avatar_medium'] = $hof2_user_details_temp['response']['players'][0]['avatarmedium'];
-                                $hof2_user_details[0]['user_avatar_large'] = $hof2_user_details_temp['response']['players'][0]['avatarfull'];
-
-
-                                $db->q(
-                                    'INSERT INTO `gds_users`
-                                        (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                        VALUES (?, ?, ?, ?, ?, ?)',
-                                    'ssssss',
-                                    array(
-                                        $hof2_user_details[0]['user_id64'],
-                                        $hof2_user_details[0]['user_id32'],
-                                        $hof2_user_details[0]['user_name'],
-                                        $hof2_user_details[0]['user_avatar'],
-                                        $hof2_user_details[0]['user_avatar_medium'],
-                                        $hof2_user_details[0]['user_avatar_large']
-                                    )
-                                );
-
-                                $memcache->set('hof2_kills_users_details' . $value['player_sid32'], $hof2_user_details, 0, 15);
-                            }
-                        }
-
-                        $userAvatar = !empty($hof2_user_details[0]['user_avatar'])
-                            ? $hof2_user_details[0]['user_avatar']
-                            : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
-
-                        if(!empty($hof2_user_details[0]['user_name']) && strlen($hof2_user_details[0]['user_name']) > 21){
-                            $hof2_user_details[0]['user_name'] = substr($hof2_user_details[0]['user_name'], 0, 17) . '...';
-                        }
-
-                        $userName = !empty($hof2_user_details[0]['user_name'])
-                            ? '<span class="h3">
+                    $userName = !empty($hof_user_details[0]['user_name'])
+                        ? '<span class="h3">
                             <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
-                                ' . htmlentities($hof2_user_details[0]['user_name']) . '
+                                ' . $hof_user_details[0]['user_name'] . '
                             </a>
                         </span>'
-                            : '<span class="h3">
+                        : '<span class="h3">
                             <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
-                                ??
+                                ?UNKNOWN?
                             </a>
                             <small>Sign in to update profile!</small>
                         </span>';
-                    }
-                    else{
-                        $userAvatar = $imageCDN . '/images/misc/steam/blank_avatar.jpg';
-                        $userName = '<span class="h3">Bots</span>';
-                    }
-
-                    $numKills = !empty($value['num_kills'])
-                        ? number_format($value['num_kills'])
-                        : '??';
 
                     echo '<div class="row">
                             <div class="col-md-1 text-center">
                                 <span class="h3">' . ($key + 1) . '</span>
                             </div>
                             <div class="col-md-2 text-center">
-                                <span class="h3">' . $numKills . '</span>
+                                <span class="h3">' . $score . '</span>
                             </div>
                             <div class="col-md-1">
-                                <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
+                                <a target="_blank" href="#d2mods__search?user=' . $value['player_sid32'] . '">
+                                    <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
+                                </a>
                             </div>
                             <div class="col-md-8">
                                 ' . $userName . '
                             </div>
                         </div>';
                     echo '<span class="h4">&nbsp;</span>';
-                } catch (Exception $e) {
+                } else {
+                    $userName = $value['player_sid32'] == 0
+                        ? '<span class="h3">Bots</span>'
+                        : 'EXCEPTION OCCURRED!! COULDN\'T LOOKUP!!';
+
                     echo '<div class="row">
                             <div class="col-md-1 text-center">
                                 <span class="h3">' . ($key + 1) . '</span>
                             </div>
                             <div class="col-md-2 text-center">
-                                <span class="h3">??</span>
+                                <span class="h3">' . $score . '</span>
                             </div>
                             <div class="col-md-1">
                                 <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg' . '" />
                             </div>
                             <div class="col-md-8">
-                                EXCEPTION OCCURRED!! COULDN\'T LOOKUP!!
+                                ' . $userName . '
                             </div>
                         </div>';
                     echo '<span class="h4">&nbsp;</span>';
-
                 }
             }
         } else {
