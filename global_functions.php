@@ -793,3 +793,102 @@ if (!class_exists('dota2_webapi')) {
         }
     }
 }
+
+if (!class_exists('SteamID')) {
+    class SteamID
+    {
+        private $steamID = '';
+        private $steamID32 = '';
+        private $steamID64 = '';
+
+        public function __construct($steam_id = NULL)
+        {
+            if(!empty($steam_id)){
+                $this->setSteamID($steam_id);
+            }
+        }
+
+        public function setSteamID($steam_id)
+        {
+            if (empty($steam_id)) {
+                throw new RuntimeException('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
+            } elseif (ctype_digit($steam_id) && strlen($steam_id) === 17) {
+                $this->steamID64 = $steam_id;
+                $this->steamID32 = $this->convert64to32($steam_id);
+                $this->steamID = $this->convert64toID($steam_id);
+            } elseif (ctype_digit($steam_id) && strlen($steam_id) != 17) {
+                $this->steamID64 = $this->convert32to64($steam_id);
+                $this->steamID32 = $steam_id;
+                $this->steamID = $this->convert32toID($steam_id);
+            } elseif (preg_match('/^STEAM_0:[01]:[0-9]+/', $steam_id)) {
+                $this->steamID64 = $this->convertIDto64($steam_id);
+                $this->steamID32 = $this->convertIDto32($steam_id);
+                $this->steamID = $steam_id;
+            } else {
+                throw new RuntimeException('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
+            }
+        }
+
+        private function convert64to32($steam_id)
+        {
+            $steam_cid = substr($steam_id, 3) - 61197960265728;
+            return $steam_cid;
+        }
+
+        private function convert32to64($steam_id)
+        {
+            $steam_cid = '765' . ($steam_id + 61197960265728);
+            return $steam_cid;
+        }
+
+        private function convert32toID($steam_id)
+        {
+            $steam_cid = '765' . ($steam_id + 61197960265728);
+            $steam_cid = $this->convert64toID($steam_cid);
+            return $steam_cid;
+        }
+
+        private function convert64toID($steam_cid)
+        {
+            $id = array('STEAM_0');
+            $id[1] = substr($steam_cid, -1, 1) % 2 == 0 ? 0 : 1;
+            $id[2] = bcsub($steam_cid, '76561197960265728');
+            if (bccomp($id[2], '0') != 1) {
+                return false;
+            }
+            $id[2] = bcsub($id[2], $id[1]);
+            list($id[2],) = explode('.', bcdiv($id[2], 2), 2);
+            return implode(':', $id);
+        }
+
+        private function convertIDto64($steam_id)
+        {
+            list(, $m1, $m2) = explode(':', $steam_id, 3);
+            list($steam_cid,) = explode('.', bcadd((((int)$m2 * 2) + $m1), '76561197960265728'), 2);
+            return $steam_cid;
+        }
+
+        private function convertIDto32($steam_id)
+        {
+            list(, $m1, $m2) = explode(':', $steam_id, 3);
+            list($steam_cid,) = explode('.', bcadd((((int)$m2 * 2) + $m1), '76561197960265728'), 2);
+            $steam_cid = $this->convert64to32($steam_cid);
+            return $steam_cid;
+        }
+
+        public function getSteamID()
+        {
+            return $this->steamID;
+        }
+
+        public function getsteamID32()
+        {
+            return $this->steamID32;
+        }
+
+        public function getSteamID64()
+        {
+            return $this->steamID64;
+        }
+    }
+}

@@ -339,13 +339,30 @@
 <h3>Final steps</h3>
 
 <p>You are now ready to go! Upload your mod to the workshop and see if it works! This method of stat collection is new
-    and experimental, so feel free to contact me via <a
-        href="https://github.com/GetDotaStats/stat-collection/issues" target="_new">Github Issues</a> / <a
-        href="http://steamcommunity.com/id/jimmydorry/" target="_new">Steam</a> / <a
-        href="irc://irc.gamesurge.net:6667/#getdotastats" target="_new">IRC</a> / <a
-        href="http://chatwing.com/getdotaenterprises" target="_new">Site Chatbox</a> (on the right). <strong>If
-        contacting me via Steam, make sure to leave a message on my profile, as I will likely not add you
-        otherwise.</strong></p>
+    and experimental, so feel free to contact me via any of the lines of communication listed below.</p>
+
+<p>For those not familiar with IRC, try the <a target="_blank" href="http://client00.chat.mibbit.com/">mibbit client</a>.
+    <span class="glyphicon glyphicon-question-sign" title="server: GAMESURGE, channel: #getdotastats"></span></p>
+
+<p>&nbsp;</p>
+
+<div class="text-center">
+    <a target="_blank" class="btn btn-danger btn-sm" href="irc://irc.gamesurge.net:6667/#getdotastats">IRC
+        #getdotastats <span class="glyphicon glyphicon-question-sign"
+                            title="server: GAMESURGE, channel: #getdotastats"></span></a>
+    <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/GetDotaStats">Site
+        Chatbox</a>
+    <a target="_blank" class="btn btn-danger btn-sm" href="https://github.com/GetDotaStats/stat-collection/issues">Github
+        Issues</a>
+    <a target="_blank" class="btn btn-danger btn-sm" href="http://steamcommunity.com/id/jimmydorry/">Steam</a>
+    <a target="_blank" class="btn btn-danger btn-sm"
+       href="http://steamcommunity.com/groups/getdotastats/discussions/1/">Steam Group</a>
+</div>
+
+<p>&nbsp;</p>
+
+<p>I don't add randoms on steam, so leave a comment before adding me.</p>
+
 
 <h3>Miscellaneous Notes</h3>
 

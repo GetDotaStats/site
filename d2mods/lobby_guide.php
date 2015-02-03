@@ -96,18 +96,32 @@
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/4-2.jpg" width="500px"/></div>
 
 <h2>Notes</h2>
+
 <p>The in-game lobby list must be refreshed manually, by clicking the refresh symbol in the top right corner. It has a
     rate-limit of 5seconds.</p>
-<p>There will be bugs. You can get in contact with us via any of the following:</p>
-<p>
+
+<p>There will be bugs. You can get in contact with us via any of the lines of communication listed below.</p>
+
+<p>For those not familiar with IRC, try the <a target="_blank" href="http://client00.chat.mibbit.com/">mibbit client</a>.
+    <span class="glyphicon glyphicon-question-sign" title="server: GAMESURGE, channel: #getdotastats"></span></p>
+
+<p>&nbsp;</p>
+
+<div class="text-center">
     <a target="_blank" class="btn btn-danger btn-sm" href="irc://irc.gamesurge.net:6667/#getdotastats">IRC
-        #getdotastats</a>
-    <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/getdotaenterprises">Site
+        #getdotastats <span class="glyphicon glyphicon-question-sign"
+                            title="server: GAMESURGE, channel: #getdotastats"></span></a>
+    <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/GetDotaStats">Site
         Chatbox</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/issues">Github
         Issues</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="http://steamcommunity.com/id/jimmydorry/">Steam</a>
-</p>
+    <a target="_blank" class="btn btn-danger btn-sm"
+       href="http://steamcommunity.com/groups/getdotastats/discussions/3/">Steam Group</a>
+</div>
+
+<p>&nbsp;</p>
+
 <p>I don't add randoms on steam, so leave a comment before adding me.</p>
 
 <div class="text-center">

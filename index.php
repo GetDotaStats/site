@@ -59,6 +59,7 @@ try {
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Setup Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__minigame_request">Request a Mini Game</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
@@ -71,6 +72,7 @@ try {
                         <li class="dropdown-header">My Custom Games</li>
                         <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__my_mods">My Added Mods</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
