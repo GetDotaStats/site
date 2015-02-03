@@ -35,8 +35,9 @@ try {
 
     echo '<p>
                 <div class="text-center">
-                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
-                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_directory">Mini Game Directory</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_minigames">My Mini Games</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_guide">Mini Game Guide</a>
                 </div>
             </p>';
 } catch (Exception $e) {
