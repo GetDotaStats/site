@@ -49,6 +49,18 @@
     Code on this page may be out of date. Always use the Github where possible!
 </div>
 
+<h4>Put the LUA libraries in your "scripts/vscripts/lib/*" - <a
+        href="https://github.com/GetDotaStats/stat-collection/tree/master/statcollection/scripts/vscripts/lib"
+        target="_blank">GitHub</a></h4>
+
+<pre class="pre-scrollable">
+    The three libraries:
+
+    * json.lua
+    * md5.lua
+    * statcollection.lua
+</pre>
+
 <h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
         href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection.swf"
         target="_blank">GitHub</a>
