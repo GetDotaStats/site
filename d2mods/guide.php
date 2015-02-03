@@ -172,13 +172,8 @@
     {
         "1"
         {
-            "File"      "XXXXXXX" //YOUR MAIN UI ELEMENT OTHERWISE PUT StatsCollection AS 1
-            "Depth"     "253"
-        }
-        "2"
-        {
-            "File" "StatsCollection"
-            "Depth" "1"
+            "File" "StatsCollection" //IF YOU HAVE A UI ELEMENT, THEN PUT IT AS 1, AND PUT STATS AS 2
+            "Depth" "1" //IF YOU HAVE A UI ELEMENT, IT SHOULD BE SET AT 253
         }
     }
 </pre>
