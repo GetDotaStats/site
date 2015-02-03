@@ -318,6 +318,14 @@
     will only record failures.
 </p>
 
+<div class="alert alert-danger">
+    The stats are only sent at the end of a game, which can be triggered when the "game_state >= postgame" or when
+    SetGameWinner() has been called. You can register a console command for easier testing. Refer to this
+    <a target="_blank"
+       href="https://github.com/GetDotaStats/Invoker-Wars/blob/280eb0c105a9cae2595266bf3f997830416b06fa/invoker_wars/scripts/vscripts/addon_game_mode.lua#L59"
+       target="_blank">example</a>.
+</div>
+
 <h3>Understanding how the stat collection works</h3>
 
 <p>Have a look at the <a
