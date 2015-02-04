@@ -38,7 +38,7 @@
 <p>I don't add randoms on steam, so leave a comment before adding me.</p>
 
 <div class="text-center">
-    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_directory">Mini Game Directory</a>
+    <!--<a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_directory">Mini Game Directory</a>-->
     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_request">Add a new Mini Game</a>
 </div>
 

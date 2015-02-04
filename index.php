@@ -65,12 +65,12 @@ try {
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame <span
                                 class="label label-warning">UPDATED</span></a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Setup Guide</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__guide">Developer Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mini Games Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_guide">Setup Guide</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Highscores</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__minigame_guide">Developer Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_request">Request a Mini Game</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">My Custom Games</li>
