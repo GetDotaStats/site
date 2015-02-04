@@ -7,6 +7,9 @@ require_once('../../../connections/parameters.php');
 $db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
 
 if ($db) {
+    $steamID = new SteamID();
+    $steamWebAPI = new steam_webapi($api_key1);
+
     //Mini Game Leaderboard
     {
         try {
@@ -106,6 +109,65 @@ if ($db) {
             } else {
                 echo "[FAILURE] Final table not populated!<br />";;
             }
+
+            $cron_hs = $db->q(
+                'SELECT * FROM cron_hs;'
+            );
+
+            if (!empty($cron_hs)) {
+                foreach ($cron_hs as $key => $value) {
+                    if ($value['user_id32'] != 0) {
+                        $mg_lb_user_details = $db->q(
+                            'SELECT
+                                    `user_id64`,
+                                    `user_id32`,
+                                    `user_name`,
+                                    `user_avatar`,
+                                    `user_avatar_medium`,
+                                    `user_avatar_large`
+                            FROM `gds_users`
+                            WHERE `user_id32` = ?
+                            LIMIT 0,1;',
+                            's',
+                            $value['user_id32']
+                        );
+
+                        if (empty($mg_lb_user_details)) {
+                            sleep(0.5);
+                            $steamID->setSteamID($value['user_id32']);
+                            $mg_lb_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
+
+                            if (!empty($mg_lb_user_details_temp)) {
+                                $mg_lb_user_details[0]['user_id64'] = $steamID->getSteamID64();
+                                $mg_lb_user_details[0]['user_id32'] = $steamID->getSteamID32();
+                                $mg_lb_user_details[0]['user_name'] = htmlentities($mg_lb_user_details_temp['response']['players'][0]['personaname']);
+                                $mg_lb_user_details[0]['user_avatar'] = $mg_lb_user_details_temp['response']['players'][0]['avatar'];
+                                $mg_lb_user_details[0]['user_avatar_medium'] = $mg_lb_user_details_temp['response']['players'][0]['avatarmedium'];
+                                $mg_lb_user_details[0]['user_avatar_large'] = $mg_lb_user_details_temp['response']['players'][0]['avatarfull'];
+
+
+                                $db->q(
+                                    'INSERT INTO `gds_users`
+                                        (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
+                                        VALUES (?, ?, ?, ?, ?, ?)',
+                                    'ssssss',
+                                    array(
+                                        $mg_lb_user_details[0]['user_id64'],
+                                        $mg_lb_user_details[0]['user_id32'],
+                                        $mg_lb_user_details[0]['user_name'],
+                                        $mg_lb_user_details[0]['user_avatar'],
+                                        $mg_lb_user_details[0]['user_avatar_medium'],
+                                        $mg_lb_user_details[0]['user_avatar_large']
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
+            } else {
+                echo 'No users in HoF to test for account<br />';
+            }
+            unset($cron_hs);
 
             unset($sqlResult);
 
