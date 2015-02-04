@@ -27,7 +27,7 @@ if ($db) {
                       `user_id32` bigint(255) NOT NULL,
                       `highscore_value` bigint(255) NOT NULL,
                       `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-                      PRIMARY KEY (`minigameID`, `leaderboard`),
+                      INDEX `id_lb` (`minigameID`, `leaderboard`),
                       INDEX `highscore_value` (`highscore_value`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
                 );
@@ -69,7 +69,7 @@ if ($db) {
                           `user_id32` bigint(255) NOT NULL,
                           `highscore_value` bigint(255) NOT NULL,
                           `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-                          PRIMARY KEY (`minigameID`, `leaderboard`),
+                          INDEX `id_lb` (`minigameID`, `leaderboard`),
                           INDEX `highscore_value` (`highscore_value`)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
                     );
