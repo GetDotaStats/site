@@ -356,15 +356,15 @@
 <p>You are now ready to go! Upload your mod to the workshop and see if it works! This method of stat collection is new
     and experimental, so feel free to contact me via any of the lines of communication listed below.</p>
 
-<p>For those not familiar with IRC, try the <a target="_blank" href="http://client00.chat.mibbit.com/">mibbit client</a>.
-    <span class="glyphicon glyphicon-question-sign" title="server: GAMESURGE, channel: #getdotastats"></span></p>
+<p>For those not familiar with IRC, try the <a target="_blank"
+                                               href="https://kiwiirc.com/client/irc.gamesurge.net/?#getdotastats">kiwiirc
+        client</a>.</p>
 
 <p>&nbsp;</p>
 
 <div class="text-center">
     <a target="_blank" class="btn btn-danger btn-sm" href="irc://irc.gamesurge.net:6667/#getdotastats">IRC
-        #getdotastats <span class="glyphicon glyphicon-question-sign"
-                            title="server: GAMESURGE, channel: #getdotastats"></span></a>
+        #getdotastats</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/GetDotaStats">Site
         Chatbox</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="https://github.com/GetDotaStats/stat-collection/issues">Github
