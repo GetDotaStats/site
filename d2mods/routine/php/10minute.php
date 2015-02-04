@@ -16,7 +16,14 @@ if ($db) {
             $db->q("DROP TABLE IF EXISTS `cron_hs_temp`;");
 
             $leaderboards = $db->q(
-                'SELECT DISTINCT `minigameID`, `leaderboard` FROM `stat_highscore`;'
+                'SELECT
+                    DISTINCT sh.`minigameID`,
+                    sh.`leaderboard`,
+                    shm.`minigameName`,
+                    shm.`minigameActive`,
+                    shm.`minigameObjective`
+                FROM `stat_highscore` sh
+                JOIN `stat_highscore_minigames` shm ON sh.`minigameID` = shm.`minigameID`;'
             );
 
             if (!empty($leaderboards)) {
@@ -35,6 +42,11 @@ if ($db) {
                 foreach ($leaderboards as $key => $value) {
                     $minigameID = $value['minigameID'];
                     $leaderboard = $value['leaderboard'];
+                    $mgName = $value['minigameName'];
+
+                    $mgObjective = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'min'
+                        ? 'ASC'
+                        : 'DESC';
 
                     $sqlResult = $db->q(
                         "INSERT INTO `cron_hs_temp`
@@ -46,15 +58,15 @@ if ($db) {
                               `date_recorded`
                             FROM `stat_highscore`
                             WHERE `minigameID` = ? AND `leaderboard` = ?
-                            ORDER BY `highscore_value` DESC
+                            ORDER BY `highscore_value` $mgObjective
                             LIMIT 0,10;",
                         'ss',
                         array($minigameID, $leaderboard)
                     );
 
                     echo $sqlResult
-                        ? "[SUCCESS] Gathered High Scores for: $minigameID [$leaderboard]!<br />"
-                        : "[FAILURE] Gathered High Scores for:  $minigameID [$leaderboard]!<br />";
+                        ? "[SUCCESS] Gathered High Scores for: $mgName [$leaderboard]!<br />"
+                        : "[FAILURE] Gathered High Scores for: $mgName [$leaderboard]!<br />";
                 }
 
                 $sqlResult = $db->q(
