@@ -81,14 +81,17 @@
     big login button at the top of this page. Signing in will ensure that you obtain full functionality of our Lobby
     Explorer. Not logging in may exclude you from some functionality.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-2.png" width="500px"/></div>
-<p><strong>3.</strong> Add the play_weekend_tourney.swf from the ZIP you just downloaded to your Dota 2 flash directory.
-    This is normally located somewhere like:</p>
+<p><strong>3.</strong> Add the play_weekend_tourney.swf and all other files, in the ZIP you just downloaded, to your
+    Dota 2 flash directory. This is normally located somewhere like:</p>
 <code>C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code>
 <p>&nbsp;</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-3.png" width="500px"/></div>
 <p>&nbsp;</p>
-<div class="alert alert-danger">Make sure the downloaded file is named correctly! It must be "<strong>play_weekend_tourney.swf</strong>".
-    If the folder does not exist, make it!
+<div class="alert alert-danger">
+    <p>Make sure all downloaded files are named correctly! i.e. "<strong>play_weekend_tourney.swf</strong>" and
+        "<strong>minigames.kv</strong>".</p>
+
+    <p><strong>If the folder does not exist, make it!</strong></p>
 </div>
 
 <h2>Find/Join Lobbies</h2>
