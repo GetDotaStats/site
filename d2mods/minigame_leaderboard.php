@@ -170,8 +170,8 @@ try {
                                 ? $mg_lb_details[0]['user_avatar']
                                 : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
-                            if (!empty($mg_lb_details[0]['user_name']) && strlen($mg_lb_details[0]['user_name']) > 21) {
-                                $mg_lb_details[0]['user_name'] = substr($mg_lb_details[0]['user_name'], 0, 17) . '...';
+                            if (!empty($mg_lb_details[0]['user_name']) && strlen($mg_lb_details[0]['user_name']) > 30) {
+                                $mg_lb_details[0]['user_name'] = substr($mg_lb_details[0]['user_name'], 0, 26) . '...';
                             }
 
                             $userName = !empty($mg_lb_details[0]['user_name'])
