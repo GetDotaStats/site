@@ -65,7 +65,8 @@ try {
                               `date_recorded`
                             FROM `stat_highscore`
                             WHERE `minigameID` = ? AND `leaderboard` = ?
-                            ORDER BY `highscore_value` $mgObjective
+                            GROUP BY `minigameID`, `leaderboard`, `user_id32`
+                            ORDER BY `minigameID`, `leaderboard`, `highscore_value` $mgObjective
                             LIMIT 0,20;",
                             'ss',
                             array($minigameID, $leaderboard)
@@ -135,7 +136,7 @@ try {
                                     $mg_lb_user_details[0]['user_avatar'] = $mg_lb_user_details_temp['response']['players'][0]['avatar'];
                                     $mg_lb_user_details[0]['user_avatar_medium'] = $mg_lb_user_details_temp['response']['players'][0]['avatarmedium'];
                                     $mg_lb_user_details[0]['user_avatar_large'] = $mg_lb_user_details_temp['response']['players'][0]['avatarfull'];
-                                    $memcache->set('mg_lb_user_details_' . $steamID->getSteamID64(), $mg_lb_user_details, 0, 5 * 60);
+                                    $memcache->set('mg_lb_user_details_' . $steamID->getSteamID64(), $mg_lb_user_details, 0, 10 * 60);
                                 }
                             }
 
