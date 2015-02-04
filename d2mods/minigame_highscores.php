@@ -13,6 +13,8 @@ try {
     echo '<p>Welcome to the GetDotaStats Highscore leaderboards! Here is where we recognise outstanding performances by members of
     the community, in the field of mini game excellence.</p>';
 
+    echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes.</p></div>';
+
     echo '<span class="h3">&nbsp;</span>';
 
     if ($db) {

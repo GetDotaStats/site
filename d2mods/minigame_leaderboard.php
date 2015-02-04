@@ -53,6 +53,8 @@ try {
 
             echo '<p>' . $mgDescription . '</p>';
 
+            echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes.</p></div>';
+
             echo '<span class="h4">&nbsp;</span>';
             echo '<div class="text-center">
                     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__minigame_highscores">Back to Highscores</a>
@@ -88,6 +90,7 @@ try {
 
             if (!empty($mgLeaderboardData)) {
                 $mgLeaderboardArray = array();
+                $mgTabs = array();
 
                 foreach ($mgLeaderboardData as $key => $value) {
                     $highscore_value = $mgOperator
@@ -111,6 +114,9 @@ try {
                                 <div class="col-md-2 text-center">
                                     <span class="h4">Score</span>
                                 </div>
+                                <div class="col-md-1 text-center">&nbsp;</div>
+                                <div class="col-md-6 text-center">&nbsp;</div>
+                                <div class="col-md-2 text-center">&nbsp;</div>
                             </div>';
                     echo '<span class="h4">&nbsp;</span>';
 
@@ -174,8 +180,13 @@ try {
                                         <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
                                     </a>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     ' . $userName . '
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <span class="h4">
+                                    ' . $value['date_recorded'] . '
+                                    </span>
                                 </div>
                             </div>';
                             echo '<span class="h4">&nbsp;</span>';
@@ -194,8 +205,13 @@ try {
                                 <div class="col-md-1">
                                     <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg' . '" />
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     ' . $userName . '
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <span class="h4">
+                                    ' . $value['date_recorded'] . '
+                                    </span>
                                 </div>
                             </div>';
                             echo '<span class="h4">&nbsp;</span>';
