@@ -62,7 +62,7 @@ if ($db) {
                             FROM `stat_highscore`
                             WHERE `minigameID` = ? AND `leaderboard` = ?
                             ORDER BY `highscore_value` $mgObjective
-                            LIMIT 0,10;",
+                            LIMIT 0,20;",
                         'ss',
                         array($minigameID, $leaderboard)
                     );

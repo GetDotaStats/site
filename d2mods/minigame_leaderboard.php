@@ -105,8 +105,27 @@ try {
                     );
                 }
 
+                echo '<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">';
+
+                $i = 0;
                 foreach ($mgLeaderboardArray as $key_lb => $value_lb) {
-                    echo '<h3>' . $key_lb . '</h3>';
+                    $i++;
+
+                    echo '
+                         <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading' . $i . '">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse' . $i . '" aria-expanded="true" aria-controls="collapse' . $i . '">
+                                  ' . $key_lb . '
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="collapse' . $i . '" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading' . $i . '">
+                              <div class="panel-body">
+                              ';
+
+
+                    //echo '<h3>' . $key_lb . '</h3>';
                     echo '<div class="row">
                                 <div class="col-md-1 text-center">
                                     <span class="h4">Rank</span>
@@ -220,7 +239,17 @@ try {
 
                     echo '<span class="h4">&nbsp;</span>';
 
+
+                    echo '
+                              </div>
+                            </div>
+                          </div>
+                          ';
+
+
                 }
+
+                echo '</div>';
             } else {
                 echo bootstrapMessage('Oh Snap', 'No leaderboards!', 'danger');
             }
