@@ -126,7 +126,7 @@ if ($db) {
                     if (!empty($hof_test)) {
                         foreach ($hof_test as $key => $value) {
                             if ($value['player_sid32'] != 0) {
-                                $hof1_user_details = $db->q(
+                                /*$hof1_user_details = $db->q(
                                     'SELECT
                                             `user_id64`,
                                             `user_id32`,
@@ -139,7 +139,7 @@ if ($db) {
                                     LIMIT 0,1;',
                                     's',
                                     $value['player_sid32']
-                                );
+                                );*/
 
                                 if (empty($hof1_user_details)) {
                                     sleep(0.5);
@@ -158,7 +158,12 @@ if ($db) {
                                         $db->q(
                                             'INSERT INTO `gds_users`
                                                 (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)',
+                                                VALUES (?, ?, ?, ?, ?, ?)
+                                                ON DUPLICATE KEY UPDATE
+                                                  `user_name` = VALUES(`user_name`),
+                                                  `user_avatar` = VALUES(`user_avatar`),
+                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
                                             'ssssss',
                                             array(
                                                 $hof1_user_details[0]['user_id64'],
@@ -245,7 +250,7 @@ if ($db) {
                     if (!empty($hof_test)) {
                         foreach ($hof_test as $key => $value) {
                             if ($value['player_sid32'] != 0) {
-                                $hof2_user_details = $db->q(
+                                /*$hof2_user_details = $db->q(
                                     'SELECT
                                             `user_id64`,
                                             `user_id32`,
@@ -258,7 +263,7 @@ if ($db) {
                                     LIMIT 0,1;',
                                     's',
                                     $value['player_sid32']
-                                );
+                                );*/
 
                                 if (empty($hof2_user_details)) {
                                     sleep(0.5);
@@ -277,7 +282,12 @@ if ($db) {
                                         $db->q(
                                             'INSERT INTO `gds_users`
                                                 (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)',
+                                                VALUES (?, ?, ?, ?, ?, ?)
+                                                ON DUPLICATE KEY UPDATE
+                                                  `user_name` = VALUES(`user_name`),
+                                                  `user_avatar` = VALUES(`user_avatar`),
+                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
                                             'ssssss',
                                             array(
                                                 $hof2_user_details[0]['user_id64'],
@@ -374,7 +384,7 @@ if ($db) {
                     if (!empty($hof_test)) {
                         foreach ($hof_test as $key => $value) {
                             if ($value['player_sid64'] != 0) {
-                                $hof3_user_details = $db->q(
+                                /*$hof3_user_details = $db->q(
                                     'SELECT
                                             `user_id64`,
                                             `user_id32`,
@@ -387,7 +397,7 @@ if ($db) {
                                     LIMIT 0,1;',
                                     's',
                                     $value['player_sid64']
-                                );
+                                );*/
 
                                 if (empty($hof3_user_details)) {
                                     sleep(0.5);
@@ -406,7 +416,12 @@ if ($db) {
                                         $db->q(
                                             'INSERT INTO `gds_users`
                                                 (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)',
+                                                VALUES (?, ?, ?, ?, ?, ?)
+                                                ON DUPLICATE KEY UPDATE
+                                                  `user_name` = VALUES(`user_name`),
+                                                  `user_avatar` = VALUES(`user_avatar`),
+                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
                                             'ssssss',
                                             array(
                                                 $hof3_user_details[0]['user_id64'],
@@ -493,7 +508,7 @@ if ($db) {
                     if (!empty($hof_test)) {
                         foreach ($hof_test as $key => $value) {
                             if ($value['player_sid32'] != 0) {
-                                $hof4_user_details = $db->q(
+                                /*$hof4_user_details = $db->q(
                                     'SELECT
                                             `user_id64`,
                                             `user_id32`,
@@ -506,7 +521,7 @@ if ($db) {
                                     LIMIT 0,1;',
                                     's',
                                     $value['player_sid32']
-                                );
+                                );*/
 
                                 if (empty($hof4_user_details)) {
                                     sleep(0.5);
@@ -525,7 +540,12 @@ if ($db) {
                                         $db->q(
                                             'INSERT INTO `gds_users`
                                                 (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)',
+                                                VALUES (?, ?, ?, ?, ?, ?)
+                                                ON DUPLICATE KEY UPDATE
+                                                  `user_name` = VALUES(`user_name`),
+                                                  `user_avatar` = VALUES(`user_avatar`),
+                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
                                             'ssssss',
                                             array(
                                                 $hof4_user_details[0]['user_id64'],

@@ -4,81 +4,38 @@ require_once('../../functions.php');
 require_once('../../../global_functions.php');
 require_once('../../../connections/parameters.php');
 
-$db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
+try {
+    $db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
 
-if ($db) {
-    $steamID = new SteamID();
-    $steamWebAPI = new steam_webapi($api_key1);
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    //Mini Game Leaderboard
-    {
-        try {
-            $time_start1 = time();
-            echo '<h2>Mini Game Leaderboard</h2>';
+    if ($db) {
+        $steamID = new SteamID();
+        $steamWebAPI = new steam_webapi($api_key1);
 
-            $db->q("DROP TABLE IF EXISTS `cron_hs_temp`;");
+        //Mini Game Leaderboard
+        {
+            try {
+                $time_start1 = time();
+                echo '<h2>Mini Game Leaderboard</h2>';
 
-            $leaderboards = $db->q(
-                'SELECT
-                    DISTINCT sh.`minigameID`,
-                    sh.`leaderboard`,
-                    shm.`minigameName`,
-                    shm.`minigameActive`,
-                    shm.`minigameObjective`
-                FROM `stat_highscore` sh
-                JOIN `stat_highscore_minigames` shm ON sh.`minigameID` = shm.`minigameID`;'
-            );
+                $db->q("DROP TABLE IF EXISTS `cron_hs_temp`;");
 
-            if (!empty($leaderboards)) {
-                $sqlResult = $db->q(
-                    "CREATE TABLE IF NOT EXISTS `cron_hs_temp` (
-                      `minigameID` varchar(255) NOT NULL,
-                      `leaderboard` varchar(255) NOT NULL,
-                      `user_id32` bigint(255) NOT NULL,
-                      `highscore_value` bigint(255) NOT NULL,
-                      `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-                      INDEX `id_lb` (`minigameID`, `leaderboard`),
-                      INDEX `highscore_value` (`highscore_value`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+                $leaderboards = $db->q(
+                    'SELECT
+                        DISTINCT sh.`minigameID`,
+                        sh.`leaderboard`,
+                        shm.`minigameName`,
+                        shm.`minigameActive`,
+                        shm.`minigameObjective`
+                    FROM `stat_highscore` sh
+                    JOIN `stat_highscore_minigames` shm ON sh.`minigameID` = shm.`minigameID`;'
                 );
 
-                foreach ($leaderboards as $key => $value) {
-                    $minigameID = $value['minigameID'];
-                    $leaderboard = $value['leaderboard'];
-                    $mgName = $value['minigameName'];
-
-                    $mgObjective = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'min'
-                        ? 'ASC'
-                        : 'DESC';
-
+                if (!empty($leaderboards)) {
                     $sqlResult = $db->q(
-                        "INSERT INTO `cron_hs_temp`
-                            SELECT
-                              `minigameID`,
-                              `leaderboard`,
-                              `user_id32`,
-                              `highscore_value`,
-                              `date_recorded`
-                            FROM `stat_highscore`
-                            WHERE `minigameID` = ? AND `leaderboard` = ?
-                            ORDER BY `highscore_value` $mgObjective
-                            LIMIT 0,20;",
-                        'ss',
-                        array($minigameID, $leaderboard)
-                    );
-
-                    echo $sqlResult
-                        ? "[SUCCESS] Gathered High Scores for: $mgName [$leaderboard]!<br />"
-                        : "[FAILURE] Gathered High Scores for: $mgName [$leaderboard]!<br />";
-                }
-
-                $sqlResult = $db->q(
-                    'SELECT * FROM `cron_hs_temp`;'
-                );
-
-                if (!empty($sqlResult)) {
-                    $db->q(
-                        "CREATE TABLE IF NOT EXISTS `cron_hs` (
+                        "CREATE TABLE IF NOT EXISTS `cron_hs_temp` (
                           `minigameID` varchar(255) NOT NULL,
                           `leaderboard` varchar(255) NOT NULL,
                           `user_id32` bigint(255) NOT NULL,
@@ -89,67 +46,109 @@ if ($db) {
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
                     );
 
-                    $db->q(
-                        "TRUNCATE TABLE `cron_hs`;"
-                    );
+                    foreach ($leaderboards as $key => $value) {
+                        $minigameID = $value['minigameID'];
+                        $leaderboard = $value['leaderboard'];
+                        $mgName = $value['minigameName'];
 
-                    $sqlResult = $db->q(
-                        "INSERT INTO `cron_hs`
-                            SELECT * FROM `cron_hs_temp`;"
-                    );
+                        $mgObjective = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'min'
+                            ? 'ASC'
+                            : 'DESC';
 
-                    echo $sqlResult
-                        ? "[SUCCESS] Final table populated!<br />"
-                        : "[FAILURE] Final table not populated!<br />";
-
-                    $db->q("DROP TABLE IF EXISTS `cron_hs_temp`;");
-                } else {
-                    echo "[FAILURE] Final table not populated!<br />";
-                }
-            } else {
-                echo "[FAILURE] Final table not populated!<br />";;
-            }
-
-            $cron_hs = $db->q(
-                'SELECT * FROM cron_hs;'
-            );
-
-            if (!empty($cron_hs)) {
-                foreach ($cron_hs as $key => $value) {
-                    if ($value['user_id32'] != 0) {
-                        $mg_lb_user_details = $db->q(
-                            'SELECT
-                                    `user_id64`,
-                                    `user_id32`,
-                                    `user_name`,
-                                    `user_avatar`,
-                                    `user_avatar_medium`,
-                                    `user_avatar_large`
-                            FROM `gds_users`
-                            WHERE `user_id32` = ?
-                            LIMIT 0,1;',
-                            's',
-                            $value['user_id32']
+                        $sqlResult = $db->q(
+                            "INSERT INTO `cron_hs_temp`
+                            SELECT
+                              `minigameID`,
+                              `leaderboard`,
+                              `user_id32`,
+                              `highscore_value`,
+                              `date_recorded`
+                            FROM `stat_highscore`
+                            WHERE `minigameID` = ? AND `leaderboard` = ?
+                            ORDER BY `highscore_value` $mgObjective
+                            LIMIT 0,20;",
+                            'ss',
+                            array($minigameID, $leaderboard)
                         );
 
-                        if (empty($mg_lb_user_details)) {
-                            sleep(0.5);
+                        echo $sqlResult
+                            ? "[SUCCESS] Gathered High Scores for: $mgName [$leaderboard]!<br />"
+                            : "[FAILURE] Gathered High Scores for: $mgName [$leaderboard]!<br />";
+                    }
+
+                    $sqlResult = $db->q(
+                        'SELECT * FROM `cron_hs_temp`;'
+                    );
+
+                    if (!empty($sqlResult)) {
+                        $db->q(
+                            "CREATE TABLE IF NOT EXISTS `cron_hs` (
+                              `minigameID` varchar(255) NOT NULL,
+                              `leaderboard` varchar(255) NOT NULL,
+                              `user_id32` bigint(255) NOT NULL,
+                              `highscore_value` bigint(255) NOT NULL,
+                              `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+                              INDEX `id_lb` (`minigameID`, `leaderboard`),
+                              INDEX `highscore_value` (`highscore_value`)
+                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+                        );
+
+                        $db->q(
+                            "TRUNCATE TABLE `cron_hs`;"
+                        );
+
+                        $sqlResult = $db->q(
+                            "INSERT INTO `cron_hs`
+                                SELECT * FROM `cron_hs_temp`;"
+                        );
+
+                        echo $sqlResult
+                            ? "[SUCCESS] Final table populated!<br />"
+                            : "[FAILURE] Final table not populated!<br />";
+
+                        $db->q("DROP TABLE IF EXISTS `cron_hs_temp`;");
+                    } else {
+                        echo "[FAILURE] Final table not populated!<br />";
+                    }
+                } else {
+                    echo "[FAILURE] Final table not populated!<br />";;
+                }
+
+                $cron_hs = $db->q(
+                    'SELECT * FROM cron_hs;'
+                );
+
+                if (!empty($cron_hs)) {
+                    foreach ($cron_hs as $key => $value) {
+                        if (!empty($value['user_id32'])) {
                             $steamID->setSteamID($value['user_id32']);
-                            $mg_lb_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
 
-                            if (!empty($mg_lb_user_details_temp)) {
-                                $mg_lb_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                $mg_lb_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                $mg_lb_user_details[0]['user_name'] = htmlentities($mg_lb_user_details_temp['response']['players'][0]['personaname']);
-                                $mg_lb_user_details[0]['user_avatar'] = $mg_lb_user_details_temp['response']['players'][0]['avatar'];
-                                $mg_lb_user_details[0]['user_avatar_medium'] = $mg_lb_user_details_temp['response']['players'][0]['avatarmedium'];
-                                $mg_lb_user_details[0]['user_avatar_large'] = $mg_lb_user_details_temp['response']['players'][0]['avatarfull'];
+                            $mg_lb_user_details = $memcache->get('mg_lb_user_details_' . $steamID->getSteamID64());
+                            if (!$mg_lb_user_details) {
+                                sleep(0.5);
+                                $mg_lb_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
 
+                                if (!empty($mg_lb_user_details_temp)) {
+                                    $mg_lb_user_details[0]['user_id64'] = $steamID->getSteamID64();
+                                    $mg_lb_user_details[0]['user_id32'] = $steamID->getSteamID32();
+                                    $mg_lb_user_details[0]['user_name'] = htmlentities($mg_lb_user_details_temp['response']['players'][0]['personaname']);
+                                    $mg_lb_user_details[0]['user_avatar'] = $mg_lb_user_details_temp['response']['players'][0]['avatar'];
+                                    $mg_lb_user_details[0]['user_avatar_medium'] = $mg_lb_user_details_temp['response']['players'][0]['avatarmedium'];
+                                    $mg_lb_user_details[0]['user_avatar_large'] = $mg_lb_user_details_temp['response']['players'][0]['avatarfull'];
+                                    $memcache->set('mg_lb_user_details_' . $steamID->getSteamID64(), $mg_lb_user_details, 0, 5 * 60);
+                                }
+                            }
 
+                            if (!empty($mg_lb_user_details)) {
                                 $db->q(
                                     'INSERT INTO `gds_users`
                                         (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                        VALUES (?, ?, ?, ?, ?, ?)',
+                                        VALUES (?, ?, ?, ?, ?, ?)
+                                        ON DUPLICATE KEY UPDATE
+                                          `user_name` = VALUES(`user_name`),
+                                          `user_avatar` = VALUES(`user_avatar`),
+                                          `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                                          `user_avatar_large` = VALUES(`user_avatar_large`);',
                                     'ssssss',
                                     array(
                                         $mg_lb_user_details[0]['user_id64'],
@@ -163,19 +162,24 @@ if ($db) {
                             }
                         }
                     }
+                } else {
+                    echo 'No users in HoF to test for account<br />';
                 }
-            } else {
-                echo 'No users in HoF to test for account<br />';
+                unset($cron_hs);
+
+                unset($sqlResult);
+
+                $time_end1 = time();
+                echo 'Total Running: ' . ($time_end1 - $time_start1) . " seconds<br /><br />";
+                echo '<hr />';
+            } catch (Exception $e) {
+                echo 'Caught Exception (MINI-GAMES) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
             }
-            unset($cron_hs);
-
-            unset($sqlResult);
-
-            $time_end1 = time();
-            echo 'Total Running: ' . ($time_end1 - $time_start1) . " seconds<br /><br />";
-            echo '<hr />';
-        } catch (Exception $e) {
-            echo 'Caught Exception (MINI-GAMES) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
         }
     }
+
+
+    $memcache->close();
+} catch (Exception $e) {
+    echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 }
