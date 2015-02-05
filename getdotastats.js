@@ -34,6 +34,8 @@ $(document).ready(function () {
         }
     };
 
+    var rx = /INPUT|SELECT|TEXTAREA/i;
+
     //NO BACKSPACING TO GO BACK
     $(document).bind("keydown keypress", function(e){
         if( e.which == 8 ){ // 8 == backspace
