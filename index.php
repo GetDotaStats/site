@@ -135,9 +135,7 @@ try {
             } ?>
             <p class="nav navbar-text">
                 <a id="nav-refresh-holder" class="nav-refresh" href="#home" title="Refresh page"><span
-                        class="glyphicon glyphicon-refresh"></span></a> || <a id="nav-back-holder" href="#home"
-                                                                              title="Go back to previous page"><span
-                        class="glyphicon glyphicon-arrow-left"></span></a>
+                        class="glyphicon glyphicon-refresh"></span></a>
             </p>
         </div>
     </div>
