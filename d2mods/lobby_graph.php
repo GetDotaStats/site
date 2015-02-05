@@ -12,7 +12,7 @@ try {
     if ($db) {
         echo '<div class="page-header"><h2>Lobby Creation Trends</h2></div>';
 
-        echo '<p>This graph captures how many lobbies have been created, and how many custom games have been played; over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
+        echo '<p>This graph captures how many lobbies have been created, and how many custom games have been played over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
 
         $lobbiesMadeSQL = simple_cached_query(
             'd2mods_lobby_graph',
@@ -24,7 +24,7 @@ try {
             FROM `lobby_list` ll
             GROUP BY 3,2,1
             ORDER BY 3 DESC, 2 DESC, 1 DESC;',
-            1 * 60
+            5 * 60
         );
 
         $gamesPlayedSQL = simple_cached_query(
@@ -37,7 +37,7 @@ try {
             FROM `mod_match_overview` mmo
             GROUP BY 3,2,1
             ORDER BY 3 DESC, 2 DESC, 1 DESC;',
-            1 * 60
+            5 * 60
         );
 
         //LOBBIES MADE
@@ -144,6 +144,160 @@ try {
 
                 $chart->load(json_encode($data));
                 echo $chart->draw('breakdown_num_lobbies_per_day', $options);
+            } else {
+                echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
+            }
+        }
+
+        echo '<div class="page-header"><h2>Lobby Version Propagation Trends</h2></div>';
+
+        echo '<p>This graph captures what version of the Lobby Explorer tool is being used over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
+
+        $lobbiesMadeSQL = simple_cached_query(
+            'd2mods_lobby_versions_graph3',
+            'SELECT
+                DAY(ll.`date_recorded`) as day,
+                MONTH(ll.`date_recorded`) as month,
+                YEAR(ll.`date_recorded`) as year,
+                ll.`lobby_version`,
+                COUNT(*) as num_lobbies
+            FROM `lobby_list` ll
+            GROUP BY 3,2,1,`lobby_version`
+            ORDER BY 3 DESC, 2 DESC, 1 DESC, `lobby_version` ASC;',
+            5 * 60
+        );
+
+        $lobbiesVersions = simple_cached_query(
+            'd2mods_lobby_versions_list3',
+            'SELECT
+                DISTINCT `lobby_version`
+            FROM `lobby_list` ll
+            ORDER BY `lobby_version` DESC;',
+            5 * 60
+        );
+
+        //LOBBIES MADE
+        {
+            if (!empty($lobbiesMadeSQL)) {
+                $sortingArray = array();
+                $colArray = array();
+                $rowArray = array();
+
+                //FORMATTING
+                if (!empty($lobbiesMadeSQL)) {
+                    foreach ($lobbiesMadeSQL as $key => $value) {
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+
+                        $lobbyVersion = !empty($value['lobby_version'])
+                            ? $value['lobby_version']
+                            : '0.10';
+
+                        $sortingArray[$modDate][$lobbyVersion] = $value['num_lobbies'];
+                    }
+                }
+
+                //COLUMNS
+                if (!empty($lobbiesVersions)) {
+                    $colArray[] = array('id' => '', 'label' => 'Date', 'type' => 'string');
+
+                    foreach ($lobbiesVersions as $key => $value) {
+                        $lobbyVersion = !empty($value['lobby_version'])
+                            ? $value['lobby_version']
+                            : '0.10';
+
+                        $colArray[] = array('id' => '', 'label' => $lobbyVersion, 'type' => 'number');
+                        $colArray[] = array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1));
+                    }
+                }
+
+                $sortedDateArray = array();
+
+                //SORTING INTO [DATE][VERSION]
+                foreach ($lobbiesMadeSQL as $key => $value) {
+                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+                    $lobbyVersion = !empty($value['lobby_version'])
+                        ? $value['lobby_version']
+                        : '0.10';
+
+
+                    foreach ($lobbiesVersions as $key2 => $value2) {
+                        $lobbyVersionList = !empty($value2['lobby_version'])
+                            ? $value2['lobby_version']
+                            : '0.10';
+
+                        if (isset($sortingArray[$modDate][$lobbyVersionList])) {
+                            $sortedDateArray[$modDate][$lobbyVersionList] = $sortingArray[$modDate][$lobbyVersionList];
+                        } else {
+                            $sortedDateArray[$modDate][$lobbyVersionList] = 0;
+                        }
+                    }
+                }
+
+                foreach ($sortedDateArray as $key => $value) {
+                    $tmpArray = array();
+                    $tmpArray[] = array('v' => $key);
+
+                    foreach ($value as $key2 => $value2) {
+                        $tmpArray[] = array('v' => $value2);
+                        $tmpArray[] = array('v' => number_format($value2));
+                    }
+
+                    $rowArray[] = array('c' => $tmpArray);
+                }
+
+                $options = array(
+                    'bar' => array(
+                        'groupWidth' => 6,
+                    ),
+                    'height' => 300,
+                    'chartArea' => array(
+                        'width' => '87%',
+                        'height' => '80%',
+                        'left' => 80,
+                        'top' => 10,
+                    ),
+                    'hAxis' => array(
+                        'textPosition' => 'none',
+                    ),
+                    'vAxes' => array(
+                        array(
+                            'title' => 'Num. of Lobbies',
+                            //'textPosition' => 'in',
+                            //'logScale' => 1,
+                        ),
+                    ),
+                    'legend' => array(
+                        'position' => 'bottom',
+                        'alignment' => 'start',
+                    ),
+                    'seriesType' => 'bars',
+                    'series' => array(
+                        array(
+                            'type' => 'bar',
+                            'targetAxisIndex' => 0,
+                        ),
+                    ),
+                    'tooltip' => array( //'isHtml' => 1,
+                    ),
+                    'isStacked' => 1,
+                    'focusTarget' => 'category',
+                );
+
+                $chart = new chart2('ComboChart');
+
+                $data = array(
+                    'cols' => $colArray,
+                    'rows' => $rowArray
+                );
+
+                $chart_width = max(count($rowArray) * 8, 700);
+                $options['width'] = $chart_width;
+                $options['hAxis']['gridlines']['count'] = count($rowArray);
+
+                echo '<div id="breakdown_lobby_versions" class="d2mods-graph d2mods-graph-overflow"></div>';
+
+                $chart->load(json_encode($data));
+                echo $chart->draw('breakdown_lobby_versions', $options);
             } else {
                 echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
             }
