@@ -302,3 +302,8 @@ table td.bashful, table th.bashful {
 .link_no_decoration:hover, .link_no_decoration:visited , .link_no_decoration:active, .link_no_decoration:link{
     text-decoration: none;
 }
+
+.hs_lb_recent_score{
+    font-weight: bold;
+    color: darkgreen;
+}

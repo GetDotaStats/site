@@ -101,7 +101,7 @@ try {
                         'user_id32' => $value['user_id32'],
                         'highscore_value' => $highscore_value,
                         'highscore_value_unmod' => $value['highscore_value'],
-                        'date_recorded' => relative_time($value['date_recorded']),
+                        'date_recorded' => $value['date_recorded'],
                     );
                 }
 
@@ -143,6 +143,17 @@ try {
                         $score = !empty($value['highscore_value'])
                             ? number_format($value['highscore_value'], 2)
                             : '??';
+
+                        $relativeDate = relative_time_v2($value['date_recorded'], NULL, true);
+                        $relativeDateRaw = relative_time_v2($value['date_recorded'], 'day', true);
+
+                        $timeColour = $relativeDateRaw['number'] <= 0.5
+                            ? ' hs_lb_recent_score'
+                            : '';
+
+                        $newBadge = $relativeDateRaw['number'] <= 0.5
+                            ? ' <span class="label label-danger">NEW</span>'
+                            : '';
 
                         if ($value['user_id32'] != 0) {
                             $mg_lb_details = cached_query(
@@ -199,12 +210,17 @@ try {
                                         <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
                                     </a>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     ' . $userName . '
                                 </div>
-                                <div class="col-md-2 text-right">
-                                    <span class="h4">
-                                    ' . $value['date_recorded'] . '
+                                <div class="col-md-1 text-right">
+                                    <span class="h5' . $timeColour . '">
+                                    ' . $relativeDate['number'] . '
+                                    </span>
+                                </div>
+                                <div class="col-md-2 text-left">
+                                    <span class="h5' . $timeColour . '">
+                                    ' . $relativeDate['time_string'] . $newBadge . '
                                     </span>
                                 </div>
                             </div>';
@@ -224,12 +240,17 @@ try {
                                 <div class="col-md-1">
                                     <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg' . '" />
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     ' . $userName . '
                                 </div>
-                                <div class="col-md-2 text-right">
-                                    <span class="h4">
-                                    ' . $value['date_recorded'] . '
+                                <div class="col-md-1 text-right">
+                                    <span class="h5' . $timeColour . '">
+                                    ' . $relativeDate['number'] . '
+                                    </span>
+                                </div>
+                                <div class="col-md-2 text-left">
+                                    <span class="h5' . $timeColour . '">
+                                    ' . $relativeDate['time_string'] . $newBadge . '
                                     </span>
                                 </div>
                             </div>';

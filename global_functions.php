@@ -408,6 +408,96 @@ if (!function_exists('relative_time')) {
     }
 }
 
+//GIVEN A UNIX TIMESTAMP RETURNS A RELATIVE DISTANCE TO DATE (23.4 days ago)
+//A STRING DENOMINATOR OF SINGLE TIME (SECOND, MINUTE, etc) WILL FORCE FORMATTED OUTPUT
+//RETURNARRAY WILL RETURN ARRAY INSTEAD OF STRING
+if (!function_exists('relative_time_v2')) {
+    function relative_time_v2($time, $output = NULL, $returnArray = false)
+    {
+        if (!is_numeric($time)) {
+            if (strtotime($time)) {
+                $time = strtotime($time);
+            } else {
+                return FALSE;
+            }
+        }
+
+        if (empty($output)) {
+            switch ($time) {
+                case ((time() - $time) >= 31536000):
+                    $number = number_format(((time() - $time) / 31536000), 1);
+                    $timeString = 'year';
+                    break;
+                case ((time() - $time) >= 2592000):
+                    $number = number_format(((time() - $time) / 2592000), 1);
+                    $timeString = 'month';
+                    break;
+                case ((time() - $time) >= 86400):
+                    $number = number_format(((time() - $time) / 86400), 1);
+                    $timeString = 'day';
+                    break;
+                case ((time() - $time) >= 3600):
+                    $number = number_format(((time() - $time) / 3600), 1);
+                    $timeString = 'hour';
+                    break;
+                default:
+                    $number = number_format(((time() - $time) / 60), 1);
+                    $timeString = 'minute';
+                    break;
+            }
+        } else {
+            switch ($output) {
+                case 'year':
+                    $number = number_format(((time() - $time) / 31536000), 1);
+                    $timeString = 'year';
+                    break;
+                case 'month':
+                    $number = number_format(((time() - $time) / 2592000), 1);
+                    $timeString = 'month';
+                    break;
+                case 'day':
+                    $number = number_format(((time() - $time) / 86400), 1);
+                    $timeString = 'day';
+                    break;
+                case 'hour':
+                    $number = number_format(((time() - $time) / 3600), 1);
+                    $timeString = 'hour';
+                    break;
+                case 'minute':
+                    $number = number_format(((time() - $time) / 60), 1);
+                    $timeString = 'minute';
+                    break;
+                case 'second':
+                    $number = number_format(((time() - $time)), 1);
+                    $timeString = 'second';
+                    break;
+                default:
+                    $number = number_format(((time() - $time)), 1);
+                    $timeString = 'second';
+                    break;
+            }
+        }
+
+        if ($number == 1) {
+            $timeString = $timeString . ' ago';
+        } else {
+            $timeString = $timeString . 's ago';
+        }
+
+        if(empty($returnArray)){
+            $time_adj = $number . ' ' . $timeString;
+        }
+        else{
+            $time_adj = array(
+                'number' => $number,
+                'time_string' => $timeString,
+            );
+        }
+
+        return $time_adj;
+    }
+}
+
 if (!function_exists("simple_cached_query")) {
     function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600)
     {
@@ -803,7 +893,7 @@ if (!class_exists('SteamID')) {
 
         public function __construct($steam_id = NULL)
         {
-            if(!empty($steam_id)){
+            if (!empty($steam_id)) {
                 $this->setSteamID($steam_id);
             }
         }
