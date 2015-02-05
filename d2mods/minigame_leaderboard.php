@@ -27,6 +27,7 @@ try {
                     `minigameObjective`,
                     `minigameOperator`,
                     `minigameFactor`,
+                    `minigameDecimals`,
                     `date_recorded`
                 FROM `stat_highscore_minigames`
                 WHERE `minigameIdentifier` = ?
@@ -72,6 +73,10 @@ try {
             $mgFactor = !empty($minigame['minigameFactor']) && is_numeric($minigame['minigameFactor'])
                 ? $minigame['minigameFactor']
                 : 1;
+
+            $mgDecimals = isset($minigame['minigameDecimals']) && is_numeric($minigame['minigameDecimals'])
+                ? $minigame['minigameDecimals']
+                : 2;
 
             $mgLeaderboardData = cached_query(
                 'mg_lb_lbs_' . $mgID,
@@ -141,7 +146,7 @@ try {
 
                     foreach ($value_lb as $key => $value) {
                         $score = !empty($value['highscore_value'])
-                            ? number_format($value['highscore_value'], 2)
+                            ? number_format($value['highscore_value'], $mgDecimals)
                             : '??';
 
                         $relativeDate = relative_time_v2($value['date_recorded'], NULL, true);
