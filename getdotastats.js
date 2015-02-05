@@ -91,7 +91,7 @@ function loadPage(url, refresh) {
                     setTimeout(function () {
                         $('#loading').hide({
                             complete: function () {
-                                window.history.pushState("", "", oldURL);
+                                //window.history.pushState("", "", oldURL);
                                 if (parseInt(msg) != 0) {
                                     $('#main_content').html(msg);
                                 }
