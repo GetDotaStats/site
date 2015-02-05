@@ -187,12 +187,12 @@ try {
 
                             $userName = !empty($mg_lb_details[0]['user_name'])
                                 ? '<span class="h3">
-                                <a href="#d2mods__search?user=' . $value['user_id32'] . '">
+                                <a class="nav-clickable" href="#d2mods__search?user=' . $value['user_id32'] . '">
                                     ' . $mg_lb_details[0]['user_name'] . '
                                 </a>
                             </span>'
                                 : '<span class="h3">
-                                <a href="#d2mods__search?user=' . $value['user_id32'] . '">
+                                <a class="nav-clickable" href="#d2mods__search?user=' . $value['user_id32'] . '">
                                     ?UNKNOWN?
                                 </a>
                                 <small>Sign in to update profile!</small>
@@ -206,7 +206,7 @@ try {
                                     <span class="h3">' . $score . '</span>
                                 </div>
                                 <div class="col-md-1">
-                                    <a href="#d2mods__search?user=' . $value['user_id32'] . '">
+                                    <a class="nav-clickable" href="#d2mods__search?user=' . $value['user_id32'] . '">
                                         <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
                                     </a>
                                 </div>
