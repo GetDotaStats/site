@@ -28,12 +28,13 @@ try {
                 'SELECT
                         ml.*,
                         gu.`user_name`,
-                        gu.`user_avatar`
+                        gu.`user_avatar`,
+                        (SELECT COUNT(*) FROM `mod_match_overview` WHERE `mod_id` = ml.`mod_identifier`) as games_recorded
                     FROM `mod_list` ml
                     LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                     WHERE ml.`mod_active` <> 1
                     ORDER BY ml.date_recorded ASC;'
-                , 1
+                , 10
             );
 
             if (!empty($modList)) {
@@ -63,6 +64,13 @@ try {
                         $modMaps = 'unknown';
                     }
 
+                    $gamesWithStats = !empty($value['games_recorded'])
+                        ? $value['games_recorded']
+                        : 0;
+
+                    $modIdentifier = !empty($value['mod_identifier'])
+                        ? $value['mod_identifier']
+                        : 'Unknwon';
 
                     echo '<tr>
                         <td>' . ($key + 1) . '</td>
@@ -73,6 +81,8 @@ try {
                     <tr class="warning">
                         <td colspan="6">
                             <div class="text-right"><strong>' . relative_time($value['date_recorded']) . '</strong> <span class="glyphicon glyphicon-question-sign" title="This mod was added ' . relative_time($value['date_recorded']) . '"></span></div>
+                            <div><strong>ID:</strong> ' . $modIdentifier . '</div>
+                            <div><strong>Games Recorded:</strong> ' . $gamesWithStats . '</div>
                             <div><strong>Maps:</strong> ' . $modMaps . '</div>
                             <div><strong>Description:</strong> ' . $value['mod_description'] . '</div>
                         </td>
