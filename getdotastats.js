@@ -1,38 +1,55 @@
 $(document).ready(function () {
-    checkURL(window.location.hash, 1);
+    var mouseBoolean = false;
+
+    loadPage(window.location.hash, 1);
 
     $(document).on("click", 'a.nav-clickable', function (e) {
-        checkURL(this.hash, 0);
+        loadPage(this.hash, 0);
     });
 
     $(document).on("click", 'a.nav-refresh', function (e) {
-        checkURL(this.hash, 1);
+        loadPage(this.hash, 1);
     });
 
     $(document).on("click", 'a.nav-back', function (e) {
-        checkURL(this.hash, 2);
+        loadPage(this.hash, 2);
     });
+
+    //TO FACILITATE BACK BUTTON
+    $(document).on("mouseover", function () {
+        mouseBoolean = true;
+    });
+
+    //TO FACILITATE BACK BUTTON
+    $(document).on("mouseleave", function () {
+        mouseBoolean = false;
+    });
+
+    //TO FACILITATE BACK BUTTON
+    window.onhashchange = function () {
+        if (!mouseBoolean) {
+            if (window.location.hash != '#undefined') {
+                loadPage(window.location.hash, 0);
+            }
+        }
+    };
 });
 
 var ϰ = "Kappa";
 var pageReloader;
 
-function checkURL(hash, refresh) {
-    if (!hash) {
-        loadPage('#d2mods__lobby_list', refresh);
+function loadPage(url, refresh) {
+    if (!url) {
+        url = '#d2mods__lobby_list';
     }
     else {
+        //SET THE MENU
         var testElement = $('#navBarCustom');
-        //if($(this).parent().closest('div').attr("id") == 'navBarCustom'){ //CHECK IF THE PARENT DIV IS THE NAVBAR
         testElement.find('.active').removeClass('active');
-        testElement.find('a[href="' + hash + '"]').parents('li').addClass('active');
-        //}
-        loadPage(hash, refresh);
+        testElement.find('a[href="' + url + '"]').parents('li').addClass('active');
     }
-}
 
-function loadPage(url, refresh) {
-    if(pageReloader){
+    if (pageReloader) {
         clearTimeout(pageReloader);
     }
 
@@ -72,7 +89,7 @@ function loadPage(url, refresh) {
                     setTimeout(function () {
                         $('#loading').hide({
                             complete: function () {
-                                window.history.pushState("", "", oldURL);
+                                //window.history.pushState("", "", oldURL);
                                 if (parseInt(msg) != 0) {
                                     $('#main_content').html(msg);
                                 }

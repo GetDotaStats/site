@@ -43,8 +43,8 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//static.getdotastats.com/bootstrap/js/jquery.min.js?1"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?14"></script>
-    <!--<script type="text/javascript" src="./getdotastats.js?11"></script>-->
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?15"></script>
+    <!--<script type="text/javascript" src="./getdotastats.js?13"></script>-->
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -64,7 +64,7 @@ try {
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame <span
-                                class="label label-warning">UPDATED</span></a></li>
+                                    class="label label-warning">UPDATED</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Developer Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
@@ -93,13 +93,13 @@ try {
                         <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
                             <li class="dropdown-header">Admin Stuff</li>
                             <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
+                            <?php if (!empty($_SESSION['access_feeds'])) { ?>
+                                <li><a class="nav-clickable" href="#feeds/">Animu Feed</a></li>
+                            <?php } ?>
                             <li class="divider"></li>
                         <?php } ?>
                         <li class="dropdown-header">Halls of Fame</li>
                         <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Economy Related</li>
-                        <li><a class="nav-clickable" href="#backpack/">Card Summary</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Browser Extensions</li>
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
@@ -112,13 +112,7 @@ try {
                         <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
                         <li><a class="nav-clickable" href="#d2moddin/">D2Modd.in <span
                                     class="label label-info">DEAD</span></a></a></li>
-                        <li><a class="nav-clickable" href="#replays/">Replay Archive <span
-                                    class="label label-info">DEAD</span></a></a></li>
-                        <?php if (empty($_SESSION['user_id64']) || empty($_SESSION['access_feeds'])) { ?>
-                            <li><a class="nav-clickable" href="#contact">Contact</a></li>
-                        <?php } else { ?>
-                            <li><a class="nav-clickable" href="#feeds/">Feeds</a></li>
-                        <?php } ?>
+                        <li><a class="nav-clickable" href="#contact">Contact</a></li>
                     </ul>
                 </li>
             </ul>
@@ -171,8 +165,8 @@ try {
 <div class="container">
     <div class="text-center">
         <a class="nav-clickable" href="#d2mods__lobby_list"><img width="400px"
-                                                                src="//static.getdotastats.com/images/getdotastats_logo_v3.png"
-                                                                alt="site logo"/></a>
+                                                                 src="//static.getdotastats.com/images/getdotastats_logo_v3.png"
+                                                                 alt="site logo"/></a>
 
         <div id="loading">
             <img id="loading_spinner1" src="//static.getdotastats.com/images/spinner_v2.gif" alt="loading"/>
@@ -210,7 +204,10 @@ try {
 <div id="footer">
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
-            Steam. <small><a target="_blank" href="//github.com/GetDotaStats/GetDotaLobby/issues">Lobby Explorer Issues</a></small> ||
+            Steam.
+            <small><a target="_blank" href="//github.com/GetDotaStats/GetDotaLobby/issues">Lobby Explorer Issues</a>
+            </small>
+            ||
             <small><a target="_blank" href="//github.com/GetDotaStats/site/issues">Site Issues</a></small>
         </p>
     </div>
