@@ -53,7 +53,7 @@ try {
 
             echo '<p>' . $mgDescription . '</p>';
 
-            echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes.</p></div>';
+            echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for half a day.</p></div>';
 
             echo '<span class="h4">&nbsp;</span>';
             echo '<div class="text-center">
@@ -152,7 +152,7 @@ try {
                             : '';
 
                         $newBadge = $relativeDateRaw['number'] <= 0.5
-                            ? ' <span class="label label-danger">NEW</span>'
+                            ? ' <span class="badge">!</span>'
                             : '';
 
                         if ($value['user_id32'] != 0) {
