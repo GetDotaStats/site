@@ -54,7 +54,7 @@ try {
 
             echo '<p>' . $mgDescription . '</p>';
 
-            echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for half a day.</p></div>';
+            echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for 2 hours.</p></div>';
 
             echo '<span class="h4">&nbsp;</span>';
             echo '<div class="text-center">
@@ -150,13 +150,13 @@ try {
                             : '??';
 
                         $relativeDate = relative_time_v2($value['date_recorded'], NULL, true);
-                        $relativeDateRaw = relative_time_v2($value['date_recorded'], 'day', true);
+                        $relativeDateRaw = relative_time_v2($value['date_recorded'], 'hour', true);
 
-                        $timeColour = $relativeDateRaw['number'] <= 0.5
+                        $timeColour = $relativeDateRaw['number'] <= 2
                             ? ' hs_lb_recent_score'
                             : '';
 
-                        $newBadge = $relativeDateRaw['number'] <= 0.5
+                        $newBadge = $relativeDateRaw['number'] <= 2
                             ? ' <span class="badge">!</span>'
                             : '';
 

@@ -13,7 +13,7 @@ try {
     echo '<p>Welcome to the GetDotaStats Highscore leaderboards! Here is where we recognise outstanding performances by members of
     the community, in the field of mini game excellence.</p>';
 
-    echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for half a day.</p></div>';
+    echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for 2 hours.</p></div>';
 
     echo '<span class="h3">&nbsp;</span>';
 
