@@ -151,32 +151,35 @@ try {
 
         echo '<div class="page-header"><h2>Lobby Version Propagation Trends</h2></div>';
 
-        echo '<p>This graph captures what version of the Lobby Explorer tool is being used over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
+        echo '<p>This graph captures what version of the Lobby Explorer tool is being used over the last 7days. It is read right to left, with the data on the farthest left being the most recent.</p>';
 
         $lobbiesMadeSQL = simple_cached_query(
-            'd2mods_lobby_versions_graph3',
+            'd2mods_lobby_versions_graph1',
             'SELECT
+                HOUR(ll.`date_recorded`) as hour,
                 DAY(ll.`date_recorded`) as day,
                 MONTH(ll.`date_recorded`) as month,
                 YEAR(ll.`date_recorded`) as year,
                 ll.`lobby_version`,
                 COUNT(*) as num_lobbies
             FROM `lobby_list` ll
-            GROUP BY 3,2,1,`lobby_version`
-            ORDER BY 3 DESC, 2 DESC, 1 DESC, `lobby_version` ASC;',
+            WHERE `date_recorded` >= now() - INTERVAL 7 DAY
+            GROUP BY 4,3,2,1,`lobby_version`
+            ORDER BY 4 DESC, 3 DESC, 2 DESC, 1 DESC, `lobby_version` ASC;',
             5 * 60
         );
 
         $lobbiesVersions = simple_cached_query(
-            'd2mods_lobby_versions_list3',
+            'd2mods_lobby_versions_list1',
             'SELECT
                 DISTINCT `lobby_version`
             FROM `lobby_list` ll
+            WHERE `date_recorded` >= now() - INTERVAL 7 DAY
             ORDER BY `lobby_version` DESC;',
             5 * 60
         );
 
-        //LOBBIES MADE
+        //LOBBY VERSIONS MADE
         {
             if (!empty($lobbiesMadeSQL)) {
                 $sortingArray = array();
@@ -186,7 +189,7 @@ try {
                 //FORMATTING
                 if (!empty($lobbiesMadeSQL)) {
                     foreach ($lobbiesMadeSQL as $key => $value) {
-                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'] . ' ' . $value['hour'] . ':00';
 
                         $lobbyVersion = !empty($value['lobby_version'])
                             ? $value['lobby_version']
@@ -214,7 +217,7 @@ try {
 
                 //SORTING INTO [DATE][VERSION]
                 foreach ($lobbiesMadeSQL as $key => $value) {
-                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'] . ' ' . $value['hour'] . ':00';
                     $lobbyVersion = !empty($value['lobby_version'])
                         ? $value['lobby_version']
                         : '0.10';

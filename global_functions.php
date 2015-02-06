@@ -517,7 +517,7 @@ if (!function_exists("simple_cached_query")) {
 }
 
 if (!function_exists("cached_query")) {
-    function cached_query($memcached_name, $sqlQuery, $declarationString = NULL, $parameterArray = NULL, $cache_time_secs = 600)
+    function cached_query($memcached_name, $sqlQuery, $declarationString = NULL, $parameterArray = NULL, $cache_time_secs = 15)
     {
         global $memcache, $db;
 
@@ -539,12 +539,12 @@ if (!function_exists("cached_query")) {
 
                     $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
                 } else {
-                    return 'No DB provided!!!';
+                    throw new Exception('No DB provided!!!');
                 }
             }
             return $variable;
         } else {
-            return 'No memcached provided!!!';
+            throw new Exception('No memcached provided!!!');
         }
     }
 }
