@@ -14,8 +14,20 @@ try {
     if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
         $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
+        $memcache = new Memcache;
+        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
         if ($db) {
-            if (!empty($_POST['minigame_name']) && !empty($_POST['minigame_developer'])) {
+            if (
+                !empty($_POST['minigame_name']) &&
+                !empty($_POST['minigame_developer']) &&
+                !empty($_POST['minigame_description']) &&
+                //AESTHETICS
+                !empty($_POST['minigame_objective']) &&
+                !empty($_POST['minigame_operator']) &&
+                !empty($_POST['minigame_factor']) &&
+                !empty($_POST['minigame_decimals'])
+            ) {
                 $steamAPI = new steam_webapi($api_key1);
                 $steamIDconverter = new SteamID();
 
@@ -31,6 +43,15 @@ try {
                         $developerSteamID = $steamIDconverter->getSteamID64();
                     } else {
                         throw new Exception('Failed to resolve vanity URL!');
+                    }
+                } else if (stristr($_POST['minigame_developer'], 'steamcommunity.com/profiles/')) {
+                    $customUrl = rtrim(cut_str($_POST['minigame_developer'], 'steamcommunity.com/profiles/'), '/');
+
+                    if (!empty($customUrl) && is_numeric($customUrl)) {
+                        $steamIDconverter->setSteamID($customUrl);
+                        $developerSteamID = $steamIDconverter->getSteamID64();
+                    } else {
+                        throw new Exception('Failed to resolve profile link!');
                     }
                 } else {
                     throw new Exception('Bad steam ID!');
@@ -93,12 +114,30 @@ try {
 
                 $minigameName = htmlentities($_POST['minigame_name']);
 
+                $minigameDescription = nl2br(htmlentities($_POST['minigame_description']));
+
+                $minigameObjective = !empty($_POST['minigame_objective'])
+                    ? $_POST['minigame_objective']
+                    : 'min';
+
+                $minigameOperator = !empty($_POST['minigame_operator'])
+                    ? $_POST['minigame_operator']
+                    : 'multiply';
+
+                $minigameFactor = !empty($_POST['minigame_factor']) && is_numeric($_POST['minigame_factor'])
+                    ? $_POST['minigame_factor']
+                    : 1;
+
+                $minigameDecimals = !empty($_POST['minigame_decimals']) && is_numeric($_POST['minigame_decimals'])
+                    ? $_POST['minigame_decimals']
+                    : 2;
 
                 $insertSQL = $db->q(
-                    'INSERT INTO `stat_highscore_minigames` (`minigameID`, `minigameName`, `minigameDeveloper`, `minigameSteamGroup`)
-                        VALUES (?, ?, ?, ?);',
-                    'ssss', //STUPID x64 windows PHP is actually x86
-                    md5($minigameName . time()), $minigameName, $developerSteamID, $minigameGroup
+                    'INSERT INTO `stat_highscore_minigames` (`minigameID`, `minigameName`, `minigameDeveloper`, `minigameSteamGroup`, `minigameDescription`,
+                          `minigameObjective`, `minigameOperator`, `minigameFactor`, `minigameDecimals`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                    'sssssssss', //STUPID x64 windows PHP is actually x86
+                    md5($minigameName . time()), $minigameName, $developerSteamID, $minigameGroup, $minigameDescription, $minigameObjective, $minigameOperator, $minigameFactor, $minigameDecimals
                 );
 
                 if ($insertSQL) {
@@ -107,11 +146,12 @@ try {
                     throw new Exception('Mini Game not added to DB!');
                 }
             } else {
-                throw new Exception('Missing name or developer!');
+                throw new Exception('Missing parameter (name, developer, description, etc.)!');
             }
         } else {
             throw new Exception('No DB!');
         }
+        $memcache->close();
     } else {
         throw new Exception('Not logged in!');
     }
