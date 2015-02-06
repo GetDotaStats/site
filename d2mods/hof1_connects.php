@@ -112,7 +112,7 @@ try {
                 } else {
                     $userName = $value['player_sid32'] == 0
                         ? '<span class="h3">Bots</span>'
-                        : 'EXCEPTION OCCURRED!! COULDN\'T LOOKUP!!';
+                        : 'Private Profile!';
 
                     echo '<div class="row">
                             <div class="col-md-1 text-center">
@@ -122,7 +122,9 @@ try {
                                 <span class="h3">' . $score . '</span>
                             </div>
                             <div class="col-md-1">
-                                <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg' . '" />
+                                <a target="_blank" href="#d2mods__search?user=' . $value['player_sid64'] . '">
+                                    <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg' . '" />
+                                </a>
                             </div>
                             <div class="col-md-8">
                                 ' . $userName . '
