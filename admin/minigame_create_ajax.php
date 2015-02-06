@@ -128,7 +128,7 @@ try {
                     ? $_POST['minigame_factor']
                     : 1;
 
-                $minigameDecimals = !empty($_POST['minigame_decimals']) && is_numeric($_POST['minigame_decimals'])
+                $minigameDecimals = isset($_POST['minigame_decimals']) && is_numeric($_POST['minigame_decimals'])
                     ? $_POST['minigame_decimals']
                     : 2;
 
