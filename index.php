@@ -43,7 +43,7 @@ try {
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
     <script type="text/javascript" src="//static.getdotastats.com/bootstrap/js/jquery.min.js?1"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?20"></script>
+    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?22"></script>
     <!--<script type="text/javascript" src="./getdotastats.js?13"></script>-->
 </head>
 <body>

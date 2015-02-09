@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var mouseBoolean = false;
 
-    loadPage(window.location.hash, 1);
+    loadPage(window.location.hash, 0);
 
     $(document).on("click", 'a.nav-clickable', function (e) {
         loadPage(this.hash, 0);
@@ -9,10 +9,6 @@ $(document).ready(function () {
 
     $(document).on("click", 'a.nav-refresh', function (e) {
         loadPage(this.hash, 1);
-    });
-
-    $(document).on("click", 'a.nav-back', function (e) {
-        loadPage(this.hash, 2);
     });
 
     //TO FACILITATE BACK BUTTON
@@ -37,9 +33,9 @@ $(document).ready(function () {
     var rx = /INPUT|SELECT|TEXTAREA/i;
 
     //NO BACKSPACING TO GO BACK
-    $(document).bind("keydown keypress", function(e){
-        if( e.which == 8 ){ // 8 == backspace
-            if(!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly ){
+    $(document).bind("keydown keypress", function (e) {
+        if (e.which == 8) { // 8 == backspace
+            if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
                 e.preventDefault();
             }
         }
@@ -86,12 +82,13 @@ function loadPage(url, refresh) {
                 url: url,
                 dataType: "html",
                 success: function (msg) {
-                    document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
-
                     setTimeout(function () {
                         $('#loading').hide({
                             complete: function () {
-                                //window.history.pushState("", "", oldURL);
+                                if (refresh == 1 && window.location.hash != oldURL) {
+                                    window.history.pushState("", "", oldURL);
+                                }
+                                document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
                                 if (parseInt(msg) != 0) {
                                     $('#main_content').html(msg);
                                 }
