@@ -42,6 +42,7 @@ try {
                     ll.`lobby_id`,
                     ll.`mod_id`,
                     ll.`lobby_name`,
+                    ll.`lobby_started`,
                     ll.`lobby_region`,
                     ll.`lobby_ttl`,
                     ll.`lobby_max_players`,
@@ -89,30 +90,50 @@ try {
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
             echo '<tr>
-                        <th class="text-center">Lobby</th>
-                        <th class="text-center">Leader</th>
-                        <th class="text-center">Mod</th>
+                        <th class="text-center col-md-2">Lobby</th>
+                        <th class="text-center col-md-2">Leader</th>
+                        <th class="text-center col-md-3">Mod</th>
+                        <th class="text-center">&nbsp;</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
-                        <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created. (How long it will be advertised)."></span></th>
                         <th class="text-center col-md-1">&nbsp;</th>
+                        <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
                     </tr>';
 
             foreach ($lobbyListActive as $key => $value) {
-                $lobbyName = !empty($value['lobby_name'])
-                    ? htmlentities($value['lobby_name'])
-                    : 'Custom Game #' . $value['lobby_id'];
-
                 $workshopLink = !empty($value['mod_workshop_link'])
                     ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">[WS]</a>'
                     : '';
 
+                $lobbyLeaderName = urldecode($value['lobby_leader_name']);
+                if (!empty($lobbyLeaderName)) {
+                    if (strlen($lobbyLeaderName) > 12) {
+                        $lobbyLeaderName = strip_tags(substr($lobbyLeaderName, 0, 9) . '...');
+                    } else {
+                        $lobbyLeaderName = strip_tags($lobbyLeaderName);
+                    }
+                } else {
+                    $lobbyLeaderName = 'Unknown User';
+                }
+
+                $lobbyName = urldecode($value['lobby_name']);
+                if (!empty($lobbyName)) {
+                    if (strlen($lobbyName) > 13) {
+                        $lobbyName = strip_tags(substr($lobbyName, 0, 10) . '...');
+                    } else {
+                        $lobbyName = strip_tags($lobbyName);
+                    }
+                } else {
+                    $lobbyName = 'Custom Game #' . $value['lobby_id'];
+                }
+
                 echo '<tr>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . urldecode($lobbyName) . '</a></td>
-                        <td class="vert-align">' . urldecode($value['lobby_leader_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
+                        <td class="vert-align"><a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
+                        <td class="vert-align">' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-center vert-align">' . relative_time_v3($value['lobby_date_recorded'], 0) . ' <strong>(' . $value['lobby_ttl'] . ')</strong></td>
                         <td class="text-center vert-align"><a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
+                        <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
                     </tr>';
             }
 
@@ -125,25 +146,56 @@ try {
         if (!empty($lobbyListDead)) {
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
+
             echo '<tr>
-                        <th class="text-center">Lobby</th>
-                        <th class="text-center">Leader</th>
-                        <th class="text-center">Mod</th>
+                        <th class="text-center col-md-2">Lobby</th>
+                        <th class="text-center col-md-2">Leader</th>
+                        <th class="text-center col-md-3">Mod</th>
+                        <th class="text-center">&nbsp;</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
+                        <th class="text-center col-md-1">Start <span class="glyphicon glyphicon-question-sign" title="Whether the lobby successfully started"></span></th>
                         <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
                     </tr>';
 
             foreach ($lobbyListDead as $key => $value) {
-                $lobbyName = !empty($value['lobby_name'])
-                    ? strip_tags(urldecode($value['lobby_name']))
-                    : 'Custom Game #' . $value['lobby_id'];
+                $workshopLink = !empty($value['mod_workshop_link'])
+                    ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">[WS]</a>'
+                    : '';
+
+                $lobbyStated = !empty($value['lobby_started']) && $value['lobby_started'] == 1
+                    ? '<span class="label-success label"><span class="glyphicon glyphicon-ok"></span></span>'
+                    : '<span class="label-danger label"><span class="glyphicon glyphicon-remove"></span></span>';
+
+                $lobbyLeaderName = urldecode($value['lobby_leader_name']);
+                if (!empty($lobbyLeaderName)) {
+                    if (strlen($lobbyLeaderName) > 12) {
+                        $lobbyLeaderName = strip_tags(substr($lobbyLeaderName, 0, 9) . '...');
+                    } else {
+                        $lobbyLeaderName = strip_tags($lobbyLeaderName);
+                    }
+                } else {
+                    $lobbyLeaderName = 'Unknown User';
+                }
+
+                $lobbyName = urldecode($value['lobby_name']);
+                if (!empty($lobbyName)) {
+                    if (strlen($lobbyName) > 13) {
+                        $lobbyName = strip_tags(substr($lobbyName, 0, 10) . '...');
+                    } else {
+                        $lobbyName = strip_tags($lobbyName);
+                    }
+                } else {
+                    $lobbyName = 'Custom Game #' . $value['lobby_id'];
+                }
 
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
-                        <td class="vert-align">' . strip_tags(urldecode($value['lobby_leader_name'])) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
+                        <td class="vert-align"><a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
+                        <td class="vert-align">' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-right vert-align">' . relative_time($value['lobby_date_recorded']) . '</td>
+                        <td class="text-center vert-align">' . $lobbyStated . '</td>
+                        <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
                     </tr>';
             }
 
