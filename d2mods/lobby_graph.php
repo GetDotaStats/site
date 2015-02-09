@@ -22,6 +22,7 @@ try {
                 YEAR(ll.`date_recorded`) as year,
                 COUNT(*) as num_lobbies
             FROM `lobby_list` ll
+            WHERE ll.`lobby_started` = 1
             GROUP BY 3,2,1
             ORDER BY 3 DESC, 2 DESC, 1 DESC;',
             5 * 60
