@@ -498,6 +498,100 @@ if (!function_exists('relative_time_v2')) {
     }
 }
 
+//GIVEN A UNIX TIMESTAMP RETURNS A RELATIVE DISTANCE TO DATE (23.4 days ago)
+//A STRING DENOMINATOR OF SINGLE TIME (SECOND, MINUTE, etc) WILL FORCE FORMATTED OUTPUT
+//RETURNARRAY WILL RETURN ARRAY INSTEAD OF STRING
+if (!function_exists('relative_time_v3')) {
+    function relative_time_v3($time, $decimals = 1, $output = NULL, $returnArray = false)
+    {
+        if (!is_numeric($time)) {
+            if (strtotime($time)) {
+                $time = strtotime($time);
+            } else {
+                throw new Exception('Not a parseable time string');
+            }
+        }
+
+        if(!is_numeric($decimals)){
+            throw new Exception('Decimal parameter not numeric');
+        }
+
+        if (empty($output)) {
+            switch ($time) {
+                case ((time() - $time) >= 31536000):
+                    $number = number_format(((time() - $time) / 31536000), $decimals);
+                    $timeString = 'year';
+                    break;
+                case ((time() - $time) >= 2592000):
+                    $number = number_format(((time() - $time) / 2592000), $decimals);
+                    $timeString = 'month';
+                    break;
+                case ((time() - $time) >= 86400):
+                    $number = number_format(((time() - $time) / 86400), $decimals);
+                    $timeString = 'day';
+                    break;
+                case ((time() - $time) >= 3600):
+                    $number = number_format(((time() - $time) / 3600), $decimals);
+                    $timeString = 'hour';
+                    break;
+                default:
+                    $number = number_format(((time() - $time) / 60), $decimals);
+                    $timeString = 'minute';
+                    break;
+            }
+        } else {
+            switch ($output) {
+                case 'year':
+                    $number = number_format(((time() - $time) / 31536000), $decimals);
+                    $timeString = 'year';
+                    break;
+                case 'month':
+                    $number = number_format(((time() - $time) / 2592000), $decimals);
+                    $timeString = 'month';
+                    break;
+                case 'day':
+                    $number = number_format(((time() - $time) / 86400), $decimals);
+                    $timeString = 'day';
+                    break;
+                case 'hour':
+                    $number = number_format(((time() - $time) / 3600), $decimals);
+                    $timeString = 'hour';
+                    break;
+                case 'minute':
+                    $number = number_format(((time() - $time) / 60), $decimals);
+                    $timeString = 'minute';
+                    break;
+                case 'second':
+                    $number = number_format(((time() - $time)), $decimals);
+                    $timeString = 'second';
+                    break;
+                default:
+                    $number = number_format(((time() - $time)), $decimals);
+                    $timeString = 'second';
+                    break;
+            }
+        }
+
+        if ($number == 1) {
+            $timeString = $timeString . ' ago';
+        } else {
+            $timeString = $timeString . 's ago';
+        }
+
+        if(empty($returnArray)){
+            $time_adj = $number . ' ' . $timeString;
+        }
+        else{
+            $time_adj = array(
+                'number' => $number,
+                'time_string' => $timeString,
+            );
+        }
+
+        return $time_adj;
+    }
+}
+
 if (!function_exists("simple_cached_query")) {
     function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600)
     {

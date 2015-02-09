@@ -102,12 +102,16 @@ try {
                     ? htmlentities($value['lobby_name'])
                     : 'Custom Game #' . $value['lobby_id'];
 
+                $workshopLink = !empty($value['mod_workshop_link'])
+                    ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">[WS]</a>'
+                    : '';
+
                 echo '<tr>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . urldecode($lobbyName) . '</a></td>
                         <td class="vert-align">' . urldecode($value['lobby_leader_name']) . ' <a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-center vert-align">' . relative_time($value['lobby_date_recorded']) . ' <strong>(' . $value['lobby_ttl'] . ')</strong></td>
+                        <td class="text-center vert-align">' . relative_time_v3($value['lobby_date_recorded'], 0) . ' <strong>(' . $value['lobby_ttl'] . ')</strong></td>
                         <td class="text-center vert-align"><a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
                     </tr>';
             }
@@ -119,7 +123,6 @@ try {
 
         echo '<div class="page-header"><h3>Recently Closed Lobbies</h3></div>';
         if (!empty($lobbyListDead)) {
-
             echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
             echo '<tr>
@@ -152,7 +155,22 @@ try {
         echo bootstrapMessage('Oh Snap', 'No db!', 'danger');
     }
 
-    ?>
+    echo '<span class="h3">&nbsp;</span>';
+
+    echo '<div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+           </div>';
+
+    echo '<span class="h3">&nbsp;</span>';
+
+    $memcache->close();
+} catch (Exception $e) {
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
+}
+
+echo '
     <script>
         $(document).ready(function () {
             pageReloader = setTimeout(function () {
@@ -165,17 +183,4 @@ try {
             }, 10000);
         });
     </script>
-    <?php
-
-    echo '<p>
-            <div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-           </div>
-        </p>';
-
-    $memcache->close();
-} catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
-}
+    ';

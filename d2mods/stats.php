@@ -96,7 +96,7 @@ try {
 
                 $wg = !empty($modDetails[0]['mod_workshop_link'])
                     ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $modDetails[0]['mod_workshop_link'] . '" target="_new">WS</a>'
-                    : 'WG';
+                    : 'WS';
 
                 $dataRange = !empty($modRange[0]['date_start'])
                     ? relative_time($modRange[0]['date_start']) . ' - ' . relative_time($modRange[0]['date_end'])
