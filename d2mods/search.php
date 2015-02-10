@@ -167,6 +167,7 @@ try {
                             ll.`lobby_id`,
                             ll.`mod_id`,
                             ll.`lobby_name`,
+                            ll.`lobby_started`,
                             ll.`lobby_region`,
                             ll.`lobby_ttl`,
                             ll.`lobby_max_players`,
