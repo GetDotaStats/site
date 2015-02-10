@@ -330,17 +330,13 @@ if ($db) {
                         "CREATE TABLE IF NOT EXISTS `cron_hof3_temp`
                             SELECT
                                 `player_sid64`,
-                                COUNT(num_players) as num_lobbies
+                                COUNT(*) as num_lobbies
                             FROM (
                                 SELECT
                                     ll.`lobby_leader` as player_sid64,
-                                    ll.`lobby_id`,
-                                    COUNT(*) AS num_players
+                                    ll.`lobby_id`
                                 FROM `lobby_list` ll
-                                JOIN `lobby_list_players` llp ON ll.`lobby_id` = llp.`lobby_id`
-                                GROUP BY ll.`lobby_leader`, llp.`lobby_id`
-                                HAVING num_players > 1
-                                ORDER BY ll.`lobby_leader`
+                                WHERE ll.`lobby_started` = 1
                             ) as t1
                             GROUP BY player_sid64
                             ORDER BY num_lobbies DESC
