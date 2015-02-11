@@ -8,51 +8,51 @@ try {
         session_start();
     }
 
-    checkLogin_v2();
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
-    if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        $memcache = new Memcache;
-        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    if ($db) {
+        checkLogin_v2();
+        if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
-        if ($db) {
-            $steamID = new SteamID($_SESSION['user_id64']);
+        $steamID = new SteamID($_SESSION['user_id64']);
 
-            $gamesList = $db->q(
-                'SELECT
-                        mmp.*,
-                        mmo.*,
+        $gamesList = $db->q(
+            'SELECT
+                    mmp.*,
+                    mmo.*,
 
-                        ml.`mod_id` as modFakeID,
-                        ml.`mod_name`,
-                        ml.`mod_active`,
+                    ml.`mod_id` as modFakeID,
+                    ml.`mod_name`,
+                    ml.`mod_active`,
 
-                        gcs.`cs_id`,
-                        gcs.`cs_string`,
-                        gcs.`cs_name`
-                    FROM `mod_match_players` mmp
-                    LEFT JOIN `mod_match_overview` mmo
-                        ON mmp.`match_id` = mmo.`match_id`
-                    LEFT JOIN `mod_list` ml
-                        ON mmp.`mod_id` = ml.`mod_identifier`
-                    LEFT JOIN `game_connection_status` gcs
-                        ON mmp.`connection_status` = gcs.`cs_id`
-                    WHERE `player_sid32` = ?
-                    ORDER BY `date_recorded` DESC;',
-                's', //STUPID x64 windows PHP is actually x86
-                $steamID->getSteamID32());
+                    gcs.`cs_id`,
+                    gcs.`cs_string`,
+                    gcs.`cs_name`
+                FROM `mod_match_players` mmp
+                LEFT JOIN `mod_match_overview` mmo
+                    ON mmp.`match_id` = mmo.`match_id`
+                LEFT JOIN `mod_list` ml
+                    ON mmp.`mod_id` = ml.`mod_identifier`
+                LEFT JOIN `game_connection_status` gcs
+                    ON mmp.`connection_status` = gcs.`cs_id`
+                WHERE `player_sid32` = ?
+                ORDER BY `date_recorded` DESC;',
+            's', //STUPID x64 windows PHP is actually x86
+            $steamID->getSteamID32());
 
-            echo '<div class="page-header"><h2>My Games <small>BETA</small></h2></div>';
+        echo '<div class="page-header"><h2>My Games <small>BETA</small></h2></div>';
 
-            echo '<p>This is a list of the games you have played. This section is a Work-In-Progress, so check back later.</p>';
-            echo '<p>Please note that old games did not record connection status. Do not worry if those old games have marked you as a non-loader.</p>';
+        echo '<p>This is a list of the games you have played. This section is a Work-In-Progress, so check back later.</p>';
+        echo '<p>Please note that old games did not record connection status. Do not worry if those old games have marked you as a non-loader.</p>';
 
-            if (!empty($gamesList)) {
+        if (!empty($gamesList)) {
 
-                echo '<div class="table-responsive">
+            echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
-                echo '
+            echo '
                 <tr>
                     <th class="text-center">Mod</th>
                     <th class="text-center">Match ID</th>
@@ -62,37 +62,37 @@ try {
                     <th class="text-center">Recorded</th>
                 </tr>';
 
-                foreach ($gamesList as $key => $value) {
-                    $modName = !empty($value['mod_name'])
-                        ? $value['mod_name']
-                        : 'Unknown';
+            foreach ($gamesList as $key => $value) {
+                $modName = !empty($value['mod_name'])
+                    ? $value['mod_name']
+                    : 'Unknown';
 
-                    $matchID = !empty($value['match_id'])
-                        ? $value['match_id']
-                        : 'Unknown';
+                $matchID = !empty($value['match_id'])
+                    ? $value['match_id']
+                    : 'Unknown';
 
-                    $matchDuration = !empty($value['match_duration'])
-                        ? number_format($value['match_duration'] / 60)
-                        : 'Unknown';
+                $matchDuration = !empty($value['match_duration'])
+                    ? number_format($value['match_duration'] / 60)
+                    : 'Unknown';
 
-                    $arrayGoodConnectionStatus = array(2, 3, 5);
-                    if (!empty($value['connection_status']) && in_array($value['connection_status'], $arrayGoodConnectionStatus)) {
-                        $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $value['cs_string'] . '"></span>';
-                    } else if (!empty($value['connection_status']) && $value['connection_status'] == 0) {
-                        $connectionStatus = '<span class="glyphicon glyphicon-question-sign" title="' . $value['cs_string'] . '"></span>';
-                    } else {
-                        $connectionStatus = '<span class="glyphicon glyphicon-remove-sign" title="' . $value['cs_string'] . '"></span>';
-                    }
+                $arrayGoodConnectionStatus = array(2, 3, 5);
+                if (!empty($value['connection_status']) && in_array($value['connection_status'], $arrayGoodConnectionStatus)) {
+                    $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $value['cs_string'] . '"></span>';
+                } else if (!empty($value['connection_status']) && $value['connection_status'] == 0) {
+                    $connectionStatus = '<span class="glyphicon glyphicon-question-sign" title="' . $value['cs_string'] . '"></span>';
+                } else {
+                    $connectionStatus = '<span class="glyphicon glyphicon-remove-sign" title="' . $value['cs_string'] . '"></span>';
+                }
 
-                    $numPlayers = !empty($value['match_num_players'])
-                        ? $value['match_num_players']
-                        : 'Unknown';
+                $numPlayers = !empty($value['match_num_players'])
+                    ? $value['match_num_players']
+                    : 'Unknown';
 
-                    $matchDate = !empty($value['match_recorded'])
-                        ? relative_time($value['match_recorded'])
-                        : 'Unknown';
+                $matchDate = !empty($value['match_recorded'])
+                    ? relative_time($value['match_recorded'])
+                    : 'Unknown';
 
-                    echo '
+                echo '
                     <tr>
                         <td><a class="nav-clickable" href="#d2mods__stats?id=' . $value['modFakeID'] . '">' . $modName . '</a></td>
                         <td><a class="nav-clickable" href="#d2mods__match?id=' . $matchID . '">' . $matchID . '</a></td>
@@ -101,20 +101,17 @@ try {
                         <td class="text-center">' . $numPlayers . '</td>
                         <td class="text-right">' . $matchDate . '</td>
                     </tr>';
-                }
-
-                echo '</table></div>';
-            } else {
-                echo bootstrapMessage('Oh Snap', 'No games played yet!');
             }
-        } else {
-            echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
-        }
 
-        $memcache->close();
+            echo '</table></div>';
+        } else {
+            echo bootstrapMessage('Oh Snap', 'No games played yet!');
+        }
     } else {
-        echo bootstrapMessage('Oh Snap', 'Not logged in!', 'danger');
+        echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
     }
+
+    $memcache->close();
 
     echo '<p>
             <div class="text-center">

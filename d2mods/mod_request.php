@@ -7,20 +7,19 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-checkLogin_v2();
-
 try {
-    if (!empty($_SESSION['user_id64'])) {
-        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
-        echo '<h2>Request a Mod be Accepted for Stats <small>BETA</small></h2>';
+    echo '<h2>Request a Mod be Accepted for Stats <small>BETA</small></h2>';
 
-        echo '<p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong> Only the developer of said mod will be able to add it to the site.</p>';
+    echo '<p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong> Only the developer of said mod will be able to add it to the site.</p>';
 
-        if ($db) {
+    if ($db) {
+        checkLogin_v2();
+        if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
-            echo '<div class="container"><div class="col-sm-6">';
-            echo '<form id="modSignup">
+        echo '<div class="container"><div class="col-sm-6">';
+        echo '<form id="modSignup">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <tr>
@@ -54,20 +53,20 @@ try {
                             </table>
                         </div>
                     </form>';
-            echo '</div></div>';
+        echo '</div></div>';
 
-            echo '<br/>';
+        echo '<br/>';
 
-            echo '<span id="modSignupResult" class="label label-danger"></span>';
+        echo '<span id="modSignupResult" class="label label-danger"></span>';
 
-            echo '<p>
+        echo '<p>
                     <div class="text-center">
                         <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
                         <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">Browse my mods</a>
                    </div>
                 </p>';
 
-            echo '<script type="application/javascript">
+        echo '<script type="application/javascript">
                     $("#modSignup").submit(function (event) {
                         event.preventDefault();
 
@@ -97,11 +96,8 @@ try {
                     });
                 </script>';
 
-        } else {
-            echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
-        }
     } else {
-        echo bootstrapMessage('Oh Snap', 'Not logged in!', 'danger');
+        echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
     }
 } catch (Exception $e) {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();

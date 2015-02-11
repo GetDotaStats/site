@@ -14,12 +14,11 @@ echo '
 ';
 
 try {
-    checkLogin_v2();
-
-    $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
-    $db->q('SET NAMES utf8;');
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
     if ($db) {
+        checkLogin_v2();
+
         $memcache = new Memcache;
         $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
@@ -28,6 +27,8 @@ try {
             $accessCheck = $db->q('SELECT * FROM `hof_golden_profiles` WHERE `user_id64` = ? LIMIT 0,1;',
                 's',
                 $_SESSION['user_id64']);
+
+            $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
 
             if (!empty($accessCheck) || !empty($_SESSION['isAdmin'])) {
                 $canAccessUserProfile = true;
@@ -103,8 +104,7 @@ try {
     echo '<div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Return to Home</a>
             </div>';
-} catch
-(Exception $e) {
+} catch (Exception $e) {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
     echo bootstrapMessage('Oh Snap', $message, 'danger');
 }

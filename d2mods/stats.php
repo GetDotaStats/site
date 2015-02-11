@@ -113,11 +113,14 @@ try {
                 $developerCombined = $developerAvatar . $developerName;
 
                 $modID_row = '';
-                if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
-                    $modID_row = '  <tr>
+                if (!empty($_SESSION['user_id64'])) {
+                    $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
+                    if(!empty($adminCheck)){
+                        $modID_row = '  <tr>
                                         <th>Mod ID</th>
                                         <td>' . $modGUID . '</td>
                                     </tr>';
+                    }
                 }
 
                 if (!empty($modDetails[0]['mod_maps'])) {

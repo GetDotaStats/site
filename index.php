@@ -1,14 +1,39 @@
 <?php
-require_once("./global_functions.php");
 try {
+    require_once("./global_functions.php");
+    require_once("./connections/parameters.php");
+
     if (!isset($_SESSION)) {
         session_start();
     }
 
-    require_once("./connections/parameters.php");
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+    if (empty($db)) throw new Exception('No DB!');
+
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
     checkLogin_v2();
+
+    $adminCheck = !empty($_SESSION['user_id64'])
+        ? adminCheck($_SESSION['user_id64'], 'admin')
+        : false;
+
+    $feedCheck = !empty($_SESSION['user_id64'])
+        ? adminCheck($_SESSION['user_id64'], 'animufeed')
+        : false;
 } catch (Exception $e) {
-    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
+}
+
+try {
+    if (!empty($memcache)) {
+        $memcache->close();
+    }
+} catch (Exception $e) {
+    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -21,7 +46,7 @@ try {
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval' 'unsafe-inline';
-          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com;
+          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com steamcommunity-a.akamaihd.net;
           font-src 'self' static.getdotastats.com getdotastats.com;
           frame-src chatwing.com *.youtube.com;
           object-src 'none';
@@ -104,7 +129,7 @@ try {
                         <li><a class="nav-clickable" href="#contact">Contact</a></li>
                     </ul>
                 </li>
-                <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
+                <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -120,7 +145,7 @@ try {
                             <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">Last Week</a></li>
                             <li><a class="nav-clickable" href="#admin__csp_reports_filtered">Total</a></li>
                             <li><a class="nav-clickable" href="#admin__csp_reports">Last 100</a></li>
-                            <?php if (!empty($_SESSION['access_feeds'])) { ?>
+                            <?php if (!empty($feedCheck)) { ?>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Feeds</li>
                                 <li><a class="nav-clickable" href="#feeds/">Animu</a></li>

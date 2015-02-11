@@ -484,10 +484,9 @@ if (!function_exists('relative_time_v2')) {
             $timeString = $timeString . 's ago';
         }
 
-        if(empty($returnArray)){
+        if (empty($returnArray)) {
             $time_adj = $number . ' ' . $timeString;
-        }
-        else{
+        } else {
             $time_adj = array(
                 'number' => $number,
                 'time_string' => $timeString,
@@ -512,7 +511,7 @@ if (!function_exists('relative_time_v3')) {
             }
         }
 
-        if(!is_numeric($decimals)){
+        if (!is_numeric($decimals)) {
             throw new Exception('Decimal parameter not numeric');
         }
 
@@ -578,10 +577,9 @@ if (!function_exists('relative_time_v3')) {
             $timeString = $timeString . 's ago';
         }
 
-        if(empty($returnArray)){
+        if (empty($returnArray)) {
             $time_adj = $number . ' ' . $timeString;
-        }
-        else{
+        } else {
             $time_adj = array(
                 'number' => $number,
                 'time_string' => $timeString,
@@ -667,15 +665,10 @@ if (!function_exists("guid")) {
 if (!function_exists("checkLogin_v2")) {
     function checkLogin_v2()
     {
+        global $_COOKIE;
         if (isset($_COOKIE['session'])) {
-            global $_COOKIE;
-            global $hostname_gds_site;
-            global $username_gds_site;
-            global $password_gds_site;
-            global $database_gds_site;
-
-            $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-            $db->q('SET NAMES utf8;');
+            global $db;
+            if (empty($db)) throw new Exception('No DB defined!');
 
             $auth = $db->q('SELECT * FROM `gds_users_sessions` WHERE `user_cookie` = ? ORDER BY `date_recorded` DESC LIMIT 0,1;',
                 's',
@@ -718,6 +711,28 @@ if (!function_exists("checkLogin_v2")) {
         } else {
             return false;
         }
+    }
+}
+
+if (!function_exists("adminCheck")) {
+    function adminCheck($userID64, $group)
+    {
+        global $db;
+        if (empty($db)) throw new Exception('No DB defined!');
+
+        $adminCheck = cached_query(
+            'admin_userID_check2' . $userID64 . '_' . $group,
+            'SELECT * FROM `gds_power_users` WHERE `user_id64` = ? AND `user_group` = ? LIMIT 0,1;',
+            'ss',
+            [$userID64, $group],
+            5 * 60
+        );
+
+        if (!empty($adminCheck)) {
+            return true;
+        }
+
+        return false;
     }
 }
 
