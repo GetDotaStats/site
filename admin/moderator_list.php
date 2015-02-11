@@ -42,8 +42,8 @@ try {
         echo '<span class="h4">&nbsp;</span>';
         echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-5"><span class="h4">Username</span></div>
-                    <div class="col-md-4"><span class="h4">Groups</span></div>
+                    <div class="col-md-4"><span class="h4">Username</span></div>
+                    <div class="col-md-3"><span class="h4">Groups</span></div>
                     <div class="col-md-2"><span class="h4">Date Added</span></div>
                 </div>';
         echo '<span class="h5">&nbsp;</span>';
@@ -69,10 +69,10 @@ try {
                     <div class="col-md-1">
                         <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         ' . $userName . '
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         ' . $value['user_group'] . '
                     </div>
                     <div class="text-right col-md-2">
