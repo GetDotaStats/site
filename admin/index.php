@@ -7,14 +7,14 @@ try {
         session_start();
     }
 
-    checkLogin_v2();
-    if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
-
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if(empty($db)) throw new Exception('No DB!');
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
+    checkLogin_v2();
+    if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
     if (empty($adminCheck)) {
