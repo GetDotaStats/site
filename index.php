@@ -80,24 +80,13 @@ try {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Signatures <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li class="dropdown-header">Signatures</li>
                         <li><a class="nav-clickable" href="#steamtracks/">Generator <span
                                     class="label label-danger">HOT</span></a></li>
                         <li><a class="nav-clickable" href="#stats__sig_stats">Usage Stats</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
-                            <li class="dropdown-header">Admin Stuff</li>
-                            <li><a class="nav-clickable" href="#admin/">Admin Panel</a></li>
-                            <?php if (!empty($_SESSION['access_feeds'])) { ?>
-                                <li><a class="nav-clickable" href="#feeds/">Animu Feed</a></li>
-                            <?php } ?>
-                            <li class="divider"></li>
-                        <?php } ?>
+                        <li class="divider"></li>
                         <li class="dropdown-header">Halls of Fame</li>
                         <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
                         <li class="divider"></li>
@@ -115,6 +104,30 @@ try {
                         <li><a class="nav-clickable" href="#contact">Contact</a></li>
                     </ul>
                 </li>
+                <?php if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) { ?>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a class="nav-clickable" href="#admin/">Home</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Mods</li>
+                            <li><a class="nav-clickable" href="#admin__mod_approve">Approve</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Mini Games</li>
+                            <li><a class="nav-clickable" href="#admin__minigame_create">Create</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">CSP Reports</li>
+                            <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">Last Week</a></li>
+                            <li><a class="nav-clickable" href="#admin__csp_reports_filtered">Total</a></li>
+                            <li><a class="nav-clickable" href="#admin__csp_reports">Last 100</a></li>
+                            <?php if (!empty($_SESSION['access_feeds'])) { ?>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Feeds</li>
+                                <li><a class="nav-clickable" href="#feeds/">Animu</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php } ?>
             </ul>
             <form id="searchForm" class="navbar-form navbar-left" role="search">
                 <div class="form-group">
