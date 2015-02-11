@@ -3,8 +3,6 @@ require_once('../../global_functions.php');
 require_once('../functions.php');
 require_once('../../connections/parameters.php');
 
-//THIS LISTS ALL THE ACTIVE MODS ON THE SITE
-
 try {
 
     if (!empty($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -60,10 +58,6 @@ try {
                     $temp['modName'] = !empty($value['mod_name'])
                         ? $value['mod_name']
                         : 'Unknown Mod';
-
-                    isset($key)
-                        ? $temp['popularityRank'] = $key + 1
-                        : NULL;
 
                     !empty($value['games_last_week'])
                         ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])
