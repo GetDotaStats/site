@@ -127,6 +127,8 @@ try {
                     $memcache->set('d2mods_lobby_players1_' . $lobbyID, $lobbyPlayers, 0, 5);
                 }
 
+                echo '</div>';
+
                 $lobbyPlayersArray = array();
                 if (!empty($lobbyPlayers)) {
                     foreach ($lobbyPlayers as $key => $value) {
