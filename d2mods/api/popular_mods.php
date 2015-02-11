@@ -13,8 +13,7 @@ try {
     if (!$popularMods) {
         $popularMods = array();
 
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-        $db->q('SET NAMES utf8;');
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
 
         if ($db) {
             $modListActive = simple_cached_query('api_d2mods_directory_active',
@@ -29,15 +28,19 @@ try {
                     WHERE ml.`mod_active` = 1
                     HAVING games_all_time > 0
                     ORDER BY games_last_week DESC, games_all_time DESC;'
-                , 30
+                , 5 * 60
             );
 
             if (!empty($modListActive)) {
                 foreach ($modListActive as $key => $value) {
                     $temp = array();
 
+                    $temp['modID'] = !empty($value['mod_id'])
+                        ? $value['mod_id']
+                        : 0;
+
                     $temp['modName'] = !empty($value['mod_name'])
-                        ? $value['mod_name']
+                        ? urlencode($value['mod_name'])
                         : 'Unknown Mod';
 
                     isset($key)
@@ -93,7 +96,7 @@ try {
             $popularMods['error'] = 'No DB connection!';
         }
 
-        $memcache->set('api_d2mods_get_popular1', $popularMods, 0, 1 * 60);
+        $memcache->set('api_d2mods_get_popular1', $popularMods, 0, 10 * 60);
     }
 
     $memcache->close();

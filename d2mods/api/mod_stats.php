@@ -22,7 +22,7 @@ try {
 
         if ($db) {
             $modDetails = cached_query(
-                'api_d2mods_details' . $modID,
+                'api_d2mods_mod_stats_details' . $modID,
                 'SELECT
                         ml.`mod_id`,
                         ml.`steam_id64`,
@@ -48,15 +48,19 @@ try {
                     LIMIT 0,1;',
                 'i',
                 $modID,
-                30
+                5 * 60
             );
 
             if (!empty($modDetails)) {
                 foreach ($modDetails as $key => $value) {
                     $temp = array();
 
+                    $temp['modID'] = !empty($value['mod_id'])
+                        ? $value['mod_id']
+                        : 0;
+
                     $temp['modName'] = !empty($value['mod_name'])
-                        ? $value['mod_name']
+                        ? urlencode($value['mod_name'])
                         : 'Unknown Mod';
 
                     !empty($value['games_last_week'])
@@ -88,7 +92,7 @@ try {
                         : NULL;
 
                     !empty($value['date_recorded'])
-                        ? $temp['modDateAdded'] = relative_time($value['date_recorded'])
+                        ? $temp['modDateAdded'] = relative_time_v2($value['date_recorded'])
                         : NULL;
 
                     !empty($value['mod_description'])
@@ -108,7 +112,7 @@ try {
             $popularMods['error'] = 'No DB connection!';
         }
 
-        $memcache->set('api_d2mods_stats' . $modID, $popularMods, 0, 1 * 60);
+        $memcache->set('api_d2mods_stats' . $modID, $popularMods, 0, 10 * 60);
     }
 
     $memcache->close();
