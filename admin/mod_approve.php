@@ -24,12 +24,6 @@ try {
     echo '<h2>Approve Mods</h2>';
     echo '<p>I lied. Not ready yet. :)</p>';
 
-    echo '<span class="h3">&nbsp;</span>';
-    echo '<div class="text-center">
-                        <a class="nav-clickable btn btn-default btn-lg" href="#admin/">Back to Admin Panel</a>
-                   </div>';
-    echo '<span class="h3">&nbsp;</span>';
-
     $modList = simple_cached_query('admin_d2mods_directory_inactive',
         'SELECT
                 ml.*,
@@ -105,9 +99,3 @@ try {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
     echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
-
-echo '<span class="h3">&nbsp;</span>';
-echo '<div class="text-center">
-                        <a class="nav-clickable btn btn-default btn-lg" href="#admin/">Back to Admin Panel</a>
-                   </div>';
-echo '<span class="h3">&nbsp;</span>';
