@@ -685,8 +685,6 @@ if (!function_exists("checkLogin_v2")) {
                     $_SESSION['user_id64'] = $accountDetails[0]['user_id64'];
                     $_SESSION['user_name'] = $accountDetails[0]['user_name'];
                     $_SESSION['user_avatar'] = $accountDetails[0]['user_avatar'];
-                    $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
-                    $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
                 } else {
                     //KILL BAD COOKIE
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
@@ -700,8 +698,6 @@ if (!function_exists("checkLogin_v2")) {
                 unset($_SESSION['user_id64']);
                 unset($_SESSION['user_name']);
                 unset($_SESSION['user_avatar']);
-                unset($_SESSION['access_feeds']);
-                unset($_SESSION['isAdmin']);
 
                 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
                 setcookie('session', '', time() - 3600, '/', $domain);

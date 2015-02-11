@@ -69,25 +69,14 @@ if (!class_exists('user')) {
                                     `user_avatar` = VALUES(`user_avatar`),
                                     `user_avatar_medium` = VALUES(`user_avatar_medium`),
                                     `user_avatar_large` = VALUES(`user_avatar_large`);",
-                        'iissss',
+                        'isssss',
                         $steamID32, $steamID64, $userName, $userAvatar, $userAvatarMedium, $userAvatarLarge);
 
                     $cookie = guid();
 
                     $db->q("INSERT INTO `gds_users_sessions` (`user_id64`, `remote_ip`, `user_cookie`) VALUES (?, ?, ?)",
-                        'iss',
+                        'sss',
                         $steamID64, $_SERVER['REMOTE_ADDR'], $cookie);
-
-                    //LOOKUP ACCOUNT
-                    $accountDetails = $db->q('SELECT * FROM `gds_users` WHERE `user_id64` = ? LIMIT 0,1;',
-                        'i',
-                        $steamID64);
-
-                    if (!empty($accountDetails)) {
-                        //SET ACCESS PERMISSION
-                        $_SESSION['access_feeds'] = $accountDetails[0]['access_feeds'];
-                        $_SESSION['isAdmin'] = $accountDetails[0]['isAdmin'];
-                    }
 
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? '.' . $_SERVER['HTTP_HOST'] : false;
                     setcookie('session', $cookie, time() + 60 * 60 * 24 * 30, '/', $domain);

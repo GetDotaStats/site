@@ -8,16 +8,13 @@ try {
         session_start();
     }
 
-    $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
-    $db->q('SET NAMES utf8;');
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
 
     $steam_api_domain = 'getdotastats.com'; //////////////////////////////////////////////////
 
     $user = new user;
     $user->apikey = $api_key6; // put your API key here
     $user->domain = $steam_api_domain; // put your domain
-
-    //echo $steam_api_key . '<br />' . $steam_api_domain . '<br />';
 
     if (isset($_GET['login'])) {
         $user->signIn('../', $db);
@@ -26,22 +23,6 @@ try {
         $user->signOut('../', $db);
     }
 
-
-    /*if(empty($_SESSION['user_id']))
-    {
-        print ('<form action="?login" method="post">
-            <input type="image" src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_border.png"/>
-            </form>');
-    }
-    else
-    {
-        echo '<pre>';
-        echo $_SESSION['user_name'].'<br />';
-        print('<form method="post"><button title="Logout" name="logout">Logout</button></form>');
-        print_r( $user->GetPlayerSummaries($_SESSION['user_id']) );
-        echo '</pre>';
-    }
-    */
     /*
     stdClass Object
     (
