@@ -13,7 +13,7 @@ require_once('../connections/parameters.php');
 <div class="row">
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable link_no_decoration" href="#d2mods__hof1_connects">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof_leaderboard?hof=1">
                 <span class="h3">Connections</span>
             </a>
         </div>
@@ -25,7 +25,7 @@ require_once('../connections/parameters.php');
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable link_no_decoration" href="#d2mods__hof2_kills">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof_leaderboard?hof=2">
                 <span class="h3">Kills</span>
             </a>
         </div>
@@ -40,12 +40,12 @@ require_once('../connections/parameters.php');
 <div class="row">
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof1_connects">View HoF</a>
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof_leaderboard?hof=1">View HoF</a>
         </div>
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof2_kills">View HoF</a>
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof_leaderboard?hof=2">View HoF</a>
         </div>
     </div>
 </div>
@@ -53,7 +53,7 @@ require_once('../connections/parameters.php');
 <div class="row">
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable link_no_decoration" href="#d2mods__hof3_lobbies">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof_leaderboard?hof=3">
                 <span class="h3">Lobbies</span>
             </a>
         </div>
@@ -66,7 +66,7 @@ require_once('../connections/parameters.php');
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable link_no_decoration" href="#d2mods__hof4_wins">
+            <a class="nav-clickable link_no_decoration" href="#d2mods__hof_leaderboard?hof=4">
                 <span class="h3">Wins</span>
             </a>
         </div>
@@ -79,12 +79,12 @@ require_once('../connections/parameters.php');
 <div class="row">
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof3_lobbies">View HoF</a>
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof_leaderboard?hof=3">View HoF</a>
         </div>
     </div>
     <div class="col-md-6">
         <div class="text-center">
-            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof4_wins">View HoF</a>
+            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__hof_leaderboard?hof=4">View HoF</a>
         </div>
     </div>
 </div>

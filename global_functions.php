@@ -534,7 +534,7 @@ if (!function_exists('relative_time_v3')) {
                     $timeString = 'hour';
                     break;
                 default:
-                    $number = number_format(((time() - $time) / 60), $decimals);
+                    $number = number_format(((time() - $time) / 60), 0);
                     $timeString = 'minute';
                     break;
             }
@@ -557,11 +557,11 @@ if (!function_exists('relative_time_v3')) {
                     $timeString = 'hour';
                     break;
                 case 'minute':
-                    $number = number_format(((time() - $time) / 60), $decimals);
+                    $number = number_format(((time() - $time) / 60), 0);
                     $timeString = 'minute';
                     break;
                 case 'second':
-                    $number = number_format(((time() - $time)), $decimals);
+                    $number = number_format(((time() - $time)), 0);
                     $timeString = 'second';
                     break;
                 default:
@@ -1005,13 +1005,13 @@ if (!class_exists('SteamID')) {
 
         public function setSteamID($steam_id)
         {
-            if (empty($steam_id)) {
+            if (empty($steam_id) || !is_numeric($steam_id)) {
                 throw new RuntimeException('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
-            } elseif (ctype_digit($steam_id) && strlen($steam_id) === 17) {
+            } elseif (strlen($steam_id) === 17) {
                 $this->steamID64 = $steam_id;
                 $this->steamID32 = $this->convert64to32($steam_id);
                 $this->steamID = $this->convert64toID($steam_id);
-            } elseif (ctype_digit($steam_id) && strlen($steam_id) != 17) {
+            } elseif (strlen($steam_id) != 17) {
                 $this->steamID64 = $this->convert32to64($steam_id);
                 $this->steamID32 = $steam_id;
                 $this->steamID = $this->convert32toID($steam_id);
@@ -1085,5 +1085,68 @@ if (!class_exists('SteamID')) {
         {
             return $this->steamID64;
         }
+    }
+}
+
+if (!function_exists('updateUserDetails')) {
+    function updateUserDetails($steamID64, $api_key)
+    {
+        global $memcache, $db;
+
+        if (!$memcache) {
+            throw new Exception("No memcached instance to use!");
+        }
+
+        if (!$db) {
+            throw new Exception("No DB instance to use!");
+        }
+
+        $steamWebAPI = new steam_webapi($api_key);
+        $playerID = new SteamID($steamID64);
+
+        $playerDetails = $memcache->get('cron_user_details' . $steamID64);
+        if (empty($playerDetails)) {
+            $playerDetails_tmp = $steamWebAPI->GetPlayerSummariesV2($playerID->getSteamID64());
+
+            if (!empty($playerDetails_tmp)) {
+                $playerDetails[0]['user_id64'] = $playerID->getSteamID64();
+                $playerDetails[0]['user_id32'] = $playerID->getSteamID32();
+                $playerDetails[0]['user_name'] = htmlentities($playerDetails_tmp['response']['players'][0]['personaname']);
+                $playerDetails[0]['user_avatar'] = $playerDetails_tmp['response']['players'][0]['avatar'];
+                $playerDetails[0]['user_avatar_medium'] = $playerDetails_tmp['response']['players'][0]['avatarmedium'];
+                $playerDetails[0]['user_avatar_large'] = $playerDetails_tmp['response']['players'][0]['avatarfull'];
+
+
+                $sqlResult = $db->q(
+                    'INSERT INTO `gds_users`
+                        (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                        ON DUPLICATE KEY UPDATE
+                          `user_name` = VALUES(`user_name`),
+                          `user_avatar` = VALUES(`user_avatar`),
+                          `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                          `user_avatar_large` = VALUES(`user_avatar_large`);',
+                    'ssssss',
+                    array(
+                        $playerDetails[0]['user_id64'],
+                        $playerDetails[0]['user_id32'],
+                        $playerDetails[0]['user_name'],
+                        $playerDetails[0]['user_avatar'],
+                        $playerDetails[0]['user_avatar_medium'],
+                        $playerDetails[0]['user_avatar_large']
+                    )
+                );
+
+                if ($sqlResult) {
+                    return true;
+                }
+
+                $memcache->set('cron_user_details' . $steamID64, $playerDetails, 0, 5 * 60);
+
+                unset($playerDetails_tmp);
+                unset($playerDetails);
+            }
+        }
+        return false;
     }
 }

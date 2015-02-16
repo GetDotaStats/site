@@ -1,12 +1,16 @@
 #!/usr/bin/php -q
 <?php
-require_once('../../functions.php');
-require_once('../../../global_functions.php');
-require_once('../../../connections/parameters.php');
+try {
+    require_once('../../functions.php');
+    require_once('../../../global_functions.php');
+    require_once('../../../connections/parameters.php');
 
-$db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
+    $db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
+    if (empty($db)) throw new Exception('No DB!');
 
-if ($db) {
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
     //MOD-HERO BREAKDOWN
     {
         $time_start1 = time();
@@ -69,18 +73,47 @@ if ($db) {
             $steamID = new SteamID();
             $steamWebAPI = new steam_webapi($api_key1);
 
+            //CREATE TABLE
+            {
+                try {
+                    $time_start2 = time();
+                    echo '<h3>HoF - Table Setup</h3>';
+
+                    $db->q(
+                        "CREATE TABLE IF NOT EXISTS `cron_hof` (
+                                  `hof_id` int(11) NOT NULL,
+                                  `player_sid32` bigint(20) NOT NULL,
+                                  `player_sid64` bigint(30) NOT NULL,
+                                  `hof_rank` int(100) NOT NULL,
+                                  `hof_score1` bigint(20) DEFAULT NULL,
+                                  `hof_score2` bigint(20) DEFAULT NULL,
+                                  `hof_score3` bigint(20) DEFAULT NULL,
+                                  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                  `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+                                  PRIMARY KEY (`hof_id`,`hof_rank`),
+                                  INDEX `player_sid32` (`player_sid32`),
+                                  INDEX `player_sid64` (`player_sid64`),
+                                  INDEX `date_updated` (`date_updated`),
+                                  INDEX `date_recorded` (`date_recorded`)
+                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+                    );
+
+                    $time_end2 = time();
+                    echo 'Running: ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
+                } catch (Exception $e) {
+                    echo 'Caught Exception (HOF) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+                }
+            }
+
             //HOF1 - Connects
             {
                 try {
                     $time_start2 = time();
                     echo '<h3>HoF1 - Connects</h3>';
 
-                    $db->q("DROP TABLE IF EXISTS `cron_hof1_temp`;");
-
                     $sqlResult = $db->q(
-                        "CREATE TABLE IF NOT EXISTS `cron_hof1_temp`
-                            SELECT
-                                mmp.`player_sid32`,
+                        "SELECT
+                                mmp.`player_sid32` as player_sid,
                                 COUNT(*) as num_games
                             FROM `mod_match_players` mmp
                             WHERE mmp.`connection_status` = 2
@@ -89,103 +122,78 @@ if ($db) {
                             LIMIT 0,100;"
                     );
 
-                    echo $sqlResult
-                        ? "[SUCCESS] Table created!<br />"
-                        : "[FAILURE] Table not created!<br />";
+                    if (!empty($sqlResult)) {
+                        foreach ($sqlResult as $key => $value) {
+                            $tempArray = array();
 
-                    if ($sqlResult) {
-                        $db->q(
-                            "CREATE TABLE IF NOT EXISTS `cron_hof1` (
-                              `player_sid32` bigint(255) NOT NULL,
-                              `num_games` bigint(21) NOT NULL DEFAULT '0',
-                              INDEX `player_sid32` (`player_sid32`),
-                              INDEX `num_games` (`num_games`)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-                        );
+                            if(!empty($value['player_sid'])){
+                                $playerID = new SteamID($value['player_sid']);
 
-                        $db->q(
-                            "TRUNCATE TABLE `cron_hof1`;"
-                        );
+                                $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
-                        $sqlResult = $db->q(
-                            "INSERT INTO `cron_hof1`
-                                SELECT * FROM `cron_hof1_temp`;"
-                        );
-
-                        echo $sqlResult
-                            ? "[SUCCESS] Final table populated!<br />"
-                            : "[FAILURE] Final table not populated!<br />";
-
-                        $db->q("DROP TABLE IF EXISTS `cron_hof1_temp`;");
-                    }
-
-                    $hof_test = $db->q(
-                        'SELECT * FROM cron_hof1;'
-                    );
-
-                    if (!empty($hof_test)) {
-                        foreach ($hof_test as $key => $value) {
-                            if ($value['player_sid32'] != 0) {
-                                /*$hof1_user_details = $db->q(
-                                    'SELECT
-                                            `user_id64`,
-                                            `user_id32`,
-                                            `user_name`,
-                                            `user_avatar`,
-                                            `user_avatar_medium`,
-                                            `user_avatar_large`
-                                    FROM `gds_users`
-                                    WHERE `user_id32` = ?
-                                    LIMIT 0,1;',
-                                    's',
-                                    $value['player_sid32']
-                                );*/
-
-                                if (empty($hof1_user_details)) {
-                                    sleep(0.5);
-                                    $steamID->setSteamID($value['player_sid32']);
-                                    $hof1_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
-
-                                    if (!empty($hof1_user_details_temp)) {
-                                        $hof1_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                        $hof1_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                        $hof1_user_details[0]['user_name'] = htmlentities($hof1_user_details_temp['response']['players'][0]['personaname']);
-                                        $hof1_user_details[0]['user_avatar'] = $hof1_user_details_temp['response']['players'][0]['avatar'];
-                                        $hof1_user_details[0]['user_avatar_medium'] = $hof1_user_details_temp['response']['players'][0]['avatarmedium'];
-                                        $hof1_user_details[0]['user_avatar_large'] = $hof1_user_details_temp['response']['players'][0]['avatarfull'];
-
-
-                                        $db->q(
-                                            'INSERT INTO `gds_users`
-                                                (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)
-                                                ON DUPLICATE KEY UPDATE
-                                                  `user_name` = VALUES(`user_name`),
-                                                  `user_avatar` = VALUES(`user_avatar`),
-                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
-                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
-                                            'ssssss',
-                                            array(
-                                                $hof1_user_details[0]['user_id64'],
-                                                $hof1_user_details[0]['user_id32'],
-                                                $hof1_user_details[0]['user_name'],
-                                                $hof1_user_details[0]['user_avatar'],
-                                                $hof1_user_details[0]['user_avatar_medium'],
-                                                $hof1_user_details[0]['user_avatar_large']
-                                            )
-                                        );
-
-                                        unset($hof1_user_details_temp);
-                                        unset($hof1_user_details);
-                                    }
-                                }
+                                $tempArray['player_sid32'] = $playerID->getSteamID32();
+                                $tempArray['player_sid64'] = $playerID->getSteamID64();
                             }
+                            else{
+                                $playerDBStatus = false;
+                                $tempArray['player_sid32'] = 0;
+                                $tempArray['player_sid64'] = 0;
+                            }
+
+                            $tempArray['hof_rank'] = ($key + 1);
+                            $tempArray['hof_score1'] = $value['num_games'];
+                            $tempArray['hof_score2'] = NULL;
+                            $tempArray['hof_score3'] = NULL;
+
+                            $sqlResult = $db->q(
+                                'INSERT INTO `cron_hof`(
+                                        `hof_id`,
+                                        `player_sid32`,
+                                        `player_sid64`,
+                                        `hof_rank`,
+                                        `hof_score1`,
+                                        `hof_score2`,
+                                        `hof_score3`,
+                                        `date_updated`,
+                                        `date_recorded`
+                                    )
+                                VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL)
+                                ON DUPLICATE KEY UPDATE
+                                    `player_sid32` = VALUES(`player_sid32`),
+                                    `player_sid64` = VALUES(`player_sid64`),
+                                    `hof_score1` = VALUES(`hof_score1`),
+                                    `hof_score2` = VALUES(`hof_score2`),
+                                    `hof_score3` = VALUES(`hof_score3`),
+                                    `date_updated` = NULL;',
+                                'ississs',
+                                array(
+                                    1,
+                                    $tempArray['player_sid32'],
+                                    $tempArray['player_sid64'],
+                                    ($key + 1),
+                                    $tempArray['hof_score1'],
+                                    $tempArray['hof_score2'],
+                                    $tempArray['hof_score3'],
+                                )
+                            );
+
+                            echo $sqlResult
+                                ? "[SUCCESS] (" . $tempArray['player_sid64'] . ") Player HoF updated!"
+                                : "[FAILURE] (" . $tempArray['player_sid64'] . ") Player HoF not updated!";
+
+                            echo $playerDBStatus
+                                ? " <strong>UPDATED</strong>"
+                                : "";
+
+                            echo '<br />';
+
+                            unset($tempArray);
+                            unset($playerDBStatus);
+                            unset($sqlResult);
                         }
                     } else {
-                        echo 'No users in HoF to test for account<br />';
+                        echo '[FAILURE] No players found to fill HoF<br />';
                     }
-
-                    unset($hof_test);
 
                     $time_end2 = time();
                     echo 'Running: ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
@@ -200,12 +208,9 @@ if ($db) {
                     $time_start2 = time();
                     echo '<h3>HoF2 - Kills</h3>';
 
-                    $db->q("DROP TABLE IF EXISTS `cron_hof2_temp`;");
-
                     $sqlResult = $db->q(
-                        "CREATE TABLE IF NOT EXISTS `cron_hof2_temp`
-                            SELECT
-                                mmh.`player_sid32`,
+                        "SELECT
+                                mmh.`player_sid32` as player_sid,
                                 SUM(mmh.`hero_kills`) as num_kills
                             FROM `mod_match_heroes` mmh
                             GROUP BY mmh.`player_sid32`
@@ -213,103 +218,78 @@ if ($db) {
                             LIMIT 0,100;"
                     );
 
-                    echo $sqlResult
-                        ? "[SUCCESS] Table created!<br />"
-                        : "[FAILURE] Table not created!<br />";
+                    if (!empty($sqlResult)) {
+                        foreach ($sqlResult as $key => $value) {
+                            $tempArray = array();
 
-                    if ($sqlResult) {
-                        $db->q(
-                            "CREATE TABLE IF NOT EXISTS `cron_hof2` (
-                              `player_sid32` bigint(255) NOT NULL,
-                              `num_kills` decimal(65,0) NOT NULL DEFAULT '0',
-                              INDEX `player_sid32` (`player_sid32`),
-                              INDEX `num_kills` (`num_kills`)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-                        );
+                            if(!empty($value['player_sid'])){
+                                $playerID = new SteamID($value['player_sid']);
 
-                        $db->q(
-                            "TRUNCATE TABLE `cron_hof2`;"
-                        );
+                                $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
-                        $sqlResult = $db->q(
-                            "INSERT INTO `cron_hof2`
-                                SELECT * FROM `cron_hof2_temp`;"
-                        );
-
-                        echo $sqlResult
-                            ? "[SUCCESS] Final table populated!<br />"
-                            : "[FAILURE] Final table not populated!<br />";
-
-                        $db->q("DROP TABLE IF EXISTS `cron_hof2_temp`;");
-                    }
-
-                    $hof_test = $db->q(
-                        'SELECT * FROM cron_hof2;'
-                    );
-
-                    if (!empty($hof_test)) {
-                        foreach ($hof_test as $key => $value) {
-                            if ($value['player_sid32'] != 0) {
-                                /*$hof2_user_details = $db->q(
-                                    'SELECT
-                                            `user_id64`,
-                                            `user_id32`,
-                                            `user_name`,
-                                            `user_avatar`,
-                                            `user_avatar_medium`,
-                                            `user_avatar_large`
-                                    FROM `gds_users`
-                                    WHERE `user_id32` = ?
-                                    LIMIT 0,1;',
-                                    's',
-                                    $value['player_sid32']
-                                );*/
-
-                                if (empty($hof2_user_details)) {
-                                    sleep(0.5);
-                                    $steamID->setSteamID($value['player_sid32']);
-                                    $hof2_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
-
-                                    if (!empty($hof2_user_details_temp)) {
-                                        $hof2_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                        $hof2_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                        $hof2_user_details[0]['user_name'] = htmlentities($hof2_user_details_temp['response']['players'][0]['personaname']);
-                                        $hof2_user_details[0]['user_avatar'] = $hof2_user_details_temp['response']['players'][0]['avatar'];
-                                        $hof2_user_details[0]['user_avatar_medium'] = $hof2_user_details_temp['response']['players'][0]['avatarmedium'];
-                                        $hof2_user_details[0]['user_avatar_large'] = $hof2_user_details_temp['response']['players'][0]['avatarfull'];
-
-
-                                        $db->q(
-                                            'INSERT INTO `gds_users`
-                                                (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)
-                                                ON DUPLICATE KEY UPDATE
-                                                  `user_name` = VALUES(`user_name`),
-                                                  `user_avatar` = VALUES(`user_avatar`),
-                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
-                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
-                                            'ssssss',
-                                            array(
-                                                $hof2_user_details[0]['user_id64'],
-                                                $hof2_user_details[0]['user_id32'],
-                                                $hof2_user_details[0]['user_name'],
-                                                $hof2_user_details[0]['user_avatar'],
-                                                $hof2_user_details[0]['user_avatar_medium'],
-                                                $hof2_user_details[0]['user_avatar_large']
-                                            )
-                                        );
-
-                                        unset($hof2_user_details);
-                                        unset($hof2_user_details_temp);
-                                    }
-                                }
+                                $tempArray['player_sid32'] = $playerID->getSteamID32();
+                                $tempArray['player_sid64'] = $playerID->getSteamID64();
                             }
+                            else{
+                                $playerDBStatus = false;
+                                $tempArray['player_sid32'] = 0;
+                                $tempArray['player_sid64'] = 0;
+                            }
+
+                            $tempArray['hof_rank'] = ($key + 1);
+                            $tempArray['hof_score1'] = $value['num_kills'];
+                            $tempArray['hof_score2'] = NULL;
+                            $tempArray['hof_score3'] = NULL;
+
+                            $sqlResult = $db->q(
+                                'INSERT INTO `cron_hof`(
+                                        `hof_id`,
+                                        `player_sid32`,
+                                        `player_sid64`,
+                                        `hof_rank`,
+                                        `hof_score1`,
+                                        `hof_score2`,
+                                        `hof_score3`,
+                                        `date_updated`,
+                                        `date_recorded`
+                                    )
+                                VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL)
+                                ON DUPLICATE KEY UPDATE
+                                    `player_sid32` = VALUES(`player_sid32`),
+                                    `player_sid64` = VALUES(`player_sid64`),
+                                    `hof_score1` = VALUES(`hof_score1`),
+                                    `hof_score2` = VALUES(`hof_score2`),
+                                    `hof_score3` = VALUES(`hof_score3`),
+                                    `date_updated` = NULL;',
+                                'ississs',
+                                array(
+                                    2,
+                                    $tempArray['player_sid32'],
+                                    $tempArray['player_sid64'],
+                                    ($key + 1),
+                                    $tempArray['hof_score1'],
+                                    $tempArray['hof_score2'],
+                                    $tempArray['hof_score3'],
+                                )
+                            );
+
+                            echo $sqlResult
+                                ? "[SUCCESS] (" . $tempArray['player_sid64'] . ") Player HoF updated!"
+                                : "[FAILURE] (" . $tempArray['player_sid64'] . ") Player HoF not updated!";
+
+                            echo $playerDBStatus
+                                ? " <strong>UPDATED</strong>"
+                                : "";
+
+                            echo '<br />';
+
+                            unset($tempArray);
+                            unset($playerDBStatus);
+                            unset($sqlResult);
                         }
                     } else {
-                        echo 'No users in HoF to test for account<br />';
+                        echo '[FAILURE] No players found to fill HoF<br />';
                     }
-
-                    unset($hof_test);
 
                     $time_end2 = time();
                     echo 'Running: ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
@@ -324,119 +304,94 @@ if ($db) {
                     $time_start2 = time();
                     echo '<h3>HoF3 - Lobbies</h3>';
 
-                    $db->q("DROP TABLE IF EXISTS `cron_hof3_temp`;");
-
                     $sqlResult = $db->q(
-                        "CREATE TABLE IF NOT EXISTS `cron_hof3_temp`
-                            SELECT
-                                `player_sid64`,
+                        "SELECT
+                                `lobby_leader` as player_sid,
                                 COUNT(*) as num_lobbies
                             FROM (
                                 SELECT
-                                    ll.`lobby_leader` as player_sid64,
+                                    ll.`lobby_leader`,
                                     ll.`lobby_id`
                                 FROM `lobby_list` ll
                                 WHERE ll.`lobby_started` = 1
                             ) as t1
-                            GROUP BY player_sid64
+                            GROUP BY lobby_leader
                             ORDER BY num_lobbies DESC
                             LIMIT 0,100;"
                     );
 
-                    echo $sqlResult
-                        ? "[SUCCESS] Table created!<br />"
-                        : "[FAILURE] Table not created!<br />";
+                    if (!empty($sqlResult)) {
+                        foreach ($sqlResult as $key => $value) {
+                            $tempArray = array();
 
-                    if ($sqlResult) {
-                        $db->q(
-                            "CREATE TABLE IF NOT EXISTS `cron_hof3` (
-                              `player_sid64` bigint(255) NOT NULL,
-                              `num_lobbies` bigint(21) NOT NULL DEFAULT '0',
-                              INDEX `player_sid64` (`player_sid64`),
-                              INDEX `num_lobbies` (`num_lobbies`)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-                        );
+                            if(!empty($value['player_sid'])){
+                                $playerID = new SteamID($value['player_sid']);
 
-                        $db->q(
-                            "TRUNCATE TABLE `cron_hof3`;"
-                        );
+                                $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
-                        $sqlResult = $db->q(
-                            "INSERT INTO `cron_hof3`
-                                SELECT * FROM `cron_hof3_temp`;"
-                        );
-
-                        echo $sqlResult
-                            ? "[SUCCESS] Final table populated!<br />"
-                            : "[FAILURE] Final table not populated!<br />";
-
-                        $db->q("DROP TABLE IF EXISTS `cron_hof3_temp`;");
-                    }
-
-                    $hof_test = $db->q(
-                        'SELECT * FROM cron_hof3;'
-                    );
-
-                    if (!empty($hof_test)) {
-                        foreach ($hof_test as $key => $value) {
-                            if ($value['player_sid64'] != 0) {
-                                /*$hof3_user_details = $db->q(
-                                    'SELECT
-                                            `user_id64`,
-                                            `user_id32`,
-                                            `user_name`,
-                                            `user_avatar`,
-                                            `user_avatar_medium`,
-                                            `user_avatar_large`
-                                    FROM `gds_users`
-                                    WHERE `user_id64` = ?
-                                    LIMIT 0,1;',
-                                    's',
-                                    $value['player_sid64']
-                                );*/
-
-                                if (empty($hof3_user_details)) {
-                                    sleep(0.5);
-                                    $steamID->setSteamID($value['player_sid64']);
-                                    $hof3_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
-
-                                    if (!empty($hof3_user_details_temp)) {
-                                        $hof3_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                        $hof3_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                        $hof3_user_details[0]['user_name'] = htmlentities($hof3_user_details_temp['response']['players'][0]['personaname']);
-                                        $hof3_user_details[0]['user_avatar'] = $hof3_user_details_temp['response']['players'][0]['avatar'];
-                                        $hof3_user_details[0]['user_avatar_medium'] = $hof3_user_details_temp['response']['players'][0]['avatarmedium'];
-                                        $hof3_user_details[0]['user_avatar_large'] = $hof3_user_details_temp['response']['players'][0]['avatarfull'];
-
-
-                                        $db->q(
-                                            'INSERT INTO `gds_users`
-                                                (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)
-                                                ON DUPLICATE KEY UPDATE
-                                                  `user_name` = VALUES(`user_name`),
-                                                  `user_avatar` = VALUES(`user_avatar`),
-                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
-                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
-                                            'ssssss',
-                                            array(
-                                                $hof3_user_details[0]['user_id64'],
-                                                $hof3_user_details[0]['user_id32'],
-                                                $hof3_user_details[0]['user_name'],
-                                                $hof3_user_details[0]['user_avatar'],
-                                                $hof3_user_details[0]['user_avatar_medium'],
-                                                $hof3_user_details[0]['user_avatar_large']
-                                            )
-                                        );
-                                    }
-                                }
+                                $tempArray['player_sid32'] = $playerID->getSteamID32();
+                                $tempArray['player_sid64'] = $playerID->getSteamID64();
                             }
+                            else{
+                                $playerDBStatus = false;
+                                $tempArray['player_sid32'] = 0;
+                                $tempArray['player_sid64'] = 0;
+                            }
+
+                            $tempArray['hof_rank'] = ($key + 1);
+                            $tempArray['hof_score1'] = $value['num_lobbies'];
+                            $tempArray['hof_score2'] = NULL;
+                            $tempArray['hof_score3'] = NULL;
+
+                            $sqlResult = $db->q(
+                                'INSERT INTO `cron_hof`(
+                                        `hof_id`,
+                                        `player_sid32`,
+                                        `player_sid64`,
+                                        `hof_rank`,
+                                        `hof_score1`,
+                                        `hof_score2`,
+                                        `hof_score3`,
+                                        `date_updated`,
+                                        `date_recorded`
+                                    )
+                                VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL)
+                                ON DUPLICATE KEY UPDATE
+                                    `player_sid32` = VALUES(`player_sid32`),
+                                    `player_sid64` = VALUES(`player_sid64`),
+                                    `hof_score1` = VALUES(`hof_score1`),
+                                    `hof_score2` = VALUES(`hof_score2`),
+                                    `hof_score3` = VALUES(`hof_score3`),
+                                    `date_updated` = NULL;',
+                                'ississs',
+                                array(
+                                    3,
+                                    $tempArray['player_sid32'],
+                                    $tempArray['player_sid64'],
+                                    ($key + 1),
+                                    $tempArray['hof_score1'],
+                                    $tempArray['hof_score2'],
+                                    $tempArray['hof_score3'],
+                                )
+                            );
+
+                            echo $sqlResult
+                                ? "[SUCCESS] (" . $tempArray['player_sid64'] . ") Player HoF updated!"
+                                : "[FAILURE] (" . $tempArray['player_sid64'] . ") Player HoF not updated!";
+
+                            echo $playerDBStatus
+                                ? " <strong>UPDATED</strong>"
+                                : "";
+
+                            echo '<br />';
+
+                            unset($tempArray);
+                            unset($playerDBStatus);
+                            unset($sqlResult);
                         }
                     } else {
-                        echo 'No users in HoF to test for account<br />';
+                        echo '[FAILURE] No players found to fill HoF<br />';
                     }
-
-                    unset($hof_test);
 
                     $time_end2 = time();
                     echo 'Running: ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
@@ -451,12 +406,9 @@ if ($db) {
                     $time_start2 = time();
                     echo '<h3>HoF4 - Wins</h3>';
 
-                    $db->q("DROP TABLE IF EXISTS `cron_hof4_temp`;");
-
                     $sqlResult = $db->q(
-                        "CREATE TABLE IF NOT EXISTS `cron_hof4_temp`
-                            SELECT
-                                player_sid32,
+                        "SELECT
+                                player_sid32 as player_sid,
                                 SUM(hero_won) as num_wins,
                                 COUNT(hero_won) as num_games
                             FROM `mod_match_heroes`
@@ -465,101 +417,78 @@ if ($db) {
                             LIMIT 0,100;"
                     );
 
-                    echo $sqlResult
-                        ? "[SUCCESS] Table created!<br />"
-                        : "[FAILURE] Table not created!<br />";
+                    if (!empty($sqlResult)) {
+                        foreach ($sqlResult as $key => $value) {
+                            $tempArray = array();
 
-                    if ($sqlResult) {
-                        $db->q(
-                            "CREATE TABLE IF NOT EXISTS `cron_hof4` (
-                              `player_sid32` bigint(255) NOT NULL,
-                              `num_wins` decimal(25,0) DEFAULT NULL,
-                              `num_games` bigint(21) NOT NULL DEFAULT '0',
-                              INDEX `player_sid32` (`player_sid32`),
-                              INDEX `num_wins` (`num_wins`),
-                              INDEX `num_games` (`num_games`)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-                        );
+                            if(!empty($value['player_sid'])){
+                                $playerID = new SteamID($value['player_sid']);
 
-                        $db->q(
-                            "TRUNCATE TABLE `cron_hof4`;"
-                        );
+                                $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
-                        $sqlResult = $db->q(
-                            "INSERT INTO `cron_hof4`
-                                SELECT * FROM `cron_hof4_temp`;"
-                        );
-
-                        echo $sqlResult
-                            ? "[SUCCESS] Final table populated!<br />"
-                            : "[FAILURE] Final table not populated!<br />";
-
-                        $db->q("DROP TABLE IF EXISTS `cron_hof4_temp`;");
-                    }
-
-                    $hof_test = $db->q(
-                        'SELECT * FROM cron_hof4;'
-                    );
-
-                    if (!empty($hof_test)) {
-                        foreach ($hof_test as $key => $value) {
-                            if ($value['player_sid32'] != 0) {
-                                /*$hof4_user_details = $db->q(
-                                    'SELECT
-                                            `user_id64`,
-                                            `user_id32`,
-                                            `user_name`,
-                                            `user_avatar`,
-                                            `user_avatar_medium`,
-                                            `user_avatar_large`
-                                    FROM `gds_users`
-                                    WHERE `user_id32` = ?
-                                    LIMIT 0,1;',
-                                    's',
-                                    $value['player_sid32']
-                                );*/
-
-                                if (empty($hof4_user_details)) {
-                                    sleep(0.5);
-                                    $steamID->setSteamID($value['player_sid32']);
-                                    $hof4_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
-
-                                    if (!empty($hof4_user_details_temp)) {
-                                        $hof4_user_details[0]['user_id64'] = $steamID->getSteamID64();
-                                        $hof4_user_details[0]['user_id32'] = $steamID->getSteamID32();
-                                        $hof4_user_details[0]['user_name'] = htmlentities($hof4_user_details_temp['response']['players'][0]['personaname']);
-                                        $hof4_user_details[0]['user_avatar'] = $hof4_user_details_temp['response']['players'][0]['avatar'];
-                                        $hof4_user_details[0]['user_avatar_medium'] = $hof4_user_details_temp['response']['players'][0]['avatarmedium'];
-                                        $hof4_user_details[0]['user_avatar_large'] = $hof4_user_details_temp['response']['players'][0]['avatarfull'];
-
-
-                                        $db->q(
-                                            'INSERT INTO `gds_users`
-                                                (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
-                                                VALUES (?, ?, ?, ?, ?, ?)
-                                                ON DUPLICATE KEY UPDATE
-                                                  `user_name` = VALUES(`user_name`),
-                                                  `user_avatar` = VALUES(`user_avatar`),
-                                                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
-                                                  `user_avatar_large` = VALUES(`user_avatar_large`);',
-                                            'ssssss',
-                                            array(
-                                                $hof4_user_details[0]['user_id64'],
-                                                $hof4_user_details[0]['user_id32'],
-                                                $hof4_user_details[0]['user_name'],
-                                                $hof4_user_details[0]['user_avatar'],
-                                                $hof4_user_details[0]['user_avatar_medium'],
-                                                $hof4_user_details[0]['user_avatar_large']
-                                            )
-                                        );
-                                    }
-                                }
+                                $tempArray['player_sid32'] = $playerID->getSteamID32();
+                                $tempArray['player_sid64'] = $playerID->getSteamID64();
                             }
+                            else{
+                                $playerDBStatus = false;
+                                $tempArray['player_sid32'] = 0;
+                                $tempArray['player_sid64'] = 0;
+                            }
+
+                            $tempArray['hof_rank'] = ($key + 1);
+                            $tempArray['hof_score1'] = $value['num_wins'];
+                            $tempArray['hof_score2'] = $value['num_games'];
+                            $tempArray['hof_score3'] = NULL;
+
+                            $sqlResult = $db->q(
+                                'INSERT INTO `cron_hof`(
+                                        `hof_id`,
+                                        `player_sid32`,
+                                        `player_sid64`,
+                                        `hof_rank`,
+                                        `hof_score1`,
+                                        `hof_score2`,
+                                        `hof_score3`,
+                                        `date_updated`,
+                                        `date_recorded`
+                                    )
+                                VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL)
+                                ON DUPLICATE KEY UPDATE
+                                    `player_sid32` = VALUES(`player_sid32`),
+                                    `player_sid64` = VALUES(`player_sid64`),
+                                    `hof_score1` = VALUES(`hof_score1`),
+                                    `hof_score2` = VALUES(`hof_score2`),
+                                    `hof_score3` = VALUES(`hof_score3`),
+                                    `date_updated` = NULL;',
+                                'ississs',
+                                array(
+                                    4,
+                                    $tempArray['player_sid32'],
+                                    $tempArray['player_sid64'],
+                                    ($key + 1),
+                                    $tempArray['hof_score1'],
+                                    $tempArray['hof_score2'],
+                                    $tempArray['hof_score3'],
+                                )
+                            );
+
+                            echo $sqlResult
+                                ? "[SUCCESS] (" . $tempArray['player_sid64'] . ") Player HoF updated!"
+                                : "[FAILURE] (" . $tempArray['player_sid64'] . ") Player HoF not updated!";
+
+                            echo $playerDBStatus
+                                ? " <strong>UPDATED</strong>"
+                                : "";
+
+                            echo '<br />';
+
+                            unset($tempArray);
+                            unset($playerDBStatus);
+                            unset($sqlResult);
                         }
                     } else {
-                        echo 'No users in HoF to test for account<br />';
+                        echo '[FAILURE] No players found to fill HoF<br />';
                     }
-                    unset($hof_test);
 
                     $time_end2 = time();
                     echo 'Running: ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
@@ -571,8 +500,13 @@ if ($db) {
             $time_end1 = time();
             echo 'Total Running: ' . ($time_end1 - $time_start1) . " seconds<br /><br />";
             echo '<hr />';
-        } catch (Exception $e) {
+        } catch
+        (Exception $e) {
             echo 'Caught Exception (HOF) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
         }
     }
+
+    $memcache->close();
+} catch (Exception $e) {
+    echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 }
