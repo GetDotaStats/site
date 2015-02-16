@@ -61,7 +61,7 @@ try {
                     ) AS lobby_current_players
                 FROM `lobby_list` ll
                 LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
-                WHERE ll.`lobby_active` = 0
+                WHERE ll.`lobby_started` = 1
                 ORDER BY ll.`date_recorded` DESC
                 LIMIT 0,20;'
             , 5
