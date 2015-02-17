@@ -99,7 +99,7 @@ try {
                     : 'WS';
 
                 $dataRange = !empty($modRange[0]['date_start'])
-                    ? relative_time($modRange[0]['date_start']) . ' - ' . relative_time($modRange[0]['date_end'])
+                    ? relative_time($modRange[0]['date_start']) . ' - ' . relative_time_v3($modRange[0]['date_end'])
                     : 'No data';
 
                 $developerName = !empty($modDetails[0]['user_name'])
@@ -169,10 +169,10 @@ try {
                                     </tr>
                                     <tr>
                                         <th>Description</th>
-                                        <td>' . $modDetails[0]['mod_description'] . '</td>
+                                        <td>' . nl2br($modDetails[0]['mod_description']) . '</td>
                                     </tr>
                                     <tr>
-                                        <th colspan="2" class="text-center">Added ' . relative_time($modDetails[0]['date_recorded']) . '</th>
+                                        <th colspan="2" class="text-center">Added ' . relative_time_v3($modDetails[0]['date_recorded']) . '</th>
                                     </tr>
                                 </table>
                             </div>
@@ -780,7 +780,7 @@ try {
                                     : 'Unknown';
 
                                 $matchDate = !empty($value['match_recorded'])
-                                    ? relative_time($value['match_recorded'])
+                                    ? relative_time_v3($value['match_recorded'])
                                     : 'Unknown';
 
                                 echo '

@@ -67,7 +67,7 @@ try {
                     <tr class="warning">
                         <td colspan="7">
                             <div class="text-right"><strong>' . relative_time($value['date_recorded']) . '</strong> <span class="glyphicon glyphicon-question-sign" title="This mod was added ' . relative_time($value['date_recorded']) . '"></span></div>
-                            ' . $value['mod_description'] . '<br />
+                            ' . nl2br($value['mod_description']) . '<br />
                         </td>
                     </tr>';
             }
