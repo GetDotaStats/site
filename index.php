@@ -134,7 +134,8 @@ try {
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Mods</li>
-                            <li><a class="nav-clickable" href="#admin__mod_approve">Management</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_approve">Approve</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_edit">Edit</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Mini Games</li>
                             <li><a class="nav-clickable" href="#admin__minigames">Management</a></li>
