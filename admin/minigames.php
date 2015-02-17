@@ -17,9 +17,7 @@ try {
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
-    if (empty($adminCheck)) {
-        throw new Exception('Not an admin!');
-    }
+    if (empty($adminCheck)) throw new Exception('Not an admin!');
 
     echo '<h2>Create a Mini Game <small>BETA</small></h2>';
     echo '<p>This form allows admins to create Mini Game entries.</p>';

@@ -17,9 +17,7 @@ try {
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
-    if (empty($adminCheck)) {
-        throw new Exception('Not an admin!');
-    }
+    if (empty($adminCheck)) throw new Exception('Not an admin!');
 
     echo '<h2>List of Moderators</h2>';
 

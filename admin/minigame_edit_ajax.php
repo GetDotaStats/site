@@ -17,9 +17,7 @@ try {
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
-    if (empty($adminCheck)) {
-        throw new Exception('Not an admin!');
-    }
+    if (empty($adminCheck)) throw new Exception('Not an admin!');
 
     if (
         empty($_POST['minigameID']) ||
@@ -29,9 +27,7 @@ try {
         empty($_POST['minigameDecimals']) || !is_numeric($_POST['minigameDecimals']) ||
         empty($_POST['minigameDescription'])
     ) {
-        //unset($_POST['minigameDescription']);
         throw new Exception('Missing or invalid required parameter(s)!');
-        //throw new Exception(serialize($_POST));
     }
 
     $mgID = htmlentities($_POST['minigameID']);
