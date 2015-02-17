@@ -117,7 +117,7 @@ try {
 
         $minigameName = htmlentities($_POST['minigame_name']);
 
-        $minigameDescription = nl2br(htmlentities($_POST['minigame_description']));
+        $minigameDescription = htmlentities($_POST['minigame_description']);
 
         $minigameObjective = !empty($_POST['minigame_objective'])
             ? $_POST['minigame_objective']

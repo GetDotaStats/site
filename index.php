@@ -58,7 +58,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?17" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css?19" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -133,13 +133,14 @@ try {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
-                            <li class="divider"></li>
                             <li class="dropdown-header">Mods</li>
-                            <li><a class="nav-clickable" href="#admin__mod_approve">Approve</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_approve">Management</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Mini Games</li>
-                            <li><a class="nav-clickable" href="#admin__minigame_create">Create</a></li>
+                            <li><a class="nav-clickable" href="#admin__minigames">Management</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Misc.</li>
+                            <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">CSP Reports</li>
                             <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">Last Week</a></li>

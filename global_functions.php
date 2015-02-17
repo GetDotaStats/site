@@ -851,6 +851,13 @@ if (!function_exists("unicodeToUTF_8")) {
     }
 }
 
+if (!function_exists("br2nl")) {
+    function br2nl($string)
+    {
+        return preg_replace('/\<br(\s*)?\/?\>/i', PHP_EOL, $string);
+    }
+}
+
 if (!class_exists('steam_webapi')) {
     class steam_webapi
     {
