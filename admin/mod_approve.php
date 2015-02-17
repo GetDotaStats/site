@@ -135,7 +135,7 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-12 text-center"><input type="submit" value="Approve / Edit"></div>
+                <div class="col-md-12 text-center"><input type="submit" value="Approve"></div>
             </div>';
 
         echo '<input type="hidden" name="modID" value="' . $value['mod_identifier'] . '">';
