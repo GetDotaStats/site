@@ -58,6 +58,10 @@ try {
                 ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new">WS</a>'
                 : 'WG';
 
+            $username = !empty($value['user_name']) && !empty($value['steam_id64'])
+                ? '<a href="https://steamcommunity.com/profiles/' . $value['steam_id64'] . '" target="_blank">' . $value['user_name'] . '</a>'
+                : $value['user_name'];
+
             if (!empty($value['mod_maps']) && $value['mod_maps'] != 'One map per line!') {
                 $modMaps = implode(", ", json_decode($value['mod_maps'], 1));
             } else {
@@ -75,7 +79,7 @@ try {
             echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <th>' . $value['mod_name'] . '</th>
-                        <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $value['user_name'] . '</td>
+                        <td>' . '<img width="20" height="20" src="' . $value['user_avatar'] . '"/> ' . $username . '</td>
                         <th class="text-center">' . $wg . ' || ' . $sg . '</th>
                     </tr>
                     <tr class="warning">
