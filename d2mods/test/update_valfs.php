@@ -42,7 +42,7 @@ try {
                     );
                 }
             } else {
-                echo bootstrapMessage('Oh Snap', 'No known Valfs!', 'dangerk');
+                echo bootstrapMessage('Oh Snap', 'No known Valfs!', 'danger');
             }
         } else {
             echo bootstrapMessage('Oh Snap', 'No DB!', 'danger');
