@@ -197,6 +197,12 @@ try {
                         <option value="divide">Divide</option>
                     </select>';
 
+        $mgActive = isset($value['minigameActive']) && $value['minigameActive'] == 1
+            ? '<input type="radio" name="minigameActive" value="0">No<br />
+                    <input type="radio" name="minigameActive" value="1" checked>Yes'
+            : '<input type="radio" name="minigameActive" value="0" checked>No<br />
+                    <input type="radio" name="minigameActive" value="1">Yes';
+
         $mgFactor = !empty($value['minigameFactor']) && is_numeric($value['minigameFactor'])
             ? '<input class="formTextArea boxsizingBorder" type="number" name="minigameFactor" maxlength="20" size="4" value="' . floatval($value['minigameFactor']) . '" min="0" max="1000">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="minigameFactor" maxlength="20" size="4" value="1" min="0" max="1000">';
@@ -234,6 +240,9 @@ try {
 
                     <div class="col-md-1"><strong>Operator</strong></div>
                     <div class="col-md-2">' . $mgOperator . '</div>
+
+                    <div class="col-md-1"><strong>Active</strong></div>
+                    <div class="col-md-2">' . $mgActive . '</div>
                 </div>';
 
         echo '<span class="h5">&nbsp;</span>';

@@ -24,8 +24,9 @@ try {
         empty($_POST['minigameObjective']) ||
         empty($_POST['minigameOperator']) ||
         empty($_POST['minigameFactor']) || !is_numeric($_POST['minigameFactor']) ||
-        empty($_POST['minigameDecimals']) || !is_numeric($_POST['minigameDecimals']) ||
-        empty($_POST['minigameDescription'])
+        !isset($_POST['minigameDecimals']) || !is_numeric($_POST['minigameDecimals']) ||
+        empty($_POST['minigameDescription']) ||
+        !isset($_POST['minigameActive']) || !is_numeric($_POST['minigameActive'])
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
     }
@@ -36,19 +37,20 @@ try {
     $mgFactor = htmlentities($_POST['minigameFactor']);
     $mgDecimals = htmlentities($_POST['minigameDecimals']);
     $mgDescription = htmlentities($_POST['minigameDescription']);
+    $mgActive = htmlentities($_POST['minigameActive']);
 
     $insertSQL = $db->q(
         'UPDATE `stat_highscore_minigames`
           SET
-            `minigameActive` = 1,
+            `minigameActive` = ?,
             `minigameObjective` = ?,
             `minigameOperator` = ?,
             `minigameFactor` = ?,
             `minigameDecimals` = ?,
             `minigameDescription` = ?
           WHERE `minigameID` = ?;',
-        'ssiiss',
-        $mgObjective, $mgOperator, $mgFactor, $mgDecimals, $mgDescription, $mgID
+        'issiiss',
+        $mgActive, $mgObjective, $mgOperator, $mgFactor, $mgDecimals, $mgDescription, $mgID
     );
 
     if ($insertSQL) {

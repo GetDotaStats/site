@@ -27,7 +27,7 @@ try {
         !empty($_POST['minigame_objective']) &&
         !empty($_POST['minigame_operator']) &&
         !empty($_POST['minigame_factor']) &&
-        !empty($_POST['minigame_decimals'])
+        isset($_POST['minigame_decimals']) && is_numeric($_POST['minigame_decimals'])
     ) {
         $steamAPI = new steam_webapi($api_key1);
         $steamIDconverter = new SteamID();
