@@ -67,11 +67,15 @@ try {
                     );
                 }
 
-                $db->q(
-                    'UPDATE `cron_hs` SET `user_name` = ? WHERE `user_id32` = ?;',
+                $sqlResult = $db->q(
+                    'UPDATE `stat_highscore` SET `user_name` = ? WHERE `user_id32` = ?;',
                     'ss',
                     array($mg_lb_user_details[0]['user_name'], $value['user_id32'])
                 );
+
+                echo $sqlResult
+                    ? "[SUCCESS] Updated name for [" . $steamID->getSteamID64() . "]!<br />"
+                    : "[Failure] Did not update name for [" . $steamID->getSteamID64() . "]!<br />";
             }
         }
     } else {
