@@ -38,6 +38,7 @@ try {
                         "CREATE TABLE IF NOT EXISTS `cron_hs_temp` (
                           `minigameID` varchar(255) NOT NULL,
                           `leaderboard` varchar(255) NOT NULL,
+                          `user_name` varchar(100) NOT NULL,
                           `user_id32` bigint(255) NOT NULL,
                           `highscore_value` bigint(255) NOT NULL,
                           `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -61,6 +62,7 @@ try {
                             SELECT
                               `minigameID`,
                               `leaderboard`,
+                              `user_name`,
                               `user_id32`,
                               `highscore_value`,
                               `date_recorded`
@@ -87,6 +89,7 @@ try {
                             "CREATE TABLE IF NOT EXISTS `cron_hs` (
                               `minigameID` varchar(255) NOT NULL,
                               `leaderboard` varchar(255) NOT NULL,
+                              `user_name` varchar(100) NOT NULL,
                               `user_id32` bigint(255) NOT NULL,
                               `highscore_value` bigint(255) NOT NULL,
                               `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
