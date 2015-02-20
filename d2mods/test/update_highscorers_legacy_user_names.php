@@ -20,7 +20,7 @@ try {
     if (empty($adminCheck)) throw new Exception('Not an admin!');
 
 
-    $badHighScorers = $db->q("SELECT * FROM `cron_hs` WHERE `user_name` = 'Unknown';");
+    $badHighScorers = $db->q("SELECT * FROM `cron_hs`;"); //" WHERE `user_name` = 'Unknown';");
     $webAPI = new steam_webapi($api_key1);
     $steamID = new SteamID();
 
@@ -73,9 +73,11 @@ try {
                     array($mg_lb_user_details[0]['user_name'], $value['user_id32'])
                 );
 
-                echo $sqlResult
-                    ? "[SUCCESS] Updated name for [" . $steamID->getSteamID64() . "]!<br />"
-                    : "[Failure] Did not update name for [" . $steamID->getSteamID64() . "]!<br />";
+                if ($sqlResult) {
+                    echo "[SUCCESS] Updated name for [" . $steamID->getSteamID64() . "]!<br />";
+                }
+
+                flush();
             }
         }
     } else {
