@@ -46,6 +46,9 @@ try {
         );
     }
 
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    if (empty($db)) throw new Exception('No DB!');
+
     $userID = new SteamID($userID);
 
     $lobbyStatus['userID'] = $userID;
@@ -56,8 +59,8 @@ try {
     $lobbyStatus['statsDisabled'] = $statsDisabled;
 
     $sqlResult = $db->q(
-        'INSERT INTO `gds_users_mmr`(`user_id32`, `user_id64`, `user_name`, `user_games`, `user_mmr_solo`, `user_mmr_party`, `user_stats_disabled`, `date_updated`, `date_recorded`)
-            VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL);',
+        'INSERT INTO `gds_users_mmr`(`user_id32`, `user_id64`, `user_name`, `user_games`, `user_mmr_solo`, `user_mmr_party`, `user_stats_disabled`, `date_recorded`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NULL);',
         'sssiiii',
         $userID->getSteamID32(), $userID->getSteamID64(), $username, $totalGames, $soloMMR, $teamMMR, $statsDisabled
     );
