@@ -10,7 +10,7 @@ try {
         : NULL;
 
     $username = !empty($_GET['un'])
-        ? urlencode(unicodeToUTF_8($_GET['un']))
+        ? htmlentities($_GET['un'])
         : NULL;
 
     $totalGames = isset($_GET['tg']) && is_numeric($_GET['tg'])
