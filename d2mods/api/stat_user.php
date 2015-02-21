@@ -33,17 +33,16 @@ try {
     $userID = $steamID->getSteamID64();
 
     if ($userID == NULL || $username == NULL || $totalGames == NULL || $soloMMR == NULL || $teamMMR == NULL) {
-        throw new Exception("Missing parameter(s)." . json_encode(
-                array(
-                    '$userID' => $userID,
-                    '$username' => $username,
-                    '$totalGames' => $totalGames,
-                    '$soloMMR' => $soloMMR,
-                    '$teamMMR' => $teamMMR,
-                    '$statsDisabled' => $statsDisabled
-                )
-            )
+        $lobbyStatus['reported_fields'] = array(
+            '$userID' => $userID,
+            '$username' => $username,
+            '$totalGames' => $totalGames,
+            '$soloMMR' => $soloMMR,
+            '$teamMMR' => $teamMMR,
+            '$statsDisabled' => $statsDisabled
         );
+
+        throw new Exception("Missing parameter(s).");
     }
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
