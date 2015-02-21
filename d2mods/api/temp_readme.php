@@ -65,4 +65,9 @@
 # error, result, token, lobby_ttl, lobby_active, date_keep_alive, date_recorded<br/>
 * string describing what happened, string describing success, secure token, how long the lobby is alive in minutes, whether the lobby is currently active, when the last keep_alive was sent (string), when the lobby was made (string)
 <br/>
+<h2>stat_user GET {uid, un, tg, sm, tm, sd}</h2>
+* userID, username, totalGames, soloMMR, teamMMR, statsDisabled (either 0 or 1)<br/>
+- No output<br/>
+# error, result<br/>
+* string describing what happened, string describing success<br/>
 <br/>
