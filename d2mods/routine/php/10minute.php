@@ -53,7 +53,11 @@ try {
                         $leaderboard = $value['leaderboard'];
                         $mgName = $value['minigameName'];
 
-                        $mgObjective = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'min'
+                        $mgObjective1 = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'min'
+                            ? 'MIN'
+                            : 'MAX';
+
+                        $mgObjective2 = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'min'
                             ? 'ASC'
                             : 'DESC';
 
@@ -64,12 +68,12 @@ try {
                               `leaderboard`,
                               `user_name`,
                               `user_id32`,
-                              `highscore_value`,
+                              $mgObjective1(`highscore_value`) as `highscore_value`,
                               `date_recorded`
                             FROM `stat_highscore`
                             WHERE `minigameID` = ? AND `leaderboard` = ?
                             GROUP BY `minigameID`, `leaderboard`, `user_id32`
-                            ORDER BY `minigameID`, `leaderboard`, `highscore_value` $mgObjective
+                            ORDER BY `minigameID`, `leaderboard`, `highscore_value` $mgObjective2
                             LIMIT 0,20;",
                             'ss',
                             array($minigameID, $leaderboard)
