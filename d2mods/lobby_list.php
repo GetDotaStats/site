@@ -168,8 +168,8 @@ try {
 
                 $lobbyLeaderName = htmlentitiesdecode_custom($value['lobby_leader_name']);
                 if (!empty($lobbyLeaderName)) {
-                    if (strlen($lobbyLeaderName) > 12) {
-                        $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 9) . '...'));
+                    if (strlen($lobbyLeaderName) > 13) {
+                        $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 10) . '...'));
                     } else {
                         $lobbyLeaderName = strip_tags(htmlentities_custom($lobbyLeaderName));
                     }
