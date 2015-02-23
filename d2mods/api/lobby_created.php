@@ -47,9 +47,11 @@ try {
         ? htmlentities_custom($_GET['lo'])
         : NULL;
 
-    $lobbyVersion = !empty($_GET['lv'])
+    $lobbyVersion = isset($_GET['lv']) && is_numeric($_GET['lv'])
         ? $_GET['lv']
         : NULL;
+
+    if ($lobbyVersion < 0.22) throw new Exception('Client too far out of date! Update please.');
 
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $lobbySecureToken = '';
