@@ -142,6 +142,7 @@ try {
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
                             <li><a class="nav-clickable" href="#admin__user_mmr">MMR List</a></li>
+                            <li><a class="nav-clickable" href="#admin__user_mmr_graphs">MMR Graphs</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
