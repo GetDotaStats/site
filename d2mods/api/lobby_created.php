@@ -48,7 +48,7 @@ try {
         : NULL;
 
     $lobbyVersion = !empty($_GET['lv'])
-        ? htmlentities_custom($_GET['lv'])
+        ? $_GET['lv']
         : NULL;
 
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
