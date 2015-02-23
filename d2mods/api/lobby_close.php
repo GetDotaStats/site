@@ -14,32 +14,28 @@ try {
         ? $_GET['t']
         : NULL;
 
-    $lobbyStarted = !empty($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] == 1
+    $lobbyStarted = isset($_GET['s']) && $_GET['s'] == 1
         ? 1
         : 0;
 
     if (!empty($lobbyID) && !empty($token)) {
         $lobbyStatus = array();
 
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-        $db->q('SET NAMES utf8;');
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+        if (empty($db)) throw new Exception('No DB!');
 
-        if ($db) {
-            $sqlResult = $db->q(
-                'UPDATE `lobby_list` SET `lobby_active` = 0, `lobby_hosted` = 0, `lobby_started` = ? WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
-                'iis',
-                $lobbyStarted, $lobbyID, $token
-            );
+        $sqlResult = $db->q(
+            'UPDATE `lobby_list` SET `lobby_active` = 0, `lobby_hosted` = 0, `lobby_started` = ? WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+            'iis',
+            $lobbyStarted, $lobbyID, $token
+        );
 
-            if (!empty($sqlResult)) {
-                //RETURN LOBBY ID
-                $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' closed!';
-            } else {
-                //SOMETHING FUNKY HAPPENED
-                $lobbyStatus['error'] = 'Unknown error!';
-            }
+        if (!empty($sqlResult)) {
+            //RETURN LOBBY ID
+            $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' closed!';
         } else {
-            $lobbyStatus['error'] = 'No DB connection!';
+            //SOMETHING FUNKY HAPPENED
+            $lobbyStatus['error'] = 'Unknown error!';
         }
     } else {
         $lobbyStatus['error'] = 'Missing field!';

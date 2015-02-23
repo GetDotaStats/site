@@ -11,7 +11,7 @@ try {
         : NULL;
 
     $map = !empty($_GET['map'])
-        ? urlencode(unicodeToUTF_8($_GET['map']))
+        ? htmlentities_custom($_GET['map'])
         : NULL;
 
     $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp'])
@@ -23,7 +23,7 @@ try {
         : 0;
 
     $lobbyName = !empty($_GET['ln'])
-        ? urlencode(unicodeToUTF_8($_GET['ln']))
+        ? htmlentities_custom($_GET['ln'])
         : 'Custom Lobby #' . $lobbyID;
 
     $token = !empty($_GET['t'])
@@ -33,26 +33,22 @@ try {
     if (!empty($lobbyID) && !empty($map) && !empty($maxPlayers) && !empty($token)) {
         $lobbyStatus = array();
 
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-        $db->q('SET NAMES utf8;');
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+        if (empty($db)) throw new Exception('No DB!');
 
-        if ($db) {
-            $sqlResult = $db->q(
-                'UPDATE `lobby_list` SET `lobby_max_players` = ?, `lobby_map` = ?, `lobby_region` = ?, `lobby_name` = ? WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
-                'isisis',
-                $maxPlayers, $map, $region, $lobbyName, $lobbyID, $token
-            );
+        $sqlResult = $db->q(
+            'UPDATE `lobby_list` SET `lobby_max_players` = ?, `lobby_map` = ?, `lobby_region` = ?, `lobby_name` = ? WHERE `lobby_id` = ? AND `lobby_secure_token` = ?;',
+            'isisis',
+            $maxPlayers, $map, $region, $lobbyName, $lobbyID, $token
+        );
 
-            if (!empty($sqlResult)) {
-                //RETURN LOBBY ID
-                $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' updated!';
-                $lobbyStatus['token'] = $token;
-            } else {
-                //SOMETHING FUNKY HAPPENED
-                $lobbyStatus['error'] = 'Unknown error! Fields: {mp: ' . $maxPlayers . ', map: ' . $map . ', region: ' . $region . ', lobbyName: ' . $lobbyName . ', lid: ' . $lobbyID . ', token: ' . $token . '}';
-            }
+        if (!empty($sqlResult)) {
+            //RETURN LOBBY ID
+            $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' updated!';
+            $lobbyStatus['token'] = $token;
         } else {
-            $lobbyStatus['error'] = 'No DB connection!';
+            //SOMETHING FUNKY HAPPENED
+            $lobbyStatus['error'] = 'Unknown error! Fields: {mp: ' . $maxPlayers . ', map: ' . $map . ', region: ' . $region . ', lobbyName: ' . $lobbyName . ', lid: ' . $lobbyID . ', token: ' . $token . '}';
         }
     } else {
         $lobbyStatus['error'] = 'Missing field!';

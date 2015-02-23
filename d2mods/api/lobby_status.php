@@ -17,114 +17,110 @@ try {
         if (!$lobbyStatus) {
             $lobbyStatus = array();
 
-            $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-            $db->q('SET NAMES utf8;');
+            $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+            if (empty($db)) throw new Exception('No DB!');
 
-            if ($db) {
-                $lobbyDetails = $db->q(
-                    'SELECT
-                            ll.`lobby_id`,
-                            ll.`mod_id`,
-                            ll.`workshop_id`,
-                            ll.`lobby_name`,
-                            ll.`lobby_region`,
-                            ll.`lobby_ttl`,
-                            ll.`lobby_min_players`,
-                            ll.`lobby_max_players`,
-                            ll.`lobby_public`,
-                            ll.`lobby_leader`,
-                            ll.`lobby_leader_name`,
-                            ll.`lobby_active`,
-                            ll.`lobby_hosted`,
-                            ll.`lobby_pass`,
-                            ll.`lobby_map`,
-                            ll.`lobby_options`,
-                            ll.`lobby_version`
-                        FROM `lobby_list` ll
-                        WHERE ll.`lobby_id` = ?
-                        ORDER BY `lobby_id` DESC
-                        LIMIT 0,1;',
-                    'i',
-                    $lobbyID
-                );
+            $lobbyDetails = $db->q(
+                'SELECT
+                        ll.`lobby_id`,
+                        ll.`mod_id`,
+                        ll.`workshop_id`,
+                        ll.`lobby_name`,
+                        ll.`lobby_region`,
+                        ll.`lobby_ttl`,
+                        ll.`lobby_min_players`,
+                        ll.`lobby_max_players`,
+                        ll.`lobby_public`,
+                        ll.`lobby_leader`,
+                        ll.`lobby_leader_name`,
+                        ll.`lobby_active`,
+                        ll.`lobby_hosted`,
+                        ll.`lobby_pass`,
+                        ll.`lobby_map`,
+                        ll.`lobby_options`,
+                        ll.`lobby_version`
+                    FROM `lobby_list` ll
+                    WHERE ll.`lobby_id` = ?
+                    ORDER BY `lobby_id` DESC
+                    LIMIT 0,1;',
+                'i',
+                $lobbyID
+            );
 
-                $lobbyPlayers = $db->q(
-                    'SELECT
-                            llp.`lobby_id`,
-                            llp.`user_id64`,
-                            llp.`user_name`,
-                            llp.`user_confirmed`
-                        FROM `lobby_list_players` llp
-                        WHERE lobby_id = ?;',
-                    'i',
-                    $lobbyID
-                );
+            $lobbyPlayers = $db->q(
+                'SELECT
+                        llp.`lobby_id`,
+                        llp.`user_id64`,
+                        llp.`user_name`,
+                        llp.`user_confirmed`
+                    FROM `lobby_list_players` llp
+                    WHERE lobby_id = ?;',
+                'i',
+                $lobbyID
+            );
 
-                if (!empty($lobbyDetails)) {
-                    $lobbyDetails = $lobbyDetails[0];
+            if (!empty($lobbyDetails)) {
+                $lobbyDetails = $lobbyDetails[0];
 
-                    $steamIDLeader = new SteamID($lobbyDetails['lobby_leader']);
-                    $lobbyLeader = $steamIDLeader->getSteamID32();
+                $steamIDLeader = new SteamID($lobbyDetails['lobby_leader']);
+                $lobbyLeader = $steamIDLeader->getSteamID32();
 
-                    $lobbyPlayersArray = array();
-                    if (!empty($lobbyPlayers)) {
-                        foreach ($lobbyPlayers as $key => $value) {
-                            $userName = !empty($value['user_name'])
-                                ? urldecode($value['user_name'])
-                                : 'Unknown??';
+                $lobbyPlayersArray = array();
+                if (!empty($lobbyPlayers)) {
+                    foreach ($lobbyPlayers as $key => $value) {
+                        $userName = !empty($value['user_name'])
+                            ? htmlentitiesdecode_custom($value['user_name'])
+                            : 'Unknown??';
 
-                            $steamIDLeader = new SteamID($value['user_id64']);
-                            $userID_32 = $steamIDLeader->getSteamID32();
+                        $steamIDLeader = new SteamID($value['user_id64']);
+                        $userID_32 = $steamIDLeader->getSteamID32();
 
-                            $lobbyPlayersArray[] = array(
-                                'user_id64' => $userID_32,
-                                'user_name' => $userName,
-                                'user_confirmed' => $value['user_confirmed']
-                            );
-                        }
+                        $lobbyPlayersArray[] = array(
+                            'user_id64' => $userID_32,
+                            'user_name' => $userName,
+                            'user_confirmed' => $value['user_confirmed']
+                        );
                     }
-
-                    $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
-                    $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
-                    $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
-
-                    $lobbyStatus['lobby_name'] = !empty($lobbyDetails['lobby_name'])
-                        ? urldecode($lobbyDetails['lobby_name'])
-                        : 'Custom Lobby #' . $lobbyDetails['lobby_id'];
-
-                    $lobbyStatus['lobby_region'] = !empty($lobbyDetails['lobby_region'])
-                        ? $lobbyDetails['lobby_region']
-                        : 0;
-
-                    $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
-                    $lobbyStatus['lobby_leader'] = $lobbyLeader;
-
-                    $lobbyStatus['lobby_leader_name'] = !empty($lobbyDetails['lobby_leader_name'])
-                        ? urldecode($lobbyDetails['lobby_leader_name'])
-                        : 'Unknown??';
-
-                    $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
-                    $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
-                    $lobbyStatus['lobby_pass'] = urldecode($lobbyDetails['lobby_pass']);
-
-                    $lobbyStatus['lobby_map']  = !empty($lobbyDetails['lobby_map'])
-                        ? urldecode($lobbyDetails['lobby_map'])
-                        : NULL;
-
-                    $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
-
-                    $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
-                        ? urldecode($lobbyDetails['lobby_options'])
-                        : NULL;
-
-                    $lobbyStatus['lobby_version'] = !empty($lobbyDetails['lobby_version'])
-                        ? $lobbyDetails['lobby_version']
-                        : '?';
-                } else {
-                    $lobbyStatus['error'] = 'No lobby with that ID!';
                 }
+
+                $lobbyStatus['lobby_id'] = $lobbyDetails['lobby_id'];
+                $lobbyStatus['mod_id'] = $lobbyDetails['mod_id'];
+                $lobbyStatus['workshop_id'] = $lobbyDetails['workshop_id'];
+
+                $lobbyStatus['lobby_name'] = !empty($lobbyDetails['lobby_name'])
+                    ? htmlentitiesdecode_custom($lobbyDetails['lobby_name'])
+                    : 'Custom Lobby #' . $lobbyDetails['lobby_id'];
+
+                $lobbyStatus['lobby_region'] = !empty($lobbyDetails['lobby_region'])
+                    ? $lobbyDetails['lobby_region']
+                    : 0;
+
+                $lobbyStatus['lobby_max_players'] = $lobbyDetails['lobby_max_players'];
+                $lobbyStatus['lobby_leader'] = $lobbyLeader;
+
+                $lobbyStatus['lobby_leader_name'] = !empty($lobbyDetails['lobby_leader_name'])
+                    ? htmlentitiesdecode_custom($lobbyDetails['lobby_leader_name'])
+                    : 'Unknown??';
+
+                $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
+                $lobbyStatus['lobby_hosted'] = $lobbyDetails['lobby_hosted'];
+                $lobbyStatus['lobby_pass'] = htmlentitiesdecode_custom($lobbyDetails['lobby_pass']);
+
+                $lobbyStatus['lobby_map'] = !empty($lobbyDetails['lobby_map'])
+                    ? htmlentitiesdecode_custom($lobbyDetails['lobby_map'])
+                    : NULL;
+
+                $lobbyStatus['lobby_players'] = $lobbyPlayersArray;
+
+                $lobbyStatus['lobby_options'] = !empty($lobbyDetails['lobby_options'])
+                    ? htmlentitiesdecode_custom($lobbyDetails['lobby_options'])
+                    : NULL;
+
+                $lobbyStatus['lobby_version'] = !empty($lobbyDetails['lobby_version'])
+                    ? htmlentitiesdecode_custom($lobbyDetails['lobby_version'])
+                    : '?';
             } else {
-                $lobbyStatus['error'] = 'No DB connection!';
+                $lobbyStatus['error'] = 'No lobby with that ID!';
             }
 
             $memcache->set('api_d2mods_lobby_status' . $lobbyID, $lobbyStatus, 0, 1);

@@ -15,8 +15,8 @@ try {
     if (!empty($lobbyID) && !empty($token)) {
         $lobbyStatus = array();
 
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-        $db->q('SET NAMES utf8;');
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+        if (empty($db)) throw new Exception('No DB!');
 
         $lobbyDetails = $db->q(
             'SELECT
