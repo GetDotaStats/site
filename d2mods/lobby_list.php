@@ -149,11 +149,10 @@ try {
 
             echo '<tr>
                         <th class="text-center col-md-2">Lobby</th>
-                        <th class="text-center col-md-2">Leader</th>
+                        <th class="text-center col-md-3">Leader</th>
                         <th class="text-center col-md-3">Mod</th>
                         <th class="text-center">&nbsp;</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
-                        <th class="text-center col-md-1">Start <span class="glyphicon glyphicon-question-sign" title="Whether the lobby successfully started"></span></th>
                         <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
                     </tr>';
 
@@ -162,14 +161,10 @@ try {
                     ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">[WS]</a>'
                     : '';
 
-                $lobbyStated = !empty($value['lobby_started']) && $value['lobby_started'] == 1
-                    ? '<span class="label-success label"><span class="glyphicon glyphicon-ok"></span></span>'
-                    : '<span class="label-danger label"><span class="glyphicon glyphicon-remove"></span></span>';
-
                 $lobbyLeaderName = htmlentitiesdecode_custom($value['lobby_leader_name']);
                 if (!empty($lobbyLeaderName)) {
-                    if (strlen($lobbyLeaderName) > 13) {
-                        $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 10) . '...'));
+                    if (strlen($lobbyLeaderName) > 20) {
+                        $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 17) . '...'));
                     } else {
                         $lobbyLeaderName = strip_tags(htmlentities_custom($lobbyLeaderName));
                     }
@@ -194,7 +189,6 @@ try {
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
                         <td class="vert-align">' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-center vert-align">' . $lobbyStated . '</td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
                     </tr>';
             }
