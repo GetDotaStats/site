@@ -104,23 +104,23 @@ try {
                     ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">[WS]</a>'
                     : '';
 
-                $lobbyLeaderName = $value['lobby_leader_name'];
+                $lobbyLeaderName = htmlentitiesdecode_custom($value['lobby_leader_name']);
                 if (!empty($lobbyLeaderName)) {
-                    if (strlen($lobbyLeaderName) > 12) {
-                        $lobbyLeaderName = strip_tags(substr($lobbyLeaderName, 0, 9) . '...');
+                    if (strlen($lobbyLeaderName) > 13) {
+                        $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 10) . '...'));
                     } else {
-                        $lobbyLeaderName = strip_tags($lobbyLeaderName);
+                        $lobbyLeaderName = strip_tags(htmlentities_custom($lobbyLeaderName));
                     }
                 } else {
                     $lobbyLeaderName = 'Unknown User';
                 }
 
-                $lobbyName = $value['lobby_name'];
+                $lobbyName = htmlentitiesdecode_custom($value['lobby_name']);
                 if (!empty($lobbyName)) {
                     if (strlen($lobbyName) > 13) {
-                        $lobbyName = strip_tags(substr($lobbyName, 0, 10) . '...');
+                        $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 10) . '...'));
                     } else {
-                        $lobbyName = strip_tags($lobbyName);
+                        $lobbyName = strip_tags(htmlentities_custom($lobbyName));
                     }
                 } else {
                     $lobbyName = 'Custom Game #' . $value['lobby_id'];
