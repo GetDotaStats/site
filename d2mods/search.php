@@ -94,13 +94,13 @@ try {
                             ON mmp.`connection_status` = gcs.`cs_id`
                         WHERE `player_sid32` = ?
                         ORDER BY `date_recorded` DESC
-                        LIMIT 0,50;',
+                        LIMIT 0,20;',
                     's', //STUPID x64 windows PHP is actually x86
                     $steamID32,
                     60
                 );
 
-                echo '<h3>Matches <small>Last 50</small></h3>';
+                echo '<h3>Matches <small>Last 20</small></h3>';
 
                 if (!empty($gamesList)) {
                     echo '<div class="table-responsive">
@@ -188,7 +188,7 @@ try {
                         LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
                         WHERE ll.`lobby_leader` = ?
                         ORDER BY lobby_date_recorded DESC
-                        LIMIT 0,50;',
+                        LIMIT 0,20;',
                     's', //STUPID x64 windows PHP is actually x86
                     $steamIDconvertor->getSteamID64(),
                     60
@@ -196,7 +196,7 @@ try {
 
                 echo '<hr />';
 
-                echo '<h3>Lobbies <small>Last 50</small></h3>';
+                echo '<h3>Lobbies <small>Last 20</small></h3>';
 
                 if (!empty($lobbiesList)) {
                     echo '<div class="table-responsive">
@@ -212,23 +212,24 @@ try {
                         </tr>';
 
                     foreach ($lobbiesList as $key => $value) {
-                        $lobbyLeaderName = urldecode($value['lobby_leader_name']);
+
+                        $lobbyLeaderName = htmlentitiesdecode_custom($value['lobby_leader_name']);
                         if (!empty($lobbyLeaderName)) {
                             if (strlen($lobbyLeaderName) > 12) {
-                                $lobbyLeaderName = strip_tags(substr($lobbyLeaderName, 0, 9) . '...');
+                                $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 9) . '...'));
                             } else {
-                                $lobbyLeaderName = strip_tags($lobbyLeaderName);
+                                $lobbyLeaderName = strip_tags(htmlentities_custom($lobbyLeaderName));
                             }
                         } else {
                             $lobbyLeaderName = 'Unknown User';
                         }
 
-                        $lobbyName = urldecode($value['lobby_name']);
+                        $lobbyName = htmlentitiesdecode_custom($value['lobby_name']);
                         if (!empty($lobbyName)) {
                             if (strlen($lobbyName) > 13) {
-                                $lobbyName = strip_tags(substr($lobbyName, 0, 10) . '...');
+                                $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 10) . '...'));
                             } else {
-                                $lobbyName = strip_tags($lobbyName);
+                                $lobbyName = strip_tags(htmlentities_custom($lobbyName));
                             }
                         } else {
                             $lobbyName = 'Custom Game #' . $value['lobby_id'];
