@@ -252,7 +252,7 @@ try {
                     : 'Workshop';
 
                 $schemaLink = !empty($matchDetails[0]['message_id'])
-                    ? '<a href=" ./d2mods/?custom_match=' . $matchDetails[0]['message_id'] . '" target="_new">' . $matchDetails[0]['message_id'] . '</a>'
+                    ? '<a href=" ./d2mods/schema.php?custom_match=' . $matchDetails[0]['message_id'] . '" target="_new">' . $matchDetails[0]['message_id'] . '</a>'
                     : 'N/A';
 
                 echo '<div class="container">
