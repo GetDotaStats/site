@@ -791,6 +791,17 @@ if (!function_exists("bootstrapMessage")) {
     }
 }
 
+if (!function_exists("formatExceptionHandling")) {
+    function formatExceptionHandling($e)
+    {
+        //$message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+        $message = $e->getMessage();
+        $messageFormatted = bootstrapMessage('Oh Snap', $message, 'danger');
+
+        return $messageFormatted;
+    }
+}
+
 if (!function_exists('dota2TeamName')) {
     function dota2TeamName($teamID)
     {

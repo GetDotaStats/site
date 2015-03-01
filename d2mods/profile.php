@@ -27,7 +27,6 @@ try {
         </p>';
 
     $memcache->close();
-} catch
-(Exception $e) {
-    echo bootstrapMessage('Oh Snap', 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage());
+} catch (Exception $e) {
+    echo formatExceptionHandling($e);
 }

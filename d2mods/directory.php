@@ -4,34 +4,34 @@ require_once('../connections/parameters.php');
 
 try {
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    if (empty($db)) throw new Exception('No DB!');
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    if ($db) {
-        $modListActive = simple_cached_query('d2mods_directory_active',
-            'SELECT
-                    ml.*,
-                    gu.`user_name`,
-                    gu.`user_avatar`,
-                    (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_last_week,
-                    (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_all_time
-                FROM `mod_list` ml
-                LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
-                WHERE ml.`mod_active` = 1
-                ORDER BY games_last_week DESC, games_all_time DESC;'
-            , 60
-        );
+    $modListActive = simple_cached_query('d2mods_directory_active',
+        'SELECT
+                ml.*,
+                gu.`user_name`,
+                gu.`user_avatar`,
+                (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_last_week,
+                (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_all_time
+            FROM `mod_list` ml
+            LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+            WHERE ml.`mod_active` = 1
+            ORDER BY games_last_week DESC, games_all_time DESC;'
+        , 60
+    );
 
-        echo '<div class="page-header"><h2>Mod Directory <small>BETA</small></h2></div>';
+    echo '<div class="page-header"><h2>Mod Directory <small>BETA</small></h2></div>';
 
-        echo '<p>This is a directory of all the games that developers have or are planning to implement stats for. Newly submitted mods will not appear here until approved by a moderator.</p>';
+    echo '<p>This is a directory of all the games that developers have or are planning to implement stats for. Newly submitted mods will not appear here until approved by a moderator.</p>';
 
-        if (!empty($modListActive)) {
-            echo '<h3>Approved Mods</h3>';
-            echo '<div class="table-responsive">
+    if (!empty($modListActive)) {
+        echo '<h3>Approved Mods</h3>';
+        echo '<div class="table-responsive">
 		        <table class="table table-striped table-hover">';
-            echo '<tr>
+        echo '<tr>
                         <th width="40">&nbsp;</th>
                         <th>&nbsp;</th>
                         <th colspan="2" width="90" class="text-center">Games <span class="glyphicon glyphicon-question-sign" title="Last week / Total Games"></span></th>
@@ -39,24 +39,24 @@ try {
                         <th width="80" class="text-center">Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
                     </tr>';
 
-            foreach ($modListActive as $key => $value) {
-                $sg = !empty($value['mod_steam_group'])
-                    ? '<a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new">SG</a>'
-                    : 'SG';
+        foreach ($modListActive as $key => $value) {
+            $sg = !empty($value['mod_steam_group'])
+                ? '<a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new">SG</a>'
+                : 'SG';
 
-                $wg = !empty($value['mod_workshop_link'])
-                    ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new">WS</a>'
-                    : 'WS';
+            $wg = !empty($value['mod_workshop_link'])
+                ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new">WS</a>'
+                : 'WS';
 
-                $userAvatar = !empty($value['user_avatar'])
-                    ? $value['user_avatar']
-                    : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
+            $userAvatar = !empty($value['user_avatar'])
+                ? $value['user_avatar']
+                : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
 
-                $userName = !empty($value['user_name'])
-                    ? $value['user_name']
-                    : 'Unknown Developer';
+            $userName = !empty($value['user_name'])
+                ? $value['user_name']
+                : 'Unknown Developer';
 
-                echo '<tr>
+            echo '<tr>
                         <td>' . ($key + 1) . '</td>
                         <th><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></th>
                         <th class="text-center">' . number_format($value['games_last_week']) . '</th>
@@ -70,12 +70,11 @@ try {
                             ' . nl2br($value['mod_description']) . '<br />
                         </td>
                     </tr>';
-            }
-
-            echo '</table></div>';
-        } else {
-            echo '<div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No active mods added yet!</div>';
         }
+
+        echo '</table></div>';
+    } else {
+        echo '<div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No active mods added yet!</div>';
     }
 
     echo '<p>
@@ -87,6 +86,5 @@ try {
 
     $memcache->close();
 } catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
+    echo formatExceptionHandling($e);
 }

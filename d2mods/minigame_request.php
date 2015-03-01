@@ -37,6 +37,5 @@ try {
                 </div>
             </p>';
 } catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
+    echo formatExceptionHandling($e);
 }

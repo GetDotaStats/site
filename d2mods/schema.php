@@ -2,7 +2,6 @@
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
-try {
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -28,45 +27,49 @@ try {
 <div class="container">
     <div class="row">
         <?php
-        $messageID = empty($_GET['custom_match']) || !is_numeric($_GET['custom_match'])
-            ? NULL
-            : $_GET['custom_match'];
+        try {
+            $messageID = empty($_GET['custom_match']) || !is_numeric($_GET['custom_match'])
+                ? NULL
+                : $_GET['custom_match'];
 
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-
-        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
-        if (empty($db)) throw new Exception('No DB!');
-
-        if (!empty($messageID)) {
-            $messages = $db->q(
-                'SELECT * FROM `node_listener` WHERE `test_id` = ? LIMIT 0,1;',
-                'i',
-                $messageID
-            );
-
-            if (!empty($messages)) {
-                $messages = $messages[0];
-
-                echo '<pre>';
-                echo '<h3>Recorded from ' . $messages['remote_ip'] . ':' . $messages['remote_port'] . ' <small>' . relative_time($messages['date_recorded']) . '</small></h3>';
-
-                $message = json_decode(utf8_encode($messages['message']), 1);
-                $new_array = array_map_recursive('htmlentities', $message);
-                print_r($new_array);
-
-                echo '</pre>';
-            } else {
-                echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Message not found!</div></div>';
+            if (!isset($_SESSION)) {
+                session_start();
             }
-        } else {
-            echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No message ID!</div></div>';
-        }
 
-        } catch
-        (Exception $e) {
-            echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '</div></div>';
+            $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+            if (empty($db)) throw new Exception('No DB!');
+
+            $memcache = new Memcache;
+            $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
+            if (!empty($messageID)) {
+                $messages = $db->q(
+                    'SELECT * FROM `node_listener` WHERE `test_id` = ? LIMIT 0,1;',
+                    'i',
+                    $messageID
+                );
+
+                if (!empty($messages)) {
+                    $messages = $messages[0];
+
+                    echo '<pre>';
+                    echo '<h3>Recorded from ' . $messages['remote_ip'] . ':' . $messages['remote_port'] . ' <small>' . relative_time($messages['date_recorded']) . '</small></h3>';
+
+                    $message = json_decode(utf8_encode($messages['message']), 1);
+                    $new_array = array_map_recursive('htmlentities', $message);
+                    print_r($new_array);
+
+                    echo '</pre>';
+                } else {
+                    echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> Message not found!</div></div>';
+                }
+            } else {
+                echo '<div class="page-header"><div class="alert alert-danger" role="alert"><strong>Oh Snap:</strong> No message ID!</div></div>';
+            }
+
+            $memcache->close();
+        } catch (Exception $e) {
+            echo formatExceptionHandling($e);
         }
         ?>
     </div>
