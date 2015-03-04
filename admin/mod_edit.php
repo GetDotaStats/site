@@ -50,6 +50,10 @@ try {
             ? '<input class="formTextArea boxsizingBorder" name="modGroup" type="text" maxlength="70" value="' . $value['mod_steam_group'] . '">'
             : '<input class="formTextArea boxsizingBorder" name="modGroup" type="text" maxlength="70" placeholder="http://steamcommunity.com/groups/XXXXX">';
 
+        $modWorkshop = !empty($value['mod_workshop_link'])
+            ? '<input class="formTextArea boxsizingBorder" name="modWorkshop" type="text" maxlength="70" value="' . $value['mod_workshop_link'] . '">'
+            : '<input class="formTextArea boxsizingBorder" name="modWorkshop" type="text" maxlength="70" placeholder="XXXXX">';
+
         $modGroupLink = !empty($value['mod_steam_group'])
             ? '</div><div class="col-md-2"><span class="h4">SG</span> <a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>'
             : '';
@@ -65,6 +69,12 @@ try {
         $modDescription = !empty($value['mod_description'])
             ? '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" required>' . $value['mod_description'] . '</textarea>'
             : '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" placeholder="Awesome description of custom game" required></textarea>';
+
+        $modActive = isset($value['mod_active']) && $value['mod_active'] == 1
+            ? '<input type="radio" name="modActive" value="0">No<br />
+                    <input type="radio" name="modActive" value="1" checked>Yes'
+            : '<input type="radio" name="modActive" value="0" checked>No<br />
+                    <input type="radio" name="modActive" value="1">Yes';
 
         if (!empty($value['user_name'])) {
             $modDeveloper = !empty($value['steam_id64'])
@@ -112,10 +122,20 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
+                <div class="col-md-1"><span class="h4">WS.ID</span></div>
+                <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The workshop ID for this custom game"></span></div>
+                <div class="col-md-6">' . $modWorkshop . '</div>
+                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink .'</div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
                 <div class="col-md-1"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The steam group for this custom game, if applicable"></span></div>
                 <div class="col-md-6">' . $modGroup . '</div>
-                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink .'</div>
+                <div class="col-md-2"><span class="h4">Active</span></div>
+                <div class="col-md-1">' . $modActive .'</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
