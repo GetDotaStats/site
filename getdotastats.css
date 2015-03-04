@@ -237,6 +237,11 @@ table td, table th {
     height: 300px;
 }
 
+.d2mods-graph-tall {
+    width: 700px;
+    height: 400px;
+}
+
 .d2mods-graph-overflow {
     overflow-x: scroll;
     overflow-y: hidden;

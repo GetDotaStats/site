@@ -58,7 +58,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?19" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css?21" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -78,7 +78,7 @@ try {
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-warning">UPDATED</span> <b class="caret"></b></a>
+                            class="label label-success">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
@@ -93,15 +93,18 @@ try {
                         <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mini Games Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Highscores <span
-                                    class="label label-warning">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_guide">Developer Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_request">Request a Mini Game</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">My Custom Games</li>
-                        <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__my_mods">My Added Mods</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games</a></li>
+                        <?php if (!empty($_SESSION['user_id64'])) { ?>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">My Section</li>
+                            <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR <span
+                                        class="label label-success">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_mods">My Added Mods</a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games</a></li>
+                        <?php } ?>
                     </ul>
                 </li>
                 <li class="dropdown">
