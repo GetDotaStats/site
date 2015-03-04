@@ -77,8 +77,7 @@ try {
         <div id="navBarCustom" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-success">NEW</span> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
@@ -99,8 +98,7 @@ try {
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
-                            <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR <span
-                                        class="label label-success">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_mods">My Added Mods</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games</a></li>
@@ -134,14 +132,15 @@ try {
                 </li>
                 <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span
+                                class="label label-success">NEW</span> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li class="dropdown-header">Mods</li>
-                            <li><a class="nav-clickable" href="#admin__mod_approve">Approve</a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_edit">Edit</a></li>
-                            <li class="divider"></li>
-                            <li class="dropdown-header">Mini Games</li>
-                            <li><a class="nav-clickable" href="#admin__minigames">Management</a></li>
+                            <li class="dropdown-header">Management</li>
+                            <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
+                            <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage <span
+                                        class="label label-success">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__minigames">Mini-Game Manage</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
                             <li><a class="nav-clickable" href="#admin__user_mmr">MMR List</a></li>
