@@ -986,7 +986,10 @@ if (!class_exists('steam_webapi')) {
                     ? json_decode($APIresult, 1)
                     : false;
 
-                return $APIresult;
+                if (!empty($APIresult)) {
+                    return $APIresult;
+                }
+                return false;
             } catch (Exception $e) {
                 return $e->getMessage();
             }

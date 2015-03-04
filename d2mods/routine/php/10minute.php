@@ -14,7 +14,7 @@ try {
     $steamID = new SteamID();
     $steamWebAPI = new steam_webapi($api_key1);
 
-    $updateUsers = false; //CHANGE THIS WHEN NOT TESTING
+    $updateUsers = true; //CHANGE THIS WHEN NOT TESTING
 
     //Mini Game Leaderboard
     {
@@ -136,6 +136,7 @@ try {
             }
 
             if ($updateUsers) {
+                unset($cron_hs);
                 $cron_hs = $db->q(
                     'SELECT * FROM cron_hs;'
                 );
@@ -160,7 +161,7 @@ try {
                                 }
                             }
 
-                            if (!empty($mg_lb_user_details)) {
+                            if (!empty($mg_lb_user_details_temp) && !empty($mg_lb_user_details_temp['response']['players'])) {
                                 $db->q(
                                     'INSERT INTO `gds_users`
                                         (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
@@ -319,6 +320,7 @@ try {
             }
 
             if ($updateUsers) {
+                unset($cron_hs);
                 $cron_hs = $db->q(
                     'SELECT * FROM cron_hs_mod;'
                 );
@@ -332,7 +334,7 @@ try {
                             if (!$mg_lb_user_details) {
                                 $mg_lb_user_details_temp = $steamWebAPI->GetPlayerSummariesV2($steamID->getSteamID64());
 
-                                if (!empty($mg_lb_user_details_temp)) {
+                                if (!empty($mg_lb_user_details_temp) && !empty($mg_lb_user_details_temp['response']['players'])) {
                                     $mg_lb_user_details[0]['user_id64'] = $steamID->getSteamID64();
                                     $mg_lb_user_details[0]['user_id32'] = $steamID->getSteamID32();
                                     $mg_lb_user_details[0]['user_name'] = htmlentities($mg_lb_user_details_temp['response']['players'][0]['personaname']);
