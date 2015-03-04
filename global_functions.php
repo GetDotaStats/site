@@ -1161,6 +1161,7 @@ if (!function_exists('updateUserDetails')) {
 
         $playerDetails = $memcache->get('cron_user_details' . $steamID64);
         if (empty($playerDetails)) {
+            sleep(0.5);
             $playerDetails_tmp = $steamWebAPI->GetPlayerSummariesV2($playerID->getSteamID64());
 
             if (!empty($playerDetails_tmp)) {
@@ -1196,7 +1197,7 @@ if (!function_exists('updateUserDetails')) {
                     return true;
                 }
 
-                $memcache->set('cron_user_details' . $steamID64, $playerDetails, 0, 5 * 60);
+                $memcache->set('cron_user_details' . $steamID64, $playerDetails, 0, 15 * 60);
 
                 unset($playerDetails_tmp);
                 unset($playerDetails);
