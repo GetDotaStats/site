@@ -23,6 +23,21 @@ try {
         }
     }
 
+    echo '<h3>Signature Generator</h3>';
+
+    echo '<span class="h4">&nbsp;</span>';
+
+    echo '<div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Warning!</h3>
+            </div>
+            <div class="panel-body">SteamTracks will be losing functionality soon. For users that wish to retain
+                MMR tracking functionality, please install our Lobby Explorer and opt-in to MMR tracking via the main menu. In the
+                coming days we will start using the MMR we collect via the Lobby Explorer, instead of the MMR we get via SteamTracks.
+            </div>
+        </div>';
+
+    echo '<span class="h4">&nbsp;</span>';
 
     if (isset($_GET['status'])) {
         echo '<div class="alert alert-danger">';
