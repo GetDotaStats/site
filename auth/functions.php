@@ -41,7 +41,7 @@ if (!class_exists('user')) {
                     $user_details = $this->GetPlayerSummaries($steamID64);
 
                     $userName = !empty($user_details->personaname)
-                        ? htmlentities($user_details->personaname)
+                        ? htmlentities_custom($user_details->personaname)
                         : 'UNKNOWN USERNAME';
 
                     $userAvatar = !empty($user_details->avatar)
@@ -59,7 +59,7 @@ if (!class_exists('user')) {
 
                     $_SESSION['user_id32'] = $steamID32;
                     $_SESSION['user_id64'] = $steamID64;
-                    $_SESSION['user_name'] = htmlentities($userName);
+                    $_SESSION['user_name'] = $userName;
                     $_SESSION['user_avatar'] = $userAvatar;
 
                     $db->q("INSERT INTO `gds_users`(`user_id32`, `user_id64`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)

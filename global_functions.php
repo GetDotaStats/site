@@ -1170,7 +1170,7 @@ if (!function_exists('updateUserDetails')) {
             if (!empty($playerDetails_tmp)) {
                 $playerDetails[0]['user_id64'] = $playerID->getSteamID64();
                 $playerDetails[0]['user_id32'] = $playerID->getSteamID32();
-                $playerDetails[0]['user_name'] = htmlentities($playerDetails_tmp['response']['players'][0]['personaname']);
+                $playerDetails[0]['user_name'] = htmlentities_custom($playerDetails_tmp['response']['players'][0]['personaname']);
                 $playerDetails[0]['user_avatar'] = $playerDetails_tmp['response']['players'][0]['avatar'];
                 $playerDetails[0]['user_avatar_medium'] = $playerDetails_tmp['response']['players'][0]['avatarmedium'];
                 $playerDetails[0]['user_avatar_large'] = $playerDetails_tmp['response']['players'][0]['avatarfull'];
@@ -1207,5 +1207,54 @@ if (!function_exists('updateUserDetails')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('grabAndUpdateSteamUserDetails')) {
+    function grabAndUpdateSteamUserDetails($steamID32)
+    {
+        global $db, $memcache, $webAPI;
+        if (!isset($db)) throw new Exception('No DB defined!');
+        if (!isset($memcache)) throw new Exception('No memcache defined!');
+        if (!isset($webAPI)) throw new Exception('webAPI not defined!');
+
+        $steamID = new SteamID($steamID32);
+
+        $web_api_user_details_temp = $webAPI->GetPlayerSummariesV2($steamID->getSteamID64());
+
+        if (empty($web_api_user_details_temp)) throw new Exception('No Steam user found');
+        if (empty($web_api_user_details_temp['response']['players'])) throw new Exception('Bad response from webAPI');
+
+        $mg_lb_user_details = array();
+
+        $mg_lb_user_details[0]['user_id64'] = $steamID->getSteamID64();
+        $mg_lb_user_details[0]['user_id32'] = $steamID->getSteamID32();
+        $mg_lb_user_details[0]['user_name'] = htmlentities_custom($web_api_user_details_temp['response']['players'][0]['personaname']);
+        $mg_lb_user_details[0]['user_avatar'] = $web_api_user_details_temp['response']['players'][0]['avatar'];
+        $mg_lb_user_details[0]['user_avatar_medium'] = $web_api_user_details_temp['response']['players'][0]['avatarmedium'];
+        $mg_lb_user_details[0]['user_avatar_large'] = $web_api_user_details_temp['response']['players'][0]['avatarfull'];
+        $memcache->set('mg_lb_user_details_' . $steamID->getSteamID64(), $mg_lb_user_details, 0, 10 * 60);
+
+        $db->q(
+            'INSERT INTO `gds_users`
+                (`user_id64`, `user_id32`, `user_name`, `user_avatar`, `user_avatar_medium`, `user_avatar_large`)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                  `user_name` = VALUES(`user_name`),
+                  `user_avatar` = VALUES(`user_avatar`),
+                  `user_avatar_medium` = VALUES(`user_avatar_medium`),
+                  `user_avatar_large` = VALUES(`user_avatar_large`);',
+            'ssssss',
+            array(
+                $mg_lb_user_details[0]['user_id64'],
+                $mg_lb_user_details[0]['user_id32'],
+                $mg_lb_user_details[0]['user_name'],
+                $mg_lb_user_details[0]['user_avatar'],
+                $mg_lb_user_details[0]['user_avatar_medium'],
+                $mg_lb_user_details[0]['user_avatar_large']
+            )
+        );
+
+        return $mg_lb_user_details;
     }
 }
