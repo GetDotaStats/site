@@ -1,10 +1,7 @@
 .idea
 connections/parameters.php
-sig/images/generated/*
-steamtracks/testing
-match_analysis/lobby_types
-match_analysis/routine/csv
-match_analysis/routine/log*
+sig/images/generated/
+match_analysis/
 economy_analysis
 replays
 testing
