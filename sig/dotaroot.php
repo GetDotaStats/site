@@ -43,6 +43,10 @@ try {
     $steamID = new SteamID($account_id);
     if (empty($steamID->getSteamID32()) || empty($steamID->getSteamID64())) throw new Exception('Bad steamID!');
 
+    $file_name_location = $areWeLocalDevEnv
+        ? '.\images\generated\\' . $steamID->getsteamID32() . '_dotaroot.png'
+        : './images/generated/' . $steamID->getsteamID32() . '_dotaroot.png';
+
     $webAPI = new steam_webapi($api_key1);
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);

@@ -18,8 +18,8 @@ try {
     $cacheTimeSeconds = $cacheTimeHours * 60 * 60;
 
     $file_name_location = $areWeLocalDevEnv
-        ? '.\images\generated\\' . $account_id . '.png'
-        : './images/generated/' . $account_id . '.png';
+        ? '.\images\generated\\' . $account_id . '_main.png'
+        : './images/generated/' . $account_id . '_main.png';
     //////////////////////////////////
 
     require_once('../connections/parameters.php');
@@ -42,6 +42,10 @@ try {
 
     $steamID = new SteamID($account_id);
     if (empty($steamID->getSteamID32()) || empty($steamID->getSteamID64())) throw new Exception('Bad steamID!');
+
+    $file_name_location = $areWeLocalDevEnv
+        ? '.\images\generated\\' . $steamID->getsteamID32() . '_main.png'
+        : './images/generated/' . $steamID->getsteamID32() . '_main.png';
 
     $webAPI = new steam_webapi($api_key1);
 
