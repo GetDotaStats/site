@@ -22,17 +22,17 @@ try {
     $userMMRs = cached_query(
         'admin_user_mmrs',
         'SELECT
-                `user_id32`,
-                `user_id64`,
-                `user_name`,
-                MAX(`user_games`) as user_games,
-                MAX(`user_mmr_solo`) as user_mmr_solo,
-                MAX(`user_mmr_party`) as user_mmr_party,
-                `user_stats_disabled`,
+                gum.`user_id32`,
+                gum.`user_id64`,
+                gum.`user_name`,
+                MAX(gum.`user_games`) AS user_games,
+                MAX(gum.`user_mmr_solo`) AS user_mmr_solo,
+                MAX(gum.`user_mmr_party`) AS user_mmr_party,
+                (SELECT `user_stats_disabled` FROM `gds_users_mmr` WHERE `user_id32` = gum.`user_id32` ORDER BY `date_recorded` DESC LIMIT 0,1) AS `user_stats_disabled`,
                 `date_recorded`
-            FROM `gds_users_mmr`
-            GROUP BY `user_id64`
-            ORDER BY `user_mmr_solo` DESC;',
+            FROM `gds_users_mmr` gum
+            GROUP BY gum.`user_id64`
+            ORDER BY gum.`user_mmr_solo` DESC;',
         null,
         null,
         10
@@ -61,18 +61,20 @@ try {
     echo '<div class="row">
                 <div class="col-md-2"><span class="h4">UserID</span></div>
                 <div class="col-md-4"><span class="h4">Username</span></div>
-                <div class="col-md-2"><span class="h4">Games</span></div>
-                <div class="col-md-2"><span class="h4">Solo</span></div>
-                <div class="col-md-2"><span class="h4">Party</span></div>
+                <div class="col-md-1 text-center"><span class="h4">Games</span></div>
+                <div class="col-md-1 text-center"><span class="h4">Solo</span></div>
+                <div class="col-md-1 text-center"><span class="h4">Party</span></div>
+                <div class="col-md-1 text-center"><span class="h4">Disabled</span></div>
             </div>';
 
     foreach ($userMMRs as $key => $value) {
         echo '<div class="row">
                 <div class="col-md-2">' . $value['user_id64'] . '</div>
                 <div class="col-md-4">' . $value['user_name'] . '</div>
-                <div class="col-md-2">' . number_format($value['user_games']) . '</div>
-                <div class="col-md-2">' . number_format($value['user_mmr_solo']) . '</div>
-                <div class="col-md-2">' . number_format($value['user_mmr_party']) . '</div>
+                <div class="col-md-1 text-center">' . number_format($value['user_games']) . '</div>
+                <div class="col-md-1 text-center">' . number_format($value['user_mmr_solo']) . '</div>
+                <div class="col-md-1 text-center">' . number_format($value['user_mmr_party']) . '</div>
+                <div class="col-md-1 text-center">' . number_format($value['user_stats_disabled']) . '</div>
             </div>';
     }
 
