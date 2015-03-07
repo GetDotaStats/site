@@ -215,8 +215,6 @@ if (!class_exists("dbWrapper_v3")) {
             $this->_debug = (bool)$debug;
             if (mysqli_connect_errno()) {
                 if ($this->_debug) {
-                    //echo mysqli_connect_error();
-                    //debug_print_backtrace();
                     throw new Exception(mysqli_connect_error());
                 }
                 return false;
@@ -266,9 +264,7 @@ if (!class_exists("dbWrapper_v3")) {
 
                 if ($query->errno) {
                     if ($this->_debug) {
-                        //echo mysqli_error($this->_mysqli);
-                        //debug_print_backtrace();
-                        throw new Exception(mysqli_error($this->_mysqli));
+                        throw new Exception($query->error);
                     }
                     return false;
                 }

@@ -220,8 +220,11 @@ try {
             ? '<input class="formTextArea boxsizingBorder" type="number" name="highscore_decimals" maxlength="20" size="4" value="' . $value['highscoreDecimals'] . '" min="0" max="10">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="highscore_decimals" maxlength="20" size="4" value="2" min="0" max="10">';
 
+        $hsModLBlink = '<a href="#d2mods__mod_leaderboard?lid=' . $value['highscoreID'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>';
+
         echo '<div class="row">
-                <div class="col-md-6">
+                <div class="col-md-1 text-center">' . $hsModLBlink . '</div>
+                <div class="col-md-5">
                     <span class="h4">' . $value['highscoreName'] . '</span>
                 </div>
                 <div class="col-md-2">' . $dateRecorded . '</div>

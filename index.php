@@ -77,7 +77,8 @@ try {
         <div id="navBarCustom" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
+                            class="label label-success">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
@@ -86,6 +87,8 @@ try {
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores <span
+                                    class="label label-success">NEW</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Developer Guide</a></li>
@@ -132,14 +135,12 @@ try {
                 </li>
                 <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span
-                                class="label label-success">NEW</span> <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Management</li>
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
-                            <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage <span
-                                        class="label label-success">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
                             <li><a class="nav-clickable" href="#admin__minigames">Mini-Game Manage</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
