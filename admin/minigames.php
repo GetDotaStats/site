@@ -203,11 +203,11 @@ try {
             : '<input type="radio" name="minigameActive" value="0" checked>No<br />
                     <input type="radio" name="minigameActive" value="1">Yes';
 
-        $mgFactor = !empty($value['minigameFactor']) && is_numeric($value['minigameFactor'])
+        $mgFactor = isset($value['minigameFactor']) && is_numeric($value['minigameFactor'])
             ? '<input class="formTextArea boxsizingBorder" type="number" name="minigameFactor" maxlength="20" size="4" value="' . floatval($value['minigameFactor']) . '" min="0" max="1000">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="minigameFactor" maxlength="20" size="4" value="1" min="0" max="1000">';
 
-        $mgDecimals = !empty($value['minigameDecimals']) && is_numeric($value['minigameDecimals'])
+        $mgDecimals = isset($value['minigameDecimals']) && is_numeric($value['minigameDecimals'])
             ? '<input class="formTextArea boxsizingBorder" type="number" name="minigameDecimals" maxlength="20" size="4" value="' . $value['minigameDecimals'] . '" min="0" max="10">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="minigameDecimals" maxlength="20" size="4" value="2" min="0" max="10">';
 

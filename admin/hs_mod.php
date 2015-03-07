@@ -212,7 +212,7 @@ try {
             : '<input type="radio" name="highscore_active" value="0" checked>No<br />
                     <input type="radio" name="highscore_active" value="1">Yes';
 
-        $mgFactor = !empty($value['highscoreFactor']) && is_numeric($value['highscoreFactor'])
+        $mgFactor = isset($value['highscoreFactor']) && is_numeric($value['highscoreFactor'])
             ? '<input class="formTextArea boxsizingBorder" type="number" name="highscore_factor" maxlength="20" size="4" value="' . floatval($value['highscoreFactor']) . '" min="0" max="1000">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="highscore_factor" maxlength="20" size="4" value="1" min="0" max="1000">';
 
