@@ -216,7 +216,7 @@ try {
             ? '<input class="formTextArea boxsizingBorder" type="number" name="highscore_factor" maxlength="20" size="4" value="' . floatval($value['highscoreFactor']) . '" min="0" max="1000">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="highscore_factor" maxlength="20" size="4" value="1" min="0" max="1000">';
 
-        $mgDecimals = !empty($value['highscoreDecimals']) && is_numeric($value['highscoreDecimals'])
+        $mgDecimals = isset($value['highscoreDecimals']) && is_numeric($value['highscoreDecimals'])
             ? '<input class="formTextArea boxsizingBorder" type="number" name="highscore_decimals" maxlength="20" size="4" value="' . $value['highscoreDecimals'] . '" min="0" max="10">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="highscore_decimals" maxlength="20" size="4" value="2" min="0" max="10">';
 
