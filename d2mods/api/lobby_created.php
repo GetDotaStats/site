@@ -12,7 +12,7 @@ try {
         : NULL;
 
     $username = !empty($_GET['un'])
-        ? htmlentities_custom($_GET['un'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['un'])
         : NULL;
 
     $modID = !empty($_GET['mid']) && is_numeric($_GET['mid'])
@@ -24,11 +24,11 @@ try {
         : NULL;
 
     $map = !empty($_GET['map'])
-        ? htmlentities_custom($_GET['map'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['map'])
         : NULL;
 
     $pass = !empty($_GET['p'])
-        ? htmlentities_custom($_GET['p'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['p'])
         : NULL;
 
     $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp']) && $_GET['mp'] > 1 && $_GET['mp'] <= 20
@@ -40,11 +40,11 @@ try {
         : NULL;
 
     $lobbyName = !empty($_GET['ln'])
-        ? htmlentities_custom($_GET['ln'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['ln'])
         : NULL;
 
     $lobbyOptions = !empty($_GET['lo'])
-        ? htmlentities_custom($_GET['lo'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['lo'])
         : NULL;
 
     $lobbyVersion = isset($_GET['lv']) && is_numeric($_GET['lv'])
@@ -52,6 +52,10 @@ try {
         : NULL;
 
     if ($lobbyVersion < 0.22) throw new Exception('Client too far out of date! Update please.');
+
+    if (empty($userID) || empty($modID) || empty($workshopID) || empty($map) || empty($pass) || empty($maxPlayers) || empty($username)) {
+        throw new Exception('Missing field!');
+    }
 
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $lobbySecureToken = '';
@@ -61,42 +65,38 @@ try {
     $steamID = new SteamID($userID);
     $userID = $steamID->getSteamID64();
 
-    if (!empty($userID) && !empty($modID) && !empty($workshopID) && !empty($map) && !empty($pass) && !empty($maxPlayers) && !empty($username)) {
-        $memcache = new Memcache;
-        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-        $lobbyStatus = array();
+    $lobbyStatus = array();
 
-        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
-        if (empty($db)) throw new Exception('No DB!');
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    if (empty($db)) throw new Exception('No DB!');
 
-        $modDetails = getModDetails($memcache, $db, $modID);
+    $modDetails = getModDetails($memcache, $db, $modID);
 
-        $modGUID = !empty($modDetails['mod_guid'])
-            ? $modDetails['mod_guid']
-            : 1;
+    $modGUID = !empty($modDetails['mod_guid'])
+        ? $modDetails['mod_guid']
+        : 1;
 
-        $sqlResult = $db->q(
-            'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`, `lobby_options`, `lobby_version`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL, ?, ?);',
-            'isssiisssssss',
-            $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken, $lobbyOptions, $lobbyVersion
-        );
+    $sqlResult = $db->q(
+        'INSERT INTO `lobby_list`(`mod_id`, `mod_guid`, `workshop_id`, `lobby_name`, `lobby_region`, `lobby_max_players`, `lobby_leader`, `lobby_leader_name`, `lobby_active`, `lobby_hosted`, `lobby_pass`, `lobby_map`, `lobby_secure_token`, `date_keep_alive`, `date_recorded`, `lobby_options`, `lobby_version`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?, NULL, NULL, ?, ?);',
+        'isssiisssssss',
+        $modID, $modGUID, $workshopID, $lobbyName, $region, $maxPlayers, $userID, $username, $pass, $map, $lobbySecureToken, $lobbyOptions, $lobbyVersion
+    );
 
-        if (!empty($sqlResult)) {
-            //RETURN LOBBY ID
-            $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
-            $lobbyStatus['lobby_id'] = $db->last_index();
-            $lobbyStatus['token'] = $lobbySecureToken;
-        } else {
-            //SOMETHING FUNKY HAPPENED
-            $lobbyStatus['error'] = 'Unknown error!';
-        }
-
-        $memcache->close();
+    if (!empty($sqlResult)) {
+        //RETURN LOBBY ID
+        $lobbyStatus['result'] = 'Lobby ' . $db->last_index() . ' created!';
+        $lobbyStatus['lobby_id'] = $db->last_index();
+        $lobbyStatus['token'] = $lobbySecureToken;
     } else {
-        $lobbyStatus['error'] = 'Missing field!';
+        //SOMETHING FUNKY HAPPENED
+        $lobbyStatus['error'] = 'Unknown error!';
     }
+
+    $memcache->close();
 
 } catch (Exception $e) {
     unset($lobbyStatus);

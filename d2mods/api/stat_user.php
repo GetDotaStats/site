@@ -10,7 +10,7 @@ try {
         : NULL;
 
     $username = !empty($_GET['un'])
-        ? htmlentities_custom($_GET['un'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['un'])
         : NULL;
 
     $totalGames = isset($_GET['tg']) && is_numeric($_GET['tg'])

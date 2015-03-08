@@ -11,7 +11,7 @@ try {
         : NULL;
 
     $map = !empty($_GET['map'])
-        ? htmlentities_custom($_GET['map'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['map'])
         : NULL;
 
     $maxPlayers = !empty($_GET['mp']) && is_numeric($_GET['mp'])
@@ -23,7 +23,7 @@ try {
         : 0;
 
     $lobbyName = !empty($_GET['ln'])
-        ? htmlentities_custom($_GET['ln'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['ln'])
         : 'Custom Lobby #' . $lobbyID;
 
     $token = !empty($_GET['t'])

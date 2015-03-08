@@ -11,7 +11,7 @@ try {
         : NULL;
 
     $username = !empty($_GET['un'])
-        ? htmlentities_custom($_GET['un'])
+        ? handlingUnicodeFromFlashWithURLencoding($_GET['un'])
         : 'Unknown??';
 
     $lobbyID = !empty($_GET['lid']) && is_numeric($_GET['lid'])

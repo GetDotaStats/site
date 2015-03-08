@@ -858,12 +858,24 @@ if (!function_exists("unicodeToUTF_8")) {
     }
 }
 
+if (!function_exists("handlingUnicodeFromFlashWithURLencoding")) {
+    function handlingUnicodeFromFlashWithURLencoding($string)
+    {
+        if (!empty($string)) {
+            $string = unicodeToUTF_8($string);
+            $string = htmlentities_custom($string);
+
+            return $string;
+        }
+        return false;
+    }
+}
+
 if (!function_exists("htmlentities_custom")) {
     function htmlentities_custom($string)
     {
         if (!empty($string)) {
-            $string = preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", $string);
-            $string = htmlentities($string, ENT_QUOTES | ENT_HTML5, 'UTF-8', false);
+            $string = htmlentities($string, ENT_QUOTES | ENT_HTML5 | ENT_IGNORE, 'UTF-8', false);
 
             return $string;
         }
@@ -875,19 +887,7 @@ if (!function_exists("htmlentitiesdecode_custom")) {
     function htmlentitiesdecode_custom($string)
     {
         if (!empty($string)) {
-            $string = html_entity_decode($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-            return $string;
-        }
-        return false;
-    }
-}
-
-if (!function_exists("htmlentities_custom_decode")) {
-    function htmlentities_custom_decode($string)
-    {
-        if (!empty($string)) {
-            $string = html_entity_decode($string);
+            $string = html_entity_decode($string, ENT_QUOTES | ENT_HTML5 | ENT_IGNORE, 'UTF-8');
 
             return $string;
         }
