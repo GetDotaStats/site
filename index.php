@@ -58,7 +58,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?21" rel="stylesheet">
+    <link href="//static.getdotastats.com/getdotastats.css?22" rel="stylesheet">
     <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -260,5 +260,6 @@ try {
 
 <script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js?1"></script>
 <script src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js?1"></script>
+<script type="text/javascript">var _gaq=[['_setAccount','UA-45573043-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)})(document,'script')</script>
 </body>
 </html>

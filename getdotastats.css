@@ -327,3 +327,9 @@ table td.bashful, table th.bashful {
 .labelWarnings {
     display: inline-block;
 }
+
+.boldRedText{
+    font-weight: bold;
+    color: darkred;
+}
+
