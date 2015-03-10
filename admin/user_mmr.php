@@ -25,14 +25,21 @@ try {
                 gum.`user_id32`,
                 gum.`user_id64`,
                 gum.`user_name`,
-                MAX(gum.`user_games`) AS user_games,
-                MAX(gum.`user_mmr_solo`) AS user_mmr_solo,
-                MAX(gum.`user_mmr_party`) AS user_mmr_party,
-                (SELECT `user_stats_disabled` FROM `gds_users_mmr` WHERE `user_id32` = gum.`user_id32` ORDER BY `date_recorded` DESC LIMIT 0,1) AS `user_stats_disabled`,
+                gum.`user_games`,
+                gum.`user_mmr_solo`,
+                gum.`user_mmr_party`,
+                gum.`user_stats_disabled`,
                 `date_recorded`
             FROM `gds_users_mmr` gum
-            GROUP BY gum.`user_id64`
-            ORDER BY gum.`user_mmr_solo` DESC;',
+            JOIN (
+                  SELECT
+                      `user_id32`,
+                      `user_mmr_solo`,
+                      MAX(`date_recorded`) as most_recent_mmr
+                  FROM `gds_users_mmr`
+                  GROUP BY `user_id32`
+                  ORDER BY `user_mmr_solo` DESC
+            ) gum2 ON gum.`user_id32` = gum2.`user_id32` AND gum.`date_recorded` = gum2.`most_recent_mmr`;',
         null,
         null,
         10
@@ -65,9 +72,15 @@ try {
                 <div class="col-md-1 text-center"><span class="h4">Solo</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Party</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Disabled</span></div>
+                <div class="col-md-2 text-center"><span class="h4">Updated</span></div>
             </div>';
 
     foreach ($userMMRs as $key => $value) {
+        $relativeTime = relative_time_v3($value['date_recorded'], 1, 'day');
+        $dateColour = $relativeTime > 2
+            ? 'boldRedText'
+            : '';
+
         echo '<div class="row">
                 <div class="col-md-2">' . $value['user_id64'] . '</div>
                 <div class="col-md-4">' . $value['user_name'] . '</div>
@@ -75,6 +88,7 @@ try {
                 <div class="col-md-1 text-center">' . number_format($value['user_mmr_solo']) . '</div>
                 <div class="col-md-1 text-center">' . number_format($value['user_mmr_party']) . '</div>
                 <div class="col-md-1 text-center">' . number_format($value['user_stats_disabled']) . '</div>
+                <div class="col-md-2 text-right ' . $dateColour . '">' . $relativeTime . '</div>
             </div>';
     }
 

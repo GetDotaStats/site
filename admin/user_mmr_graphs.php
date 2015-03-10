@@ -26,13 +26,15 @@ try {
                 100 * floor(`user_mmr_solo` / 100) as `range_start`,
                 100 * floor(`user_mmr_solo` / 100) + 100 as `range_end`,
                 COUNT(*) as num_mmrs
-            FROM (
+            FROM `gds_users_mmr` gum
+            JOIN (
                   SELECT
-                    `user_id64`,
-                    MAX(`user_mmr_solo`) as user_mmr_solo
+                      `user_id32`,
+                      MAX(`date_recorded`) as most_recent_mmr
                   FROM `gds_users_mmr`
-                  GROUP BY `user_id64`
-            ) t1
+                  GROUP BY `user_id32`
+                  ORDER BY `user_mmr_solo`
+            ) gum2 ON gum.`user_id32` = gum2.`user_id32` AND gum.`date_recorded` = gum2.`most_recent_mmr`
             GROUP BY 2
             ORDER BY 2;',
         null,
@@ -46,13 +48,15 @@ try {
                 100 * floor(`user_mmr_party` / 100) as `range_start`,
                 100 * floor(`user_mmr_party` / 100) + 100 as `range_end`,
                 COUNT(*) as num_mmrs
-            FROM (
+            FROM `gds_users_mmr` gum
+            JOIN (
                   SELECT
-                    `user_id64`,
-                    MAX(`user_mmr_party`) as user_mmr_party
+                      `user_id32`,
+                      MAX(`date_recorded`) as most_recent_mmr
                   FROM `gds_users_mmr`
-                  GROUP BY `user_id64`
-            ) t1
+                  GROUP BY `user_id32`
+                  ORDER BY `user_mmr_party`
+            ) gum2 ON gum.`user_id32` = gum2.`user_id32` AND gum.`date_recorded` = gum2.`most_recent_mmr`
             GROUP BY 2
             ORDER BY 2;',
         null,

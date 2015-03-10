@@ -1,62 +1,75 @@
 <?php
-require_once('../connections/parameters.php');
-require_once('./functions.php');
+try {
+    require_once('../global_functions.php');
+    require_once('../connections/parameters.php');
+    require_once('./functions_v2.php');
 
-$db = new dbWrapper($hostname_sig, $username_sig, $password_sig, $database_sig, false);
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    if (empty($db)) throw new Exception('No DB!');
 
-$account_id = !empty($_GET["aid"]) && is_numeric($_GET["aid"])
-    ? $_GET["aid"]
-    : 28755155;
-$required_hero_min_play = 14;
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-$sig_stats_winrate = get_account_char_winrate($account_id, 4, $required_hero_min_play, 1);
-$sig_stats_most_played = get_account_char_mostplayed($account_id, 4, $required_hero_min_play, 1);
+    $account_id = !empty($_GET["aid"]) && is_numeric($_GET["aid"])
+        ? $_GET["aid"]
+        : 28755155;
+    $flush_DB_stats = !empty($_GET["flush_acc"]) && $_GET["flush_acc"] == 1
+        ? true
+        : false;
+    $required_hero_min_play = 14;
+    $cacheTimeHours = 2;
 
-/////////////////////////////
-//ACCOUNT WIN %
-/////////////////////////////
-/*$mmr_stats = $db->q(
-    'SELECT `rank_solo`, `rank_team`, `dota_wins` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
-    'i',
-    $account_id
-);*/
+    $dotabuff_stats = get_account_details($account_id, 4, $required_hero_min_play, $flush_DB_stats, $cacheTimeHours);
 
-echo '<h1>sig_stats_winrate</h1>';
-print_r($sig_stats_winrate);
+    echo '<h1>db_stats</h1>';
+    echo '<pre>';
+    print_r($dotabuff_stats);
+    echo '</pre>';
 
-echo '<hr />';
+    echo '<hr />';
 
-echo '<h1>sig_stats_most_played</h1>';
-print_r($sig_stats_most_played);
+    $steamID = new SteamID($account_id);
+    if (empty($steamID->getSteamID32()) || empty($steamID->getSteamID64())) throw new Exception('Bad steamID!');
 
-echo '<hr />';
+    $mmr_stats = $db->q(
+        /*'SELECT
+                `user_id32`,
+                `user_id64`,
+                `user_name`,
+                `user_games`,
+                `user_mmr_solo`,
+                `user_mmr_party`,
+                `user_stats_disabled`,
+                `date_recorded`
+            FROM `gds_users_mmr`
+            WHERE `user_id32` = ?
+            LIMIT 0,1;',*/
+        'SELECT
+                *
+            FROM `gds_users_mmr`
+            WHERE `user_id32` = ?
+            ORDER BY `date_recorded` DESC
+            LIMIT 0,1;',
+        's',
+        $steamID->getsteamID32()
+    );
 
-$mmr_stats = $db->q(
-    'SELECT `rank_solo`, `rank_team`, `dota_wins`, `last_updated` FROM `mmr` WHERE `steam_id` = ? LIMIT 0,1;',
-    'i',
-    $account_id
-);
+    echo '<h1>LX data:</h1>';
+    echo '<pre>';
+    print_r($mmr_stats);
+    echo '</pre>';
 
-echo '<h1>SteamTracks data:</h1>';
-print_r($mmr_stats);
+    echo '<hr />';
 
-echo '<hr />';
+    /*$timeSinceUpdated = !empty($mmr_stats[0]['date_recorded'])
+        ? time() - strtotime($mmr_stats[0]['date_recorded'])
+        : 0;*/
 
-$timeSinceUpdated = !empty($mmr_stats[0]['last_updated'])
-    ? time() - $mmr_stats[0]['last_updated']
-    : 0;
+    $timeSinceUpdated = relative_time_v3($mmr_stats[0]['date_recorded']);
 
-echo $timeSinceUpdated . '<br />';
+    echo $timeSinceUpdated . '<br />';
 
-if (!empty($mmr_stats[0]['dota_wins']) && $timeSinceUpdated != 0 && $timeSinceUpdated <= 1209600) {
-    echo $mmr_stats[0]['dota_wins'] . ' - SteamTracks';
-} else if (!empty($sig_stats_winrate['account_win'])) {
-    echo $sig_stats_winrate['account_win'] . ' - DB';
-} else {
-    echo '???' . ' - Unknown';
+    $memcache->close();
+} catch (Exception $e) {
+    echo formatExceptionHandling($e);
 }
-
-/*echo '<hr />';
-
-echo '<h1>mmr_stats</h1>';
-print_r($mmr_stats);*/

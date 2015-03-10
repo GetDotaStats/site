@@ -98,6 +98,7 @@ try {
                 `date_recorded`
             FROM `gds_users_mmr`
             WHERE `user_id32` = ?
+            ORDER BY `date_recorded` DESC
             LIMIT 0,1;',
         's',
         $steamID->getsteamID32(),
@@ -293,7 +294,7 @@ try {
 
         $font_size = 14;
         $text_colour = imagecolorallocate($base_img, 78, 213, 84);
-        $overlay_text = $user_details['account_percent'] . ' (' . $dota_wins . ' wins)';
+        $overlay_text = $user_details['account_percent'] . '% (' . $dota_wins . ' wins)';
         $tb = imagettfbbox($font_size, 0, $font_norm, $overlay_text);
 
         $overlay_text_offset_x = 10;
@@ -315,7 +316,7 @@ try {
         //ACCOUNT MMR
         //////////////////////////
 
-        if (!empty($lx_user_details)) {
+        if (!empty($lx_user_details) && empty($lx_user_details[0]['user_stats_disabled'])) {
             $rank_solo = !empty($lx_user_details[0]['user_mmr_solo'])
                 ? $lx_user_details[0]['user_mmr_solo']
                 : '???';

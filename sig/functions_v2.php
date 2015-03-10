@@ -41,7 +41,7 @@ if (!function_exists("get_account_details")) {
                     'account_win' => $userDetails[0]['account_win'],
                     'account_loss' => $userDetails[0]['account_loss'],
                     'account_abandons' => $userDetails[0]['account_abandons'],
-                    'account_percent' => $userDetails[0]['account_percent'] . '%',
+                    'account_percent' => $userDetails[0]['account_percent'],
                     'winRateHeroes' => json_decode($userDetails[0]['winRateHeroes'], true),
                     'mostPlayedHeroes' => json_decode($userDetails[0]['mostPlayedHeroes'], true),
                 );
