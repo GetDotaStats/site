@@ -24,20 +24,7 @@ try {
         $modDetails = cached_query(
             'api_d2mods_mod_stats_details' . $modID,
             'SELECT
-                    ml.`mod_id`,
-                    ml.`steam_id64`,
-                    ml.`mod_identifier`,
-                    ml.`mod_name`,
-                    ml.`mod_description`,
-                    ml.`mod_workshop_link`,
-                    ml.`mod_steam_group`,
-                    ml.`mod_public_key`,
-                    ml.`mod_private_key`,
-                    ml.`mod_active`,
-                    ml.`mod_maps`,
-                    ml.`mod_options_enabled`,
-                    ml.`mod_options`,
-                    ml.`date_recorded`,
+                    ml.*,
                     gu.`user_name`,
                     gu.`user_avatar`,
                     (SELECT COUNT(*) FROM `mod_match_overview` mmo WHERE mmo.`mod_id` = ml.`mod_identifier` AND mmo.`match_recorded` >= now() - INTERVAL 7 DAY AND mmo.`match_duration` > 130 GROUP BY `mod_id`) AS games_last_week,
@@ -62,6 +49,10 @@ try {
                 $temp['modName'] = !empty($value['mod_name'])
                     ? htmlentitiesdecode_custom($value['mod_name'])
                     : 'Unknown Mod';
+
+                $temp['mod_max_players'] = isset($value['mod_max_players']) && is_numeric($value['mod_max_players'])
+                    ? $value['mod_max_players']
+                    : 10;
 
                 !empty($value['games_last_week'])
                     ? $temp['gamesLastWeek'] = number_format($value['games_last_week'])

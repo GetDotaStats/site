@@ -25,7 +25,8 @@ try {
         empty($_POST['modMaps']) || $_POST['modMaps'] == 'One map per line' ||
         empty($_POST['modDescription']) ||
         empty($_POST['modWorkshop']) ||
-        !isset($_POST['modActive'])
+        !isset($_POST['modActive']) || !is_numeric($_POST['modActive']) ||
+        !isset($_POST['modMaxPlayers']) || !is_numeric($_POST['modMaxPlayers'])
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
     }
@@ -39,6 +40,7 @@ try {
     $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['modMaps']))));
     $modWorkshop = htmlentities($_POST['modWorkshop']);
     $modActive = htmlentities($_POST['modActive']);
+    $modMaxPlayers = htmlentities($_POST['modMaxPlayers']);
 
     $insertSQL = $db->q(
         'UPDATE `mod_list`
@@ -48,10 +50,11 @@ try {
             `mod_description` = ?,
             `mod_steam_group` = ?,
             `mod_maps` = ?,
+            `mod_max_players` = ?,
             `mod_workshop_link` = ?
           WHERE `mod_identifier` = ?;',
-        'issssss',
-        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modWorkshop, $modID
+        'issssiss',
+        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modMaxPlayers, $modWorkshop, $modID
     );
 
     if ($insertSQL) {

@@ -76,6 +76,20 @@ try {
             : '<input type="radio" name="modActive" value="0" checked>No<br />
                     <input type="radio" name="modActive" value="1">Yes';
 
+        $modMaxPlayers = '<select name="modMaxPlayers" class="formTextArea boxsizingBorder">';
+        $modMaxPlayers .= !isset($value['mod_max_players']) || !is_numeric($value['mod_max_players'])
+            ? '<option value="-" selected>-</option>'
+            : '<option value="-">-</option>';
+        for ($i = 1; $i <= 10; $i++) {
+            $selected = '';
+            if (isset($value['mod_max_players']) && is_numeric($value['mod_max_players']) && $value['mod_max_players'] == $i) {
+                $selected = ' selected';
+            }
+            $modMaxPlayers .= '<option value="' . $i . '"' . $selected . '>' . $i . '</option>';
+        }
+        $modMaxPlayers .= '</select>';
+
+
         if (!empty($value['user_name'])) {
             $modDeveloper = !empty($value['steam_id64'])
                 ? '<a href="https://steamcommunity.com/profiles/' . $value['steam_id64'] . '" target="_blank">' . $value['user_name'] . '</a>'
@@ -125,7 +139,7 @@ try {
                 <div class="col-md-1"><span class="h4">WS.ID</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The workshop ID for this custom game"></span></div>
                 <div class="col-md-6">' . $modWorkshop . '</div>
-                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink .'</div>
+                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -134,8 +148,18 @@ try {
                 <div class="col-md-1"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The steam group for this custom game, if applicable"></span></div>
                 <div class="col-md-6">' . $modGroup . '</div>
-                <div class="col-md-2"><span class="h4">Active</span></div>
-                <div class="col-md-1">' . $modActive .'</div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
+                <div class="col-md-2">&nbsp;</div>
+
+                <div class="col-md-1"><span class="h4">Active</span></div>
+                <div class="col-md-1">' . $modActive . '</div>
+
+                <div class="col-md-1"><span class="h4">Players</span></div>
+                <div class="col-md-2">' . $modMaxPlayers . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';

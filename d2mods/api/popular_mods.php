@@ -43,6 +43,10 @@ try {
                     ? $value['mod_name']
                     : 'Unknown Mod';
 
+                $temp['mod_max_players'] = isset($value['mod_max_players']) && is_numeric($value['mod_max_players'])
+                    ? $value['mod_max_players']
+                    : 10;
+
                 isset($key)
                     ? $temp['popularityRank'] = $key + 1
                     : NULL;
