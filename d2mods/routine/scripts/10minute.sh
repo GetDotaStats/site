@@ -4,4 +4,4 @@ echo "Run at: $(date -u)<br />"
 echo "-------------------<br />"
 ./10minute.php
 echo "-------------------<br />"
-echo "Run at: $(date -u)"
+echo "Ended at: $(date -u)"

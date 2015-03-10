@@ -82,7 +82,7 @@ try {
                                     GROUP BY `minigameID`, `leaderboard`, `user_id32`
                                     ORDER BY `minigameID`, `leaderboard`, `adjusted_value` $mgObjective2
                                     LIMIT 0,20
-                                ) sh2 ON sh2.`adjusted_value` = sh1.`highscore_value`
+                                ) sh2 ON sh2.`adjusted_value` = sh1.`highscore_value` AND sh2.`user_id32` = sh1.`user_id32`
                                 WHERE `minigameID` = ? AND `leaderboard` = ?
                                 GROUP BY sh1.`user_id32`
                                 ORDER BY sh1.`minigameID`, sh1.`leaderboard`, sh1.`highscore_value` $mgObjective2, sh1.`date_recorded`;",
@@ -266,7 +266,7 @@ try {
                                     GROUP BY `modID`, `highscoreID`, `steamID32`
                                     ORDER BY `modID`, `highscoreID`, `adjusted_value` $mgObjective2
                                     LIMIT 0,20
-                                ) sh2 ON sh2.`adjusted_value` = sh1.`highscoreValue`
+                                ) sh2 ON sh2.`steamID32` = sh1.`steamID32` AND sh2.`adjusted_value` = sh1.`highscoreValue` 
                                 WHERE `modID` = ? AND `highscoreID` = ?
                                 GROUP BY sh1.`steamID32`
                                 ORDER BY sh1.`modID`, sh1.`highscoreID`, sh1.`highscoreValue` $mgObjective2, sh1.`date_recorded`;",
