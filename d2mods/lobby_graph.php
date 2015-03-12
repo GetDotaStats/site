@@ -62,7 +62,7 @@ try {
 
             $options = array(
                 'bar' => array(
-                    'groupWidth' => 6,
+                    'groupWidth' => 3,
                 ),
                 'height' => 300,
                 'chartArea' => array(
@@ -137,7 +137,7 @@ try {
                 'rows' => $super_array
             );
 
-            $chart_width = max(count($super_array) * 8, 700);
+            $chart_width = max(count($super_array) * 5, 700);
             $options['width'] = $chart_width;
             $options['hAxis']['gridlines']['count'] = count($super_array);
 
@@ -251,7 +251,7 @@ try {
 
             $options = array(
                 'bar' => array(
-                    'groupWidth' => 6,
+                    'groupWidth' => 2,
                 ),
                 'height' => 300,
                 'chartArea' => array(
@@ -294,7 +294,7 @@ try {
                 'rows' => $rowArray
             );
 
-            $chart_width = max(count($rowArray) * 8, 700);
+            $chart_width = max(count($rowArray) * 4, 700);
             $options['width'] = $chart_width;
             $options['hAxis']['gridlines']['count'] = count($rowArray);
 
@@ -307,12 +307,102 @@ try {
         }
     }
 
-    echo '<p>
-            <div class="text-center">
+    ////////////////////////////////////
+    // LOBBY COUNTRY BREAKDOWN
+    ////////////////////////////////////
+    {
+        echo '<div class="page-header"><h2>Lobby Regions Distribution</h2></div>';
+
+        echo '<p>This graph captures what regions the Lobby Explorer tool is being used in over the last 7days.</p>';
+
+        $modStats = cached_query(
+            'trends_lobby_regions',
+            'SELECT
+                ll.`lobby_region`,
+                lr.`region_name`,
+                COUNT(*) as num_lobbies
+              FROM `lobby_list` ll
+              LEFT JOIN `lobby_regions` lr ON ll.`lobby_region` = lr.`region_id`
+              WHERE date_recorded >= NOW() - INTERVAL 7 DAY
+              GROUP BY ll.`lobby_region`
+              ORDER BY num_lobbies DESC;',
+            NULL,
+            NULL,
+            5 * 60
+        );
+
+        if (!empty($modStats)) {
+            $testArray = array();
+
+            foreach ($modStats as $key => $value) {
+                $testArray[$value['region_name']] = $value['num_lobbies'];
+            }
+
+
+            $options = array(
+                'height' => 400,
+                'chartArea' => array(
+                    'width' => '100%',
+                    'height' => '80%',
+                ),
+                'hAxis' => array(
+                    'title' => 'Number of Players',
+                ),
+                'vAxis' => array(
+                    'title' => 'Games',
+                ),
+                //'pieSliceText' => 'label',
+                'pieResidueSliceLabel' => 'Other',
+                'sliceVisibilityThreshold' => 1 / 270, //minimum degrees to be rendered
+                'legend' => array(
+                    'position' => 'top',
+                    'maxLines' => 2,
+                ),
+                'seriesType' => "bars",
+                'tooltip' => array(
+                    'isHtml' => 1,
+                ),
+            );
+
+            $chart = new chart2('PieChart');
+
+            $super_array = array();
+            foreach ($testArray as $key2 => $value2) {
+                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+            }
+
+            $data = array(
+                'cols' => array(
+                    array('id' => '', 'label' => 'Country', 'type' => 'string'),
+                    array('id' => '', 'label' => 'Lobbies', 'type' => 'number'),
+                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                ),
+                'rows' => $super_array
+            );
+
+            $chart_width = max(count($super_array) * 9, 700);
+            $options['width'] = $chart_width;
+
+            echo '<div id="breakdown_lobbies_country" class="d2mods-graph"></div>';
+
+            $chart->load(json_encode($data));
+            echo $chart->draw('breakdown_lobbies_country', $options);
+
+            echo '<div class="h4">&nbsp;</div>';
+            echo '<div class="h4">&nbsp;</div>';
+            echo '<div class="h4">&nbsp;</div>';
+            echo '<div class="h4">&nbsp;</div>';
+        } else {
+            echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
+        }
+    }
+
+    echo '<div class="h4">&nbsp;</div>';
+    echo '<div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-           </div>
-        </p>';
+           </div>';
+    echo '<div class="h4">&nbsp;</div>';
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
 }
