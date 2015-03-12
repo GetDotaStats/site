@@ -22,6 +22,8 @@ try {
                 ll.`lobby_leader_name`,
                 ll.`lobby_pass`,
                 ll.`date_recorded` as lobby_date_recorded,
+                lr.`region_name`,
+                lr.`region_code`,
                 ml.*,
                 (
                   SELECT
@@ -32,6 +34,7 @@ try {
                 ) AS lobby_current_players
             FROM `lobby_list` ll
             LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
+            LEFT JOIN `lobby_regions` lr ON ll.`lobby_region` = lr.`region_id`
             WHERE ll.`lobby_active` = 1 AND ll.`lobby_hosted` = 1
             ORDER BY lobby_current_players DESC;'
         , 5
@@ -51,6 +54,8 @@ try {
                 ll.`lobby_leader_name`,
                 ll.`lobby_pass`,
                 ll.`date_recorded` as lobby_date_recorded,
+                lr.`region_name`,
+                lr.`region_code`,
                 ml.*,
                 (
                   SELECT
@@ -61,6 +66,7 @@ try {
                 ) AS lobby_current_players
             FROM `lobby_list` ll
             LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
+            LEFT JOIN `lobby_regions` lr ON ll.`lobby_region` = lr.`region_id`
             WHERE ll.`lobby_started` = 1
             ORDER BY ll.`date_recorded` DESC
             LIMIT 0,20;'
@@ -91,11 +97,9 @@ try {
 		        <table class="table table-striped table-hover">';
         echo '<tr>
                         <th class="text-center col-md-2">Lobby</th>
-                        <th class="text-center col-md-2">Leader</th>
+                        <th class="text-center col-md-3">Leader</th>
                         <th class="text-center col-md-3">Mod</th>
-                        <th class="text-center">&nbsp;</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
-                        <th class="text-center col-md-1">&nbsp;</th>
                         <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
                     </tr>';
 
@@ -106,8 +110,8 @@ try {
 
             $lobbyLeaderName = htmlentitiesdecode_custom($value['lobby_leader_name']);
             if (!empty($lobbyLeaderName)) {
-                if (strlen($lobbyLeaderName) > 13) {
-                    $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 10) . '...'));
+                if (strlen($lobbyLeaderName) > 20) {
+                    $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 17) . '...'));
                 } else {
                     $lobbyLeaderName = strip_tags(htmlentities_custom($lobbyLeaderName));
                 }
@@ -117,8 +121,8 @@ try {
 
             $lobbyName = htmlentitiesdecode_custom($value['lobby_name']);
             if (!empty($lobbyName)) {
-                if (strlen($lobbyName) > 13) {
-                    $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 10) . '...'));
+                if (strlen($lobbyName) > 12) {
+                    $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 9) . '...'));
                 } else {
                     $lobbyName = strip_tags(htmlentities_custom($lobbyName));
                 }
@@ -126,13 +130,15 @@ try {
                 $lobbyName = 'Custom Game #' . $value['lobby_id'];
             }
 
+            $lobbyRegion = !empty($value['region_code']) && !empty($value['region_name'])
+                ? '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/' . $value['region_code'] . '.png" title="' . $value['region_name'] . '" />'
+                : '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/_unknown.png" title="Unknown" />';
+
             echo '<tr>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
+                        <td class="vert-align">' . $lobbyRegion . ' <a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
                         <td class="vert-align"><a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
-                        <td class="vert-align">' . $workshopLink . '</td>
-                        <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                        <td class="text-center vert-align"><a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
+                        <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ') <a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 0) . '</td>
                     </tr>';
         }
@@ -151,7 +157,6 @@ try {
                         <th class="text-center col-md-2">Lobby</th>
                         <th class="text-center col-md-3">Leader</th>
                         <th class="text-center col-md-3">Mod</th>
-                        <th class="text-center">&nbsp;</th>
                         <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
                         <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
                     </tr>';
@@ -174,8 +179,8 @@ try {
 
             $lobbyName = htmlentitiesdecode_custom($value['lobby_name']);
             if (!empty($lobbyName)) {
-                if (strlen($lobbyName) > 13) {
-                    $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 10) . '...'));
+                if (strlen($lobbyName) > 12) {
+                    $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 9) . '...'));
                 } else {
                     $lobbyName = strip_tags(htmlentities_custom($lobbyName));
                 }
@@ -183,11 +188,14 @@ try {
                 $lobbyName = 'Custom Game #' . $value['lobby_id'];
             }
 
+            $lobbyRegion = !empty($value['region_code']) && !empty($value['region_name'])
+                ? '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/' . $value['region_code'] . '.png" title="' . $value['region_name'] . '" />'
+                : '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/_unknown.png" title="Unknown" />';
+
             echo '<tr>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
+                        <td class="vert-align">' . $lobbyRegion . ' <a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
                         <td class="vert-align"><a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
-                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
-                        <td class="vert-align">' . $workshopLink . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
                     </tr>';
