@@ -33,6 +33,48 @@ try {
         if (!empty($sqlResult)) {
             //RETURN LOBBY ID
             $lobbyStatus['result'] = 'Lobby ' . $lobbyID . ' closed!';
+
+            if ($lobbyStarted == 1) {
+                $lobbyDetails = $db->q(
+                    'SELECT
+                            ll.`lobby_id`,
+                            ll.`mod_id`,
+                            ll.`workshop_id`,
+                            ll.`lobby_ttl`,
+                            ll.`lobby_min_players`,
+                            ll.`lobby_max_players`,
+                            ll.`lobby_public`,
+                            ll.`lobby_leader`,
+                            ll.`lobby_leader_name`,
+                            ll.`lobby_active`,
+                            ll.`lobby_hosted`,
+                            ll.`lobby_pass`,
+                            ll.`lobby_map`
+                        FROM `lobby_list` ll
+                        WHERE ll.`lobby_id` = ? AND ll.`lobby_secure_token` = ?
+                        ORDER BY `lobby_id` DESC
+                        LIMIT 0,1;',
+                    'is',
+                    array($lobbyID, $token)
+                );
+
+                if (!empty($lobbyDetails)) {
+                    $userID = $lobbyDetails[0]['lobby_leader'];
+                    $username = $lobbyDetails[0]['lobby_leader_name'];
+
+                    $sqlResult = $db->q(
+                        'INSERT INTO `lobby_list_players` (`lobby_id`, `user_id64`, `user_confirmed`, `user_name`)
+                            VALUES (?, ?, 1, ?)
+                            ON DUPLICATE KEY UPDATE `user_confirmed` = 1;',
+                        'iss',
+                        $lobbyID, $userID, $username
+                    );
+
+                    if (!empty($sqlResult)) {
+                        $lobbyStatus['result2'] = 'Player inserted into Lobby ' . $lobbyID . '!';
+                    }
+                }
+            }
         } else {
             //SOMETHING FUNKY HAPPENED
             $lobbyStatus['error'] = 'Unknown error!';
