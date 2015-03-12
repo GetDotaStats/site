@@ -45,8 +45,8 @@ try {
           default-src 'none';
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
-          script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com 'unsafe-eval' 'unsafe-inline';
-          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net;
+          script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com 'unsafe-eval' 'unsafe-inline' data:;
+          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net  *.google-analytics.com;
           font-src 'self' static.getdotastats.com getdotastats.com;
           frame-src chatwing.com *.youtube.com;
           object-src 'none';
@@ -57,19 +57,17 @@ try {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="//getdotastats.com/bootstrap/css/bootstrap.min.css?1" rel="stylesheet">
-    <link href="//static.getdotastats.com/getdotastats.css?22" rel="stylesheet">
-    <!--<link href="./getdotastats.css?11" rel="stylesheet">-->
+    <link rel="stylesheet" href="<?= $path_css_bootstrap_full ?>">
+    <link rel="stylesheet" href="<?= $path_css_site_full ?>">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script type="text/javascript" src="<?= $path_lib_html5shivJS_full ?>"></script>
+    <script type="text/javascript" src="<?= $path_lib_respondJS_full ?>"></script>
     <![endif]-->
     <title>GetDotaStats - Dota 2 Statistics</title>
-    <script type="text/javascript" src="//static.getdotastats.com/bootstrap/js/jquery.min.js?1"></script>
-    <script type="text/javascript" src="//static.getdotastats.com/getdotastats.js?22"></script>
-    <!--<script type="text/javascript" src="./getdotastats.js?13"></script>-->
+    <script type="text/javascript" src="<?= $path_lib_jQuery_full ?>"></script>
+    <script type="text/javascript" src="<?= $path_lib_siteJS_full ?>"></script>
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -170,8 +168,9 @@ try {
                 <button type="submit" class="btn btn-default">Search</button>
             </form>
             <?php if (empty($_SESSION['user_id64'])) { ?>
-                <p class="nav navbar-text"><a href="./auth/?login"><img src="./auth/assets/images/steam_small.png"
-                                                                        alt="Sign in with Steam"/></a></p>
+                <p class="nav navbar-text"><a href="./auth/?login"><img
+                            src="<?= $CDNgeneric ?>/auth/assets/images/steam_small.png"
+                            alt="Sign in with Steam"/></a></p>
             <?php
             } else {
                 $image = empty($_SESSION['user_avatar'])
@@ -210,11 +209,11 @@ try {
 <div class="container">
     <div class="text-center">
         <a class="nav-clickable" href="#d2mods__lobby_list"><img width="400px"
-                                                                 src="//static.getdotastats.com/images/getdotastats_logo_v3.png"
+                                                                 src="<?= $CDNgeneric ?>/images/getdotastats_logo_v3.png"
                                                                  alt="site logo"/></a>
 
         <div id="loading">
-            <img id="loading_spinner1" src="//static.getdotastats.com/images/spinner_v2.gif" alt="loading"/>
+            <img id="loading_spinner1" src="<?= $CDNgeneric ?>/images/spinner_v2.gif" alt="loading"/>
         </div>
     </div>
 </div>
@@ -258,8 +257,17 @@ try {
     </div>
 </div>
 
-<script src="//static.getdotastats.com/bootstrap/js/jquery-1-11-0.min.js?1"></script>
-<script src="//static.getdotastats.com/bootstrap/js/bootstrap.min.js?1"></script>
-<script type="text/javascript">var _gaq=[['_setAccount','UA-45573043-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)})(document,'script')</script>
+<script type="text/javascript" src="<?= $path_lib_jQuery2_full ?>"></script>
+<script type="text/javascript" src="<?= $path_lib_bootstrap_full ?>"></script>
+<script type="text/javascript">var _gaq = [
+        ['_setAccount', 'UA-45573043-1'],
+        ['_trackPageview']
+    ];
+    (function (d, t) {
+        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        g.async = 1;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s)
+    })(document, 'script')</script>
 </body>
 </html>

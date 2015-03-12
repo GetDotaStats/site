@@ -304,11 +304,11 @@ table td.bashful, table th.bashful {
     height: 26px !important;
 }
 
-.link_no_decoration:hover, .link_no_decoration:visited , .link_no_decoration:active, .link_no_decoration:link{
+.link_no_decoration:hover, .link_no_decoration:visited, .link_no_decoration:active, .link_no_decoration:link {
     text-decoration: none;
 }
 
-.hs_lb_recent_score{
+.hs_lb_recent_score {
     font-weight: bold;
     color: darkgreen;
 }
@@ -328,8 +328,13 @@ table td.bashful, table th.bashful {
     display: inline-block;
 }
 
-.boldRedText{
+.boldRedText {
     font-weight: bold;
     color: darkred;
+}
+
+.boldGreenText {
+    font-weight: bold;
+    color: darkgreen;
 }
 
