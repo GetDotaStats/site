@@ -77,8 +77,8 @@ try {
 
     foreach ($userMMRs as $key => $value) {
         $relativeTime = relative_time_v3($value['date_recorded'], 1, 'day');
-        $dateColour = $relativeTime > 2
-            ? 'boldRedText'
+        $dateColour = $relativeTime < 1.5
+            ? 'boldGreenText'
             : '';
 
         echo '<div class="row">
