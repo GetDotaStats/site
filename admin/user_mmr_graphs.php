@@ -126,12 +126,12 @@ try {
                 'top' => 10,
             ),
             'hAxis' => array(
-                'title' => 'Duration',
+                'title' => 'MMR',
                 'slantedText' => 1,
                 'slantedTextAngle' => 60,
             ),
             'vAxis' => array(
-                'title' => 'Games',
+                'title' => 'Users',
                 //'scaleType' => 'mirrorLog',
             ),
             'legend' => array(
@@ -155,13 +155,13 @@ try {
 
         $super_array = array();
         foreach ($testArray as $key2 => $value2) {
-            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong><br />Users: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
         }
 
         $data = array(
             'cols' => array(
-                array('id' => '', 'label' => 'Duration', 'type' => 'string'),
-                array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                array('id' => '', 'label' => 'MMR', 'type' => 'string'),
+                array('id' => '', 'label' => 'Users', 'type' => 'number'),
                 array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
             ),
             'rows' => $super_array
@@ -229,12 +229,12 @@ try {
                 'top' => 10,
             ),
             'hAxis' => array(
-                'title' => 'Duration',
+                'title' => 'MMR',
                 'slantedText' => 1,
                 'slantedTextAngle' => 60,
             ),
             'vAxis' => array(
-                'title' => 'Games',
+                'title' => 'Users',
                 //'scaleType' => 'mirrorLog',
             ),
             'legend' => array(
@@ -258,13 +258,13 @@ try {
 
         $super_array = array();
         foreach ($testArray as $key2 => $value2) {
-            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> mins<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+            $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong><br />Users: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
         }
 
         $data = array(
             'cols' => array(
-                array('id' => '', 'label' => 'Duration', 'type' => 'string'),
-                array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                array('id' => '', 'label' => 'MMR', 'type' => 'string'),
+                array('id' => '', 'label' => 'Users', 'type' => 'number'),
                 array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
             ),
             'rows' => $super_array
