@@ -74,7 +74,11 @@ try {
     if (empty($modDetails) || empty($modGUID)) throw new Exception('No mods with that modID!');
 
     echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
-    echo '<p><a class="nav-clickable" href="#d2mods__directory">Back to Mod Directory</a></p>';
+
+    echo '<div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+            </div>';
 
     echo '<hr />';
 
@@ -272,7 +276,7 @@ try {
                 //'title' => 'Average spins in ' . $hits . ' attacks',
                 //'theme' => 'maximized',
                 'bar' => array(
-                    'groupWidth' => 8,
+                    'groupWidth' => 6,
                 ),
                 'height' => 300,
                 'chartArea' => array(
@@ -313,7 +317,7 @@ try {
                 ),
                 'legend' => array(
                     'position' => 'bottom',
-                    'alignment' => 'center',
+                    'alignment' => 'start',
                 ),
                 'seriesType' => 'bars',
                 'series' => array(
@@ -385,7 +389,7 @@ try {
                 'rows' => $super_array
             );
 
-            $chart_width = max(count($super_array) * 10, 700);
+            $chart_width = max(count($super_array) * 8, 700);
             $options['width'] = $chart_width;
             $options['hAxis']['gridlines']['count'] = count($super_array);
 
@@ -725,6 +729,138 @@ try {
             } else {
                 echo '<h3>Heroes Picked</h3>';
                 echo 'No hero stats!';
+            }
+        }
+
+        echo '<hr />';
+
+        //LOBBIES MADE
+        {
+            echo '<div class="page-header"><h2>Lobbies Made</h2></div>';
+
+            $lobbiesMadeSQL = cached_query(
+                'd2mods_mod_details_lobbies' . $modID,
+                //AND `date_recorded` >= now() - INTERVAL 14 DAY
+                'SELECT
+                    DAY(ll.`date_recorded`) as day,
+                    MONTH(ll.`date_recorded`) as month,
+                    YEAR(ll.`date_recorded`) as year,
+                    COUNT(*) as num_lobbies
+                FROM `lobby_list` ll
+                WHERE `mod_id` = ?
+                GROUP BY 3,2,1,`lobby_version`
+                ORDER BY 3 DESC, 2 DESC, 1 DESC;',
+                'i',
+                $modID,
+                5 * 60
+            );
+
+            if (!empty($lobbiesMadeSQL)) {
+                $sortingArray = array();
+                $colArray = array();
+                $rowArray = array();
+
+                //FORMATTING
+                if (!empty($lobbiesMadeSQL)) {
+                    foreach ($lobbiesMadeSQL as $key => $value) {
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+
+                        $sortingArray[$modDate] = $value['num_lobbies'];
+                    }
+                }
+
+                //COLUMNS
+                if (!empty($lobbiesMadeSQL)) {
+                    $colArray[] = array('id' => '', 'label' => 'Date', 'type' => 'string');
+                    $colArray[] = array('id' => '', 'label' => 'Lobbies', 'type' => 'number');
+                    $colArray[] = array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1));
+                }
+
+                $sortedDateArray = array();
+
+                //SORTING INTO [DATE]
+                foreach ($lobbiesMadeSQL as $key => $value) {
+                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+
+                    if (isset($sortingArray[$modDate])) {
+                        $sortedDateArray[$modDate] = $sortingArray[$modDate];
+                    } else {
+                        $sortedDateArray[$modDate] = 0;
+                    }
+                }
+
+                foreach ($sortedDateArray as $key => $value) {
+                    $tmpArray = array();
+                    $tmpArray[] = array('v' => $key);
+                    $tmpArray[] = array('v' => $value);
+                    $tmpArray[] = array('v' => number_format($value));
+
+                    //'<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>'
+
+                    $rowArray[] = array('c' => $tmpArray);
+                }
+
+                $options = array(
+                    'bar' => array(
+                        'groupWidth' => 6,
+                    ),
+                    'height' => 300,
+                    'chartArea' => array(
+                        'width' => '87%',
+                        'height' => '85%',
+                        'left' => 80,
+                        'top' => 10,
+                    ),
+                    'hAxis' => array(
+                        'textPosition' => 'none',
+                    ),
+                    'vAxes' => array(
+                        array(
+                            'title' => 'Num. of Lobbies',
+                            //'textPosition' => 'in',
+                            //'logScale' => 1,
+                        ),
+                    ),
+                    'legend' => array(
+                        'position' => 'none',
+                        //'alignment' => 'start',
+                    ),
+                    'seriesType' => 'bars',
+                    'series' => array(
+                        array(
+                            'type' => 'bar',
+                            'targetAxisIndex' => 0,
+                        ),
+                    ),
+                    'tooltip' => array( //'isHtml' => 1,
+                    ),
+                    'isStacked' => 1,
+                    'focusTarget' => 'category',
+                );
+
+                $chart = new chart2('ComboChart');
+
+                $data = array(
+                    'cols' => $colArray,
+                    'rows' => $rowArray
+                );
+
+                /*echo '<pre>';
+                print_r($rowArray);
+                echo '</pre>';*/
+
+                $chart_width = max(count($rowArray) * 8, 700);
+                $options['width'] = $chart_width;
+                $options['hAxis']['gridlines']['count'] = count($rowArray);
+
+                echo '<p>This graph captures what lobbies have been made over the last 7days. It is read right to left, with the data on the farthest left being the most recent.</p>';
+
+                echo '<div id="breakdown_lobbbies" class="d2mods-graph d2mods-graph-overflow"></div>';
+
+                $chart->load(json_encode($data));
+                echo $chart->draw('breakdown_lobbbies', $options);
+            } else {
+                echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
             }
         }
 
