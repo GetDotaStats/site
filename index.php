@@ -110,9 +110,10 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Signatures</li>
-                        <li><a class="nav-clickable" href="#steamtracks/">Generator <span
-                                    class="label label-danger">HOT</span></a></li>
-                        <li><a class="nav-clickable" href="#stats__sig_stats">Usage Stats</a></li>
+                        <li><a class="nav-clickable" href="#sig__generator">Generator <span
+                                    class="label label-success">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#sig__usage">Usage Stats <span
+                                    class="label label-success">UPDATED</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Halls of Fame</li>
                         <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
