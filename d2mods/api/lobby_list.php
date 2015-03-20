@@ -127,7 +127,7 @@ try {
                 );
             }
         } else {
-            $lobbyList['error'] = 'No active lobbies!';
+            $lobbyList['error'] = 'No lobbies active! Why not make one?';
         }
 
         $memcache->set('api_d2mods_lobby_list', $lobbyList, 0, 5);
