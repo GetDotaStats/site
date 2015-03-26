@@ -46,7 +46,7 @@ try {
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com 'unsafe-eval' 'unsafe-inline' data:;
-          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net  *.google-analytics.com;
+          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net  *.google-analytics.com *.steamusercontent.com;
           font-src 'self' static.getdotastats.com getdotastats.com;
           frame-src chatwing.com *.youtube.com;
           object-src 'none';
@@ -76,32 +76,30 @@ try {
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-success">NEW</span> <b class="caret"></b></a>
+                            class="label label-success">UPDATED</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Setup Guide</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores <span
-                                    class="label label-success">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__directory">Directory <span
+                                    class="label label-success">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Developer Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__mod_request">Request a Mod</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mini Games Section</li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_guide">Developer Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_request">Request a Mini Game</a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
                             <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
-                            <li><a class="nav-clickable" href="#d2mods__my_mods">My Added Mods</a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games</a></li>
                         <?php } ?>
                     </ul>
@@ -110,10 +108,8 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Signatures</li>
-                        <li><a class="nav-clickable" href="#sig__generator">Generator <span
-                                    class="label label-success">UPDATED</span></a></li>
-                        <li><a class="nav-clickable" href="#sig__usage">Usage Stats <span
-                                    class="label label-success">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#sig__generator">Generator</a></li>
+                        <li><a class="nav-clickable" href="#sig__usage">Trends</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Halls of Fame</li>
                         <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
