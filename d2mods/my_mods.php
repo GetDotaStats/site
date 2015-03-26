@@ -16,13 +16,36 @@ try {
     checkLogin_v2();
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
-    $modList = $db->q('SELECT * FROM `mod_list` WHERE `steam_id64` = ? ORDER BY `date_recorded` DESC;',
-        's', //STUPID x64 windows PHP is actually x86
-        $_SESSION['user_id64']);
+    $userID64 = $_SESSION['user_id64'];
+
+    $modList = cached_query(
+        'd2mods_my_mods_' . $userID64,
+        'SELECT
+                ml.*,
+                gu.`user_name`,
+                gu.`user_avatar`,
+                (SELECT COUNT(*) FROM `mod_match_overview` WHERE `mod_id` = ml.`mod_identifier`) as games_recorded
+            FROM `mod_list` ml
+            LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+            WHERE ml.`steam_id64` = ?
+            ORDER BY ml.date_recorded DESC;',
+        's',
+        $userID64,
+        5
+    );
 
     echo '<div class="page-header"><h2>My Mods <small>BETA</small></h2></div>';
 
-    echo '<p>This is a list of the mods you have added. Each mod has an associated encryption key that you will require. Please <a class="nav-clickable" href="#d2mods__guide">read our guide</a> on how to integrate statistic gathering into your mod. This section is a Work-In-Progress, so check back later.</p>';
+    echo '<span class="h4">&nbsp;</span>';
+
+    echo '<div class="text-center">
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__guide">Adding Stats</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+        </div>';
+
+    echo '<span class="h4">&nbsp;</span>';
 
     if (!empty($modList)) {
         foreach ($modList as $key => $value) {
@@ -42,7 +65,8 @@ try {
             echo '<div class="panel panel-default">
                             <div class="panel-heading"><h4>' . $value['mod_name'] . ' <small>' . $activeMod . '</small></h4></div>
                             <div class="panel-body">
-                                <div class="well well-sm"><strong>modID:</strong> ' . $value['mod_identifier'] . '</div>
+                                <div class="well well-sm"><strong>modID:</strong> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_identifier'] . '</a></div>
+                                <div class="well well-sm"><strong>Games Recorded:</strong> ' . number_format($value['games_recorded']) . ' <small>[<a class="nav-clickable" href="#d2mods__recent_games?f=' . $value['mod_id'] . '&p=1">Recent Games</a>]</small></div>
                                 <div class="well well-sm"><strong>Description:</strong> ' . $value['mod_description'] . '</div>
                                 <div class="well well-sm"><strong>Links:</strong> ' . $wg . ' || ' . $sg . ' </div >
                                 <div class="well well-sm" ><strong > Date Added:</strong > ' . relative_time($value['date_recorded']) . ' </div >
@@ -54,15 +78,18 @@ try {
         echo bootstrapMessage('Oh Snap', 'You don\'t have any mods added yet!', 'danger');
     }
 
-    echo '<p>
-                    <div class="text-center">
-                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
-                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
-                        <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-                    </div>
-                </p>';
+    echo '<span class="h4">&nbsp;</span>';
 
-    $memcache->close();
+    echo '<div class="text-center">
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__guide">Adding Stats</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+        </div>';
+
+    echo '<span class="h4">&nbsp;</span>';
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
