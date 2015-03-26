@@ -3,8 +3,6 @@ require_once('./functions.php');
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
-$start = time();
-
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -67,6 +65,8 @@ try {
         'i',
         $modID
     );
+
+    if(empty($modDetails)) throw new Exception('Failed to find mod details! Mod either does not exist or has not been approved.');
 
     $modGUID = $modDetails[0]['mod_identifier'];
     $modListID = $modDetails[0]['mod_id'];
@@ -938,21 +938,19 @@ try {
         }
 
         echo '<hr />';
-
     }
 
-    echo '<p>
-            <div class="text-center">
+    echo '<span class="h4">&nbsp;</span>';
+
+    echo '<div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-            </div>
-        </p>';
+            </div>';
 
-    echo '<div id="pagerendertime" class="pagerendertime">';
-    echo '<hr />Page generated in ' . (time() - $start) . 'secs';
-    echo '</div>';
+    echo '<span class="h4">&nbsp;</span>';
 
-    $memcache->close();
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
