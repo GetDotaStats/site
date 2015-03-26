@@ -229,6 +229,14 @@ try {
         $chart->load(json_encode($data));
         echo $chart->draw('sig_views_alltime_daily', $options, false, array(), true);
     }
+
+    echo '<span class="h3">&nbsp;</span>';
+
+    echo '<div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#sig__generator">Signature Generator</a>
+           </div>';
+
+    echo '<span class="h3">&nbsp;</span>';
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
 } finally {

@@ -159,7 +159,7 @@ try {
         //////////////////////////////////////////////
         // Apply the overlays for mostplayed
         //////////////////////////////////////////////
-        if (isset($user_details['mostPlayedHeroes'])) {
+        if (!empty($user_details['mostPlayedHeroes'])) {
             $x = $y = 0;
             for ($i = 0; $i < count($user_details['mostPlayedHeroes']); $i++) {
                 $image_file = './images/' . $user_details['mostPlayedHeroes'][$i]['pic'] . '.png';
@@ -219,7 +219,7 @@ try {
         //////////////////////////////////////////////
         // Apply the overlays for winrate
         //////////////////////////////////////////////
-        if (isset($user_details['winRateHeroes'])) {
+        if (!empty($user_details['winRateHeroes'])) {
             $x = $y = 0;
             for ($i = 0; $i < count($user_details['winRateHeroes']); $i++) {
                 $image_file = './images/' . $user_details['winRateHeroes'][$i]['pic'] . '.png';
