@@ -34,9 +34,15 @@ $(document).ready(function () {
 
     //NO BACKSPACING TO GO BACK
     $(document).bind("keydown keypress", function (e) {
-        if (e.which == 8) { // 8 == backspace
+        if ((e.which || e.keyCode) == 8) { // 8 == backspace
             if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
                 e.preventDefault();
+            }
+        }
+        else if ((e.which || e.keyCode) == 116) { // 116 == f5 -- refreshing
+            e.preventDefault();
+            if (window.location.hash != '#undefined') {
+                loadPage(window.location.hash, 1);
             }
         }
     });

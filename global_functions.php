@@ -1,4 +1,61 @@
 <?php
+//////////////////////
+//Common Variables
+//////////////////////
+
+$CDNgeneric = '//static.getdotastats.com';
+$imageCDN = '//dota2.photography';
+
+$CDN_generic = '//static.getdotastats.com';
+$CDN_image = '//dota2.photography';
+
+//////////////////////
+// javascript
+//////////////////////
+
+$path_lib_jQuery = '/bootstrap/js/';
+$path_lib_jQuery_name = 'jquery-1-3-2.min.js?20';
+$path_lib_jQuery_full = $CDN_generic . $path_lib_jQuery . $path_lib_jQuery_name;
+
+$path_lib_jQuery2 = '/bootstrap/js/';
+$path_lib_jQuery2_name = 'jquery-1-11-0.min.js?20';
+$path_lib_jQuery2_full = $CDN_generic . $path_lib_jQuery2 . $path_lib_jQuery2_name;
+
+$path_lib_bootstrap = '/bootstrap/js/';
+$path_lib_bootstrap_name = 'bootstrap.min.js?20';
+$path_lib_bootstrap_full = $CDN_generic . $path_lib_bootstrap . $path_lib_bootstrap_name;
+
+$path_lib_respondJS = '/bootstrap/js/';
+$path_lib_respondJS_name = 'respond-1-4-2.min.js?20';
+$path_lib_respondJS_full = $CDN_generic . $path_lib_respondJS . $path_lib_respondJS_name;
+
+$path_lib_html5shivJS = '/bootstrap/js/';
+$path_lib_html5shivJS_name = 'html5shiv-3-7-0.js?20';
+$path_lib_html5shivJS_full = $CDN_generic . $path_lib_html5shivJS . $path_lib_html5shivJS_name;
+
+$path_lib_siteJS = '/';
+$path_lib_siteJS_name = 'getdotastats.js?24';
+$path_lib_siteJS_full = $CDN_generic . $path_lib_siteJS . $path_lib_siteJS_name;
+//$path_lib_siteJS_full = '.' . $path_lib_siteJS . $path_lib_siteJS_name;
+
+$path_lib_highcharts = '/bootstrap/js/';
+$path_lib_highcharts_name = 'highcharts-4-1-4.js?20';
+$path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_highcharts_name;
+
+//////////////////////
+// CSS
+//////////////////////
+
+$path_css_site = '/';
+$path_css_site_name = 'getdotastats.css?23';
+$path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
+
+$path_css_bootstrap = '/bootstrap/css/';
+$path_css_bootstrap_name = 'bootstrap.min.css?1';
+$path_css_bootstrap_full = $CDN_generic . $path_css_bootstrap . $path_css_bootstrap_name;
+
+//////////////////////
+
 if (!function_exists('exceptions_error_handler')) {
     function exceptions_error_handler($severity, $message, $filename, $lineno)
     {
@@ -586,6 +643,86 @@ if (!function_exists('relative_time_v3')) {
     }
 }
 
+if (!function_exists('filesize_human_readable')) {
+    /**
+     * @param int $size
+     * @param int $decimals number of decimal places the file size is rounded to
+     * @param string $output (B | KB | MB | GB | TB)
+     * @param bool $returnArray
+     * @return array|string formatted file size or array (number | string)
+     * @throws Exception
+     */
+    function filesize_human_readable($size, $decimals = 1, $output = NULL, $returnArray = false)
+    {
+        if (!is_numeric($size)) {
+            throw new Exception('Size parameter not numeric');
+        }
+
+        if (!is_numeric($decimals)) {
+            throw new Exception('Decimal parameter not numeric');
+        }
+
+        if (empty($output)) {
+            switch ($size) {
+                case ($size >= 1099511627776):
+                    $number = number_format(($size / 1099511627776), $decimals);
+                    $string = 'TB';
+                    break;
+                case ($size >= 1073741824):
+                    $number = number_format(($size / 1073741824), $decimals);
+                    $string = 'GB';
+                    break;
+                case ($size >= 1048576):
+                    $number = number_format(($size / 1048576), $decimals);
+                    $string = 'MB';
+                    break;
+                case ($size >= 1024):
+                    $number = number_format(($size / 1024), $decimals);
+                    $string = 'KB';
+                    break;
+                default:
+                    $number = number_format($size, 0);
+                    $string = 'B';
+                    break;
+            }
+        } else {
+            switch ($output) {
+                case 'TB':
+                    $number = number_format(($size / 1099511627776), $decimals);
+                    $string = 'TB';
+                    break;
+                case 'GB':
+                    $number = number_format(($size / 1073741824), $decimals);
+                    $string = 'GB';
+                    break;
+                case 'MB':
+                    $number = number_format(($size / 1048576), $decimals);
+                    $string = 'MB';
+                    break;
+                case 'KB':
+                    $number = number_format(($size / 1024), $decimals);
+                    $string = 'KB';
+                    break;
+                default:
+                    $number = number_format($size, $decimals);
+                    $string = 'B';
+                    break;
+            }
+        }
+
+        if (!$returnArray) {
+            $formatted = $number . ' ' . $string;
+        } else {
+            $formatted = array(
+                'number' => $number,
+                'string' => $string,
+            );
+        }
+
+        return $formatted;
+    }
+}
+
 if (!function_exists("simple_cached_query")) {
     function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600)
     {
@@ -788,11 +925,15 @@ if (!function_exists("bootstrapMessage")) {
 }
 
 if (!function_exists("formatExceptionHandling")) {
-    function formatExceptionHandling($e)
+    function formatExceptionHandling($e, $debug = false)
     {
-        //$message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-        $message = $e->getMessage();
-        $messageFormatted = bootstrapMessage('Oh Snap', $message, 'danger');
+        if (!$debug) {
+            $message = $e->getMessage();
+            $messageFormatted = bootstrapMessage('Oh Snap', $message, 'danger');
+        } else {
+            $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+            $messageFormatted = bootstrapMessage('Oh Snap', $message, 'danger');
+        }
 
         return $messageFormatted;
     }
