@@ -68,16 +68,16 @@
     </li>
     <li>There are further helpful libraries for services we offer, including:
         <ul>
-            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-highscore">stat-highscore <span
-                        class="label label-success">LIVE</span></a> -- Enables users to have personal scores and a
+            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-highscore">stat-highscore</a> <span
+                        class="label label-success">LIVE</span> -- Enables users to have personal scores and a
                 global leaderboard that can be viewed on the site.
             </li>
-            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-rpg">stat-rpg <span
-                        class="label label-warning">TEST</span></a> -- Enables persistent data across game sessions.
+            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-rpg">stat-rpg</a> <span
+                        class="label label-warning">TEST</span> -- Enables persistent data across game sessions.
                 Great for RPG experiences where you want characters to carry over into new games.
             </li>
-            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-achievements">stat-achievements <span
-                        class="label label-danger">WIP</span></a> -- Enables mods to have achievements that users can
+            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-achievements">stat-achievements</a> <span
+                        class="label label-danger">WIP</span> -- Enables mods to have achievements that users can
                 unlock
                 that look and work like regular steam achievements.
             </li>
