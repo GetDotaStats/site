@@ -18,7 +18,7 @@
     found here, as I have just collated and reformatted it.
 </div>
 
-<p>The barebones example repo can be found here: <a href="https://github.com/GetDotaStats/stat-collection/"
+<p>The example repo can be found here: <a href="https://github.com/GetDotaStats/stat-collection/"
                                                     target="_blank">GetDotaStats/stat-collection</a>. All of the
     required libraries and example code is in there. Implementation simply involves splicing the statcollection logic
     into your mod.</p>
@@ -28,7 +28,7 @@
 <h2>Quick Start</h2>
 
 <ol>
-    <li>Drop your mod into a local copy of our barebones for <a href="https://github.com/GetDotaStats/stat-collection/"
+    <li>Drop your mod into a local copy of our example repo for <a href="https://github.com/GetDotaStats/stat-collection/"
                                                                 target="_blank">GetDotaStats/stat-collection</a>, making
         sure to merge your <code>addon_game_mode.lua</code> with ours.
     </li>
@@ -63,7 +63,7 @@
     </li>
     <li>If your mod has any options that can be set by users at the start of the game, you will want to take the time to
         also integrate the stat-options library (not detailed in this guide, but can be found in the root of the
-        barebones). Enabling this add-on will allow users to set these options in the lobby, before the game starts. In
+        example repo). Enabling this add-on will allow users to set these options in the lobby, before the game starts. In
         the future, users will also be able to filter lobbies based on these options.
     </li>
     <li>There are further helpful libraries for services we offer, including:
@@ -91,7 +91,7 @@
 
 <ol>
     <li>Ensure that you have all the files from the <a href="https://github.com/GetDotaStats/stat-collection/"
-                                                       target="_blank">GetDotaStats/stat-collection</a> barebones in
+                                                       target="_blank">GetDotaStats/stat-collection</a> example repo in
         your mod.
     </li>
     <li>Check the whitespaces and brackets in your <code>*.kv</code> and <code>*.txt</code> files.</li>
