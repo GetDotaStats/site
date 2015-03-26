@@ -23,15 +23,39 @@
 <div class="alert alert-warning alert-dismissible fade in" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
     </button>
-    <strong>Note:</strong> Workshop tools are not required if you only want the mini-games. Skip down
+    <strong>Note:</strong> Workshop tools are <strong>not</strong> required if you only want the mini-games. Skip down
     to Lobby Explorer Installation
 </div>
+
+<h1>Quick Start Guide</h1>
+<p>This is the quick start guide for users confident in their ability to install the Lobby Explorer. If these steps
+    fail, make sure to read the full guide below.</p>
+<ol>
+    <li>Make sure you have the workshop tools installed (and the workshop DLC enabled for your Dota2 client via the
+        steam library)
+    </li>
+    <li>Sign into this site (via the green button at the top of the page)</li>
+    <li>Download the <a target="_blank" class="btn btn-success btn-sm"
+                        href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Lobby
+            Explorer Pack</a></li>
+    <li>Extract the Lobby Explorer into the flash3 folder in your Dota2 installation. <code>C:\Program Files
+            (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code></li>
+    <li>Start/restart the Dota2 client</li>
+    <li>There will now be some new buttons in the Play tab of your Dota2 client for finding and creating custom game
+        lobbies
+    </li>
+</ol>
 
 <div class="text-center">
     <iframe width="560" height="315" src="https://www.youtube.com/embed/gO6xIw4PKKg" frameborder="0"
             allowfullscreen></iframe>
 </div>
 
+<hr/>
+
+<h1>Full Guide</h1>
+<p>A more detailed guide to installing the Lobby Explorer. These are the same steps as above, but with further detail
+    and accompanying pictures.</p>
 <h2>System Requirements</h2>
 <p>The current release of the Alpha tools are only compatible with the following system configurations. You also need
     the following requirements to play Custom Games in Dota 2 currently.</p>
@@ -135,9 +159,11 @@
 
 <p>I don't add randoms on steam, so leave a comment before adding me.</p>
 
+<span class="h4">&nbsp;</span>
+
 <div class="text-center">
     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
 </div>
 
-<p>&nbsp;</p>
+<span class="h4">&nbsp;</span>

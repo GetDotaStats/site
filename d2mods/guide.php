@@ -1,10 +1,14 @@
-<div class="page-header">
-    <h2>Guide for Adding Stats to your Mods
-        <small>BETA</small>
-    </h2>
+<h1>Integrating Stat Collection</h1>
+<hr/>
+
+<span class="h4">&nbsp;</span>
+
+<div class="text-center">
+    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a mod</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">My mods</a>
 </div>
 
-<p>This guide is still a Work-In-Progress, so always use the code in the Github!</p>
+<span class="h4">&nbsp;</span>
 
 <div class="alert alert-danger" role="alert"><strong>Special thanks to:</strong> <a href="https://github.com/SinZ163/"
                                                                                     target="_blank">SinZ163</a>, <a
@@ -19,30 +23,99 @@
     required libraries and example code is in there. Implementation simply involves splicing the statcollection logic
     into your mod.</p>
 
-<p>Initial experimentation has revealed that via a combination of Flash and LUA, we can open socket connections with
-    remote servers. We plan to take advantage of this by opening a socket back to our servers at the end of each game
-    for stat gathering purposes. Before starting this guide, <a class="nav-clickable" href="#d2mods__my_mods">please
-        ensure that you have added your mod to our directory</a>. You will be provided with an encryption key that will
-    be required towards the end of the guide.
-</p>
+<hr/>
 
-<p>There is standard "cookie cutter" code available in the <a
-        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/lib/statcollection.lua"
-        target="_blank">"scripts/vscripts/lib/statcollection.lua"</a> that should work for every mod. It is called
-    automatically (It hooks the game_state >= postgame and calls to SetGameWinner(), so that if either of those
-    conditions is met it will send the stats) at the end of the game via the getPlayerSnapshot() method. If your mod has
-    multiple rounds, then you will need to modify that library such that you call it at the end of each round. If you
-    are doing anything non-standard, or are having problems with your end game detection, call
-    statcollection.disableAutoSend().
-</p>
+<h2>Quick Start</h2>
+
+<ol>
+    <li>Drop your mod into a local copy of our barebones for <a href="https://github.com/GetDotaStats/stat-collection/"
+                                                                target="_blank">GetDotaStats/stat-collection</a>, making
+        sure to merge your <code>addon_game_mode.lua</code> with ours.
+    </li>
+    <li>Register your mod <a target="_blank" href="#d2mods__mod_request">on our site</a>. Take the time to read the
+        description of all the fields, as they can only be changed by site staff. The map field is important, as an
+        incorrect entry there will prevent users from playing the mod via the Lobby Explorer!
+    </li>
+    <li>Update the <code>addon_game_mode.lua</code> by replacing the placeholder modID with the
+        one you got from registration <a target="_blank" href="#d2mods__my_mods">on our site</a>.
+    </li>
+    <li>Make sure that your mod sets an end game condition nicely. The stat-collection library listens for the
+        "game_state" being changed to "postgame" which will generally happen when you invoke SetGameWinner().
+    </li>
+    <li>Run the mod via the workshop tools and successfully complete a run through of your mod (i.e. get to the end game
+        condition)
+    </li>
+    <li>Check the <a target="_blank" href="//getdotastats.com/d2mods/log-test.html?1">test-log</a> for a reference to
+        your modID. (<strong>Note:</strong> Some browsers cache that page strangely. Make sure to increment the number
+        at the end of the URL after each refresh)
+    </li>
+    <li>After passing the test (seeing your modID in the log-test), modify your <code>scripts/stat_collection.kv</code>
+        by changing the "live" value from 0 to 1
+    </li>
+    <li>Run the mod again via the workshop tools and successfully complete a run through of your mod (i.e. get to the
+        end game condition), making sure the game lasts for more than 3 minutes.
+    </li>
+    <li>Within a minute of successfully completing a game, your mod page should now show that you have a game
+        recorded. Your mod will be approved the next time a site staff member checks the queue. You can hasten this
+        process by notifying someone in the <a target="_blank"
+                                               href="https://kiwiirc.com/client/irc.gamesurge.net/?#getdotastats">IRC
+            channel</a>.
+    </li>
+    <li>If your mod has any options that can be set by users at the start of the game, you will want to take the time to
+        also integrate the stat-options library (not detailed in this guide, but can be found in the root of the
+        barebones). Enabling this add-on will allow users to set these options in the lobby, before the game starts. In
+        the future, users will also be able to filter lobbies based on these options.
+    </li>
+    <li>There are further helpful libraries for services we offer, including:
+        <ul>
+            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-highscore">stat-highscore <span
+                        class="label label-success">LIVE</span></a> -- Enables users to have personal scores and a
+                global leaderboard that can be viewed on the site.
+            </li>
+            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-rpg">stat-rpg <span
+                        class="label label-warning">TEST</span></a> -- Enables persistent data across game sessions.
+                Great for RPG experiences where you want characters to carry over into new games.
+            </li>
+            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-achievements">stat-achievements <span
+                        class="label label-danger">WIP</span></a> -- Enables mods to have achievements that users can
+                unlock
+                that look and work like regular steam achievements.
+            </li>
+        </ul>
+    </li>
+</ol>
+
+<hr/>
+
+<h2>Troubleshooting Guide</h2>
+
+<ol>
+    <li>Ensure that you have all the files from the <a href="https://github.com/GetDotaStats/stat-collection/"
+                                                       target="_blank">GetDotaStats/stat-collection</a> barebones in
+        your mod.
+    </li>
+    <li>Check the whitespaces and brackets in your <code>*.kv</code> and <code>*.txt</code> files.</li>
+    <li>Check the numbering and strip comments in your <code>flash3/custom_ui.txt</code> file. If you do not have any
+        custom UI elements, make "StatsCollection" the first entry.
+    </li>
+    <li>In the console enable additional logging <code>scaleform_spew 1</code> and look for any errors relating to the
+        stat-collection.
+    </li>
+    <li>If all of the above fails, get in contact with us via any of the methods at the bottom of this page. The
+        recommended channel of communication is via IRC.
+    </li>
+</ol>
+
+<hr/>
+
+<h2>Detailed guide</h2>
+
 <p>To get more out of this module, you will also need to refer to the
     <a href="#d2mods__guide_schema"
        target="_blank">schema</a> to see which data is not automatically
     captured. If you see data that you can collect and add to the schema, get in contact with us and we will try and
     accommodate your changes into the official schema, or add custom fields for your mod. This manually added data can
     be added during game play by calling addStats() method with your array of stats.</p>
-
-<h3>Setting up stat collection</h3>
 
 <div class="alert alert-danger" role="alert">
     <span class="glyphicon glyphicon-exclamation-sign"></span>
@@ -61,131 +134,161 @@
     * statcollection.lua
 </pre>
 
+<h4>Record the modID at the start of the game - <a
+        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/addon_game_mode.lua"
+        target="_blank">GitHub</a></h4>
+
+<p>It is important that you record the correct modID, otherwise your stats will not be recorded against your mod.
+    Re-usage of modID between mods is not allowed, as it will invalidate both your stats and the original mod's
+    stats. You can get your modID from your <a class="nav-clickable" href="#d2mods__my_mods">mod
+        listing</a>.</p>
+
+<pre class="pre-scrollable">
+    -- Load Stat collection (statcollection should be available from any script scope)
+    require('lib.statcollection')
+
+    Testing = false --Useful for turning off stat-collection when developing
+
+    if not Testing then --Only send stats when not testing
+      statcollection.addStats({
+        modID = 'XXXXXXXXXXXXXXXXXXX' --GET THIS FROM http://getdotastats.com/#d2mods__my_mods
+      })
+    end
+
+    print( "Example stat collection game mode loaded." )
+</pre>
+
 <h4>Include the <strong><em>compiled</em></strong> flash code for sending data in your "resource/flash3" folder - <a
         href="https://github.com/GetDotaStats/stat-collection/raw/master/statcollection/resource/flash3/StatsCollection.swf"
         target="_blank">GitHub</a>
 </h4>
 
+<p>You can delete the <code>FlashSource</code> folder, as it is not used at all.</p>
+
 <pre class="pre-scrollable">
-    package  {
-        import flash.display.MovieClip;
-        import flash.net.Socket;
-        import flash.utils.ByteArray;
-        import flash.events.Event;
-        import flash.events.ProgressEvent;
-        import flash.events.IOErrorEvent;
-        import flash.utils.Timer;
-        import flash.events.TimerEvent;
+        package  {
+            import flash.display.MovieClip;
+            import flash.net.Socket;
+            import flash.utils.ByteArray;
+            import flash.events.Event;
+            import flash.events.ProgressEvent;
+            import flash.events.IOErrorEvent;
+            import flash.utils.Timer;
+            import flash.events.TimerEvent;
 
-        public class StatsCollection extends MovieClip {
-            public var gameAPI:Object;
-            public var globals:Object;
-            public var elementName:String;
+            public class StatsCollection extends MovieClip {
+                public var gameAPI:Object;
+                public var globals:Object;
+                public var elementName:String;
 
-            var sock:Socket;
-            var json:String;
+                var sock:Socket;
+                var json:String;
 
-            var SERVER_ADDRESS:String = "176.31.182.87";
-            var SERVER_PORT:Number = 4444;
+                var SERVER_ADDRESS:String = "176.31.182.87";
+                var SERVER_PORT:Number = 4444;
 
-            public function onLoaded() : void {
-                // Tell the user what is going on
-                trace("##Loading StatsCollection...");
+                public function onLoaded() : void {
+                    // Tell the user what is going on
+                    trace("##Loading StatsCollection...");
 
-                // Reset our json
-                json = '';
+                    // Reset our json
+                    json = '';
 
-                // Load KV
-                var settings = globals.GameInterface.LoadKVFile('scripts/stat_collection.kv');
+                    // Load KV
+                    var settings = globals.GameInterface.LoadKVFile('scripts/stat_collection.kv');
 
-                // Load the live setting
-                var live:Boolean = (settings.live == "1");
+                    // Load the live setting
+                    var live:Boolean = (settings.live == "1");
 
-                // Load the settings for the given mode
-                if(live) {
-                    // Load live settings
-                    SERVER_ADDRESS = settings.SERVER_ADDRESS_LIVE;
-                    SERVER_PORT = parseInt(settings.SERVER_PORT_LIVE);
+                    // Load the settings for the given mode
+                    if(live) {
+                        // Load live settings
+                        SERVER_ADDRESS = settings.SERVER_ADDRESS_LIVE;
+                        SERVER_PORT = parseInt(settings.SERVER_PORT_LIVE);
 
-                    // Tell the user it's live mode
-                    trace("StatsCollection is set to LIVE mode.");
-                } else {
-                    // Load live settings
-                    SERVER_ADDRESS = settings.SERVER_ADDRESS_TEST;
-                    SERVER_PORT = parseInt(settings.SERVER_PORT_TEST);
+                        // Tell the user it's live mode
+                        trace("StatsCollection is set to LIVE mode.");
+                    } else {
+                        // Load live settings
+                        SERVER_ADDRESS = settings.SERVER_ADDRESS_TEST;
+                        SERVER_PORT = parseInt(settings.SERVER_PORT_TEST);
 
-                    // Tell the user it's test mode
-                    trace("StatsCollection is set to TEST mode.");
+                        // Tell the user it's test mode
+                        trace("StatsCollection is set to TEST mode.");
+                    }
+
+                    // Log the server
+                    trace("Server was set to "+SERVER_ADDRESS+":"+SERVER_PORT);
+
+                    // Hook the stat collection event
+                    gameAPI.SubscribeToGameEvent("stat_collection_part", this.statCollectPart);
+                    gameAPI.SubscribeToGameEvent("stat_collection_send", this.statCollectSend);
                 }
+                public function socketConnect(e:Event) {
+                    // We have connected successfully!
+                    trace('Connected to the server!');
 
-                // Log the server
-                trace("Server was set to "+SERVER_ADDRESS+":"+SERVER_PORT);
+                    // Hook the data connection
+                    //sock.addEventListener(ProgressEvent.SOCKET_DATA, socketData);
+                    var buff:ByteArray = new ByteArray();
+                    writeString(buff, json + '\r\n');
+                    sock.writeBytes(buff, 0, buff.length);
+                    sock.flush();
+                }
+                private static function writeString(buff:ByteArray, write:String){
+                    trace("Message: "+write);
+                    trace("Length: "+write.length);
+                    buff.writeUTFBytes(write);
+                }
+                public function statCollectPart(args:Object) {
+                    // Tell the client
+                    trace("##STATS Part of that stat data recieved:");
+                    trace(args.data);
 
-                // Hook the stat collection event
-                gameAPI.SubscribeToGameEvent("stat_collection_part", this.statCollectPart);
-                gameAPI.SubscribeToGameEvent("stat_collection_send", this.statCollectSend);
-            }
-            public function socketConnect(e:Event) {
-                // We have connected successfully!
-                trace('Connected to the server!');
+                    // Store the extra data
+                    json = json + args.data;
+                }
+                public function statCollectSend(args:Object) {
+                    // Tell the client
+                    trace("##STATS Sending payload:");
+                    trace(json);
 
-                // Hook the data connection
-                //sock.addEventListener(ProgressEvent.SOCKET_DATA, socketData);
-                var buff:ByteArray = new ByteArray();
-                writeString(buff, json + '\r\n');
-                sock.writeBytes(buff, 0, buff.length);
-                sock.flush();
-            }
-            private static function writeString(buff:ByteArray, write:String){
-                trace("Message: "+write);
-                trace("Length: "+write.length);
-                buff.writeUTFBytes(write);
-            }
-            public function statCollectPart(args:Object) {
-                // Tell the client
-                trace("##STATS Part of that stat data recieved:");
-                trace(args.data);
+                    // Create the socket
+                    sock = new Socket();
+                    sock.timeout = 10000; //10 seconds is fair..
+                    // Setup socket event handlers
+                    sock.addEventListener(Event.CONNECT, socketConnect);
 
-                // Store the extra data
-                json = json + args.data;
-            }
-            public function statCollectSend(args:Object) {
-                // Tell the client
-                trace("##STATS Sending payload:");
-                trace(json);
+                    try {
+                        // Connect
+                        sock.connect(SERVER_ADDRESS, SERVER_PORT);
+                    } catch (e:Error) {
+                        // Oh shit, there was an error
+                        trace("##STATS Failed to connect!");
 
-                // Create the socket
-                sock = new Socket();
-                sock.timeout = 10000; //10 seconds is fair..
-                // Setup socket event handlers
-                sock.addEventListener(Event.CONNECT, socketConnect);
-
-                try {
-                    // Connect
-                    sock.connect(SERVER_ADDRESS, SERVER_PORT);
-                } catch (e:Error) {
-                    // Oh shit, there was an error
-                    trace("##STATS Failed to connect!");
-
-                    // Return failure
-                    return false;
+                        // Return failure
+                        return false;
+                    }
                 }
             }
         }
-    }
 </pre>
 
 <h4>Call the compiled flash in your "resource/flash3/custom_ui.txt" - <a
         href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/resource/flash3/custom_ui.txt"
         target="_blank">GitHub</a></h4>
 
+<p>If you have existing UI elements, put them before the StatsCollection, otherwise put StatsCollection as the first.
+    Your existing UI elements will probably need to be at a larger depth than the StatsCollection. Whitespace is
+    important in this file.</p>
+
 <pre class="pre-scrollable">
     "CustomUI"
     {
         "1"
         {
-            "File" "StatsCollection" //IF YOU HAVE A UI ELEMENT, THEN PUT IT AS 1, AND PUT STATS AS 2
-            "Depth" "1" //IF YOU HAVE A UI ELEMENT, IT SHOULD BE SET AT 253
+            "File" "StatsCollection"
+            "Depth" "1"
         }
     }
 </pre>
@@ -193,6 +296,8 @@
 <h4>Create a custom event in your "scripts/custom_events.txt" - <a
         href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/custom_events.txt"
         target="_blank">GitHub</a></h4>
+
+<p>Check the whitespace in this file, as there have been reports that badly formatted files cause errors.</p>
 
 <pre class="pre-scrollable">
     "CustomEvents"
@@ -228,25 +333,6 @@
         "SERVER_ADDRESS_LIVE"   "176.31.182.87"
         "SERVER_PORT_LIVE"      "4445"
     }
-</pre>
-
-<h4>Record the modID at the start of the game - <a
-        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/addon_game_mode.lua"
-        target="_blank">GitHub</a></h4>
-
-<p>It is important that you record the correct modID, otherwise your stats will not be recorded against your mod.
-    Re-usage of modID between mods is not allowed, as it will invalidate both your stats and the original mod's
-    stats. You can get your modID from your <a class="nav-clickable" href="#d2mods__my_mods">mod
-        listing</a>.</p>
-
-<pre class="pre-scrollable">
-    -- Load Stat collection (statcollection should be available from any script scope)
-    require('lib.statcollection')
-    statcollection.addStats({
-        modID = 'XXXXXXXXXXXXXXXXXXX' --GET THIS FROM http://getdotastats.com/#d2mods__my_mods
-    })
-
-    print( "Example stat collection game mode loaded." )
 </pre>
 
 <h4>Add flags to indicate mod settings <strong>(OPTIONAL)</strong> - <a
@@ -316,54 +402,36 @@
     end
 </pre>
 
-<h4>Finally!</h4>
+<hr/>
 
-<p>Now that you have the code implemented to collect and send stats, why not test it out? You can monitor what test data
-    we receive via our logs
-    <a href="./d2mods/log-test.html" target="_blank">test</a>
-    ||
-    <a href="./d2mods/log-live.html" target="_blank">live</a>.
-    By default, you will be submitting to the test server. When you modify your "scripts/stat_collection.kv" by setting
-    live = 1, your stats will appear in the live log and be eligible for recording. Only stats from approved mods are
-    guaranteed to be accepted on the live server. Live stats that are successfully parsed will be recorded in our
-    <a href="#d2mods__recent_games" target="_blank">database</a>. The test log records all data sent, while the live log
-    will only record failures.
-</p>
+<h2>Communication Channels</h2>
 
-<div class="alert alert-danger">
-    The stats are only sent at the end of a game, which can be triggered when the "game_state >= postgame" or when
-    SetGameWinner() has been called. You can register a console command for easier testing. Refer to this
-    <a target="_blank"
-       href="https://github.com/GetDotaStats/Invoker-Wars/blob/280eb0c105a9cae2595266bf3f997830416b06fa/invoker_wars/scripts/vscripts/addon_game_mode.lua#L59"
-       target="_blank">example</a>.
-</div>
+<p>By this stage, you should hopefully have stats integrated. This method of stat collection is new
+    and experimental, so feel free to get in contact with us.</p>
 
-<h3>Understanding how the stat collection works</h3>
+<p>We strongly recommend that all developers join the <a target="_blank"
+                                                         href="http://steamcommunity.com/groups/getdotastats-dev">Developer
+        Steam Group</a> and subscribe to the relevant topics they will want updates on. As of writing they are:</p>
 
-<p>Have a look at the <a
-        href="https://github.com/GetDotaStats/stat-collection/blob/master/statcollection/scripts/vscripts/lib/statcollection.lua"
-        target="_blank">statcollection library</a>.
-    This library handles the data you collect, and even abstracts the process for sending the stats from the rest of
-    your logic.</p>
-
-<h3>Custom Flash to send JSON</h3>
-
-<p>If you want to understand what the compiled Flash is doing (or make your own), it essentially just opens a socket
-    connection to 176.31.182.87 on port 4444 (for testing) OR 4445 (live) and sends the JSON string.</p>
-
-<h3>Final steps</h3>
-
-<p>You are now ready to go! Upload your mod to the workshop and see if it works! This method of stat collection is new
-    and experimental, so feel free to contact me via any of the lines of communication listed below.</p>
-
-<p>For those not familiar with IRC, try the <a target="_blank"
-                                               href="https://kiwiirc.com/client/irc.gamesurge.net/?#getdotastats">kiwiirc
-        client</a>.</p>
-
-<p>&nbsp;</p>
+<span class="h4">&nbsp;</span>
 
 <div class="text-center">
-    <a target="_blank" class="btn btn-danger btn-sm" href="irc://irc.gamesurge.net:6667/#getdotastats">IRC
+    <a target="_blank" class="btn btn-success btn-sm"
+       href="http://steamcommunity.com/groups/getdotastats-dev/discussions/0/617328415073923572/">Site Changes</a>
+    <a target="_blank" class="btn btn-success btn-sm"
+       href="http://steamcommunity.com/groups/getdotastats-dev/discussions/0/617328415073922155/">Stat Collection</a>
+    <a target="_blank" class="btn btn-success btn-sm"
+       href="http://steamcommunity.com/groups/getdotastats-dev/discussions/0/617328415073932793/">Lobby Explorer</a>
+    <a target="_blank" class="btn btn-success btn-sm"
+       href="http://steamcommunity.com/groups/getdotastats-dev/discussions/0/617328415073939543/">Mini Games</a>
+</div>
+
+<span class="h4">&nbsp;</span>
+
+<p>The official channels of contact are:</p>
+
+<div class="text-center">
+    <a target="_blank" class="btn btn-danger btn-sm" href="https://kiwiirc.com/client/irc.gamesurge.net/?#getdotastats">IRC
         #getdotastats</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/GetDotaStats">Site
         Chatbox</a>
@@ -374,15 +442,6 @@
        href="http://steamcommunity.com/groups/getdotastats/discussions/1/">Steam Group</a>
 </div>
 
-<p>&nbsp;</p>
+<span class="h4">&nbsp;</span>
 
 <p>I don't add randoms on steam, so leave a comment before adding me.</p>
-
-
-<h3>Miscellaneous Notes</h3>
-
-<ul>
-    <li>Do not re-use IDs for abilities, items, etc. If you remove an item from the game, and later add another, it is
-        important that you do not re-use an existing ID as this will break the integrity of your stats database.
-    </li>
-</ul>
