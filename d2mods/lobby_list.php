@@ -87,7 +87,7 @@ try {
 
     echo '<div class="alert alert-info" role="alert">
                 <a target="_blank" class="btn btn-success btn-sm" href="#d2mods__lobby_guide">Installation guide</a> OR hop right in and
-                <a target="_blank" class="btn btn-warning btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Download the Lobby Explorer Pack</a>
+                <a target="_blank" class="btn btn-warning btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">Download the Lobby Explorer Pack</a>
             </div>';
 
     echo '<div class="page-header"><h3>Active Lobbies</h3></div>';

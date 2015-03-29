@@ -27,7 +27,32 @@
     to Lobby Explorer Installation
 </div>
 
-<h1>Quick Start Guide</h1>
+<h1>Quick Start Guide (Auto)</h1>
+<p>This is a guide for users confident that they have the workshop tools setup correctly, and willing to immediately
+    jump into custom games. If these steps fail, make sure to read the full guide below. Users can inspect the source of
+    the VBS by right clicking and editing it, or by following the manual installation steps in the next section.</p>
+<ol>
+    <li>Make sure you have the workshop tools installed (and the workshop DLC enabled for your Dota2 client via the
+        steam library)
+    </li>
+    <li>Sign into this site (via the green button at the top of the page)</li>
+    <li>Download the <a target="_blank" class="btn btn-success btn-sm"
+                        href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/LXUpdater.zip">LXUpdater</a>
+    <li>Extract and run the LXUpdater <a target="_blank" href="http://gfycat.com/BewitchedCompassionateGull">VIDEO
+            EXAMPLE</a></li>
+    <li>Start/restart the Dota2 client</li>
+    <li>There will now be some new buttons in the Play tab of your Dota2 client for finding and creating custom game
+        lobbies.
+        <ul>
+            <li><a target="_blank" href="http://gfycat.com/GrippingGenuineIndochinesetiger">Finding Lobbies</a></li>
+            <li><a target="_blank" href="http://gfycat.com/PlasticEnlightenedAngwantibo">Making Lobbies</a></li>
+        </ul>
+    </li>
+</ol>
+
+<hr/>
+
+<h1>Quick Start Guide (Manual)</h1>
 <p>This is the quick start guide for users confident in their ability to install the Lobby Explorer. If these steps
     fail, make sure to read the full guide below.</p>
 <ol>
@@ -36,7 +61,7 @@
     </li>
     <li>Sign into this site (via the green button at the top of the page)</li>
     <li>Download the <a target="_blank" class="btn btn-success btn-sm"
-                        href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Lobby
+                        href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">Lobby
             Explorer Pack</a></li>
     <li>Extract the Lobby Explorer into the flash3 folder in your Dota2 installation. <code>C:\Program Files
             (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code></li>
@@ -98,7 +123,7 @@
 <h2>Install the GetDotaStats Lobby Explorer</h2>
 <p><strong>1.</strong>
     <a target="_blank" class="btn btn-success btn-sm"
-       href="https://github.com/GetDotaStats/GetDotaLobby/raw/lobbybrowser/play_weekend_tourney.zip">Download the Lobby
+       href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">Download the Lobby
         Explorer Pack</a>
 </p>
 <p><strong>2.</strong> While this downloads, now is a good time to login in to our site via steam's OpenID. Click on the
