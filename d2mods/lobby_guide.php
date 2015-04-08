@@ -143,6 +143,8 @@
     <p><strong>If the folder does not exist, make it!</strong></p>
 </div>
 
+<hr/>
+
 <h2>Find/Join Lobbies</h2>
 <p>Now that you have installed the Dota 2 Workshop Tools, installed the Lobby Explorer and logged into the site; it is
     time for you to make use of our system! <strong>The in-game lobby list must be refreshed manually, by clicking the
@@ -154,6 +156,8 @@
 <p><strong>3.</strong> Navigate to the PLAY tab and click on HOST CUSTOM LOBBY, in order to host lobbies.
     <a target="_blank" href="http://gfycat.com/PlasticEnlightenedAngwantibo">VIDEO EXAMPLE</a></p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/4-2.jpg" width="500px"/></div>
+
+<hr/>
 
 <h2>Notes</h2>
 

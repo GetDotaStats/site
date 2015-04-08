@@ -91,6 +91,7 @@ try {
               ml.`mod_id`,
               ml.`mod_name`,
               ml.`mod_steam_group`,
+              ml.`mod_workshop_link`,
 
               (SELECT
                     COUNT(*)
@@ -113,7 +114,8 @@ try {
                 FROM `mod_workshop`
                 GROUP BY `mod_identifier`
             ) mw2 ON mw.`mod_identifier` = mw2.`mod_identifier` AND mw.`date_recorded` = mw2.`most_recent_date`
-            LEFT JOIN `mod_list` ml ON mw.`mod_identifier` = ml.`mod_identifier`
+            RIGHT JOIN `mod_list` ml ON mw.`mod_identifier` = ml.`mod_identifier`
+            WHERE ml.`mod_active` = 1
             ORDER BY ' . $order_clause . ';',
         NULL,
         NULL,
@@ -153,22 +155,22 @@ try {
         echo '<div class="row">
                     <div class="col-sm-5 text-center"><strong>Mod</strong></div>
                     <div class="col-sm-1 text-center"><strong>Week</strong><br />
-                        <a class="nav-clickable" href="#d2mods__directory?o=5">' . $glpyh_up . '</a>
                         <a class="nav-clickable" href="#d2mods__directory?o=6">' . $glpyh_down . '</a>
+                        <a class="nav-clickable" href="#d2mods__directory?o=5">' . $glpyh_up . '</a>
                     </div>
                     <div class="col-sm-1 text-center"><strong>All</strong><br />
-                        <a class="nav-clickable" href="#d2mods__directory?o=7">' . $glpyh_up . '</a>
                         <a class="nav-clickable" href="#d2mods__directory?o=8">' . $glpyh_down . '</a>
+                        <a class="nav-clickable" href="#d2mods__directory?o=7">' . $glpyh_up . '</a>
                     </div>
                     <div class="col-sm-1">&nbsp;</div>
                     <div class="col-sm-1 text-center"><strong>Size</strong><br />
-                        <a class="nav-clickable" href="#d2mods__directory?o=3">' . $glpyh_up . '</a>
                         <a class="nav-clickable" href="#d2mods__directory?o=4">' . $glpyh_down . '</a>
+                        <a class="nav-clickable" href="#d2mods__directory?o=3">' . $glpyh_up . '</a>
                     </div>
                     <div class="col-sm-1 text-center"><strong>Links</strong></div>
                     <div class="col-sm-2 text-center"><strong>Last Updated</strong><br />
-                        <a class="nav-clickable" href="#d2mods__directory?o=1">' . $glpyh_up . '</a>
                         <a class="nav-clickable" href="#d2mods__directory?o=2">' . $glpyh_down . '</a>
+                        <a class="nav-clickable" href="#d2mods__directory?o=1">' . $glpyh_up . '</a>
                     </div>
                 </div>';
 
@@ -185,8 +187,8 @@ try {
                 ? $value['games_all_time']
                 : 0;
 
-            $workshopLink = !empty($value['mod_workshop_id'])
-                ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_id'] . '">WS</a>'
+            $workshopLink = !empty($value['mod_workshop_link'])
+                ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">WS</a>'
                 : '<span class="db_link">WS</span>';
 
             $steamGroupLink = !empty($value['mod_steam_group'])
@@ -203,14 +205,22 @@ try {
 
             $modLinks = $workshopLink . ' || ' . $steamGroupLink;
 
+            $modThumb = !empty($value['mod_thumbnail'])
+                ? $value['mod_thumbnail']
+                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
+
+            $modLastUpdate =  !empty($value['date_last_updated'])
+                ? relative_time_v3($value['date_last_updated'], 1, 'day')
+                : '??';
+
             echo '<div class="row">
-                    <div class="col-sm-5"><img width="25" height="25" src="' . $value['mod_thumbnail'] . '" /> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                    <div class="col-sm-5"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
                     <div class="col-sm-1 text-right">' . number_format($value['games_last_week']) . '</div>
                     <div class="col-sm-1 text-right">' . number_format($value['games_all_time']) . '</div>
                     <div class="col-sm-1">&nbsp;</div>
                     <div class="col-sm-1 text-right">' . $modSize . '</div>
                     <div class="col-sm-1 text-center">' . $modLinks . '</div>
-                    <div class="col-sm-2 text-right">' . relative_time_v3($value['date_last_updated'], 1, 'day') . '</div>
+                    <div class="col-sm-2 text-right">' . $modLastUpdate . '</div>
                 </div>';
 
             echo '<span class="h5">&nbsp;</span>';
