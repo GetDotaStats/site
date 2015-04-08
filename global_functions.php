@@ -3,9 +3,6 @@
 //Common Variables
 //////////////////////
 
-$CDNgeneric = '//static.getdotastats.com';
-$imageCDN = '//dota2.photography';
-
 $CDN_generic = '//static.getdotastats.com';
 $CDN_image = '//dota2.photography';
 
@@ -34,7 +31,7 @@ $path_lib_html5shivJS_name = 'html5shiv-3-7-0.js?20';
 $path_lib_html5shivJS_full = $CDN_generic . $path_lib_html5shivJS . $path_lib_html5shivJS_name;
 
 $path_lib_siteJS = '/';
-$path_lib_siteJS_name = 'getdotastats.js?24';
+$path_lib_siteJS_name = 'getdotastats.js?25';
 $path_lib_siteJS_full = $CDN_generic . $path_lib_siteJS . $path_lib_siteJS_name;
 //$path_lib_siteJS_full = '.' . $path_lib_siteJS . $path_lib_siteJS_name;
 

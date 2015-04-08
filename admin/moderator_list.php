@@ -48,16 +48,16 @@ try {
         foreach ($moderatorList as $key => $value) {
             $userAvatar = !empty($value['user_avatar'])
                 ? $value['user_avatar']
-                : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
+                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
 
             $userName = !empty($value['user_name'])
                 ? '<span class="h3">
-                            <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '">
+                            <a target="_blank" href="#d2mods__profile?id=' . $value['user_id64'] . '">
                                 ' . $value['user_name'] . '
                             </a>
                         </span>'
                 : '<span class="h3">
-                            <a target="_blank" href="#d2mods__search?user=' . $value['user_id64'] . '">
+                            <a target="_blank" href="#d2mods__profile?id=' . $value['user_id64'] . '">
                                 ??
                             </a>
                             <small>Sign in to update profile!</small>

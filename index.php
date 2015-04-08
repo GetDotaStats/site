@@ -75,8 +75,8 @@ try {
         <div id="navBarCustom" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-success">UPDATED</span> <b class="caret"></b></a>
+                    <!--<span class="label label-success">UPDATED</span>-->
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
@@ -84,8 +84,8 @@ try {
                         <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__directory">Directory <span
-                                    class="label label-success">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__search">Search</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
@@ -158,15 +158,9 @@ try {
                     </li>
                 <?php } ?>
             </ul>
-            <form id="searchForm" class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input name="user" type="text" class="form-control" placeholder="UserID or MatchID">
-                </div>
-                <button type="submit" class="btn btn-default">Search</button>
-            </form>
             <?php if (empty($_SESSION['user_id64'])) { ?>
                 <p class="nav navbar-text"><a href="./auth/?login"><img
-                            src="<?= $CDNgeneric ?>/auth/assets/images/steam_small.png"
+                            src="<?= $CDN_generic ?>/auth/assets/images/steam_small.png"
                             alt="Sign in with Steam"/></a></p>
             <?php
             } else {
@@ -185,32 +179,16 @@ try {
 </div>
 <div class="clear"></div>
 
-<script type="application/javascript">
-    $("#searchForm").submit(function (event) {
-        event.preventDefault();
-        var searchTerm = $("input:first").val();
-
-        if (searchTerm.length == 32) {
-            loadPage("#d2mods__match?id=" + searchTerm, 1);
-            window.location.replace("#d2mods__match?id=" + searchTerm);
-        }
-        else {
-            loadPage("#d2mods__search?user=" + searchTerm, 1);
-            window.location.replace("#d2mods__search?user=" + searchTerm);
-        }
-    });
-</script>
-
 <span class="h4 clearfix">&nbsp;</span>
 
 <div class="container">
     <div class="text-center">
         <a class="nav-clickable" href="#d2mods__lobby_list"><img width="400px"
-                                                                 src="<?= $CDNgeneric ?>/images/getdotastats_logo_v3.png"
+                                                                 src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
                                                                  alt="site logo"/></a>
 
         <div id="loading">
-            <img id="loading_spinner1" src="<?= $CDNgeneric ?>/images/spinner_v2.gif" alt="loading"/>
+            <img id="loading_spinner1" src="<?= $CDN_generic ?>/images/spinner_v2.gif" alt="loading"/>
         </div>
     </div>
 </div>

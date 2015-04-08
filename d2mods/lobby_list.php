@@ -87,7 +87,8 @@ try {
 
     echo '<div class="alert alert-info" role="alert">
                 <a target="_blank" class="btn btn-success btn-sm" href="#d2mods__lobby_guide">Installation guide</a> OR hop right in and
-                <a target="_blank" class="btn btn-warning btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">Download the Lobby Explorer Pack</a>
+                <a target="_blank" class="btn btn-warning btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/LXUpdater.zip">Download the LXUpdater</a> AND subscribe to the custom games on the
+                <a target="_blank" class="btn btn-info btn-sm" href="http://steamcommunity.com/sharedfiles/filedetails/?id=419876116">Steam Workshop</a>
             </div>';
 
     echo '<div class="page-header"><h3>Active Lobbies</h3></div>';
@@ -131,12 +132,12 @@ try {
             }
 
             $lobbyRegion = !empty($value['region_code']) && !empty($value['region_name'])
-                ? '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/' . $value['region_code'] . '.png" title="' . $value['region_name'] . '" />'
-                : '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/_unknown.png" title="Unknown" />';
+                ? '<img width="16" height="16" src="' . $CDN_generic . '/images/misc/flags/regions/' . $value['region_code'] . '.png" title="' . $value['region_name'] . '" />'
+                : '<img width="16" height="16" src="' . $CDN_generic . '/images/misc/flags/regions/_unknown.png" title="Unknown" />';
 
             echo '<tr>
                         <td class="vert-align">' . $lobbyRegion . ' <a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
-                        <td class="vert-align"><a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
+                        <td class="vert-align"><a target="_blank" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ') <a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 0) . '</td>
@@ -189,12 +190,12 @@ try {
             }
 
             $lobbyRegion = !empty($value['region_code']) && !empty($value['region_name'])
-                ? '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/' . $value['region_code'] . '.png" title="' . $value['region_name'] . '" />'
-                : '<img width="16" height="16" src="' . $CDNgeneric . '/images/misc/flags/regions/_unknown.png" title="Unknown" />';
+                ? '<img width="16" height="16" src="' . $CDN_generic . '/images/misc/flags/regions/' . $value['region_code'] . '.png" title="' . $value['region_name'] . '" />'
+                : '<img width="16" height="16" src="' . $CDN_generic . '/images/misc/flags/regions/_unknown.png" title="Unknown" />';
 
             echo '<tr>
                         <td class="vert-align">' . $lobbyRegion . ' <a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
-                        <td class="vert-align"><a target="_blank" href="#d2mods__search?user=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
+                        <td class="vert-align"><a target="_blank" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
@@ -206,18 +207,19 @@ try {
         echo bootstrapMessage('Oh Snap', 'No lobbies have ever been made!.', 'danger');
     }
 
-    echo '<span class="h3">&nbsp;</span>';
+    echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>';
 
-    echo '<span class="h3">&nbsp;</span>';
+    echo '<span class="h4">&nbsp;</span>';
 
-    $memcache->close();
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
 
 echo '

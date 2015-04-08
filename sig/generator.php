@@ -401,7 +401,7 @@ try {
                     <a class="nav-clickable" href="#d2mods__lobby_list">lobby list</a> page.</li>
                 <li>Tick the "Share MMR with GDS?" tick-box.</li>
                 <span class="h3">&nbsp;</span>
-                <div class="text-center"><img src="' . $CDNgeneric . '/images/misc/sig/opt_in.png" width="500px"/></div>
+                <div class="text-center"><img src="' . $CDN_generic . '/images/misc/sig/opt_in.png" width="500px"/></div>
             </ol>
         </div>';
 

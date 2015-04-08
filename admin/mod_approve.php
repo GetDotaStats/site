@@ -73,10 +73,10 @@ try {
 
             $modDeveloperAvatar = !empty($value['user_avatar'])
                 ? '<img width="20" height="20" src="' . $value['user_avatar'] . '"/>'
-                : '<img width="20" height="20" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg"/>';
+                : '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         } else {
             $modDeveloper = 'Unknown';
-            $modDeveloperAvatar = '<img width="20" height="20" src="' . $imageCDN . '/images/misc/steam/blank_avatar.jpg"/>';
+            $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
 
