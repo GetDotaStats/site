@@ -33,7 +33,7 @@ $(document).ready(function () {
     var rx = /INPUT|SELECT|TEXTAREA/i;
 
     //NO BACKSPACING TO GO BACK
-    $(document).bind("keydown keypress", function (e) {
+    $(document).bind("keydown", function (e) {
         if ((e.which || e.keyCode) == 8) { // 8 == backspace
             if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
                 e.preventDefault();
