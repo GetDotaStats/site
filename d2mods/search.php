@@ -32,11 +32,11 @@ try {
 
                     if (searchTerm.length == 32) {
                         loadPage("#d2mods__match?id=" + searchTerm, 1);
-                        window.location.replace("#d2mods__match?id=" + searchTerm);
+                        //window.location.replace("#d2mods__match?id=" + searchTerm);
                     }
                     else {
                         loadPage("#d2mods__profile?id=" + searchTerm, 1);
-                        window.location.replace("#d2mods__profile?id=" + searchTerm);
+                        //window.location.replace("#d2mods__profile?id=" + searchTerm);
                     }
                 });
             </script>

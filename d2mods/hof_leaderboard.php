@@ -121,18 +121,18 @@ try {
                     ? $hof_user_details[0]['user_avatar']
                     : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
 
-                if (!empty($hof_user_details[0]['user_name']) && strlen($hof_user_details[0]['user_name']) > 21) {
-                    $hof_user_details[0]['user_name'] = substr($hof_user_details[0]['user_name'], 0, 17) . '...';
+                if (!empty($hof_user_details[0]['user_name']) && strlen($hof_user_details[0]['user_name']) > 28) {
+                    $hof_user_details[0]['user_name'] = substr($hof_user_details[0]['user_name'], 0, 24) . '...';
                 }
 
                 $userName = !empty($hof_user_details[0]['user_name'])
                     ? '<span class="h3">
-                            <a target="_blank" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
+                            <a class="nav-clickable" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
                                 ' . $hof_user_details[0]['user_name'] . '
                             </a>
                         </span>'
                     : '<span class="h3">
-                            <a target="_blank" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
+                            <a class="nav-clickable" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
                                 ?UNKNOWN?
                             </a>
                             <small>Sign in to update profile!</small>
@@ -146,7 +146,7 @@ try {
                                 <span class="h3">' . $value['hof_score1'] . '</span>
                             </div>
                             <div class="col-md-1">
-                                <a target="_blank" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
+                                <a class="nav-clickable" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
                                     <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $userAvatar . '" />
                                 </a>
                             </div>
@@ -168,7 +168,7 @@ try {
                                 <span class="h3">' . $value['hof_score1'] . '</span>
                             </div>
                             <div class="col-md-1">
-                                <a target="_blank" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
+                                <a class="nav-clickable" href="#d2mods__profile?id=' . $value['player_sid64'] . '">
                                     <img alt="User Avatar" class="hof_avatar img-responsive center-block" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg' . '" />
                                 </a>
                             </div>

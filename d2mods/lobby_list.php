@@ -87,8 +87,8 @@ try {
 
     echo '<div class="alert alert-info" role="alert">
                 <a target="_blank" class="btn btn-success btn-sm" href="#d2mods__lobby_guide">Installation guide</a> OR hop right in and
-                <a target="_blank" class="btn btn-warning btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/LXUpdater.zip">Download the LXUpdater</a> AND subscribe to the custom games on the
-                <a target="_blank" class="btn btn-info btn-sm" href="http://steamcommunity.com/sharedfiles/filedetails/?id=419876116">Steam Workshop</a>
+                <a target="_blank" class="btn btn-warning btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/LXUpdater.zip">Download the LXUpdater</a> AND subscribe to our
+                <a target="_blank" class="btn btn-info btn-sm" href="http://steamcommunity.com/sharedfiles/filedetails/?id=419876116">Workshop Collection</a>
             </div>';
 
     echo '<div class="page-header"><h3>Active Lobbies</h3></div>';
@@ -137,7 +137,7 @@ try {
 
             echo '<tr>
                         <td class="vert-align">' . $lobbyRegion . ' <a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
-                        <td class="vert-align"><a target="_blank" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ') <a class="nav-clickable btn btn-success btn-sm" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">JOIN</a></td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 0) . '</td>
@@ -195,7 +195,7 @@ try {
 
             echo '<tr>
                         <td class="vert-align">' . $lobbyRegion . ' <a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . $lobbyName . '</a></td>
-                        <td class="vert-align"><a target="_blank" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
+                        <td class="vert-align"><a class="nav-clickable" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $lobbyLeaderName . '</td>
                         <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a> ' . $workshopLink . '</td>
                         <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
                         <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
@@ -227,7 +227,7 @@ echo '
         $(document).ready(function () {
             pageReloader = setTimeout(function () {
                 if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list") {
-                    loadPage("#d2mods__lobby_list", 1);
+                    loadPage("#d2mods__lobby_list", 2);
                 }
                 else {
                     clearTimeout(pageReloader);

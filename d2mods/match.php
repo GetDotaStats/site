@@ -359,7 +359,7 @@ try {
                                 : '??';
 
                             $playerName = !empty($player_value['player_sid32']) && is_numeric($player_value['player_sid32'])
-                                ? '<a class="nav-clickable" href="#d2mods__profile?id=' . $player_value['player_sid32'] . '">' . $player_value['player_name'] . '</a>'
+                                ? '<a class="nav-clickable" class="nav-clickable" href="#d2mods__profile?id=' . $player_value['player_sid32'] . '">' . $player_value['player_name'] . '</a>'
                                 : $player_value['player_name'];
 
                             $dbLink = !empty($player_value['player_sid32']) && is_numeric($player_value['player_sid32'])
