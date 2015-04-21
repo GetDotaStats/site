@@ -52,6 +52,10 @@ var ϰ = "Kappa";
 var pageReloader;
 
 function loadPage(url, refresh) {
+    //REFRESH 0 -- PAGE SCROLLS TO TOP
+    //REFRESH 1 -- PAGE DOES NOT SCROLL TO TOP
+    //REFRESH 2 -- NO SPINNER NO SCROLL
+
     if (!url) {
         url = '#d2mods__lobby_list';
     }
@@ -78,43 +82,64 @@ function loadPage(url, refresh) {
         url = url + '.php';
     }
 
-    $('#loading').show({
-        start: function () {
-            $('#loading_spinner1').show();
-        },
-        complete: function () {
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "html",
-                success: function (msg) {
-                    setTimeout(function () {
+    if (refresh == 2) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "html",
+            success: function (msg) {
+                setTimeout(function () {
+                    if (refresh == 1 && window.location.hash != oldURL) {
+                        window.history.pushState("", "", oldURL);
+                    }
+                    document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
+                    if (parseInt(msg) != 0) {
+                        $('#main_content').html(msg);
+                    }
+                }, 500);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#main_content').html('Failed to load page. Try again later.');
+            }
+        });
+    } else {
+        $('#loading').show({
+            start: function () {
+                $('#loading_spinner1').show();
+            },
+            complete: function () {
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: "html",
+                    success: function (msg) {
+                        setTimeout(function () {
+                            $('#loading').hide({
+                                complete: function () {
+                                    if (refresh == 1 && window.location.hash != oldURL) {
+                                        window.history.pushState("", "", oldURL);
+                                    }
+                                    document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
+                                    if (parseInt(msg) != 0) {
+                                        $('#main_content').html(msg);
+                                    }
+                                    if (refresh != 1) {
+                                        $('html, body').animate({ scrollTop: 0 }, 'fast');
+                                    }
+                                }
+                            });
+                        }, 500);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
                         $('#loading').hide({
                             complete: function () {
-                                if (refresh == 1 && window.location.hash != oldURL) {
-                                    window.history.pushState("", "", oldURL);
-                                }
-                                document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
-                                if (parseInt(msg) != 0) {
-                                    $('#main_content').html(msg);
-                                }
-                                if (refresh != 1) {
-                                    $('html, body').animate({ scrollTop: 0 }, 'fast');
-                                }
+                                $('#main_content').html('Failed to load page. Try again later.');
+                                $('html, body').animate({ scrollTop: 0 }, 'fast');
                             }
                         });
-                    }, 500);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    $('#loading').hide({
-                        complete: function () {
-                            $('#main_content').html('Failed to load page. Try again later.');
-                            $('html, body').animate({ scrollTop: 0 }, 'fast');
-                        }
-                    });
-                }
-            });
-
-        }});
-
+                    }
+                });
+            }
+        });
+    }
 }
