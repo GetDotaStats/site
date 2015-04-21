@@ -1,4 +1,20 @@
+<?php
+require_once('../global_functions.php');
+//require_once('../connections/parameters.php');
+?>
 <h1>Guide for using GetDotaStat's Lobby Explorer</h1>
+
+<div class="row">
+    <div class="col-sm-12 text-right">
+        <strong><em>Other Languages:</em></strong>
+        <a class="nav-clickable" href="#d2mods__lobby_guide"><img alt="EN" width="16" height="16"
+                                                                  src="<?= $CDN_image . '/images/misc/flags/regions/US.png' ?>"></a>
+        <a class="nav-clickable" href="#d2mods__lobby_guide_ru"><img alt="RU" width="16" height="16"
+                                                                     src="<?= $CDN_image . '/images/misc/flags/regions/RU.png' ?>"></a>
+    </div>
+</div>
+
+<span class="h4">&nbsp;</span>
 
 <div class="alert alert-info" role="alert">
     <p><strong>Credits</strong></p>
@@ -6,18 +22,13 @@
     <p>This wouldn't have been possible without the hard
         work put in by
         <a target="_blank" href="https://github.com/SinZ163">SinZ</a>,
-        <a target="_blank" href="https://github.com/bmddota">BMD</a>, and
+        <a target="_blank" href="https://github.com/bmddota">BMD</a>,
+        <a target="_blank" href="https://github.com/ash47">Ash47</a>, and
         <a target="_blank" href="https://github.com/jimmydorry">jimmydorry</a>.</p>
 
-    <p>Here is a shout out to <a target="_blank"
-                                 href="https://github.com/ash47">Ash47</a>
-        for the ground breaking work he has done to blaze a trail on the initial flash stuff we saw.</p>
-
-    <p>The first half of this guide is largely
-        plagerised from
+    <p>The first half of this guide is largely plagerised from
         <a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=298142924">Wyk's</a>, so here is
-        a
-        shout out to him too.</p>
+        a shout out to him too.</p>
 </div>
 
 <div class="alert alert-warning alert-dismissible fade in" role="alert">
@@ -27,7 +38,7 @@
     to Lobby Explorer Installation
 </div>
 
-<h1>Quick Start Guide (Auto)</h1>
+<h2>Quick Start Guide (Auto)</h2>
 <p>This is a guide for users confident that they have the workshop tools setup correctly, and willing to immediately
     jump into custom games. If these steps fail, make sure to read the full guide below. Users can inspect the source of
     the VBS by right clicking and editing it, or by following the manual installation steps in the next section.</p>
@@ -52,7 +63,7 @@
 
 <hr/>
 
-<h1>Quick Start Guide (Manual)</h1>
+<h2>Quick Start Guide (Manual)</h2>
 <p>This is the quick start guide for users confident in their ability to install the Lobby Explorer. If these steps
     fail, make sure to read the full guide below.</p>
 <ol>
@@ -78,7 +89,7 @@
 
 <hr/>
 
-<h1>Full Guide</h1>
+<h2>Full Guide</h2>
 <p>A more detailed guide to installing the Lobby Explorer. These are the same steps as above, but with further detail
     and accompanying pictures.</p>
 <h2>System Requirements</h2>
@@ -91,7 +102,7 @@
     <li>Internet connection (preferably 1.5mbit/0.5mbit up and down... or greater)</li>
 </ul>
 
-<h2>Installing Dota 2 Workshop Tools</h2>
+<h3>Installing Dota 2 Workshop Tools</h3>
 <p>In order to run Custom Games, you need to have the Dota 2 Workshop Tools installed. To install these tools, follow
     the steps given below.</p>
 <p><strong>1.</strong> Go to Library and right click on Dota 2 and go to the Properties tab. Once you are in the
@@ -104,7 +115,7 @@
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/1-2b.png" width="500px"/></div>
 <p><strong>4.</strong> Wait for both the Tools and DLC from the above steps to finish downloading.</p>
 
-<h2>Subscribing to Custom Games</h2>
+<h3>Subscribing to Custom Games</h3>
 <p><strong>1.</strong> You can find all the list of uploaded Custom Games on the
     <a target="_blank" href="http://steamcommunity.com/workshop/browse/?appid=570&section=readytouseitems">Steam
         Workshop</a>
@@ -120,7 +131,7 @@
     to welcome new Custom Games onto the site!</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/2-2.png" width="500px"/></div>
 
-<h2>Install the GetDotaStats Lobby Explorer</h2>
+<h3>Install the GetDotaStats Lobby Explorer</h3>
 <p><strong>1.</strong>
     <a target="_blank" class="btn btn-success btn-sm"
        href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">Download the Lobby
@@ -131,8 +142,10 @@
     Explorer. Not logging in may exclude you from some functionality.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-2.png" width="500px"/></div>
 <p><strong>3.</strong> Add the play_weekend_tourney.swf and all other files, in the ZIP you just downloaded, to your
-    Dota 2 flash directory. This is normally located somewhere like:</p>
-<code>C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code>
+    Dota 2 flash directory. This is normally located somewhere like:
+    <code>C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code>
+</p>
+
 <p>&nbsp;</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-3.png" width="500px"/></div>
 <p>&nbsp;</p>
