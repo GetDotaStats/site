@@ -51,7 +51,7 @@ try {
         ? $_GET['lv']
         : NULL;
 
-    if ($lobbyVersion < 0.22) throw new Exception('Client too far out of date! Update please.');
+    if ($lobbyVersion < 0.38) throw new Exception('Client too far out of date! Update please.');
 
     if (empty($userID) || empty($modID) || empty($workshopID) || empty($map) || empty($pass) || empty($maxPlayers) || empty($username)) {
         throw new Exception('Missing field!');
