@@ -10,7 +10,7 @@ if ($db) {
     //EXPIRE ACTIVE LOBBIES
     {
         $sqlResult = $db->q(
-            "UPDATE `lobby_list` SET `lobby_active` = 0 WHERE `lobby_active` = 1 AND (`date_recorded` < now() - INTERVAL `lobby_ttl` MINUTE OR `date_keep_alive` < now() - INTERVAL 5 MINUTE);"
+            "UPDATE `lobby_list` SET `lobby_active` = 0 WHERE `lobby_active` = 1 AND (`date_recorded` < now() - INTERVAL `lobby_ttl` MINUTE OR `date_keep_alive` < now() - INTERVAL 2 MINUTE);"
         );
 
         echo $sqlResult

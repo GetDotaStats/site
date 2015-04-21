@@ -23,7 +23,8 @@ try {
                 SELECT
                   `mod_id`,
                   `hero_id`,
-                  COUNT(*) AS numPicks
+                  COUNT(*) AS numPicks,
+                  SUM(`hero_won`) AS numWins
                 FROM `mod_match_heroes`
                 GROUP BY `mod_id`, `hero_id`
                 ORDER BY `mod_id`, `hero_id`;"
@@ -39,7 +40,10 @@ try {
                   `mod_id` varchar(255) NOT NULL,
                   `player_hero_id` int(255) NOT NULL,
                   `numPicks` bigint(21) NOT NULL DEFAULT '0',
-                  PRIMARY KEY (`mod_id`,`player_hero_id`)
+                  `numWins` bigint(21) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`mod_id`,`player_hero_id`),
+                  INDEX `mod_numPicks` (`mod_id`, `numPicks`),
+                  INDEX `mod_numWins` (`mod_id`, `numWins`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
             );
 
