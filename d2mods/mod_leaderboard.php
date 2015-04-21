@@ -17,8 +17,9 @@ try {
     $mod = cached_query(
         'mod_lb_details_' . $modHSidentifier,
         'SELECT
+                ml.`mod_id`,
+                ml.`mod_identifier`,
                 shms.`highscoreID`,
-                shms.`modID`,
                 shms.`highscoreName`,
                 shms.`highscoreDescription`,
                 shms.`highscoreActive`,
@@ -43,7 +44,8 @@ try {
     $mod = $mod[0];
 
     $modHSid = $mod['highscoreID'];
-    $modID = $mod['modID'];
+    $modID = $mod['mod_id'];
+    $modIdentifier = $mod['mod_identifier'];
 
     $modHSmodName = !empty($mod['mod_name'])
         ? $mod['mod_name']
@@ -61,13 +63,14 @@ try {
 
     echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for 2 hours.</p></div>';
 
-    echo '<h2>' . $modHSmodName . ' <small>' . $modHSlbName . '</small></h2>';
+    echo '<h2><a class="nav-clickable" href="#d2mods__stats?id=' . $modID . '">' . $modHSmodName . '</a> <small>' . $modHSlbName . '</small></h2>';
 
     echo '<p>' . $modHSDescription . '</p>';
 
     echo '<span class="h4">&nbsp;</span>';
     echo '<div class="text-center">
                     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_highscores">Back to Highscores</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__stats?id=' . $modID . '">Mod Details</a>
                </div>';
     echo '<span class="h4">&nbsp;</span>';
 
@@ -98,7 +101,7 @@ try {
             WHERE `highscoreID` = ? AND `modID` = ?
             ORDER BY `highscoreValue` ' . $modHSObjective . ';',
         'ss',
-        array($modHSid, $modID),
+        array($modHSid, $modIdentifier),
         15
     );
 
@@ -211,7 +214,7 @@ try {
         } else {
             $userName = $value_lb['steamID32'] == 0
                 ? '<span class="h3">Bots</span>'
-                : 'EXCEPTION OCCURRED!! COULDN\'T LOOKUP!!';
+                : 'COULDN\'T LOOKUP USER!!';
 
             echo '<div class="row">
                                 <div class="col-md-1 text-center">
@@ -246,6 +249,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
     echo '<div class="text-center">
                     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_highscores">Back to Highscores</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__stats?id=' . $modID . '">Mod Details</a>
            </div>';
     echo '<span class="h4">&nbsp;</span>';
 

@@ -60,18 +60,37 @@ try {
                     ) AS games_failed
                 FROM `mod_list` ml
                 LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
-                WHERE ml.`mod_active` = 1 AND `mod_id` = ?
+                WHERE `mod_id` = ?
                 LIMIT 0,1;',
         'i',
         $modID
     );
 
-    if(empty($modDetails)) throw new Exception('Failed to find mod details! Mod either does not exist or has not been approved.');
+    if (empty($modDetails)) throw new Exception('Failed to find mod details! Mod either does not exist or has not been approved.');
 
     $modGUID = $modDetails[0]['mod_identifier'];
     $modListID = $modDetails[0]['mod_id'];
 
     if (empty($modDetails) || empty($modGUID)) throw new Exception('No mods with that modID!');
+
+    $modHighscores = cached_query(
+        'd2mods_stats_highscores' . $modID,
+        'SELECT
+                `highscoreID`,
+                `modID`,
+                `highscoreName`,
+                `highscoreDescription`,
+                `highscoreActive`,
+                `highscoreObjective`,
+                `highscoreOperator`,
+                `highscoreFactor`,
+                `highscoreDecimals`,
+                `date_recorded`
+            FROM `stat_highscore_mods_schema`
+            WHERE `modID` = ?;',
+        's',
+        $modGUID
+    );
 
     echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
 
@@ -135,6 +154,17 @@ try {
         $modMaps = 'unknown';
     }
 
+    $modHighscoresLinks = '';
+    if (!empty($modHighscores)) {
+        $modHighscoresLinks = '<tr><th>Highscores</th><td>';
+
+        foreach ($modHighscores as $key => $value) {
+            $modHighscoresLinks .= '<a class="nav-clickable" href="#d2mods__mod_leaderboard?lid=' . $value['highscoreID'] . '">' . $value['highscoreName'] . '</a><br />';
+        }
+
+        $modHighscoresLinks .= '</td></tr>';
+    }
+
     echo '<div class="container">
                         <div class="col-sm-7">
                             <div class="table-responsive">
@@ -172,6 +202,7 @@ try {
                                         <th>Links <span class="glyphicon glyphicon-question-sign" title="Steam workshop / Steam group"></span></th>
                                         <td>' . $wg . ' || ' . $sg . '</td>
                                     </tr>
+                                    ' . $modHighscoresLinks . '
                                     <tr>
                                         <th>Description</th>
                                         <td>' . nl2br($modDetails[0]['mod_description']) . '</td>
@@ -733,6 +764,55 @@ try {
         }
 
         echo '<hr />';
+
+        //////////////////////
+        // HERO WIN RATES
+        //////////////////////
+
+        {
+            try {
+                echo '<h3>Heroes Winrates <span class="glyphicon glyphicon-question-sign" title="Includes failed games... Updated daily"></span></h3>';
+
+                $modStats = $db->q(
+                    'SELECT ' .
+                    //cmh.`player_hero_id`,
+                    'gh.`localized_name`,
+                    cmh.`numPicks`,
+                    cmh.`numWins`
+                  FROM `cron_mod_heroes` cmh
+                  LEFT JOIN `mod_list` ml ON ml.`mod_identifier` = cmh.`mod_id`
+                  LEFT JOIN `game_heroes` gh ON cmh.`player_hero_id` = gh.`hero_id`
+                  WHERE ml.`mod_id` = ?
+                  ORDER BY 2 DESC;',
+                    'i',
+                    $modID
+                );
+
+                if (!empty($modStats)) {
+                    echo '<div class="row">
+                            <div class="col-md-3 text-center"><span class="h4">Hero</span></div>
+                            <div class="col-md-2 text-center"><span class="h4">Wins</span></div>
+                            <div class="col-md-2 text-center"><span class="h4">Games</span></div>
+                            <div class="col-md-2 text-center"><span class="h4">Ratio</span></div>
+                        </div>';
+                    foreach ($modStats as $key => $value) {
+                        echo '<div class="row">
+                            <div class="col-md-3">' . $value['localized_name'] . '</div>
+                            <div class="col-md-2 text-right">' . number_format($value['numWins']) . '</div>
+                            <div class="col-md-2 text-right">' . number_format($value['numPicks']) . '</div>
+                            <div class="col-md-2 text-right">' . number_format($value['numWins'] / $value['numPicks'] * 100, 1) . ' %</div>
+                        </div>';
+                    }
+                } else {
+                    echo 'No hero stats!';
+                }
+
+                echo '<hr />';
+
+            } catch (Exception $e) {
+                echo formatExceptionHandling($e);
+            }
+        }
 
         //LOBBIES MADE
         {
