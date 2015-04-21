@@ -58,10 +58,10 @@ try {
     } else {
         throw new Exception('Mini Game not updated!');
     }
-
-    $memcache->close();
 } catch (Exception $e) {
     $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
 
 try {

@@ -149,10 +149,10 @@ try {
     } else {
         throw new Exception('Missing parameter (name, developer, description, etc.)!');
     }
-
-    $memcache->close();
 } catch (Exception $e) {
-    $json_response['error'] = 'Caught Exception: ' . $e->getMessage() . ' || Contact getdotastats.com';
+    $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
 
 try {

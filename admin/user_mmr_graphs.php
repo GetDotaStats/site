@@ -286,8 +286,8 @@ try {
         echo $chart->draw('party_mmr_breakdown', $options);
     }
 
-    $memcache->close();
 } catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
+    echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }

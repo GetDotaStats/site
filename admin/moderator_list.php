@@ -52,12 +52,12 @@ try {
 
             $userName = !empty($value['user_name'])
                 ? '<span class="h3">
-                            <a target="_blank" href="#d2mods__profile?id=' . $value['user_id64'] . '">
+                            <a class="nav-clickable" href="#d2mods__profile?id=' . $value['user_id64'] . '">
                                 ' . $value['user_name'] . '
                             </a>
                         </span>'
                 : '<span class="h3">
-                            <a target="_blank" href="#d2mods__profile?id=' . $value['user_id64'] . '">
+                            <a class="nav-clickable" href="#d2mods__profile?id=' . $value['user_id64'] . '">
                                 ??
                             </a>
                             <small>Sign in to update profile!</small>
@@ -81,8 +81,8 @@ try {
         }
     }
 
-    $memcache->close();
 } catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
+    echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }

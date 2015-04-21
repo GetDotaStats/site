@@ -103,6 +103,7 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
+        $modGames = '<a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . number_format($value['games_recorded']) . '</a>';
 
         echo '<div class="row">
                 <div class="col-md-1"><span class="h4">Name</span></div>
@@ -110,7 +111,7 @@ try {
                 <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="modName" type="text" maxlength="70" value="' . $value['mod_name'] . '" required></div>
 
                 <div class="col-md-1"><span class="h4">Games</span></div>
-                <div class="col-md-3">' . number_format($value['games_recorded']) . '</div>
+                <div class="col-md-3">' . $modGames . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -224,8 +225,8 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
-    $memcache->close();
 } catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
+    echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }

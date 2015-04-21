@@ -31,7 +31,7 @@ try {
                 (SELECT COUNT(*) FROM `mod_match_overview` WHERE `mod_id` = ml.`mod_identifier`) as games_recorded
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
-            WHERE ml.`mod_active` <> 1
+            WHERE ml.`mod_active` <> 1 AND ml.`mod_rejected` <> 1
             ORDER BY games_recorded DESC, ml.date_recorded DESC;'
     );
 
@@ -66,6 +66,8 @@ try {
             ? '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" required>' . $value['mod_description'] . '</textarea>'
             : '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" placeholder="Awesome description of custom game" required></textarea>';
 
+        $modRejectedReason = '<textarea class="formTextArea boxsizingBorder" name="modRejectedReason" rows="1" placeholder="Reason for rejecting this mod"></textarea>';
+
         if (!empty($value['user_name'])) {
             $modDeveloper = !empty($value['steam_id64'])
                 ? '<a href="https://steamcommunity.com/profiles/' . $value['steam_id64'] . '" target="_blank">' . $value['user_name'] . '</a>'
@@ -79,6 +81,7 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
+        $modGames = '<a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . number_format($value['games_recorded']) . '</a>';
 
         echo '<div class="row">
                 <div class="col-md-1"><span class="h4">ID</span></div>
@@ -86,7 +89,7 @@ try {
                 <div class="col-md-6">' . $modID . '</div>
 
                 <div class="col-md-1"><span class="h4">Games</span></div>
-                <div class="col-md-3">' . number_format($value['games_recorded']) . '</div>
+                <div class="col-md-3">' . $modGames . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -115,7 +118,7 @@ try {
                 <div class="col-md-1"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The steam group for this custom game, if applicable"></span></div>
                 <div class="col-md-6">' . $modGroup . '</div>
-                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink .'</div>
+                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -129,16 +132,31 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
+                <div class="col-md-2">&nbsp;</div>
+                <div class="col-md-2 text-right"><strong>Rejection:</strong></div>
+                <div class="col-md-8">' . $modRejectedReason . '</div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
                 <div class="col-md-12 text-center"><span id="modAJAXResult' . $key . '" class="labelWarnings label label-danger"></span></div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-12 text-center"><input type="submit" value="Approve"></div>
+                <div class="col-md-4">&nbsp;</div>
+                <div class="col-md-4 text-center">
+                    <input name="submit" class="btn btn-success" type="submit" value="Approve" onclick="this.form.m_submit.value = this.value;">
+                    <input name="submit" class="btn btn-danger" type="submit" value="Reject" onclick="this.form.m_submit.value = this.value;">
+                </div>
+                <div class="col-md-4">&nbsp;</div>
             </div>';
 
         echo '<input type="hidden" name="modID" value="' . $value['mod_identifier'] . '">';
+
+        echo '<input type="hidden" name="m_submit" value=""/>';
 
         echo '<span class="h5">&nbsp;</span>';
 
@@ -180,8 +198,8 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
-    $memcache->close();
 } catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
+    echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
 }

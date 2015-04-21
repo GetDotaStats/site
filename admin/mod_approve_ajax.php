@@ -23,9 +23,15 @@ try {
         empty($_POST['modID']) ||
         empty($_POST['modName']) ||
         empty($_POST['modMaps']) || $_POST['modMaps'] == 'One map per line' ||
-        empty($_POST['modDescription'])
+        empty($_POST['modDescription']) ||
+        empty($_POST['m_submit']) || ($_POST['m_submit'] != 'Approve' && $_POST['m_submit'] != 'Reject')
+
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
+    }
+
+    if ($_POST['m_submit'] == 'Reject' && empty($_POST['modRejectedReason'])) {
+        throw new Exception('No reason given for mod rejection!');
     }
 
     $modID = htmlentities($_POST['modID']);
@@ -35,18 +41,29 @@ try {
         ? htmlentities($_POST['modGroup'])
         : NULL;
     $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['modMaps']))));
+    $modRejected = $_POST['m_submit'] == 'Approve'
+        ? 0
+        : 1;
+    $modRejectedReason = !empty($_POST['modRejectedReason']) && $modRejected == 1
+        ? htmlentities($_POST['modRejectedReason'])
+        : NULL;
+    $modActive = $modRejected == 1
+        ? 0
+        : 1;
 
     $insertSQL = $db->q(
         'UPDATE `mod_list`
           SET
-            `mod_active` = 1,
+            `mod_active` = ?,
             `mod_name` = ?,
             `mod_description` = ?,
             `mod_steam_group` = ?,
-            `mod_maps` = ?
+            `mod_maps` = ?,
+            `mod_rejected` = ?,
+            `mod_rejected_reason` = ?
           WHERE `mod_identifier` = ?;',
-        'sssss',
-        $modName, $modDescription, $modGroup, $modMaps, $modID
+        'issssiss',
+        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modRejected, $modRejectedReason, $modID
     );
 
     if ($insertSQL) {
@@ -55,9 +72,10 @@ try {
         throw new Exception('Custom Game not updated!');
     }
 
-    $memcache->close();
 } catch (Exception $e) {
     $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
 
 try {
