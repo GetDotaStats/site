@@ -48,7 +48,7 @@ try {
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com 'unsafe-eval' 'unsafe-inline' data:;
           img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net  *.google-analytics.com *.steamusercontent.com;
           font-src 'self' static.getdotastats.com getdotastats.com;
-          frame-src chatwing.com *.youtube.com;
+          frame-src chatwing.com *.youtube.com *.mibbit.com;
           object-src 'none';
           media-src 'none';
           report-uri ./csp_reports.php;">
@@ -78,22 +78,24 @@ try {
                     <!--<span class="label label-success">UPDATED</span>-->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li class="dropdown-header">Guides</li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__guide">Mod Developer</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__minigame_guide">Minigame Developer</a></li>
+                        <li class="divider"></li>
                         <li class="dropdown-header">Lobby Explorer</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Guide</a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__search">Search</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Developer Guide</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__search">Search</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mini Games Section</li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Highscores</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_guide">Developer Guide</a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
@@ -135,6 +137,7 @@ try {
                             <li class="dropdown-header">Management</li>
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
                             <li><a class="nav-clickable" href="#admin__minigames">Mini-Game Manage</a></li>
                             <li class="divider"></li>
@@ -144,6 +147,9 @@ try {
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Lobbies</li>
+                            <li><a class="nav-clickable" href="#admin__failed_lobbies">Failed Lobbies</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">CSP Reports</li>
                             <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">Last Week</a></li>
@@ -166,7 +172,7 @@ try {
             } else {
                 $image = empty($_SESSION['user_avatar'])
                     ? $_SESSION['user_id32']
-                    : '<a href="http://steamcommunity.com/profiles/' . $_SESSION['user_id64'] . '" target="_new"><img width="20px" src="' . $_SESSION['user_avatar'] . '" /></a> ';
+                    : '<a class="nav-clickable" href="#d2mods__profile?id=' . $_SESSION['user_id64'] . '"><img width="20px" src="' . $_SESSION['user_avatar'] . '" /></a> ';
 
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>
@@ -208,12 +214,13 @@ try {
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
                             class="steam-group-icon"></span><span class="steam-group-label">Join us on Steam</span></a>
                 </div>
+
                 <br/>
-                <!-- Begin chatwing.com chatbox -->
-                <iframe src="//chatwing.com/chatbox/e7f2bbd0-e292-4596-ab15-1667b4319e95" width="100%" height="650"
-                        frameborder="0" scrolling="0">Embedded chat
+
+                <iframe width="100%" height="550" scrolling="no"
+                        src="http://widget.mibbit.com/?settings=444700653d2683b29d7f0965230f38af&server=irc.web.gamesurge.net&channel=%23getdotastats-chat&autoConnect=true&delay=5&noServerMotd=true&noServerNotices=true&noServerTab=true&nick=gds_%3F%3F%3F%3F">
+                    Embedded chat
                 </iframe>
-                <!-- End chatwing.com chatbox -->
             </div>
         </div>
     </div>

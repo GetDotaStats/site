@@ -12,10 +12,10 @@ try {
 
     echo '<div class="page-header"><h2>Lobby Creation Trends</h2></div>';
 
-    echo '<p>This graph captures how many lobbies have been created, and how many custom games have been played over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
+    echo '<p>This graph captures how many lobbies have been created (where the host starts the game), and how many custom games have been played over time. It is read right to left, with the data on the farthest left being the most recent.</p>';
 
     $lobbiesMadeSQL = simple_cached_query(
-        'd2mods_lobby_graph',
+        'd2mods_lobby_graph_lobbies',
         'SELECT
             DAY(ll.`date_recorded`) as day,
             MONTH(ll.`date_recorded`) as month,
@@ -29,7 +29,7 @@ try {
     );
 
     $gamesPlayedSQL = simple_cached_query(
-        'd2mods_custom_games_played_graph',
+        'd2mods_lobby_graph_games',
         'SELECT
             DAY(mmo.`match_recorded`) as day,
             MONTH(mmo.`match_recorded`) as month,
@@ -41,9 +41,22 @@ try {
         5 * 60
     );
 
+    $uniquePlayersSQL =  simple_cached_query(
+        'd2mods_lobby_graph_players',
+        'SELECT
+            DAY(mmp.`date_recorded`) as day,
+            MONTH(mmp.`date_recorded`) as month,
+            YEAR(mmp.`date_recorded`) as year,
+            COUNT(*) as num_players
+        FROM `mod_match_players` mmp
+        GROUP BY 3,2,1
+        ORDER BY 3 DESC, 2 DESC, 1 DESC;',
+        5 * 60
+    );
+
     //LOBBIES MADE
     {
-        if (!empty($lobbiesMadeSQL) || !empty($gamesPlayedSQL)) {
+        if (!empty($lobbiesMadeSQL) || !empty($gamesPlayedSQL) || !empty($uniquePlayersSQL)) {
             $testArray = array();
 
             if (!empty($lobbiesMadeSQL)) {
@@ -60,13 +73,20 @@ try {
                 }
             }
 
+            if (!empty($uniquePlayersSQL)) {
+                foreach ($uniquePlayersSQL as $key => $value) {
+                    $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+                    $testArray[$modDate]['num_players'] = $value['num_players'];
+                }
+            }
+
             $options = array(
                 'bar' => array(
                     'groupWidth' => 3,
                 ),
                 'height' => 300,
                 'chartArea' => array(
-                    'width' => '87%',
+                    'width' => '85%',
                     'height' => '85%',
                     'left' => 80,
                     'top' => 10,
@@ -83,6 +103,9 @@ try {
                     1 => array(
                         'title' => 'Num. of Games'
                     ),
+                    2 => array(
+                        'title' => 'Num. of Players'
+                    ),
                 ),
                 'legend' => array(
                     'position' => 'none',
@@ -95,6 +118,10 @@ try {
                         'targetAxisIndex' => 0,
                     ),
                     1 => array(
+                        'type' => 'line',
+                        'targetAxisIndex' => 1,
+                    ),
+                    2 => array(
                         'type' => 'line',
                         'targetAxisIndex' => 1,
                     ),
@@ -117,12 +144,18 @@ try {
                     ? $value2['num_customs']
                     : 0;
 
+                $numActualPlayers = !empty($value2['num_players'])
+                    ? $value2['num_players']
+                    : 0;
+
                 $super_array[] = array('c' => array(
                     array('v' => $key2),
                     array('v' => $numActualLobbies),
                     array('v' => number_format($numActualLobbies)),
                     array('v' => $numActualGames),
                     array('v' => number_format($numActualGames)),
+                    array('v' => $numActualPlayers),
+                    array('v' => number_format($numActualPlayers)),
                 ));
             }
 
@@ -132,6 +165,8 @@ try {
                     array('id' => '', 'label' => 'Lobbies', 'type' => 'number'),
                     array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
                     array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                    array('id' => '', 'label' => 'Players', 'type' => 'number'),
                     array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
                 ),
                 'rows' => $super_array
