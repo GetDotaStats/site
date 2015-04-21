@@ -75,7 +75,7 @@ try {
             $options = array(
                 'height' => 400,
                 'chartArea' => array(
-                    'width' => '87%',
+                    'width' => '80%',
                     'height' => '85%',
                     'left' => 80,
                     'top' => 10,
@@ -87,6 +87,11 @@ try {
                     0 => array(
                         'title' => 'MMR',
                         //'textPosition' => 'in',
+                        //'logScale' => 1,
+                    ),
+                    1 => array(
+                        'title' => 'Games',
+                        'textPosition' => 'out',
                         //'logScale' => 1,
                     ),
                 ),
@@ -102,11 +107,11 @@ try {
                     ),
                     1 => array(
                         'type' => 'line',
-                        'targetAxisIndex' => 1,
+                        'targetAxisIndex' => 0,
                     ),
                     2 => array(
                         'type' => 'line',
-                        'targetAxisIndex' => 2,
+                        'targetAxisIndex' => 1,
                     ),
                 ),
                 'tooltip' => array( //'isHtml' => 1,
@@ -155,10 +160,10 @@ try {
                 'rows' => $super_array
             );
 
-            $chart_width = max(count($super_array) * 8, 700);
+            $chart_width = max(count($super_array) * 8, 800);
             $options['width'] = $chart_width;
 
-            echo '<div id="breakdown_mmr_history" class="d2mods-graph-tall d2mods-graph-overflow"></div>';
+            echo '<div id="breakdown_mmr_history" class="d2mods-graph-wide-tall d2mods-graph-overflow"></div>';
 
             $chart->load(json_encode($data));
             echo $chart->draw('breakdown_mmr_history', $options);

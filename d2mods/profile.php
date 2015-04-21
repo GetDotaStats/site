@@ -4,11 +4,23 @@ require_once('./functions.php');
 require_once('../connections/parameters.php');
 
 try {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
+    //DO LOGIN CHECKS AND CLEANUP
+    checkLogin_v2();
+
+    //IF LOGGED IN, CHECK IF ADMIN
+    $adminCheck = !empty($_SESSION['user_id64'])
+        ? adminCheck($_SESSION['user_id64'], 'admin')
+        : NULL;
 
     $steamWebAPI = new steam_webapi($api_key1);
 
@@ -38,6 +50,7 @@ try {
         if (is_numeric($steamID_unknown)) {
             $steamIDconvertor->setSteamID($steamID_unknown);
             $steamID32 = $steamIDconvertor->getSteamID32();
+            $steamID64 = $steamIDconvertor->getSteamID64();
         } else {
             $vanitySQL = $db->q('SELECT * FROM `mod_match_players_names` WHERE `player_vanity_url` = ? LIMIT 0,1;',
                 's',
@@ -46,11 +59,13 @@ try {
             if (!empty($vanitySQL) && !empty($vanitySQL[0]['player_sid32'])) {
                 $steamIDconvertor->setSteamID($vanitySQL[0]['player_sid32']);
                 $steamID32 = $steamIDconvertor->getSteamID32();
+                $steamID64 = $steamIDconvertor->getSteamID64();
             } else {
                 $customURL = $steamWebAPI->ResolveVanityURL($steamID_unknown);
                 if (!empty($customURL) && !empty($customURL['response']['success']) && $customURL['response']['success'] == 1 && !empty($customURL['response']['steamid'])) {
                     $steamIDconvertor->setSteamID($customURL['response']['steamid']);
                     $steamID32 = $steamIDconvertor->getSteamID32();
+                    $steamID64 = $steamIDconvertor->getSteamID64();
 
                     $vanitySQLinsert = $db->q(
                         'INSERT INTO `mod_match_players_names` (`player_sid32`, `player_vanity_url`)
@@ -73,189 +88,326 @@ try {
         }
 
         if (!empty($steamID32)) {
-            $dbLink = $steamIDconvertor->getSteamID64() . ' <a class="db_link" href="http://dotabuff.com/players/' . $steamIDconvertor->getSteamID32() . '" target="_new">' . $steamIDconvertor->getSteamID32() . '</a>';
-            echo '<div class="page-header"><h2>User Profile for: <small>' . $dbLink . '</small></h2></div>';
-
-            $gamesList = cached_query(
-                'user_profile_matches_list_' . $steamID32,
+            $userOptions = cached_query(
+                'user_options_' . $steamID32,
                 'SELECT
-                        mmp.*,
-                        mmo.*,
-
-                        ml.`mod_id` as modFakeID,
-                        ml.`mod_name`,
-                        ml.`mod_active`,
-
-                        gcs.`cs_id`,
-                        gcs.`cs_string`,
-                        gcs.`cs_name`
-                    FROM `mod_match_players` mmp
-                    LEFT JOIN `mod_match_overview` mmo
-                        ON mmp.`match_id` = mmo.`match_id`
-                    LEFT JOIN `mod_list` ml
-                        ON mmp.`mod_id` = ml.`mod_identifier`
-                    LEFT JOIN `game_connection_status` gcs
-                        ON mmp.`connection_status` = gcs.`cs_id`
-                    WHERE `player_sid32` = ?
-                    ORDER BY `date_recorded` DESC
-                    LIMIT 0,20;',
-                's', //STUPID x64 windows PHP is actually x86
+                        `user_id32`,
+                        `user_id64`,
+                        `mmr_public`,
+                        `date_updated`,
+                        `date_recorded`
+                    FROM `gds_users_options`
+                    WHERE `user_id32` = ?
+                    LIMIT 0,1;',
+                's',
                 $steamID32,
-                60
+                15
             );
 
-            echo '<h3>Matches <small>Last 20</small></h3>';
+            $userOptions = !empty($userOptions)
+                ? $userOptions[0]
+                : NULL;
 
-            if (!empty($gamesList)) {
-                echo '<div class="table-responsive">
-		                    <table class="table table-striped table-hover">';
-                echo '
-                            <tr>
-                                <th class="text-center">Mod</th>
-                                <th class="text-center">Match ID</th>
-                                <th class="text-center">Connection</th>
-                                <th class="text-center">Duration</th>
-                                <th class="text-center">Players</th>
-                                <th class="text-center">Recorded</th>
-                            </tr>';
+            $dbLink = $steamID64 . ' <a class="db_link" href="http://dotabuff.com/players/' . $steamID32 . '" target="_new">' . $steamID32 . '</a>';
+            echo '<div class="page-header"><h1>User Profile for: <small>' . $dbLink . '</small></h1></div>';
 
-                foreach ($gamesList as $key => $value) {
-                    $modName = !empty($value['mod_name'])
-                        ? $value['mod_name']
-                        : 'Unknown';
+            echo '<div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__search">Find Another User</a>
+               </div>';
 
-                    $matchID = !empty($value['match_id'])
-                        ? $value['match_id']
-                        : 'Unknown';
+            echo '<span class="h4">&nbsp;</span>';
 
-                    $matchDuration = !empty($value['match_duration'])
-                        ? number_format($value['match_duration'] / 60)
-                        : 'Unknown';
+            /////////////////////////
+            // Match Summary
+            /////////////////////////
+            {
+                echo '<h2>Match Summary</h2>';
 
-                    $arrayGoodConnectionStatus = array(1, 2, 3, 5);
-                    if (!empty($value['connection_status']) && in_array($value['connection_status'], $arrayGoodConnectionStatus)) {
-                        $connectionStatus = '<span class="glyphicon glyphicon-ok-sign" title="' . $value['cs_string'] . '"></span>';
-                    } else if (!empty($value['connection_status']) && $value['connection_status'] == 0) {
-                        $connectionStatus = '<span class="glyphicon glyphicon-question-sign" title="' . $value['cs_string'] . '"></span>';
-                    } else {
-                        $connectionStatus = '<span class="glyphicon glyphicon-remove-sign" title="' . $value['cs_string'] . '"></span>';
+                echo '<p>Summary of all of the games that the user has played. (Includes the games that fail to start)</p>';
+
+                try {
+                    $matchSummaryMods = cached_query(
+                        'profile_msm_' . $steamID32,
+                        'SELECT
+                                ml.`mod_id`,
+                                ml.`mod_identifier`,
+                                ml.`mod_name`,
+                                (SELECT COUNT(*) FROM `mod_match_players` WHERE `player_sid32` = mmp.`player_sid32` AND `mod_id` = mmp.`mod_id` LIMIT 0,1) as total_games,
+                                (SELECT COUNT(*) FROM `mod_match_players` WHERE `player_sid32` = mmp.`player_sid32` AND `mod_id` = mmp.`mod_id` AND `connection_status` IN (2,3,4) LIMIT 0,1) as connected_games,
+                                COUNT(*) AS num_games,
+                                SUM(mmp.`player_won`) AS num_games_won,
+                                MAX(mmp.`date_recorded`) AS most_recent_game
+                            FROM `mod_match_players` mmp
+                            JOIN `mod_list` ml ON mmp.`mod_id` = ml.`mod_identifier`
+                            WHERE mmp.`player_sid32` = ? AND (SELECT COUNT(*) FROM `mod_match_players` WHERE `match_id` = mmp.`match_id` AND `connection_status` NOT IN (2,3,4) AND `player_sid32` > 0 LIMIT 0,1) = 0
+                            GROUP BY ml.`mod_id`
+                            ORDER BY num_games DESC;',
+                        's',
+                        array($steamID32),
+                        5
+                    );
+
+                    if (empty($matchSummaryMods)) throw new Exception('User has not played any mods!');
+
+                    $numGames = 0;
+                    foreach ($matchSummaryMods as $key => $value) {
+                        if (!empty($value['num_games'])) $numGames += $value['num_games'];
                     }
 
-                    $numPlayers = !empty($value['match_num_players'])
-                        ? $value['match_num_players']
-                        : 'Unknown';
+                    echo '<h4>' . number_format($numGames) . ' games played</h4>';
 
-                    $matchDate = !empty($value['match_recorded'])
-                        ? relative_time($value['match_recorded'])
-                        : 'Unknown';
+                    echo '<div class="row">
+                            <div class="col-md-4"><strong>Mod</strong></div>
+                            <div class="col-md-4 text-center">
+                                <div class="row">
+                                    <div class="col-md-4 text-center"><strong>Total</strong></div>
+                                    <!--<div class="col-md-3 text-center"><strong>Connected</strong></div>-->
+                                    <div class="col-md-4 text-center"><strong>Played</strong></div>
+                                    <div class="col-md-4 text-center"><strong>Won</strong></div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-center"><strong>Most Recent</strong></div>
+                        </div>';
 
-                    echo '
-                                <tr>
-                                    <td><a class="nav-clickable" href="#d2mods__stats?id=' . $value['modFakeID'] . '">' . $modName . '</a></td>
-                                    <td><a class="nav-clickable" href="#d2mods__match?id=' . $matchID . '">' . $matchID . '</a></td>
-                                    <td class="text-center">' . $connectionStatus . '</td>
-                                    <td class="text-right">' . $matchDuration . ' mins</td>
-                                    <td class="text-center">' . $numPlayers . '</td>
-                                    <td class="text-right">' . $matchDate . '</td>
-                                </tr>';
+                    foreach ($matchSummaryMods as $key => $value) {
+                        echo '<div class="row">
+                            <div class="col-md-4"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-4 text-right">' . number_format($value['total_games']) . '</div>
+                                    <!--<div class="col-md-3 text-right">' . number_format($value['connected_games']) . '</div>-->
+                                    <div class="col-md-4 text-right">' . number_format($value['num_games']) . '</div>
+                                    <div class="col-md-4 text-right">' . number_format($value['num_games_won'] / $value['num_games'] * 100, 1) . ' %</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-right">' . relative_time_v3($value['most_recent_game'], 1, 'day') . '</div>
+                        </div>';
+                    }
+
+                    echo '<hr />';
+                } catch (Exception $e) {
+                    echo formatExceptionHandling($e);
                 }
-
-                echo '</table></div>';
-            } else {
-                echo bootstrapMessage('Oh Snap', 'No games played yet!');
             }
 
-            $lobbiesList = cached_query(
-                'user_profile_lobbies_list_' . $steamID32,
-                'SELECT
-                        ll.`lobby_id`,
-                        ll.`mod_id`,
-                        ll.`lobby_name`,
-                        ll.`lobby_started`,
-                        ll.`lobby_region`,
-                        ll.`lobby_ttl`,
-                        ll.`lobby_max_players`,
-                        ll.`lobby_public`,
-                        ll.`lobby_leader`,
-                        ll.`lobby_leader_name`,
-                        ll.`lobby_pass`,
-                        ll.`date_recorded` as lobby_date_recorded,
-                        ml.*,
-                        (
-                          SELECT
-                              COUNT(`user_id64`)
-                            FROM `lobby_list_players`
-                            WHERE `lobby_id` = ll.`lobby_id`
-                            LIMIT 0,1
-                        ) AS lobby_current_players
-                    FROM `lobby_list` ll
-                    LEFT JOIN `mod_list` ml ON ll.`mod_id` = ml.`mod_id`
-                    WHERE ll.`lobby_leader` = ?
-                    ORDER BY lobby_date_recorded DESC
-                    LIMIT 0,20;',
-                's', //STUPID x64 windows PHP is actually x86
-                $steamIDconvertor->getSteamID64(),
-                60
-            );
+            /////////////////////////
+            // Lobby Summary
+            /////////////////////////
+            {
+                echo '<h2>Lobby Summary</h2>';
 
-            echo '<hr />';
+                echo '<p>Summary of all of the lobbies that the user has created. (As measured by the host launching the game)</p>';
 
-            echo '<h3>Lobbies <small>Last 20</small></h3>';
+                try {
+                    $lobbySummaryMods = cached_query(
+                        'profile_lsm_' . $steamID32,
+                        'SELECT
+                                ml.`mod_id`,
+                                ml.`mod_identifier`,
+                                ml.`mod_name`,
+                                COUNT(*) AS num_lobbies,
+                                SUM(ll.`lobby_started`) AS num_lobbies_started,
+                                MAX(ll.`date_recorded`) AS most_recent_lobby
+                            FROM `mod_list` ml
+                            JOIN `lobby_list` ll ON ml.`mod_id` = ll.`mod_id`
+                            WHERE ll.`lobby_leader` = ?
+                            GROUP BY ml.`mod_id`
+                            ORDER BY num_lobbies DESC;',
+                        's',
+                        $steamID64,
+                        60
+                    );
 
-            if (!empty($lobbiesList)) {
-                echo '<div class="table-responsive">
-		                <table class="table table-striped table-hover">';
+                    if (empty($lobbySummaryMods)) throw new Exception('User has not created any lobbies!');
 
-                echo '<tr>
-                            <th class="text-center col-md-2">Lobby</th>
-                            <th class="text-center col-md-2">Leader</th>
-                            <th class="text-center col-md-3">Mod</th>
-                            <th class="text-center col-md-2">Players <span class="glyphicon glyphicon-question-sign" title="Number of players in lobby (Maximum players allowed in lobby)"></span></th>
-                            <th class="text-center col-md-1">&nbsp;</th>
-                            <th class="text-center col-md-2">Created <span class="glyphicon glyphicon-question-sign" title="When this lobby was created."></span></th>
-                        </tr>';
-
-                foreach ($lobbiesList as $key => $value) {
-
-                    $lobbyLeaderName = htmlentitiesdecode_custom($value['lobby_leader_name']);
-                    if (!empty($lobbyLeaderName)) {
-                        if (strlen($lobbyLeaderName) > 12) {
-                            $lobbyLeaderName = strip_tags(htmlentities_custom(substr($lobbyLeaderName, 0, 9) . '...'));
-                        } else {
-                            $lobbyLeaderName = strip_tags(htmlentities_custom($lobbyLeaderName));
-                        }
-                    } else {
-                        $lobbyLeaderName = 'Unknown User';
+                    $numLobbies = 0;
+                    foreach ($lobbySummaryMods as $key => $value) {
+                        if (!empty($value['num_lobbies'])) $numLobbies += $value['num_lobbies'];
                     }
 
-                    $lobbyName = htmlentitiesdecode_custom($value['lobby_name']);
-                    if (!empty($lobbyName)) {
-                        if (strlen($lobbyName) > 13) {
-                            $lobbyName = strip_tags(htmlentities_custom(substr($lobbyName, 0, 10) . '...'));
-                        } else {
-                            $lobbyName = strip_tags(htmlentities_custom($lobbyName));
-                        }
-                    } else {
-                        $lobbyName = 'Custom Game #' . $value['lobby_id'];
+                    echo '<h4>' . number_format($numLobbies) . ' lobbies created</h4>';
+
+                    echo '<div class="row">
+                            <div class="col-md-4"><strong>Mod</strong></div>
+                            <div class="col-md-2 text-center"><strong>Created</strong></div>
+                            <div class="col-md-2 text-center"><strong>Started</strong></div>
+                            <div class="col-md-2 text-center"><strong>Most Recent</strong></div>
+                        </div>';
+
+                    foreach ($lobbySummaryMods as $key => $value) {
+                        echo '<div class="row">
+                            <div class="col-md-4"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                            <div class="col-md-2 text-right">' . number_format($value['num_lobbies']) . '</div>
+                            <div class="col-md-2 text-right">' . number_format($value['num_lobbies_started'] / $value['num_lobbies'] * 100, 1) . ' %</div>
+                            <div class="col-md-2 text-right">' . relative_time_v3($value['most_recent_lobby'], 1, 'day') . '</div>
+                        </div>';
                     }
 
-                    $lobbyStarted = !empty($value['lobby_started']) && $value['lobby_started'] == 1
-                        ? '<span class="label-success label"><span class="glyphicon glyphicon-ok"></span></span>'
-                        : '<span class="label-danger label"><span class="glyphicon glyphicon-remove"></span></span>';
-
-                    echo '<tr>
-                                <td class="vert-align"><a class="nav-clickable" href="#d2mods__lobby?id=' . $value['lobby_id'] . '">' . urldecode($lobbyName) . '</a></td>
-                                <td class="vert-align">' . urldecode($value['lobby_leader_name']) . ' <a target="_blank" href="#d2mods__profile?id=' . $value['lobby_leader'] . '"><span class="glyphicon glyphicon-search"></span></a></td>
-                                <td class="vert-align"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></td>
-                                <td class="text-center vert-align">' . $value['lobby_current_players'] . ' (' . $value['lobby_max_players'] . ')</td>
-                                <td class="text-center vert-align">' . $lobbyStarted . '</td>
-                                <td class="text-right vert-align">' . relative_time_v3($value['lobby_date_recorded'], 1) . '</td>
-                            </tr>';
+                    echo '<hr />';
+                } catch (Exception $e) {
+                    echo formatExceptionHandling($e);
                 }
+            }
 
-                echo '</table></div>';
-            } else {
-                echo bootstrapMessage('Oh Snap', 'No lobbies made yet!');
+            echo '<h2>MMR History</h2>';
+
+            echo '<p>Below is a graph that shows the history of this user\'s MMR (averaged for each day).</p>';
+
+            //MMR History
+            {
+                try {
+                    //SKIP OPTION CHECK IF ADMIN
+                    if (empty($userOptions['mmr_public'])) {
+                        if (empty($adminCheck)) {
+                            throw new Exception('User has not given permission to share MMR history!');
+                        } else {
+                            echo '<div class="alert alert-danger" role="alert">Logged in as an admin! This role allows your to view this private data.</div>';
+                        }
+                    }
+
+                    $myMMR = cached_query(
+                        'user_mmr' . $steamID32,
+                        'SELECT
+                                HOUR(`date_recorded`) AS date_hour,
+                                DAY(`date_recorded`) AS date_day,
+                                MONTH(`date_recorded`) AS date_month,
+                                YEAR(`date_recorded`) AS date_year,
+                                `user_id32`,
+                                `user_id64`,
+                                `user_name`,
+                                MAX(`user_games`) AS user_games,
+                                AVG(`user_mmr_solo`) AS user_mmr_solo,
+                                AVG(`user_mmr_party`) AS user_mmr_party,
+                                `date_recorded`
+                            FROM `gds_users_mmr`
+                            WHERE `user_id32` = ?
+                            GROUP BY 4,3,2,1
+                            ORDER BY 4 DESC, 3 DESC, 2 DESC, 1 DESC;',
+                        's',
+                        $steamID32,
+                        60
+                    );
+
+                    if (empty($myMMR)) throw new Exception('No MMRs recorded for this user!');
+
+                    $testArray = array();
+
+                    foreach ($myMMR as $key => $value) {
+                        $modDate = $value['date_year'] . '-' . $value['date_month'] . '-' . $value['date_day'];
+                        $testArray[$modDate]['solo_mmr'] = $value['user_mmr_solo'];
+                    }
+
+                    foreach ($myMMR as $key => $value) {
+                        $modDate = $value['date_year'] . '-' . $value['date_month'] . '-' . $value['date_day'];
+                        $testArray[$modDate]['party_mmr'] = $value['user_mmr_party'];
+                    }
+
+                    foreach ($myMMR as $key => $value) {
+                        $modDate = $value['date_year'] . '-' . $value['date_month'] . '-' . $value['date_day'];
+                        $testArray[$modDate]['num_games'] = $value['user_games'];
+                    }
+
+                    $options = array(
+                        'height' => 400,
+                        'chartArea' => array(
+                            'width' => '80%',
+                            'height' => '85%',
+                            'left' => 80,
+                            'top' => 10,
+                        ),
+                        'hAxis' => array(
+                            'textPosition' => 'none',
+                        ),
+                        'vAxes' => array(
+                            0 => array(
+                                'title' => 'MMR',
+                                //'textPosition' => 'in',
+                                //'logScale' => 1,
+                            ),
+                            1 => array(
+                                'title' => 'Games',
+                                'textPosition' => 'out',
+                                //'logScale' => 1,
+                            ),
+                        ),
+                        'legend' => array(
+                            'position' => 'bottom',
+                            'alignment' => 'start',
+                        ),
+                        'seriesType' => 'line',
+                        'series' => array(
+                            0 => array(
+                                'type' => 'line',
+                                'targetAxisIndex' => 0,
+                            ),
+                            1 => array(
+                                'type' => 'line',
+                                'targetAxisIndex' => 0,
+                            ),
+                            2 => array(
+                                'type' => 'line',
+                                'targetAxisIndex' => 1,
+                            ),
+                        ),
+                        'tooltip' => array( //'isHtml' => 1,
+                        ),
+                        'isStacked' => 1,
+                        'focusTarget' => 'category',
+                    );
+
+                    $chart = new chart2('ComboChart');
+
+                    $super_array = array();
+                    foreach ($testArray as $key2 => $value2) {
+                        $soloMMR = !empty($value2['solo_mmr'])
+                            ? $value2['solo_mmr']
+                            : 0;
+
+                        $partyMMR = !empty($value2['party_mmr'])
+                            ? $value2['party_mmr']
+                            : 0;
+
+                        $numGames = !empty($value2['num_games'])
+                            ? $value2['num_games']
+                            : 0;
+
+                        $super_array[] = array('c' => array(
+                            array('v' => $key2),
+                            array('v' => $soloMMR),
+                            array('v' => number_format($soloMMR)),
+                            array('v' => $partyMMR),
+                            array('v' => number_format($partyMMR)),
+                            array('v' => $numGames),
+                            array('v' => number_format($numGames)),
+                        ));
+                    }
+
+                    $data = array(
+                        'cols' => array(
+                            array('id' => '', 'label' => 'Date', 'type' => 'string'),
+                            array('id' => '', 'label' => 'Solo', 'type' => 'number'),
+                            array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                            array('id' => '', 'label' => 'Party', 'type' => 'number'),
+                            array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                            array('id' => '', 'label' => 'Games', 'type' => 'number'),
+                            array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
+                        ),
+                        'rows' => $super_array
+                    );
+
+                    $chart_width = max(count($super_array) * 8, 800);
+                    $options['width'] = $chart_width;
+
+                    echo '<div id="breakdown_mmr_history" class="d2mods-graph-wide-tall d2mods-graph-overflow"></div>';
+
+                    $chart->load(json_encode($data));
+                    echo $chart->draw('breakdown_mmr_history', $options);
+
+                    echo '<hr />';
+                } catch (Exception $e) {
+                    echo formatExceptionHandling($e);
+                }
             }
         } else {
             echo bootstrapMessage('Oh Snap', 'Invalid SteamID');
@@ -267,9 +419,9 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
-           </div>';
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__search">Find Another User</a>
+        </div>';
 
     echo '<span class="h4">&nbsp;</span>';
 } catch (Exception $e) {
