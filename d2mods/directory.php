@@ -210,7 +210,7 @@ try {
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
 
             $modLastUpdate =  !empty($value['date_last_updated'])
-                ? relative_time_v3($value['date_last_updated'], 1, 'day')
+                ? relative_time_v3($value['date_last_updated'], 0, 'day')
                 : '??';
 
             echo '<div class="row">
