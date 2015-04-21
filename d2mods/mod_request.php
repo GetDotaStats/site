@@ -16,10 +16,31 @@ try {
 
     echo '<h2>Request a Mod be Accepted for Stats <small>BETA</small></h2>';
 
-    echo '<p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. <strong>THIS IS NOT A PLACE TO ASK FOR A LOBBY!</strong> Only the developer of said mod will be able to add it to the site.</p>';
+    echo '<p>This is a form that developers can use to add a mod to the list, and get access to the necessary code to implement stats for their mod. Only the
+    developer (as listed in the workshop) of the submitted mod will be able to add it to the site.</p>';
+
+    echo '<h3>Terms of Service</h3>';
+
+    echo '<p>By submitting your mod for inclusion on our site, you must meet the following requirements:</p>';
+
+    echo '<ul>
+            <li>Your mod must be playable</li>
+            <ul>
+                <li>It should load and allow the player(s) to enter the game</li>
+                <li>It should be as bug-free as possible. (e.g. there should be no fatal errors when performing normal actions in the mod)</li>
+            </ul>
+            <li>If more than 25% of the LUA files in your mod were not developed by you (as measured in terms of lines), then the original developer(s) must be
+            listed as a contributors in your workshop. We will enforce this as fairly as possible, and evaluate it on a case-by-case basis. If your mod is
+            found to be in breach of this rule, it will not be approved and may be de-listed until the situation is rectified. This rule does not apply to
+            code libraries that are made with the intention to be shared.</li>
+            <li>Your mod must include some custom code in the form of LUA. Mods that consist of only a map may not be accepted, but again will be approved on
+            a case-by-case basis.</li>
+        </ul>';
 
     checkLogin_v2();
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
+
+    echo '<h3>Submission Form</h3>';
 
     echo '<div class="container"><div class="col-sm-6">';
     echo '<form id="modSignup">
