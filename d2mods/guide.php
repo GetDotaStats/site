@@ -19,7 +19,7 @@
 </div>
 
 <p>The example repo can be found here: <a href="https://github.com/GetDotaStats/stat-collection/"
-                                                    target="_blank">GetDotaStats/stat-collection</a>. All of the
+                                          target="_blank">GetDotaStats/stat-collection</a>. All of the
     required libraries and example code is in there. Implementation simply involves splicing the statcollection logic
     into your mod.</p>
 
@@ -28,8 +28,9 @@
 <h2>Quick Start</h2>
 
 <ol>
-    <li>Drop your mod into a local copy of our example repo for <a href="https://github.com/GetDotaStats/stat-collection/"
-                                                                target="_blank">GetDotaStats/stat-collection</a>, making
+    <li>Drop your mod into a local copy of our example repo for <a
+            href="https://github.com/GetDotaStats/stat-collection/"
+            target="_blank">GetDotaStats/stat-collection</a>, making
         sure to merge your <code>addon_game_mode.lua</code> with ours.
     </li>
     <li>Register your mod <a target="_blank" href="#d2mods__mod_request">on our site</a>. Take the time to read the
@@ -63,24 +64,52 @@
     </li>
     <li>If your mod has any options that can be set by users at the start of the game, you will want to take the time to
         also integrate the stat-options library (not detailed in this guide, but can be found in the root of the
-        example repo). Enabling this add-on will allow users to set these options in the lobby, before the game starts. In
+        example repo). Enabling this add-on will allow users to set these options in the lobby, before the game starts.
+        In
         the future, users will also be able to filter lobbies based on these options.
     </li>
     <li>There are further helpful libraries for services we offer, including:
         <ul>
-            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-highscore">stat-highscore</a> <span
-                        class="label label-success">LIVE</span> -- Enables users to have personal scores and a
-                global leaderboard that can be viewed on the site.
+            <li><span class="label label-success">LIVE</span> <a target="_blank"
+                                                                 href="https://github.com/GetDotaStats/stat-highscore">stat-highscore</a>
             </li>
-            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-rpg">stat-rpg</a> <span
-                        class="label label-warning">TEST</span> -- Enables persistent data across game sessions.
-                Great for RPG experiences where you want characters to carry over into new games.
+            <ul>
+                <li><strong>Guide:</strong> <a target="_blank"
+                                               href="https://github.com/GetDotaStats/stat-highscore/wiki">Github
+                        Wiki</a></li>
+                <li><strong>Description:</strong> Enables users to have personal scores and a global leaderboard that
+                    can be viewed on the site.
+                </li>
+            </ul>
+            <li><span class="label label-warning">BETA</span> <a target="_blank"
+                                                                 href="https://github.com/GetDotaStats/stat-rpg">stat-rpg</a>
             </li>
-            <li><a target="_blank" href="https://github.com/GetDotaStats/stat-achievements">stat-achievements</a> <span
-                        class="label label-danger">WIP</span> -- Enables mods to have achievements that users can
-                unlock
-                that look and work like regular steam achievements.
+            <ul>
+                <li><strong>Guide:</strong> <a target="_blank" href="https://github.com/GetDotaStats/stat-rpg/wiki">Github
+                        Wiki</a></li>
+                <li><strong>Description:</strong> Enables persistent data across game sessions. Great for RPG
+                    experiences where you want characters to carry over into new games.
+                </li>
+            </ul>
+            <li><span class="label label-danger">WIP</span> <a target="_blank"
+                                                               href="https://github.com/GetDotaStats/stat-achievements">stat-achievements</a>
             </li>
+            <ul>
+                <li><strong>Guide:</strong> N/A
+                </li>
+                <li><strong>Description:</strong> Enables mods to have achievements that users can unlock that look and
+                    work like regular steam achievements.
+                </li>
+            </ul>
+            <li><span class="label label-danger">WIP</span> <a target="_blank"
+                                                              href="https://github.com/GetDotaStats/stat-reports">stat-reports</a>
+            </li>
+            <ul>
+                <li><strong>Guide:</strong> N/A</li>
+                <li><strong>Description:</strong> Enables mods to allow users to report other users for various
+                    misbehaviours.
+                </li>
+            </ul>
         </ul>
     </li>
 </ol>
