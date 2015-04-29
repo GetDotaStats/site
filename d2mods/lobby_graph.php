@@ -41,7 +41,7 @@ try {
         5 * 60
     );
 
-    $uniquePlayersSQL =  simple_cached_query(
+    $uniquePlayersSQL = simple_cached_query(
         'd2mods_lobby_graph_players',
         'SELECT
             DAY(mmp.`date_recorded`) as day,
@@ -348,87 +348,254 @@ try {
     {
         echo '<div class="page-header"><h2>Lobby Regions Distribution</h2></div>';
 
-        echo '<p>This graph captures what regions the Lobby Explorer tool is being used in over the last 7days.</p>';
+        echo '<p>This graph captures what regions the Lobby Explorer tool is being used in.</p>';
 
         $modStats = cached_query(
             'trends_lobby_regions',
             'SELECT
+                DAY(ll.`date_recorded`) as day,
+                MONTH(ll.`date_recorded`) as month,
+                YEAR(ll.`date_recorded`) as year,
                 ll.`lobby_region`,
                 lr.`region_name`,
                 COUNT(*) as num_lobbies
               FROM `lobby_list` ll
               LEFT JOIN `lobby_regions` lr ON ll.`lobby_region` = lr.`region_id`
-              WHERE date_recorded >= NOW() - INTERVAL 7 DAY
-              GROUP BY ll.`lobby_region`
-              ORDER BY num_lobbies DESC;',
+              GROUP BY 3,2,1,`lobby_region`
+              ORDER BY 3 DESC, 2 DESC, 1 DESC, `lobby_region`;',
             NULL,
             NULL,
             5 * 60
         );
 
-        if (!empty($modStats)) {
-            $testArray = array();
+        $modStatsRegions = simple_cached_query(
+            'trends_lobby_regions_list',
+            'SELECT
+              `region_id`,
+              `region_name`
+            FROM `lobby_regions`
+            ORDER BY `region_id`;',
+            5 * 60
+        );
 
-            foreach ($modStats as $key => $value) {
-                $testArray[$value['region_name']] = $value['num_lobbies'];
+        {
+            if (!empty($modStats)) {
+                $sortingArray = array();
+                $colArray = array();
+                $rowArray = array();
+
+                //FORMATTING
+                if (!empty($modStats)) {
+                    foreach ($modStats as $key => $value) {
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+
+                        $lobbyRegion = !empty($value['lobby_region'])
+                            ? $value['lobby_region']
+                            : '?';
+
+                        $sortingArray[$modDate][$lobbyRegion] = $value['num_lobbies'];
+                    }
+                }
+
+                //COLUMNS
+                if (!empty($modStatsRegions)) {
+                    $colArray[] = array('id' => '', 'label' => 'Date', 'type' => 'string');
+
+                    foreach ($modStatsRegions as $key => $value) {
+                        $lobbyRegion = !empty($value['region_id'])
+                            ? $value['region_name']
+                            : '?';
+
+                        $colArray[] = array('id' => '', 'label' => $lobbyRegion, 'type' => 'number');
+                        $colArray[] = array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1));
+                    }
+                }
+
+                $sortedDateArray = array();
+
+                //SORTING INTO [DATE][VERSION]
+                if (!empty($sortingArray) && !empty($modStatsRegions)) {
+                    foreach ($modStats as $key => $value) {
+                        $modDate = $value['day'] . '-' . $value['month'] . '-' . $value['year'];
+
+                        foreach ($modStatsRegions as $key2 => $value2) {
+                            $lobbyRegionList = !empty($value2['region_id'])
+                                ? $value2['region_id']
+                                : '?';
+
+                            if (isset($sortingArray[$modDate][$lobbyRegionList])) {
+                                $sortedDateArray[$modDate][$lobbyRegionList] = $sortingArray[$modDate][$lobbyRegionList];
+                            } else {
+                                $sortedDateArray[$modDate][$lobbyRegionList] = 0;
+                            }
+                        }
+                    }
+                }
+
+                foreach ($sortedDateArray as $key => $value) {
+                    $tmpArray = array();
+                    $tmpArray[] = array('v' => $key);
+
+                    foreach ($value as $key2 => $value2) {
+                        $tmpArray[] = array('v' => $value2);
+                        $tmpArray[] = array('v' => number_format($value2));
+                    }
+
+                    $rowArray[] = array('c' => $tmpArray);
+                }
+
+                $options = array(
+                    'bar' => array(
+                        'groupWidth' => 3,
+                    ),
+                    'height' => 300,
+                    'chartArea' => array(
+                        'width' => '87%',
+                        'height' => '80%',
+                        'left' => 80,
+                        'top' => 10,
+                    ),
+                    'hAxis' => array(
+                        'textPosition' => 'none',
+                    ),
+                    'vAxes' => array(
+                        array(
+                            'title' => 'Num. of Lobbies',
+                            //'textPosition' => 'in',
+                            //'logScale' => 1,
+                        ),
+                    ),
+                    'legend' => array(
+                        'position' => 'bottom',
+                        'alignment' => 'start',
+                    ),
+                    'seriesType' => 'bars',
+                    'series' => array(
+                        array(
+                            'type' => 'bar',
+                            'targetAxisIndex' => 0,
+                        ),
+                    ),
+                    'tooltip' => array( //'isHtml' => 1,
+                    ),
+                    'isStacked' => 1,
+                    'focusTarget' => 'category',
+                );
+
+                $chart = new chart2('ComboChart');
+
+                $data = array(
+                    'cols' => $colArray,
+                    'rows' => $rowArray
+                );
+
+                $chart_width = max(count($rowArray) * 5, 700);
+                $options['width'] = $chart_width;
+                $options['hAxis']['gridlines']['count'] = count($rowArray);
+
+                echo '<div id="breakdown_lobby_regions" class="d2mods-graph d2mods-graph-overflow"></div>';
+
+                $chart->load(json_encode($data));
+                echo $chart->draw('breakdown_lobby_regions', $options);
+            } else {
+                echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
             }
+        }
+    }
 
+    ////////////////////////////////////
+    // LOBBY COUNTRY BREAKDOWN (percentage)
+    ////////////////////////////////////
+    {
+        echo '<span class="h5">&nbsp;</span>';
 
-            $options = array(
-                'height' => 400,
-                'chartArea' => array(
-                    'width' => '100%',
-                    'height' => '80%',
-                ),
-                'hAxis' => array(
-                    'title' => 'Number of Players',
-                ),
-                'vAxis' => array(
-                    'title' => 'Games',
-                ),
-                //'pieSliceText' => 'label',
-                'pieResidueSliceLabel' => 'Other',
-                'sliceVisibilityThreshold' => 1 / 270, //minimum degrees to be rendered
-                'legend' => array(
-                    'position' => 'top',
-                    'maxLines' => 2,
-                ),
-                'seriesType' => "bars",
-                'tooltip' => array(
-                    'isHtml' => 1,
-                ),
-            );
-
-            $chart = new chart2('PieChart');
-
-            $super_array = array();
-            foreach ($testArray as $key2 => $value2) {
-                $super_array[] = array('c' => array(array('v' => $key2), array('v' => $value2), array('v' => '<div class="d2mods-graph-tooltips"><strong>' . $key2 . '</strong> players<br />Games: <strong>' . number_format($value2) . '</strong><br />(' . number_format(100 * $value2 / array_sum($testArray), 2) . '%)</div>')));
+        $percentageSortedDateArray = array();
+        foreach ($sortedDateArray as $key => $value) {
+            $totalForDate = array_sum($value);
+            if ($totalForDate > 0) {
+                foreach ($value as $key2 => $value2) {
+                    $percentageSortedDateArray[$key][$key2] = number_format($value2 / $totalForDate * 100, 1);
+                }
             }
+        }
 
-            $data = array(
-                'cols' => array(
-                    array('id' => '', 'label' => 'Country', 'type' => 'string'),
-                    array('id' => '', 'label' => 'Lobbies', 'type' => 'number'),
-                    array('id' => '', 'label' => 'Tooltip', 'type' => 'string', 'role' => 'tooltip', 'p' => array('html' => 1)),
-                ),
-                'rows' => $super_array
-            );
+        {
+            if (!empty($percentageSortedDateArray)) {
+                //$colArray = array();
+                $rowArray = array();
 
-            $chart_width = max(count($super_array) * 9, 700);
-            $options['width'] = $chart_width;
+                foreach ($percentageSortedDateArray as $key => $value) {
+                    $tmpArray = array();
+                    $tmpArray[] = array('v' => $key);
 
-            echo '<div id="breakdown_lobbies_country" class="d2mods-graph"></div>';
+                    foreach ($value as $key2 => $value2) {
+                        $tmpArray[] = array('v' => $value2);
+                        $tmpArray[] = array('v' => number_format($value2));
+                    }
 
-            $chart->load(json_encode($data));
-            echo $chart->draw('breakdown_lobbies_country', $options);
+                    $rowArray[] = array('c' => $tmpArray);
+                }
 
-            echo '<div class="h4">&nbsp;</div>';
-            echo '<div class="h4">&nbsp;</div>';
-            echo '<div class="h4">&nbsp;</div>';
-            echo '<div class="h4">&nbsp;</div>';
-        } else {
-            echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
+                $options = array(
+                    'bar' => array(
+                        'groupWidth' => '100%',
+                    ),
+                    'height' => 300,
+                    'chartArea' => array(
+                        'width' => '87%',
+                        'height' => '80%',
+                        'left' => 80,
+                        'top' => 10,
+                    ),
+                    'hAxis' => array(
+                        'textPosition' => 'none',
+                    ),
+                    'vAxes' => array(
+                        array(
+                            'title' => '% of Lobbies',
+                            //'textPosition' => 'in',
+                            //'logScale' => 1,
+                            'viewWindow' => array(
+                                'max' => 100,
+                                'min' => 0
+                            ),
+                        ),
+                    ),
+                    'legend' => array(
+                        'position' => 'bottom',
+                        'alignment' => 'start',
+                    ),
+                    'seriesType' => 'bars',
+                    'series' => array(
+                        array(
+                            'type' => 'bar',
+                            'targetAxisIndex' => 0,
+                        ),
+                    ),
+                    'tooltip' => array( //'isHtml' => 1,
+                    ),
+                    'isStacked' => 1,
+                    'focusTarget' => 'category',
+                );
+
+                $chart = new chart2('ComboChart');
+
+                $data = array(
+                    'cols' => $colArray,
+                    'rows' => $rowArray
+                );
+
+                $chart_width = max(count($rowArray) * 4, 700);
+                $options['width'] = $chart_width;
+                $options['hAxis']['gridlines']['count'] = count($rowArray);
+
+                echo '<div id="breakdown_lobby_regions_percentage" class="d2mods-graph d2mods-graph-overflow"></div>';
+
+                $chart->load(json_encode($data));
+                echo $chart->draw('breakdown_lobby_regions_percentage', $options);
+            } else {
+                echo bootstrapMessage('Oh Snap', 'No lobby data!', 'danger');
+            }
         }
     }
 
