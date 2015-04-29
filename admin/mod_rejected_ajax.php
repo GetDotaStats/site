@@ -20,56 +20,31 @@ try {
     if (empty($adminCheck)) throw new Exception('Not an admin!');
 
     if (
-        empty($_POST['modID']) ||
-        empty($_POST['modName']) ||
-        empty($_POST['modMaps']) || $_POST['modMaps'] == 'One map per line' ||
-        empty($_POST['modDescription']) ||
-        empty($_POST['m_submit']) || ($_POST['m_submit'] != 'Approve' && $_POST['m_submit'] != 'Reject')
-
+        empty($_POST['modID'])
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
     }
 
-    if ($_POST['m_submit'] == 'Reject' && empty($_POST['modRejectedReason'])) {
-        throw new Exception('No reason given for mod rejection!');
-    }
-
     $modID = htmlentities($_POST['modID']);
-    $modName = htmlentities($_POST['modName']);
-    $modDescription = htmlentities($_POST['modDescription']);
-    $modGroup = !empty($_POST['modGroup'])
-        ? htmlentities($_POST['modGroup'])
-        : NULL;
-    $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['modMaps']))));
-    $modRejected = $_POST['m_submit'] == 'Approve'
-        ? 0
-        : 1;
-    $modRejectedReason = !empty($_POST['modRejectedReason']) && $modRejected == 1
-        ? htmlentities($_POST['modRejectedReason'])
-        : NULL;
-    $modActive = $modRejected == 1
-        ? 0
-        : 1;
+    $modActive = 0;
+    $modRejected = 0;
+    $modRejectedReason = NULL;
 
     $insertSQL = $db->q(
         'UPDATE `mod_list`
           SET
             `mod_active` = ?,
-            `mod_name` = ?,
-            `mod_description` = ?,
-            `mod_steam_group` = ?,
-            `mod_maps` = ?,
             `mod_rejected` = ?,
             `mod_rejected_reason` = ?
           WHERE `mod_identifier` = ?;',
-        'issssiss',
-        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modRejected, $modRejectedReason, $modID
+        'iiss',
+        $modActive, $modRejected, $modRejectedReason, $modID
     );
 
     if ($insertSQL) {
-        $json_response['result'] = 'Custom Game updated!';
+        $json_response['result'] = 'Custom Game re-queued!';
     } else {
-        throw new Exception('Custom Game not updated!');
+        throw new Exception('Custom Game not re-queued!');
     }
 
 } catch (Exception $e) {

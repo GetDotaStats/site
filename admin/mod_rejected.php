@@ -71,6 +71,8 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
+        echo '<form id="modApprove' . $key . '">';
+
         echo '<div class="row">
                 <div class="col-sm-5">' . $modName . '</div>
                 <div class="col-sm-4">' . $modDeveloperAvatar . ' ' . $modDeveloper . '</div>
@@ -96,6 +98,55 @@ try {
                     </div>
                 </div>
             </div>';
+
+        echo '<div class="row">
+                <div class="col-md-12 text-center"><span id="modAJAXResult' . $key . '" class="labelWarnings label label-danger"></span></div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
+                <div class="col-md-4">&nbsp;</div>
+                <div class="col-md-4 text-center">
+                    <input name="submit" class="btn btn-danger" type="submit" value="Re-Queue">
+                </div>
+                <div class="col-md-4">&nbsp;</div>
+            </div>';
+
+        echo '<input type="hidden" name="modID" value="' . $value['mod_identifier'] . '">';
+
+        echo '</form>';
+
+        echo '<script type="application/javascript">
+                    function htmlEntities(str) {
+                        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                    }
+
+                    $("#modApprove' . $key . '").submit(function (event) {
+                        event.preventDefault();
+
+                        $.post("./admin/mod_rejected_ajax.php", $("#modApprove' . $key . '").serialize(), function (data) {
+                            try {
+                                if(data){
+                                    var response = JSON.parse(data);
+                                    if(response && response.error){
+                                        $("#modAJAXResult' . $key . '").html(response.error);
+                                    }
+                                    else if(response && response.result){
+                                        $("#modAJAXResult' . $key . '").html(response.result);
+                                        loadPage("#admin__mod_rejected",1);
+                                    }
+                                    else{
+                                        $("#modAJAXResult' . $key . '").html(htmlEntities(data));
+                                    }
+                                }
+                            }
+                            catch(err) {
+                                $("#modAJAXResult' . $key . '").html("Parsing Error: " + err.message + "<br />" + htmlEntities(data));
+                            }
+                        }, "text");
+                    });
+                </script>';
 
         echo '<hr />';
     }
