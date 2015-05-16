@@ -107,7 +107,8 @@ try {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <span
+                            class="label label-danger">UPDATED</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Signatures</li>
                         <li><a class="nav-clickable" href="#sig__generator">Generator</a></li>
@@ -123,10 +124,11 @@ try {
                         <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
-                        <li><a class="nav-clickable" href="#credits">Credits</a></li>
+                        <li><a class="nav-clickable" href="#credits">Credits <span
+                                    class="label label-danger">UPDATED</span></a></li>
                         <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
                         <li><a class="nav-clickable" href="#d2moddin/">D2Modd.in <span
-                                    class="label label-info">DEAD</span></a></a></li>
+                                    class="label label-info">DEAD</span></a></li>
                         <li><a class="nav-clickable" href="#contact">Contact</a></li>
                     </ul>
                 </li>
@@ -218,7 +220,7 @@ try {
                 <br/>
 
                 <iframe width="100%" height="550" scrolling="no"
-                        src="http://widget.mibbit.com/?settings=444700653d2683b29d7f0965230f38af&server=irc.web.gamesurge.net&channel=%23getdotastats-chat&autoConnect=true&delay=5&noServerMotd=true&noServerNotices=true&noServerTab=true&nick=gds_%3F%3F%3F%3F">
+                        src="http://widget.mibbit.com/?settings=444700653d2683b29d7f0965230f38af&server=irc.web.gamesurge.net&channel=%23getdotastats-chat&autoConnect=false&delay=5&noServerMotd=true&noServerNotices=true&noServerTab=true&nick=gds_%3F%3F%3F%3F">
                     Embedded chat
                 </iframe>
             </div>
