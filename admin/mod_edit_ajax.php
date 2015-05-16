@@ -51,7 +51,7 @@ try {
         throw new Exception('Bad JSON given in `Options`!');
     }
 
-    if($modActive == '1' && empty($modOptions)){
+    if($modOptionsActive == '1' && empty($modOptions)){
         throw new Exception('Can\'t activate options without `Options` field populated!');
     }
 
