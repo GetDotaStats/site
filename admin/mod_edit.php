@@ -70,11 +70,21 @@ try {
             ? '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" required>' . $value['mod_description'] . '</textarea>'
             : '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" placeholder="Awesome description of custom game" required></textarea>';
 
+        $modOptions = !empty($value['mod_options'])
+            ? '<textarea class="formTextArea boxsizingBorder" name="modOptions" rows="4">' . $value['mod_options'] . '</textarea>'
+            : '<textarea class="formTextArea boxsizingBorder" name="modOptions" rows="1" placeholder="Options for the mod"></textarea>';
+
         $modActive = isset($value['mod_active']) && $value['mod_active'] == 1
             ? '<input type="radio" name="modActive" value="0">No<br />
                     <input type="radio" name="modActive" value="1" checked>Yes'
             : '<input type="radio" name="modActive" value="0" checked>No<br />
                     <input type="radio" name="modActive" value="1">Yes';
+
+        $modOptionsActive = isset($value['mod_options_enabled']) && $value['mod_options_enabled'] == 1
+            ? '<input type="radio" name="modOptionsActive" value="0">No<br />
+                    <input type="radio" name="modOptionsActive" value="1" checked>Yes'
+            : '<input type="radio" name="modOptionsActive" value="0" checked>No<br />
+                    <input type="radio" name="modOptionsActive" value="1">Yes';
 
         $modMaxPlayers = '<select name="modMaxPlayers" class="formTextArea boxsizingBorder">';
         $modMaxPlayers .= !isset($value['mod_max_players']) || !is_numeric($value['mod_max_players'])
@@ -92,12 +102,12 @@ try {
 
         if (!empty($value['user_name'])) {
             $modDeveloper = !empty($value['steam_id64'])
-                ? '<a href="https://steamcommunity.com/profiles/' . $value['steam_id64'] . '" target="_blank">' . $value['user_name'] . '</a>'
+                ? '<a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>'
                 : $value['user_name'];
 
             $modDeveloperAvatar = !empty($value['user_avatar'])
-                ? '<img width="20" height="20" src="' . $value['user_avatar'] . '"/>'
-                : '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
+                ? '<a href="https://steamcommunity.com/profiles/' . $value['steam_id64'] . '" target="_blank"><img width="20" height="20" src="' . $value['user_avatar'] . '"/></a>'
+                : '<a href="https://steamcommunity.com/profiles/' . $value['steam_id64'] . '" target="_blank"><img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/></a>';
         } else {
             $modDeveloper = 'Unknown';
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
@@ -154,10 +164,21 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
+                <div class="col-md-1"><span class="h4">Desc.</span></div>
+                <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The description for this custom game"></span></div>
+                <div class="col-md-10">' . $modDescription . '</div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
                 <div class="col-md-2">&nbsp;</div>
 
                 <div class="col-md-1"><span class="h4">Active</span></div>
                 <div class="col-md-1">' . $modActive . '</div>
+
+                <div class="col-md-1"><span class="h4">Options</span></div>
+                <div class="col-md-1">' . $modOptionsActive . '</div>
 
                 <div class="col-md-1"><span class="h4">Players</span></div>
                 <div class="col-md-2">' . $modMaxPlayers . '</div>
@@ -166,9 +187,9 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">Desc.</span></div>
-                <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The description for this custom game"></span></div>
-                <div class="col-md-10">' . $modDescription . '</div>
+                <div class="col-md-1"><span class="h4">Options</span></div>
+                <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The options for this custom game"></span></div>
+                <div class="col-md-10">' . $modOptions . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';

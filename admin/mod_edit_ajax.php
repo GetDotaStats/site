@@ -26,7 +26,8 @@ try {
         empty($_POST['modDescription']) ||
         empty($_POST['modWorkshop']) ||
         !isset($_POST['modActive']) || !is_numeric($_POST['modActive']) ||
-        !isset($_POST['modMaxPlayers']) || !is_numeric($_POST['modMaxPlayers'])
+        !isset($_POST['modMaxPlayers']) || !is_numeric($_POST['modMaxPlayers']) ||
+        !isset($_POST['modOptionsActive']) || !is_numeric($_POST['modOptionsActive'])
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
     }
@@ -39,8 +40,20 @@ try {
         : NULL;
     $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['modMaps']))));
     $modWorkshop = htmlentities($_POST['modWorkshop']);
-    $modActive = htmlentities($_POST['modActive']);
     $modMaxPlayers = htmlentities($_POST['modMaxPlayers']);
+    $modOptions = !empty($_POST['modOptions'])
+        ? $_POST['modOptions']
+        : NULL;
+    $modActive = $_POST['modActive'];
+    $modOptionsActive = $_POST['modOptionsActive'];
+
+    if(!empty($modOptions) && empty(json_decode($modOptions))){
+        throw new Exception('Bad JSON given in `Options`!');
+    }
+
+    if($modActive == '1' && empty($modOptions)){
+        throw new Exception('Can\'t activate options without `Options` field populated!');
+    }
 
     $insertSQL = $db->q(
         'UPDATE `mod_list`
@@ -51,10 +64,12 @@ try {
             `mod_steam_group` = ?,
             `mod_maps` = ?,
             `mod_max_players` = ?,
-            `mod_workshop_link` = ?
+            `mod_workshop_link` = ?,
+            `mod_options` = ?,
+            `mod_options_enabled` = ?
           WHERE `mod_identifier` = ?;',
-        'issssiss',
-        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modMaxPlayers, $modWorkshop, $modID
+        'issssissis',
+        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modMaxPlayers, $modWorkshop, $modOptions, $modOptionsActive, $modID
     );
 
     if ($insertSQL) {
