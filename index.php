@@ -120,9 +120,6 @@ try {
                         <li class="dropdown-header">Browser Extensions</li>
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
-                        <li class="dropdown-header">Simulations</li>
-                        <li><a class="nav-clickable" href="#simulations__axespins/">Axe Counter Helix</a></li>
-                        <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#credits">Credits <span
                                     class="label label-danger">UPDATED</span></a></li>
