@@ -73,17 +73,9 @@ try {
         , 5
     );
 
-    $lobbyListCount = simple_cached_query('d2mods_lobby_list_count',
-        'SELECT
-                COUNT(*) AS lobby_count
-            FROM `lobby_list` ll
-            LIMIT 0,1;'
-        , 60
-    );
-
     echo '<div class="page-header"><h2>Lobby List <small>BETA</small></h2></div>';
 
-    echo '<p>This is a list of all of the active lobbies. There have been <strong>' . number_format($lobbyListCount[0]['lobby_count']) . '</strong> lobbies created. Please leave suggestions on how we can improve this tool in the chatbox.</p>';
+    echo '<div class="alert alert-danger" role="alert"><strong>Update your Lobby Explorer client!</strong><br />We had to roll out a non-backwards compatible update that requires everyone to upgrade. Join our Steam group to ensure you always get the latest news!</div>';
 
     echo '<div class="alert alert-info" role="alert">
                 <a target="_blank" class="btn btn-success btn-sm" href="#d2mods__lobby_guide">Installation guide</a> OR hop right in and
