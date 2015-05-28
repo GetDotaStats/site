@@ -17,48 +17,52 @@ require_once('../global_functions.php');
 <span class="h4">&nbsp;</span>
 
 <div class="alert alert-info" role="alert">
-    <p><strong>Кредиты</strong></p>
+    <p><strong>Благодарность</strong></p>
 
-    <p>Это не было бы возможно без работы
+    <p>Всё это было бы невозможно без работы
         <a target="_blank" href="https://github.com/SinZ163">«SinZ»</a>,
         <a target="_blank" href="https://github.com/bmddota">«BMD»</a>,
         <a target="_blank" href="https://github.com/ash47">«Ash47»</a>, и
         <a target="_blank" href="https://github.com/jimmydorry">«jimmydorry»</a>.</p>
 
-    <p>Первая половина этого руководства в значительной степени осуществляться из <a target="_blank"
-                                                                                      href="http://steamcommunity.com/sharedfiles/filedetails/?id=298142924">«Wyk»</a>,
-        так что спасибо ему тоже.</p>
+    <p>Отдельная благодарность <a target="_blank"
+                                  href="http://steamcommunity.com/sharedfiles/filedetails/?id=298142924">«Wyk»</a>,
+        за первую часть руководства.</p>
 
-    <p>Эти инструкции было переведено <a target="_blank" href="http://steamcommunity.com/id/toyoka/">«Toyoka»</a>.</p>
+    <p>Туториал перевел
+        <a target="_blank" href="https://steamcommunity.com/profiles/76561198009765825">«Toyoka»</a> и
+        <a target="_blank" href="https://steamcommunity.com/profiles/76561198137607735">«Apacherus»</a>.</p>
 </div>
 
 <div class="alert alert-warning alert-dismissible fade in" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
     </button>
-    <strong>внимание:</strong> если вы хотите только мини-игры в лобби, вам не нужно устанавливать «Dota 2 Workshop
-    Tools Alpha». Вы можете
-    пропустить до "Установите «GetDotaStats Lobby Explorer»". Ниже этого, вам нужно всего лишь следовать одно из двух
-    Быстрый стартоф.
+    <strong>Замечание:</strong> если вы хотите установить только мини-игры, устанавливать «Dota 2 Workshop
+    Tools Alpha» не требуется. Сразу перейдите к разделу "Установите «Lobby Explorer»".
 </div>
 
 <h2>Быстрый старт (автоматически)</h2>
 
-<p>Это руководство для тех у кого есть «Dota 2 Workshop Tools Alpha» и хотите чтобы сразу играть пользовательские игр.
-    Если это Быстрый старт удается, прочитайте полную инструкцию внизу.</p>
+<p>Данное руководство применимо к тем пользователям которые уже установили «Dota 2 Workshop Tools Alpha». В том случае
+    если Вы
+    не установили «Dota 2 Workshop Tools Alpha» или выполнить этот гайд не получилось, перейдите к полной инструкции. Вы
+    можете
+    проверить исходный код используемых скриптов (VBS) нажав правой кнопкой мыши и выбрав пункт "Изменить", или можете
+    внести все изменения вручную - они описываются в следующем разделе.</p>
 
 <ol>
-    <li>Убедитесь что «Dota 2 Workshop Tools Alpha» установлена и что «Dota 2 Workshop Tools DLC» включен для ваш Dota 2
-        в библиотеки.
+    <li>Убедитесь что дополнение Workshop Tools установлено (и Workshop Tools DLC включено в настройка клиента Dota 2 в
+        библиотеке Steam)
     </li>
-    <li>Войти на этот сайтб здесь (с зеленой кнопки в верхней части сайта)</li>
-    <li>Скачать <a target="_blank" class="btn btn-success btn-sm"
-                   href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/LXUpdater.zip">LXUpdater</a></li>
-    <li>Открывать и использовать «LXUpdater» <a target="_blank" href="http://gfycat.com/BewitchedCompassionateGull">пример
-            видео</a></li>
-    <li>Запустите/перезапустите Dota 2.</li>
-    <li>Тогда новые кнопки для поиска и принятия лобби появится когда вы нажмите кнопку для воспроизведения.
+    <li>Войдите на этом сайте (используя зеленую кнопку сверху)</li>
+    <li>Загрузите <a target="_blank" class="btn btn-success btn-sm"
+                     href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/LXUpdater.zip">«LXUpdater»</a></li>
+    <li>Извлеките и запустите «LXUpdater» <a target="_blank"
+                                             href="http://gfycat.com/BewitchedCompassionateGull">ВИДЕО</a></li>
+    <li>Перезапустите клиент Dota 2</li>
+    <li>Теперь в Dota 2 на вкладке "Игра" доступны новые кнопки для поиска и создания лобби пользовательских игр
         <ul>
-            <li><a target="_blank" href="http://gfycat.com/GrippingGenuineIndochinesetiger">Найти лобби</a></li>
+            <li><a target="_blank" href="http://gfycat.com/GrippingGenuineIndochinesetiger">Поиск лобби</a></li>
             <li><a target="_blank" href="http://gfycat.com/PlasticEnlightenedAngwantibo">Создание лобби</a></li>
         </ul>
     </li>
@@ -68,89 +72,98 @@ require_once('../global_functions.php');
 
 <h2>Быстрый старт (вручную)</h2>
 
-<p>Это руководство для тех у кого есть «Dota 2 Workshop Tools Alpha» и хотите чтобы сразу играть пользовательские игр.
-    Если это Быстрый старт удается, прочитайте полную инструкцию внизу.</p>
+<p>Данное руководство применимо к тем пользователям которые уже установили «Dota 2 Workshop Tools Alpha». В том случае
+    если Вы
+    не установили «Dota 2 Workshop Tools Alpha» или выполнить этот гайд не получилось, перейдите к полной
+    инструкции.</p>
 
 <ol>
-    <li>Убедитесь что «Dota 2 Workshop Tools Alpha» установлена и что «Dota 2 Workshop Tools DLC» включен для ваш Dota 2
-        в библиотеки.
+    <li>Убедитесь что дополнение Workshop Tools установлено (и Workshop Tools DLC включено в настройка клиента Dota 2 в
+        библиотеке Steam).
     </li>
-    <li>Войти на этот сайт, здесь (с зеленой кнопки в верхней части сайта)</li>
-    <li>Скачать <a target="_blank" class="btn btn-success btn-sm"
-                   href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">«Lobby
+    <li>Войдите на этом сайте (используя зеленую кнопку сверху).</li>
+    <li>Загрузите <a target="_blank" class="btn btn-success btn-sm"
+                     href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">«Lobby
             Explorer Pack»</a></li>
-    <li>Поставьте .SWF в здесь: <code>C:\Program Files (x86)\Steam\SteamApps\common\dota 2
+    <li>Извлеките «Lobby Explorer» в папку flash3 расположенную в папке установки Dota 2 <code>C:\Program Files
+            (x86)\Steam\SteamApps\common\dota 2
             beta\dota\resource\flash3</code></li>
-    <li>Запустите/перезапустите Dota 2.</li>
-    <li>Тогда новые кнопки для поиска и принятия лобби появится когда вы нажмите кнопку для воспроизведения.</li>
+    <li>Перезапустите Dota 2</li>
+    <li>Теперь в Dota 2 на вкладке "Игра" доступны новые кнопки для поиска и создания лобби пользовательских игр</li>
 </ol>
 
 <hr/>
 
-<h2>Полные инструкции</h2>
+<h2>Полное руководство</h2>
 
-<p>Эти инструкции более подробно и с картинками, но такие же как инструкциями в раньше Быстрый старт.</p>
+<p>Детальный гайд по установке «Lobby Explorer». Результат соответствует предыдущим гайдам, различия лишь в более
+    подробной инструкции.</p>
 
-<h3>Системные Требования</h3>
+<h3>Системные требования</h3>
 
-<p>В этот момент, «Dota 2 Workshop Tools Alpha» минимально требуется следующую конфигурацию:</p>
+<p>Текущий выпуск инструментов совместим лишь с указанной ниже конфигурацией.</p>
 
 <ul>
-    <li>Windows (7 или более поздней версии)</li>
-    <li>Direct3D 11 / Direct3D 9 GPU</li>
-    <li>4 гигабайт оперативной памяти</li>
-    <li>Интернет (конечно тем быстрее тем лучше)</li>
+    <li>Windows (версии 7 или старше)</li>
+    <li>Видеокарты совместимые с Direct3D 11 / Direct3D 9</li>
+    <li>Не меньше 4Gb оперативной памяти</li>
+    <li>Стабильное широкополосное интернет соединение</li>
 </ul>
 
-<h3>Устанавливать «Dota 2 Workshop Tools»</h3>
+<h3>Установка «Dota 2 Workshop Tools»</h3>
 
-<p>Для того чтобы играть в пользовательские игры в лобби, у Вас должен быть установлен «Dota 2 Workshop Tools». Чтобы
-    установить, выполните следующие действия.</p>
+<p>Для того чтобы играть в пользовательские игры должно быть установлено дополнение Dota 2 Workshop Tools. Инструкция по
+    установке приведена ниже.</p>
 
-<p><strong>1.</strong> В Стим с открытым Dota 2 в недвижимость, выберите последний вариант (DLC) и включить «Dota 2
-    Workshop Tools DLC». Это начнет загрузку 6,6 Гб</p>
+<p><strong>1.</strong> Откройте Библиотеку, нажмите правой кнопкой мыши на Dota 2 и выберите пункт Свойства, перейдите
+    на вкладку Дополнения и отметьте «Dota 2
+    Workshop Tools DLC». После этого будет загружено примерно 6.6Гб.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/1-1.png" width="500px"/></div>
 
-<p><strong>2.</strong> В Стим, перейдите к инструментам в меню библиотеки.</p>
+<p><strong>2.</strong> Перейдите на вкладку инструменты из меню Библиотека.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/1-2a.png" width="500px"/></div>
 
-<p><strong>3.</strong> Найдите и установите «Dota 2 Workshop Tools Alpha»</p>
+<p><strong>3.</strong> Найдите в списке «Dota 2 Workshop Tools Alpha» и установите.</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/1-2b.png" width="500px"/></div>
 
-<p><strong>4.</strong> Подождите как закончить загрузку.</p>
+<p><strong>4.</strong> Дождитесь пока инструменты и дополнение будет загружено и установлено.</p>
 
-<h3>Подписка на Пользовательские Игры</h3>
+<h3>Подписка на пользовательские игры</h3>
 
-<p><strong>1.</strong> вы можете найти все игры на <a target="_blank"
-                                                      href="http://steamcommunity.com/workshop/browse/?appid=570&section=readytouseitems">«Steam
-        Workshop»</a>. Перейти к Мастерская и нажмите на "Просмотр" и перейдите в "<a target="_blank"
-                                                                                      href="http://steamcommunity.com/workshop/browse/?appid=570&section=readytouseitems">Пользовательские
-        игры</a>".</p>
+<!--- -->
+
+<p><strong>1.</strong> Список загруженных пользовательских игр можно найти в
+    <a target="_blank" href="http://steamcommunity.com/workshop/browse/?appid=570&section=readytouseitems">«Steam
+        Workshop»</a>.
+    Просто откройте мастерскую и найдите
+    <a target="_blank" href="http://steamcommunity.com/workshop/browse/?appid=570&section=readytouseitems">«Custom
+        Games»</a>.
+</p>
 
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/2-1.png" width="500px"/></div>
 
-<p><strong>2.</strong> Нажмите кнопку "Подписаться" чтобы начать автоматическую загрузку. Вы можете скачать любую игру
-    Пользовательские, но только игры Пользовательские мы утвердили могут быть воспроизведены в лобби программы вы
-    скачали раньше. Это в основном из-за технических ограничений в лобби, но также из-за Пользовательские игр которые
-    были созданы с небольшим усилием. Если вы хотите игру Пользовательские здесь, пожалуйста приводить разработчик
-    здесь. Мы рады принять новый Пользовательские игры на сайте!</p>
+<p><strong>2.</strong> Подпишитесь на Custom Games чтобы автоматически загрузить пользовательские игры через Steam. Вы
+    можете устанавливать и другие пользовательские игры, но через «Lobby Explorer» можно играть лишь в те игры, которые
+    есть в разделе Custom Games. Это связано с техническими ограничениями работы системы, однако это значительно
+    упрощает поиск и создание лобби. Если Вы хотите видеть какую-то карту здесь, просто скажите разработчику об этом. Мы
+    всегда рады новым играм!</p>
 
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/2-2.png" width="500px"/></div>
 
-<h3>Установите «GetDotaStats Lobby Explorer»</h3>
+<h3>Установка «Lobby Explorer»</h3>
 
 <p><strong>1.</strong> <a target="_blank" class="btn btn-success btn-sm"
-                          href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">загрузить
-        «Lobby Explorer Pack»</a></p>
+                          href="https://github.com/GetDotaStats/GetDotaLobby/raw/master/play_weekend_tourney.zip">Установка
+        «Lobby Explorer Pack»</a>
+</p>
 
-<p><strong>2.</strong> Сейчас хорошее время для входа на наш сайт с Стимх OpenID. Нажмите на зеленую кнопку для входа в
-    верхней части сайта. Вход в будет гарантировать, что вы получите полную функциональность с нашем лобби. Не
-    подписания помешает вам использовать определенные функции.</p>
+<p><strong>2.</strong> Войдите на сайт GetDotaStats.com используя OpenID Steam. Нажмите на большую кнопку "Sign in
+    through STEAM" в верхней части сайта. Авторизация позволит Вам использовать все возможности «Lobby Explorer».</p>
 
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/3-2.png" width="500px"/></div>
 
-<p><strong>3.</strong> Перемещение « play_weekend_tourney.swf » и другие файлы, полученные от скачивания, по следующему
-    адресу:
+<p><strong>3.</strong> 3. Добавьте «play_weekend_tourney.swf» и другие файлы из архива который Вы скачали в папку
+    flash3 расположенную в Вашей папке Dota 2. Обычно она находится здесь:
     <code>C:\Program Files (x86)\Steam\SteamApps\common\dota 2 beta\dota\resource\flash3</code>
 </p>
 
@@ -159,36 +172,37 @@ require_once('../global_functions.php');
 <p>&nbsp;</p>
 
 <div class="alert alert-danger">
-    <p>Убедитесь что все файлы называются правильно, такие как «play_weekend_tourney.swf» и «minigames.kv». Если
-        расположение приведенные выше не существует, создайте его!</p>
+    <p>Убедитесь что все загруженные файлы называются корректно. Т.е. «play_weekend_tourney.swf» и «minigames.kv». Если
+        данной папки не существует - создайте её!</p>
 </div>
 
 <hr/>
 
-<h2>Найти / Регистрация Лобби</h2>
+<h2>Поиск/создание лобби</h2>
 
-<p>После того, как Вы выполнили предыдущие инструкции, теперь вы можете использовать нашу систему! Список лобби можно
-    обновить только вручную, на кликом символ обновления.</p>
+<p>Теперь когда Вы установили «Dota 2 Workshop Tools Alpha», «Lobby Explorer» и вошли на сайт - можно использовать нашу
+    систему лобби. Обратите внимание что список лобби в игре нужно обновлять вручную, для этого нажмите на кнопку
+    Refresh в верхнем правом углу. Обновлять можно 1 раз в 5 секунд.</p>
 
-<p><strong>1.</strong> Начать Dota 2</p>
+<p><strong>1.</strong> Запустите клиент Dota 2</p>
 
-<p><strong>*</strong> Перейти к "Play" и нажмите на «CUSTOM LOBBY BROWSER», чтобы найти лобби. (<a target="_blank"
-                                                                                                   href="http://gfycat.com/GrippingGenuineIndochinesetiger">пример
-        видео</a>)</p>
+<p><strong>*</strong> Перейдите на вкладку ИГРА и нажмите «CUSTOM LOBBY BROWSER» чтобы найти лобби. (<a target="_blank"
+                                                                                                        href="http://gfycat.com/GrippingGenuineIndochinesetiger">ВИДЕО</a>)
+</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/4-1.jpg" width="500px"/></div>
 
-<p><strong>*</strong> Перейти к "Play" и нажмите на «HOST CUSTOM LOBBY», чтобы провести лобби. (<a target="_blank"
-                                                                                                   href="http://gfycat.com/PlasticEnlightenedAngwantibo">пример
-        видео</a>)</p>
+<p><strong>*</strong> Перейдите на вкладку ИГРА и нажмите «HOST CUSTOM LOBBY» что создать лобби. (<a target="_blank"
+                                                                                                     href="http://gfycat.com/PlasticEnlightenedAngwantibo">ВИДЕО</a>)
+</p>
 <div class="text-center"><img src="//dota2.photography/images/lobbies/guide/4-2.jpg" width="500px"/></div>
 
 <hr/>
 
-<h2>Заметки</h2>
+<h2>Замечания</h2>
 
-<p>Ошибки могут произойти. Вы можете связаться с нами через любой из перечисленных ниже местах.</p>
+<p>Могут присутствовать ошибки. Вы можете связаться с нами любым способом указанным ниже.</p>
 
-<p>Если вы не знакомы с IRC, попробуйте <a target="_blank"
+<p>Если Вы не использовали IRC ранее, попробуйте <a target="_blank"
                                            href="https://kiwiirc.com/client/irc.gamesurge.net/?#getdotastats">«kiwiirc»</a>.
 </p>
 
@@ -197,8 +211,6 @@ require_once('../global_functions.php');
 <div class="text-center">
     <a target="_blank" class="btn btn-danger btn-sm" href="irc://irc.gamesurge.net:6667/#getdotastats">IRC
         #getdotastats</a>
-    <a target="_blank" class="btn btn-danger btn-sm" href="http://chatwing.com/GetDotaStats">Site
-        Chatbox</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="https://github.com/GetDotaStats/GetDotaLobby/issues">Github
         Issues</a>
     <a target="_blank" class="btn btn-danger btn-sm" href="http://steamcommunity.com/id/jimmydorry/">Steam</a>
@@ -208,4 +220,4 @@ require_once('../global_functions.php');
 
 <p>&nbsp;</p>
 
-<p>Я не принимаю случайные запросы, оставьте комментарий на профиль перед добавлением мне.</p>
+<p>Я не добавляю случайные запросы в «Steam», укажите причину в комментариях перед тем как добавить меня в друзья.</p>
