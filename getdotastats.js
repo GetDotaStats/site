@@ -23,23 +23,23 @@ $(document).ready(function () {
 
     //TO FACILITATE BACK BUTTON
     window.onhashchange = function () {
-        if (!mouseBoolean) {
+        //if (!mouseBoolean) {
             if (window.location.hash != '#undefined') {
                 loadPage(window.location.hash, 0);
             }
-        }
+        //}
     };
 
     var rx = /INPUT|SELECT|TEXTAREA/i;
 
     //NO BACKSPACING TO GO BACK
     $(document).bind("keydown", function (e) {
-        if ((e.which || e.keyCode) == 8) { // 8 == backspace
+        /*if ((e.which || e.keyCode) == 8) { // 8 == backspace
             if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
                 e.preventDefault();
             }
         }
-        else if ((e.which || e.keyCode) == 116) { // 116 == f5 -- refreshing
+        else*/ if ((e.which || e.keyCode) == 116) { // 116 == f5 -- refreshing
             e.preventDefault();
             if (window.location.hash != '#undefined') {
                 loadPage(window.location.hash, 1);

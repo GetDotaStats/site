@@ -31,7 +31,7 @@ $path_lib_html5shivJS_name = 'html5shiv-3-7-0.js?20';
 $path_lib_html5shivJS_full = $CDN_generic . $path_lib_html5shivJS . $path_lib_html5shivJS_name;
 
 $path_lib_siteJS = '/';
-$path_lib_siteJS_name = 'getdotastats.js?29';
+$path_lib_siteJS_name = 'getdotastats.js?31';
 $path_lib_siteJS_full = $CDN_generic . $path_lib_siteJS . $path_lib_siteJS_name;
 //$path_lib_siteJS_full = '.' . $path_lib_siteJS . $path_lib_siteJS_name;
 
