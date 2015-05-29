@@ -46,7 +46,7 @@
     <li>Run the mod via the workshop tools and successfully complete a run through of your mod (i.e. get to the end game
         condition)
     </li>
-    <li>Check the <a target="_blank" href="//getdotastats.com/d2mods/log-test.html?1">test-log</a> for a reference to
+    <li>Check the <a target="_blank" href="//getdotastats.com/logs/server-test.html?1">test-log</a> for a reference to
         your modID. (<strong>Note:</strong> Some browsers cache that page strangely. Make sure to increment the number
         at the end of the URL after each refresh)
     </li>
