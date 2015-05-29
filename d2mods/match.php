@@ -226,11 +226,14 @@ try {
                 }
             } else if (!empty($matchSchema['rounds']) && !empty($matchSchema['rounds']['players'])) {
                 foreach ($matchSchema['rounds']['players'] as $mh_key => $mh_value) {
-                    if (!empty($mh_value['items'])) {
+                    if (!empty($mh_value['abilities'])) {
                         $i = 1;
                         foreach ($mh_value['abilities'] as $mh_key2 => $mh_value2) {
                             $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_name'] = $mh_value2['abilityName'];
                             $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_level'] = $mh_value2['level'];
+                            $matchDetailsSorted[0][$mh_value['teamID']][$mh_value['slotID']]['abilities'][$i]['ability_hidden'] = !empty($mh_value2['hidden'])
+                                ? 1
+                                : 0;
                             $i++;
                         }
                     }
@@ -408,58 +411,60 @@ try {
                                 : '-';
 
                             $items = '';
-                            if (!empty($player_value['items'])) {
-                                $items = '<strong>Hero:</strong> ';
-                                $break = false;
-                                for ($i = 0; $i < 12; $i++) {
-                                    if ($i >= 6 && !$break) {
-                                        $items = rtrim($items, ' ');
-                                        $items .= '<br /><strong>Stash:</strong> ';
-                                        $break = true;
-                                    }
+                            //if (!empty($player_value['items'])) {
+                            $items = '<strong>Hero:</strong> ';
+                            $break = false;
+                            for ($i = 0; $i < 12; $i++) {
+                                if ($i >= 6 && !$break) {
+                                    $items = rtrim($items, ' ');
+                                    $items .= '<br /><strong>Stash:</strong> ';
+                                    $break = true;
+                                }
 
-                                    if (isset($player_value['items'][$i])) {
-                                        $imgName = $player_value['items'][$i]['item_name'];
+                                if (isset($player_value['items'][$i])) {
+                                    $imgName = $player_value['items'][$i]['item_name'];
 
-                                        if (in_array($player_value['items'][$i]['item_name'], $regularItems)) {
-                                            if (stristr($imgName, 'recipe_')) {
-                                                $imgName = 'recipe';
-                                            } else {
-                                                $imgName = str_replace('item_', '', $imgName);
-                                            }
-
-                                            if (file_exists('../images/items/default/' . $imgName . '.png')) {
-                                                $img_url = '//dota2.photography/images/items/default/' . $imgName . '.png';
-                                            } else {
-                                                $img_url = '//dota2.photography/images/items/aaaa_unknown.png';
-                                            }
-
-                                            $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                    if (in_array($player_value['items'][$i]['item_name'], $regularItems)) {
+                                        if (stristr($imgName, 'recipe_')) {
+                                            $imgName = 'recipe';
                                         } else {
-                                            if (stristr($imgName, 'recipe_')) {
-                                                $imgName = 'recipe';
-                                            } else {
-                                                $imgName = str_replace('item_', '', $imgName);
-                                            }
-
-                                            if (file_exists('../images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
-                                                $img_url = '//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
-                                            } else {
-                                                $img_url = '//dota2.photography/images/items/aaaa_unknown.png';
-                                            }
-
-                                            $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
+                                            $imgName = str_replace('item_', '', $imgName);
                                         }
+
+                                        if (file_exists('../images/items/default/' . $imgName . '.png')) {
+                                            $img_url = '//dota2.photography/images/items/default/' . $imgName . '.png';
+                                        } else {
+                                            $img_url = '//dota2.photography/images/items/aaaa_unknown.png';
+                                        }
+
+                                        $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
                                     } else {
-                                        $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/aaaa_empty.png" title="Empty slot" /> ';
+                                        if (stristr($imgName, 'recipe_')) {
+                                            $imgName = 'recipe';
+                                        } else {
+                                            $imgName = str_replace('item_', '', $imgName);
+                                        }
+
+                                        if (file_exists('../images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png')) {
+                                            $img_url = '//dota2.photography/images/items/' . $matchDetails[0]['mod_id'] . '/' . $imgName . '.png';
+                                        } else {
+                                            $img_url = '//dota2.photography/images/items/aaaa_unknown.png';
+                                        }
+
+                                        $items .= '<img class="match_item_placeholder" src="' . $img_url . '" title="' . $player_value['items'][$i]['item_name'] . ' OBTAINED AT: ' . secs_to_clock($player_value['items'][$i]['item_start_time']) . '" /> ';
                                     }
+                                } else {
+                                    $items .= '<img class="match_item_placeholder" src="//dota2.photography/images/items/aaaa_empty.png" title="Empty slot" /> ';
                                 }
                             }
+                            //}
 
                             $abilities = '';
                             if (!empty($player_value['abilities'])) {
                                 foreach ($player_value['abilities'] as $abilities_key => $abilities_value) {
-                                    if (in_array($abilities_value['ability_name'], $regularAbilities)) {
+                                    if ($abilities_value['ability_hidden'] == 1) {
+                                        //DON'T RENDER IT
+                                    } else if (in_array($abilities_value['ability_name'], $regularAbilities)) {
                                         $imgName = $abilities_value['ability_name'];
                                         if (file_exists('../images/abilities/default/' . $imgName . '.png')) {
                                             $img_url = '//dota2.photography/images/abilities/default/' . $imgName . '.png';
