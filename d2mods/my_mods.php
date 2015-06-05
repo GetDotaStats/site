@@ -41,8 +41,7 @@ try {
     echo '<div class="text-center">
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__guide">Adding Stats</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods_feedback">My Feedback</a>
         </div>';
 
     echo '<span class="h4">&nbsp;</span>';
@@ -83,8 +82,7 @@ try {
     echo '<div class="text-center">
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__guide">Adding Stats</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods_feedback">My Feedback</a>
         </div>';
 
     echo '<span class="h4">&nbsp;</span>';

@@ -76,7 +76,8 @@ try {
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <!--<span class="label label-success">UPDATED</span>-->
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
+                            class="label label-warning">UPDATED</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Guides</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer</a></li>
@@ -89,6 +90,8 @@ try {
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback <span
+                                    class="label label-warning">UPDATED</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
@@ -107,8 +110,7 @@ try {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <span
-                            class="label label-danger">UPDATED</span> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Signatures</li>
                         <li><a class="nav-clickable" href="#sig__generator">Generator</a></li>
@@ -121,8 +123,7 @@ try {
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
-                        <li><a class="nav-clickable" href="#credits">Credits <span
-                                    class="label label-danger">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#credits">Credits</a></li>
                         <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
                         <li><a class="nav-clickable" href="#d2moddin/">D2Modd.in <span
                                     class="label label-info">DEAD</span></a></li>
@@ -139,6 +140,7 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
                             <li><a class="nav-clickable" href="#admin__minigames">Mini-Game Manage</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_feedback">Mod Feedback</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
                             <li><a class="nav-clickable" href="#admin__user_mmr">MMR List</a></li>
