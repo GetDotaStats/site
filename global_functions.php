@@ -408,6 +408,24 @@ if (!function_exists("curl")) {
     }
 }
 
+if (!function_exists('curl_download')) {
+    function curl_download($source, $target)
+    {
+        if (empty($target)) {
+            $target = dirname(__FILE__) . '/localfile.tmp';
+        }
+        set_time_limit(0);
+        $fp = fopen($target, 'w+');
+        $ch = curl_init(str_replace(" ", "%20", $source));
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+    }
+}
+
 if (!function_exists("cut_str")) {
     function cut_str($str, $left, $right = NULL)
     {

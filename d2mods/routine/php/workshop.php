@@ -30,94 +30,108 @@ try {
         );
 
         foreach ($modList as $key => $value) {
-            if (!empty($value['mod_workshop_link']) && is_numeric($value['mod_workshop_link'])) {
-                $workshopID = $value['mod_workshop_link'];
+            try {
+                if (!empty($value['mod_workshop_link']) && is_numeric($value['mod_workshop_link'])) {
+                    $workshopID = $value['mod_workshop_link'];
 
-                $page = 'http://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/';
+                    $page = 'http://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/';
 
-                $fields = array(
-                    'itemcount' => '1',
-                    'publishedfileids[0]' => $workshopID,
-                    'key' => $api_key1,
-                    'format' => 'json',
-                );
-
-                $fields_string = '';
-                foreach ($fields as $key2 => $value2) {
-                    $fields_string .= $key2 . '=' . $value2 . '&';
-                }
-                rtrim($fields_string, '&');
-
-                $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 30);
-                $modWorkshopDetails = json_decode($modWorkshopDetails, true);
-
-                $tempArray = array();
-
-                if ($modWorkshopDetails['response']['result'] == 1) {
-                    $tempArray['mod_identifier'] = isset($value['mod_identifier'])
-                        ? $value['mod_identifier']
-                        : NULL;
-
-                    $tempArray['mod_workshop_id'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['publishedfileid'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['publishedfileid']
-                        : NULL;
-
-                    $tempArray['mod_size'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['file_size'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['file_size']
-                        : NULL;
-
-                    $tempArray['mod_hcontent_file'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_file'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_file']
-                        : NULL;
-
-                    $tempArray['mod_hcontent_preview'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_preview'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_preview']
-                        : NULL;
-
-                    $tempArray['mod_thumbnail'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url']
-                        : NULL;
-
-                    $tempArray['mod_views'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['views'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['views']
-                        : NULL;
-
-                    $tempArray['mod_subs'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['subscriptions'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['subscriptions']
-                        : NULL;
-
-                    $tempArray['mod_favs'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['favorited'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['favorited']
-                        : NULL;
-
-                    $tempArray['mod_subs_life'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_subscriptions'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_subscriptions']
-                        : NULL;
-
-                    $tempArray['mod_favs_life'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_favorited'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_favorited']
-                        : NULL;
-
-                    $tempArray['date_last_updated'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['time_updated'])
-                        ? $modWorkshopDetails['response']['publishedfiledetails'][0]['time_updated']
-                        : NULL;
-
-
-                    $sqlResult = $db->q(
-                        'INSERT INTO `mod_workshop`
-                            (`mod_identifier`, `mod_workshop_id`, `mod_size`, `mod_hcontent_file`, `mod_hcontent_preview`, `mod_thumbnail`, `mod_views`, `mod_subs`, `mod_favs`, `mod_subs_life`, `mod_favs_life`, `date_last_updated`)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))',
-                        'siisssiiiiis',
-                        $tempArray
+                    $fields = array(
+                        'itemcount' => '1',
+                        'publishedfileids[0]' => $workshopID,
+                        'key' => $api_key1,
+                        'format' => 'json',
                     );
 
-                    echo $sqlResult
-                        ? "[SUCCESS] Added workshop details for: $workshopID!<br />"
-                        : "[FAILURE] Added workshop details for: $workshopID!<br />";
+                    $fields_string = '';
+                    foreach ($fields as $key2 => $value2) {
+                        $fields_string .= $key2 . '=' . $value2 . '&';
+                    }
+                    rtrim($fields_string, '&');
 
-                } else {
-                    echo "<strong>[FAILURE] NO DATA for:</strong> $workshopID!<br />";
+                    $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 30);
+                    $modWorkshopDetails = json_decode($modWorkshopDetails, true);
+
+                    $tempArray = array();
+
+                    if ($modWorkshopDetails['response']['result'] == 1) {
+                        try {
+                            if (!empty($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'])) {
+                                curl_download($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'], '../../../images/mods/thumbs/' . $value['mod_id'] . '.png');
+                            }
+                        } catch (Exception $e) {
+                            echo '<br />' . $e->getMessage() . '<br /><br />';
+                        }
+
+                        $tempArray['mod_identifier'] = isset($value['mod_identifier'])
+                            ? $value['mod_identifier']
+                            : NULL;
+
+                        $tempArray['mod_workshop_id'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['publishedfileid'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['publishedfileid']
+                            : NULL;
+
+                        $tempArray['mod_size'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['file_size'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['file_size']
+                            : 0;
+
+                        $tempArray['mod_hcontent_file'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_file'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_file']
+                            : NULL;
+
+                        $tempArray['mod_hcontent_preview'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_preview'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['hcontent_preview']
+                            : NULL;
+
+                        $tempArray['mod_thumbnail'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url']
+                            : NULL;
+
+                        $tempArray['mod_views'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['views'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['views']
+                            : 0;
+
+                        $tempArray['mod_subs'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['subscriptions'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['subscriptions']
+                            : 0;
+
+                        $tempArray['mod_favs'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['favorited'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['favorited']
+                            : 0;
+
+                        $tempArray['mod_subs_life'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_subscriptions'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_subscriptions']
+                            : 0;
+
+                        $tempArray['mod_favs_life'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_favorited'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['lifetime_favorited']
+                            : 0;
+
+                        $tempArray['date_last_updated'] = isset($modWorkshopDetails['response']['publishedfiledetails'][0]['time_updated'])
+                            ? $modWorkshopDetails['response']['publishedfiledetails'][0]['time_updated']
+                            : NULL;
+
+
+                        $sqlResult = $db->q(
+                            'INSERT INTO `mod_workshop`
+                                (`mod_identifier`, `mod_workshop_id`, `mod_size`, `mod_hcontent_file`, `mod_hcontent_preview`, `mod_thumbnail`, `mod_views`, `mod_subs`, `mod_favs`, `mod_subs_life`, `mod_favs_life`, `date_last_updated`)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))',
+                            'siisssiiiiis',
+                            $tempArray
+                        );
+
+                        echo $sqlResult
+                            ? "[SUCCESS] Added workshop details for: $workshopID!<br />"
+                            : "[FAILURE] Adding workshop details for: $workshopID!<br />";
+
+                    } else {
+                        echo "<strong>[FAILURE] NO DATA for:</strong> $workshopID!<br />";
+                    }
                 }
+            } catch (Exception $e) {
+                echo '<br />';
+                echo "<strong>[FAILURE]</strong> Adding workshop details for: $workshopID!<br />";
+                echo $e->getMessage() . '<br /><br />';
             }
         }
     }
