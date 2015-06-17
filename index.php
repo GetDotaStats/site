@@ -77,13 +77,13 @@ try {
                 <li class="dropdown">
                     <!--<span class="label label-success">UPDATED</span>-->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-success">UPDATED</span><b class="caret"></b></a>
+                            class="label label-success">NEW</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Guides</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Mod Developer</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Workshop Tools Beta Changes <span
-                                    class="label label-success">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__guide">Dota 2 Reborn Changes <span
+                                    class="label label-success">NEW</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_guide">Minigame Developer</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Lobby Explorer</li>
