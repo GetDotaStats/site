@@ -82,7 +82,7 @@ try {
                         <li class="dropdown-header">Guides</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Mod Developer</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Dota 2 Reborn Changes <span
+                        <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes <span
                                     class="label label-success">NEW</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_guide">Minigame Developer</a></li>
                         <li class="divider"></li>
