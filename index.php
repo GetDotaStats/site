@@ -77,11 +77,13 @@ try {
                 <li class="dropdown">
                     <!--<span class="label label-success">UPDATED</span>-->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-warning">UPDATED</span><b class="caret"></b></a>
+                            class="label label-success">UPDATED</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Guides</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer</a></li>
                         <li><a class="nav-clickable" href="#d2mods__guide">Mod Developer</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__guide">Workshop Tools Beta Changes <span
+                                    class="label label-success">UPDATED</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__minigame_guide">Minigame Developer</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Lobby Explorer</li>
@@ -91,7 +93,7 @@ try {
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__feedback">Feedback <span
-                                    class="label label-warning">UPDATED</span></a></li>
+                                    class="label label-danger">HOT</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>

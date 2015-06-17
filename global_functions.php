@@ -408,24 +408,6 @@ if (!function_exists("curl")) {
     }
 }
 
-if (!function_exists('curl_download')) {
-    function curl_download($source, $target)
-    {
-        if (empty($target)) {
-            $target = dirname(__FILE__) . '/localfile.tmp';
-        }
-        set_time_limit(0);
-        $fp = fopen($target, 'w+');
-        $ch = curl_init(str_replace(" ", "%20", $source));
-        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_exec($ch);
-        curl_close($ch);
-        fclose($fp);
-    }
-}
-
 if (!function_exists("cut_str")) {
     function cut_str($str, $left, $right = NULL)
     {
@@ -569,7 +551,7 @@ if (!function_exists('relative_time_v2')) {
 //A STRING DENOMINATOR OF SINGLE TIME (SECOND, MINUTE, etc) WILL FORCE FORMATTED OUTPUT
 //RETURNARRAY WILL RETURN ARRAY INSTEAD OF STRING
 if (!function_exists('relative_time_v3')) {
-    function relative_time_v3($time, $decimals = 1, $output = NULL, $returnArray = false)
+    function relative_time_v3($time, $decimals = 1, $output = NULL, $returnArray = false, $returnFormattedNumber = true)
     {
         if (!is_numeric($time)) {
             if (strtotime($time)) {
@@ -643,6 +625,10 @@ if (!function_exists('relative_time_v3')) {
             $timeString = $timeString . ' ago';
         } else {
             $timeString = $timeString . 's ago';
+        }
+
+        if($returnFormattedNumber == false){
+            $number = str_replace(',', '', $number);
         }
 
         if (empty($returnArray)) {
