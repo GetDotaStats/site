@@ -1,0 +1,3 @@
+<?php
+
+$currentSchemaVersion = 1;

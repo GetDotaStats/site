@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h2>Schema for stat-collection Library v2
+    <h2>Schema for stat-collection-v2
         <small>BETA</small>
     </h2>
 </div>
@@ -8,7 +8,9 @@
     you wish to record additional information, or items and abilities, then you will need to get in contact with us.</p>
 
 <p>If your mod is round based with progress completely wiped between rounds, then simply start this process from the
-    start for each round. Each round will be considered as a separate match.</p>
+    start for each round, so that each round will be considered as a separate match. Otherwise, you need to figure out
+    how to encapsulate your player data into rounds. The stat-collection-v2 modules will take a snapshot at the end of
+    the game and assume it is a single round.</p>
 
 <hr/>
 
@@ -32,6 +34,10 @@
         <div class="panel-body">
 
             <p>This is for catching all of the games that fail to start due to people not loading.</p>
+
+            <p><strong>Endpoint:</strong> <code>http://getdotastats.com/s2/api/s2_phase_1.php</code></p>
+
+            <hr/>
 
             <div>
                 <div class="row">
@@ -254,6 +260,10 @@
         <div class="panel-body">
             <p>This is for catching all of the games that crash.</p>
 
+            <p><strong>Endpoint:</strong> <code>http://getdotastats.com/s2/api/s2_phase_2.php</code></p>
+
+            <hr/>
+
             <div>
                 <div class="row">
                     <div class="col-sm-3"><strong>Key</strong></div>
@@ -286,7 +296,7 @@
                 <div class="row">
                     <div class="col-sm-3">gamePhase</div>
                     <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">1</div>
+                    <div class="col-sm-3">2</div>
                     <div class="col-sm-4">Must have value of 2 in this phase.</div>
                 </div>
 
@@ -435,7 +445,7 @@
 <pre class="pre-scrollable">
     {
         "result": 0,
-        "resultError" : "Bad JSON"
+        "error" : "Bad JSON"
     }
 </pre>
         </div>
@@ -448,177 +458,228 @@
 ////////////////////////////////////////////////////
 -->
 <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingFive">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive"
-               aria-expanded="false" aria-controls="collapseFive">
-                Phase 3 - Client - End Game
-            </a>
-        </h4>
+<div class="panel-heading" role="tab" id="headingFive">
+    <h4 class="panel-title">
+        <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive"
+           aria-expanded="false" aria-controls="collapseFive">
+            Phase 3 - Client - End Game
+        </a>
+    </h4>
+</div>
+<div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+<div class="panel-body">
+<p>This is for catching all of the games that properly end. The main difference here is that the resulting data can be
+    broken down into rounds.</p>
+
+<p><strong>Endpoint:</strong> <code>http://getdotastats.com/s2/api/s2_phase_3.php</code></p>
+
+<hr/>
+
+<div>
+    <div class="row">
+        <div class="col-sm-3"><strong>Key</strong></div>
+        <div class="col-sm-2"><strong>Type</strong></div>
+        <div class="col-sm-3"><strong>Example</strong></div>
+        <div class="col-sm-4"><strong>Notes</strong></div>
     </div>
-    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-        <div class="panel-body">
-            <p>This is for catching all of the games that properly end.</p>
+    <span class="h4">&nbsp;</span>
 
-            <div>
-                <div class="row">
-                    <div class="col-sm-3"><strong>Key</strong></div>
-                    <div class="col-sm-2"><strong>Type</strong></div>
-                    <div class="col-sm-3"><strong>Example</strong></div>
-                    <div class="col-sm-4"><strong>Notes</strong></div>
-                </div>
-                <span class="h4">&nbsp;</span>
+    <div class="row">
+        <div class="col-sm-3">authKey</div>
+        <div class="col-sm-2">string</div>
+        <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+        <div class="col-sm-4">Obtained by pre-match API</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">authKey</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">matchID</div>
+        <div class="col-sm-2">string</div>
+        <div class="col-sm-3">"21347923432"</div>
+        <div class="col-sm-4">Obtained by pre-match API</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">matchID</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"21347923432"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">modID</div>
+        <div class="col-sm-2">string</div>
+        <div class="col-sm-7">"7adfki234jlk23"</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">modID</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"7adfki234jlk23"</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">gamePhase</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-3">3</div>
+        <div class="col-sm-4">Must have value of 3 in this phase.</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">gamePhase</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">1</div>
-                    <div class="col-sm-4">Must have value of 3 in this phase.</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">winningTeam</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-7">5</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">winningTeam</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">5</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">gameDuration</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-7">3954</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">gameDuration</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">3954</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">schemaVersion</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-7">1</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">schemaVersion</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
+    <!--players array-->
 
-                <!--players array-->
+    <div class="row">
+        <div class="col-sm-3">rounds</div>
+        <div class="col-sm-2">array</div>
+        <div class="col-sm-7">&nbsp;</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-3">players</div>
-                    <div class="col-sm-2">key-value array</div>
-                    <div class="col-sm-7">&nbsp;</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-1">&nbsp;</div>
+        <div class="col-sm-3">players</div>
+        <div class="col-sm-2">key-value array</div>
+        <div class="col-sm-6">&nbsp;</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">playerName</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"jimmydorry"</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2">playerName</div>
+        <div class="col-sm-2">string</div>
+        <div class="col-sm-6">"jimmydorry"</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">steamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"2875155"</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2">steamID32</div>
+        <div class="col-sm-2">string</div>
+        <div class="col-sm-6">"2875155"</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">teamID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">2</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2">teamID</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-6">2</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">slotID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2">slotID</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-6">1</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">heroID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">15</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2">heroID</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-6">15</div>
+    </div>
 
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">connectionState</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">2</div>
-                </div>
+    <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2">connectionState</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-6">2</div>
+    </div>
 
-                <span class="h4">&nbsp;</span>
-            </div>
+    <span class="h4">&nbsp;</span>
+</div>
 
-            <hr/>
+<hr/>
 
-            <h3>Example Schema</h3>
+<h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
+{
+    "authKey": "asdfhkj324jklnfadssdafsd",
+    "matchID": "21347923432",
+    "modID": "7adfki234jlk23",
+    "gamePhase": 3,
+    "winningTeam": 5,
+    "gameDuration": 3954,
+    "schemaVersion": 1,
+    "rounds": [
+        {
+            "players": [
                 {
-                    "authKey": "asdfhkj324jklnfadssdafsd",
-                    "matchID": "21347923432",
-                    "modID": "7adfki234jlk23",
-                    "hostSteamID32": "2875155",
-                    "gamePhase": 3,
-                    "winningTeam": 5,
-                    "gameDuration": 3954,
-                    "schemaVersion": 1,
-                    "players": [
-                        {
-                            "playerName": "jimmydorry",
-                            "steamID32": "2875155",
-                            "teamID": 2,
-                            "slotID": 1,
-                            "heroID": 15,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "ash47",
-                            "steamID32": "2875156",
-                            "teamID": 3,
-                            "slotID": 2,
-                            "heroID": 22,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "BMD",
-                            "steamID32": "2875157",
-                            "teamID": 4,
-                            "slotID": 3,
-                            "heroID": 33,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "sinz",
-                            "steamID32": "2875158",
-                            "teamID": 5,
-                            "slotID": 4,
-                            "heroID": 2,
-                            "connectionState": 2
-                        }
-                    ]
+                    "playerName": "jimmydorry",
+                    "steamID32": "2875155",
+                    "teamID": 2,
+                    "slotID": 1,
+                    "heroID": 15,
+                    "connectionState": 2
+                },
+                {
+                    "playerName": "ash47",
+                    "steamID32": "2875156",
+                    "teamID": 3,
+                    "slotID": 2,
+                    "heroID": 22,
+                    "connectionState": 2
+                },
+                {
+                    "playerName": "BMD",
+                    "steamID32": "2875157",
+                    "teamID": 4,
+                    "slotID": 3,
+                    "heroID": 33,
+                    "connectionState": 2
+                },
+                {
+                    "playerName": "sinz",
+                    "steamID32": "2875158",
+                    "teamID": 5,
+                    "slotID": 4,
+                    "heroID": 2,
+                    "connectionState": 2
                 }
+            ]
+        },
+        {
+            "players": [
+                {
+                    "playerName": "jimmydorry",
+                    "steamID32": "2875155",
+                    "teamID": 2,
+                    "slotID": 1,
+                    "heroID": 15,
+                    "connectionState": 2
+                },
+                {
+                    "playerName": "ash47",
+                    "steamID32": "2875156",
+                    "teamID": 3,
+                    "slotID": 2,
+                    "heroID": 22,
+                    "connectionState": 2
+                },
+                {
+                    "playerName": "BMD",
+                    "steamID32": "2875157",
+                    "teamID": 4,
+                    "slotID": 3,
+                    "heroID": 33,
+                    "connectionState": 2
+                },
+                {
+                    "playerName": "sinz",
+                    "steamID32": "2875158",
+                    "teamID": 5,
+                    "slotID": 4,
+                    "heroID": 2,
+                    "connectionState": 2
+                }
+            ]
+        }
+    ]
+}
             </pre>
-        </div>
-    </div>
+</div>
+</div>
 </div>
 
 <!--
@@ -644,7 +705,7 @@
 <pre class="pre-scrollable">
     {
         "result": 0,
-        "resultError" : "Bad JSON"
+        "error" : "Bad JSON"
     }
 </pre>
         </div>
