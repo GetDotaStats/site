@@ -490,7 +490,7 @@
     </div>
     <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
         <div class="panel-body">
-            <p>This is for catching all of the games that crash.</p>
+            <p>This is for catching all of the games that properly end.</p>
 
             <div class="row">
                 <div class="col-sm-3"><strong>Key</strong></div>
