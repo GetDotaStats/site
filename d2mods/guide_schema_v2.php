@@ -714,3 +714,109 @@
 
 
 </div>
+
+<hr/>
+
+
+<h3>Latest Data</h3>
+<p>Below is a simple table showing the latest matches recorded. It will serve as a debugging tool while we setup a more
+    sophisticated testing environment.</p>
+
+<?php
+require_once('../global_functions.php');
+require_once('../connections/parameters.php');
+
+try {
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+    if (empty($db)) throw new Exception('No DB!');
+
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+
+    $latestData = cached_query('s2_latest_data',
+        'SELECT
+              `matchID`,
+              `matchAuthKey`,
+              `modID`,
+              `matchHostSteamID32`,
+              `matchPhaseID`,
+              `isDedicated`,
+              `numPlayers`,
+              `numRounds`,
+              `matchWinningTeamID`,
+              `matchDuration`,
+              `schemaVersion`,
+              `dateUpdated`,
+              `dateRecorded`
+            FROM `s2_match`
+            ORDER BY `dateUpdated` DESC, `matchID` DESC
+            LIMIT 0,10;',
+        NULL,
+        NULL,
+        5
+    );
+
+    if (!empty($latestData)) {
+        echo '<div class="row">
+                <div class="col-sm-2"><strong>matchID</strong></div>
+                <div class="col-sm-2"><strong>modID</strong></div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Phase</strong></div>
+                        <div class="col-sm-3"><strong>Players</strong></div>
+                        <div class="col-sm-3"><strong>Rounds</strong></div>
+                        <div class="col-sm-3"><strong>Duration</strong></div>
+                    </div>
+                </div>
+                <div class="col-sm-2"><strong>Updated</strong></div>
+                <div class="col-sm-2"><strong>Recorded</strong></div>
+            </div>
+            <span class="h4">&nbsp;</span>
+            ';
+
+        foreach ($latestData as $key => $value) {
+            $numPlayers = !empty($value['numPlayers']) && is_numeric($value['numPlayers'])
+                ? $value['numPlayers']
+                : 0;
+
+            $numRounds = !empty($value['numRounds']) && is_numeric($value['numRounds'])
+                ? $value['numRounds']
+                : 1;
+
+            $duration = !empty($value['matchDuration']) && is_numeric($value['matchDuration'])
+                ? $value['matchDuration']
+                : '??';
+
+            echo '<div class="row">
+                <div class="col-sm-2">' . $value['matchID'] . '</div>
+                <div class="col-sm-2">' . $value['modID'] . '</div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-sm-3">' . $value['matchPhaseID'] . '</div>
+                        <div class="col-sm-3">' . $numPlayers . '</div>
+                        <div class="col-sm-3">' . $numRounds . '</div>
+                        <div class="col-sm-3">' . $duration . '</div>
+                    </div>
+                </div>
+                <div class="col-sm-2">' . relative_time_v3($value['dateUpdated'], 1) . '</div>
+                <div class="col-sm-2">' . relative_time_v3($value['dateRecorded'], 1) . '</div>
+            </div>
+            ';
+        }
+    } else {
+        echo bootstrapMessage('Oh Snap', 'No data recorded yet!.', 'danger');
+    }
+
+    echo '<span class="h4">&nbsp;</span>';
+
+    echo '<div class="text-center">
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__guide">Developer Guide</a>
+           </div>';
+
+    echo '<span class="h4">&nbsp;</span>';
+
+} catch (Exception $e) {
+    echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
+}
