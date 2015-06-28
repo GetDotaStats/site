@@ -28,6 +28,8 @@
     </li>
 </ul>
 
+<p>We also know a little bit more about the <a class="nav-clickable" href="#source2__css"><span class="glyphicon glyphicon-new-window"></span> CSS</a> powering Panorama, how <a class="nav-clickable" href="#source2__asyncwebrequest"><span class="glyphicon glyphicon-new-window"></span> asyncWebRequest</a> works, and how <a class="nav-clickable" href="#source2__createhttprequest"><span class="glyphicon glyphicon-new-window"></span> CreateHTTPRequest</a> works.</p>
+
 <h2>Related Community Resources</h2>
 <p>Below are some related community resources.</p>
 <ul>
@@ -35,3 +37,11 @@
     <li>Strictly on-topic and serious mod related discourse <a target="_blank" href="https://kiwiirc.com/client/irc.gamesurge.net/?#dota2mods">#dota2mods IRC channel</a></li>
     <li>Technical mod related help <a target="_blank" href="https://kiwiirc.com/client/irc.gamesurge.net/?#dota2modhelpdesk">#dota2modhelpdesk IRC channel</a></li>
 </ul>
+
+<span class="h4">&nbsp;</span>
+
+<div class="text-center">
+    <a class="nav-clickable btn btn-default btn-lg" href="#source2__css">CSS</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#source2__asyncwebrequest">asyncWebRequest</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#source2__createhttprequest">CreateHTTPRequest</a>
+</div>
