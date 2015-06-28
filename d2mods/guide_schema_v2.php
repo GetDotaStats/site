@@ -78,12 +78,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-3">numPlayers</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">4</div>
-                </div>
-
-                <div class="row">
                     <div class="col-sm-3">schemaVersion</div>
                     <div class="col-sm-2">integer</div>
                     <div class="col-sm-7">1</div>
@@ -168,7 +162,6 @@
                     ],
                     "gamePhase": 1,
                     "isDedicated": 1,
-                    "numPlayers": 4,
                     "schemaVersion": 1,
                     "players": [
                         {
@@ -298,12 +291,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-3">numPlayers</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">4</div>
-                </div>
-
-                <div class="row">
                     <div class="col-sm-3">schemaVersion</div>
                     <div class="col-sm-2">integer</div>
                     <div class="col-sm-7">1</div>
@@ -384,7 +371,6 @@
                     "matchID": "21347923432",
                     "modID": "7adfki234jlk23",
                     "gamePhase": 2,
-                    "numPlayers": 4,
                     "schemaVersion": 1,
                     "players": [
                         {
@@ -523,12 +509,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-3">numPlayers</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">4</div>
-                </div>
-
-                <div class="row">
                     <div class="col-sm-3">schemaVersion</div>
                     <div class="col-sm-2">integer</div>
                     <div class="col-sm-7">1</div>
@@ -600,7 +580,6 @@
                     "gamePhase": 3,
                     "winningTeam": 5,
                     "gameDuration": 3954,
-                    "numPlayers": 4,
                     "schemaVersion": 1,
                     "players": [
                         {
