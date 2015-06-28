@@ -11,20 +11,23 @@
 <div class="row">
     <div class="col-sm-3"><strong>Key</strong></div>
     <div class="col-sm-2"><strong>Type</strong></div>
-    <div class="col-sm-7"><strong>Example</strong></div>
+    <div class="col-sm-3"><strong>Example</strong></div>
+    <div class="col-sm-4"><strong>Notes</strong></div>
 </div>
 <span class="h4">&nbsp;</span>
 
 <div class="row">
     <div class="col-sm-3">authKey</div>
     <div class="col-sm-2">string</div>
-    <div class="col-sm-7">"asdfhkj324jklnfadssdafsd"</div>
+    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+    <div class="col-sm-4">Obtained by pre-match API</div>
 </div>
 
 <div class="row">
     <div class="col-sm-3">matchID</div>
     <div class="col-sm-2">string</div>
-    <div class="col-sm-7">"21347923432"</div>
+    <div class="col-sm-3">"21347923432"</div>
+    <div class="col-sm-4">Obtained by pre-match API</div>
 </div>
 
 <div class="row">
@@ -42,13 +45,19 @@
 <div class="row">
     <div class="col-sm-3">flags</div>
     <div class="col-sm-2">array</div>
-    <div class="col-sm-7">["ctf15", "kill50", "king_of_the_hill", "15point"]</div>
+    <div class="col-sm-3">["ctf15", "kill50"]</div>
+    <div class="col-sm-4">Un-structured and only useful to the mod</div>
 </div>
 
 <div class="row">
-    <div class="col-sm-3">gameStarted</div>
+    <div class="col-sm-3">gamePhase</div>
     <div class="col-sm-2">integer</div>
-    <div class="col-sm-7">1</div>
+    <div class="col-sm-3">1</div>
+    <div class="col-sm-4">
+        <strong>1</strong> Before loaders;<br/>
+        <strong>2</strong> After loaders;<br/>
+        <strong>3</strong> End of game;
+    </div>
 </div>
 
 <div class="row">
@@ -133,7 +142,7 @@
 
 <span class="h4">&nbsp;</span>
 
-<hr />
+<hr/>
 
 <h3>Example Schema</h3>
 
