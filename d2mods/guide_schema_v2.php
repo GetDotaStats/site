@@ -159,7 +159,6 @@
             <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
-            [
                 {
                     "modID": "7adfki234jlk23",
                     "hostSteamID32": "2875155",
@@ -206,7 +205,6 @@
                         }
                     ]
                 }
-            ]
             </pre>
 
         </div>
@@ -234,14 +232,12 @@
                 later changing the match details.</p>
 
 <pre class="pre-scrollable">
-[
     {
         "authKey": "asdfhkj324jklnfadssdafsd",
         "matchID": "21347923432",
         "modID": "7adfki234jlk23",
         "schemaVersion": 1
     }
-]
 </pre>
         </div>
     </div>
@@ -383,7 +379,6 @@
             <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
-            [
                 {
                     "authKey": "asdfhkj324jklnfadssdafsd",
                     "matchID": "21347923432",
@@ -426,7 +421,6 @@
                         }
                     ]
                 }
-            ]
             </pre>
         </div>
     </div>
@@ -453,12 +447,10 @@
                 accompanying textual error, for debugging purposes.</p>
 
 <pre class="pre-scrollable">
-[
     {
         "result": 0,
         "resultError" : "Bad JSON"
     }
-]
 </pre>
         </div>
     </div>
@@ -600,7 +592,6 @@
             <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
-            [
                 {
                     "authKey": "asdfhkj324jklnfadssdafsd",
                     "matchID": "21347923432",
@@ -646,7 +637,6 @@
                         }
                     ]
                 }
-            ]
             </pre>
         </div>
     </div>
@@ -673,12 +663,10 @@
                 accompanying textual error, for debugging purposes.</p>
 
 <pre class="pre-scrollable">
-[
     {
         "result": 0,
         "resultError" : "Bad JSON"
     }
-]
 </pre>
         </div>
     </div>
