@@ -31,7 +31,7 @@ $path_lib_html5shivJS_name = 'html5shiv-3-7-0.js?20';
 $path_lib_html5shivJS_full = $CDN_generic . $path_lib_html5shivJS . $path_lib_html5shivJS_name;
 
 $path_lib_siteJS = '/';
-$path_lib_siteJS_name = 'getdotastats.js?31';
+$path_lib_siteJS_name = 'getdotastats.js?32';
 $path_lib_siteJS_full = $CDN_generic . $path_lib_siteJS . $path_lib_siteJS_name;
 //$path_lib_siteJS_full = '.' . $path_lib_siteJS . $path_lib_siteJS_name;
 
@@ -44,7 +44,7 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.css?27';
+$path_css_site_name = 'getdotastats.css?28';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
 
 $path_css_bootstrap = '/bootstrap/css/';
