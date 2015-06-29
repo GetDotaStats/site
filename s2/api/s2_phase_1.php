@@ -48,15 +48,16 @@ try {
     //MATCH DETAILS
     {
         $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `isDedicated`, `numPlayers`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL);',
-            'sssiiii',
+            'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `isDedicated`, `matchMapName`, `numPlayers`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL);',
+            'sssiisii',
             array(
                 $authKey,
                 $preGameAuthPayloadJSON['modID'],
                 $preGameAuthPayloadJSON['hostSteamID32'],
                 1,
                 $preGameAuthPayloadJSON['isDedicated'],
+                $preGameAuthPayloadJSON['mapName'],
                 $numPlayers,
                 $preGameAuthPayloadJSON['schemaVersion']
             )
@@ -67,10 +68,10 @@ try {
 
     //PLAYERS DETAILS
     {
-        if(!empty($preGameAuthPayloadJSON['players'])){
+        if (!empty($preGameAuthPayloadJSON['players'])) {
             $steamID_manipulator = new SteamID();
 
-            foreach($preGameAuthPayloadJSON['players'] as $key => $value){
+            foreach ($preGameAuthPayloadJSON['players'] as $key => $value) {
                 $steamID_manipulator->setSteamID($value['steamID32']);
 
                 $steamID32 = $steamID_manipulator->getSteamID32();
@@ -96,6 +97,40 @@ try {
                     )
                 );
             }
+        }
+    }
+
+    //HOST DETAILS
+    {
+        if (!empty($preGameAuthPayloadJSON['hostSteamID32'])) {
+            $remoteIP = isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])
+                ? $_SERVER['REMOTE_ADDR']
+                : '??';
+
+            $steamID_manipulator = new SteamID();
+
+            $steamID_manipulator->setSteamID($preGameAuthPayloadJSON['hostSteamID32']);
+
+            $steamID32 = $steamID_manipulator->getSteamID32();
+            $steamID64 = $steamID_manipulator->getSteamID64();
+
+            $db->q(
+                'INSERT INTO `s2_match_client_details`(`matchID`, `modID`, `steamID32`, `steamID64`, `clientIP`, `isHost`)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                      `modID` = VALUES(`modID`),
+                      `clientIP` = VALUES(`clientIP`),
+                      `isHost` = VALUES(`isHost`);',
+                'sssssi',
+                array(
+                    $matchID,
+                    $preGameAuthPayloadJSON['modID'],
+                    $steamID32,
+                    $steamID64,
+                    $remoteIP,
+                    1
+                )
+            );
         }
     }
 

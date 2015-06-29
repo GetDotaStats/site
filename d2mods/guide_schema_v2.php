@@ -24,8 +24,9 @@
 <h3>For Consideration</h3>
 
 <ul>
-    <li>Add map name into Phase 1</li>
-    <li>Host IP for deriving the region</li>
+    <li>Do we want each client to check in via a special endpoint, or even just the host report all of the clients? This
+        would let us build a picture of where all of the users are playing from.
+    </li>
 </ul>
 
 <hr/>
@@ -84,6 +85,12 @@
                     <div class="col-sm-3">isDedicated</div>
                     <div class="col-sm-2">integer</div>
                     <div class="col-sm-7">0</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">mapName</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-7">"dota_pvp"</div>
                 </div>
 
                 <div class="row">
@@ -152,6 +159,7 @@
     "modID": "7adfki234jlk23",
     "hostSteamID32": "2875155",
     "isDedicated": 1,
+    "mapName": "dota_pvp",
     "schemaVersion": 1,
     "players": [
         {
