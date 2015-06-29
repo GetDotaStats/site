@@ -14,6 +14,22 @@
 
 <hr/>
 
+<h3>Notes</h3>
+
+<ul>
+    <li>It is unknown whether players have a connectionState available in Lua before they connect</li>
+    <li>It is unknown whether players have a slotID available in Lua before they connect</li>
+</ul>
+
+<h3>For Consideration</h3>
+
+<ul>
+    <li>Add map name into Phase 1</li>
+    <li>Host IP for deriving the region</li>
+</ul>
+
+<hr/>
+
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
 <!--
@@ -35,7 +51,8 @@
 
             <p>This is for catching all of the games that fail to start due to people not loading.</p>
 
-            <p><strong>Endpoint:</strong> <code>http://getdotastats.com/s2/api/s2_phase_1.php</code></p>
+            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_1.php || "payload" = <em>JSONschema</em></code>
+            </p>
 
             <hr/>
 
@@ -61,20 +78,6 @@
                     <div class="col-sm-3">hostSteamID32</div>
                     <div class="col-sm-2">string</div>
                     <div class="col-sm-7">"2875155"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">flags</div>
-                    <div class="col-sm-2">array</div>
-                    <div class="col-sm-3">["ctf15", "kill50"]</div>
-                    <div class="col-sm-4">Un-structured and indicate lobby options</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">gamePhase</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">1</div>
-                    <div class="col-sm-4">Must have value of 1 in this phase.</div>
                 </div>
 
                 <div class="row">
@@ -113,23 +116,9 @@
 
                 <div class="row">
                     <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">teamID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">2</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
                     <div class="col-sm-2">slotID</div>
                     <div class="col-sm-2">integer</div>
                     <div class="col-sm-7">1</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">heroID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">15</div>
                 </div>
 
                 <div class="row">
@@ -159,51 +148,38 @@
             <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
-                {
-                    "modID": "7adfki234jlk23",
-                    "hostSteamID32": "2875155",
-                    "flags": [
-                        "ctf15",
-                        "kill50"
-                    ],
-                    "gamePhase": 1,
-                    "isDedicated": 1,
-                    "schemaVersion": 1,
-                    "players": [
-                        {
-                            "playerName": "jimmydorry",
-                            "steamID32": "2875155",
-                            "teamID": 2,
-                            "slotID": 1,
-                            "heroID": 15,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "ash47",
-                            "steamID32": "2875156",
-                            "teamID": 3,
-                            "slotID": 2,
-                            "heroID": 22,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "BMD",
-                            "steamID32": "2875157",
-                            "teamID": 4,
-                            "slotID": 3,
-                            "heroID": 33,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "sinz",
-                            "steamID32": "2875158",
-                            "teamID": 5,
-                            "slotID": 4,
-                            "heroID": 2,
-                            "connectionState": 2
-                        }
-                    ]
-                }
+{
+    "modID": "7adfki234jlk23",
+    "hostSteamID32": "2875155",
+    "isDedicated": 1,
+    "schemaVersion": 1,
+    "players": [
+        {
+            "playerName": "jimmydorry",
+            "steamID32": "2875155",
+            "slotID": 1,
+            "connectionState": 2
+        },
+        {
+            "playerName": "ash47",
+            "steamID32": "2875156",
+            "slotID": 2,
+            "connectionState": 2
+        },
+        {
+            "playerName": "BMD",
+            "steamID32": "2875157",
+            "slotID": 3,
+            "connectionState": 2
+        },
+        {
+            "playerName": "sinz",
+            "steamID32": "2875158",
+            "slotID": 4,
+            "connectionState": 2
+        }
+    ]
+}
             </pre>
 
         </div>
@@ -230,21 +206,21 @@
                 authKey is required for the host to update the match details later, and prevents other clients from
                 later changing the match details.</p>
 
-<pre class="pre-scrollable">
-    {
-        "authKey": "asdfhkj324jklnfadssdafsd",
-        "matchID": "21347923432",
-        "modID": "7adfki234jlk23",
-        "schemaVersion": 1
-    }
-</pre>
+            <pre class="pre-scrollable">
+{
+    "authKey": "asdfhkj324jklnfadssdafsd",
+    "matchID": "21347923432",
+    "modID": "7adfki234jlk23",
+    "schemaVersion": 1
+}
+            </pre>
         </div>
     </div>
 </div>
 
 <!--
 ////////////////////////////////////////////////////
-//Phase 2 - Client - After Loaders
+//Phase 2 - Client - Pre Game
 ////////////////////////////////////////////////////
 -->
 <div class="panel panel-default">
@@ -252,7 +228,7 @@
         <h4 class="panel-title">
             <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
                aria-expanded="false" aria-controls="collapseThree">
-                Phase 2 - Client - After Loaders
+                Phase 2 - Client - Pre Game
             </a>
         </h4>
     </div>
@@ -260,7 +236,8 @@
         <div class="panel-body">
             <p>This is for catching all of the games that crash.</p>
 
-            <p><strong>Endpoint:</strong> <code>http://getdotastats.com/s2/api/s2_phase_2.php</code></p>
+            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_2.php || "payload" = <em>JSONschema</em></code>
+            </p>
 
             <hr/>
 
@@ -294,10 +271,10 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-3">gamePhase</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">2</div>
-                    <div class="col-sm-4">Must have value of 2 in this phase.</div>
+                    <div class="col-sm-3">flags</div>
+                    <div class="col-sm-2">array</div>
+                    <div class="col-sm-3">{"mode": "ctf15", "winCondition": "kill50", "crazyCouriers": 1}</div>
+                    <div class="col-sm-4">Un-structured and indicate lobby options</div>
                 </div>
 
                 <div class="row">
@@ -376,47 +353,51 @@
             <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
-                {
-                    "authKey": "asdfhkj324jklnfadssdafsd",
-                    "matchID": "21347923432",
-                    "modID": "7adfki234jlk23",
-                    "gamePhase": 2,
-                    "schemaVersion": 1,
-                    "players": [
-                        {
-                            "playerName": "jimmydorry",
-                            "steamID32": "2875155",
-                            "teamID": 2,
-                            "slotID": 1,
-                            "heroID": 15,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "ash47",
-                            "steamID32": "2875156",
-                            "teamID": 3,
-                            "slotID": 2,
-                            "heroID": 22,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "BMD",
-                            "steamID32": "2875157",
-                            "teamID": 4,
-                            "slotID": 3,
-                            "heroID": 33,
-                            "connectionState": 2
-                        },
-                        {
-                            "playerName": "sinz",
-                            "steamID32": "2875158",
-                            "teamID": 5,
-                            "slotID": 4,
-                            "heroID": 2,
-                            "connectionState": 2
-                        }
-                    ]
-                }
+{
+    "authKey": "asdfhkj324jklnfadssdafsd",
+    "matchID": "21347923432",
+    "modID": "7adfki234jlk23",
+    "flags": {
+        "mode": "ctf15",
+        "winCondition": "kill50",
+        "crazyCouriers": 1
+    },
+    "schemaVersion": 1,
+    "players": [
+        {
+            "playerName": "jimmydorry",
+            "steamID32": "2875155",
+            "teamID": 2,
+            "slotID": 1,
+            "heroID": 15,
+            "connectionState": 2
+        },
+        {
+            "playerName": "ash47",
+            "steamID32": "2875156",
+            "teamID": 3,
+            "slotID": 2,
+            "heroID": 22,
+            "connectionState": 2
+        },
+        {
+            "playerName": "BMD",
+            "steamID32": "2875157",
+            "teamID": 4,
+            "slotID": 3,
+            "heroID": 33,
+            "connectionState": 2
+        },
+        {
+            "playerName": "sinz",
+            "steamID32": "2875158",
+            "teamID": 5,
+            "slotID": 4,
+            "heroID": 2,
+            "connectionState": 2
+        }
+    ]
+}
             </pre>
         </div>
     </div>
@@ -424,7 +405,7 @@
 
 <!--
 ////////////////////////////////////////////////////
-//Phase 2 - Server - After Loaders
+//Phase 2 - Server - Pre Game
 ////////////////////////////////////////////////////
 -->
 <div class="panel panel-default">
@@ -432,7 +413,7 @@
         <h4 class="panel-title">
             <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"
                aria-expanded="false" aria-controls="collapseFour">
-                Phase 2 - Server - After Loaders
+                Phase 2 - Server - Pre Game
             </a>
         </h4>
     </div>
@@ -442,12 +423,12 @@
                 result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
                 accompanying textual error, for debugging purposes.</p>
 
-<pre class="pre-scrollable">
-    {
-        "result": 0,
-        "error" : "Bad JSON"
-    }
-</pre>
+            <pre class="pre-scrollable">
+{
+    "result": 0,
+    "error": "Bad JSON"
+}
+            </pre>
         </div>
     </div>
 </div>
@@ -471,7 +452,8 @@
 <p>This is for catching all of the games that properly end. The main difference here is that the resulting data can be
     broken down into rounds.</p>
 
-<p><strong>Endpoint:</strong> <code>http://getdotastats.com/s2/api/s2_phase_3.php</code></p>
+<p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_3.php || "payload" =
+        <em>JSONschema</em></code></p>
 
 <hr/>
 
@@ -502,13 +484,6 @@
         <div class="col-sm-3">modID</div>
         <div class="col-sm-2">string</div>
         <div class="col-sm-7">"7adfki234jlk23"</div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-3">gamePhase</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-3">3</div>
-        <div class="col-sm-4">Must have value of 3 in this phase.</div>
     </div>
 
     <div class="row">
@@ -598,7 +573,6 @@
     "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
     "modID": "7adfki234jlk23",
-    "gamePhase": 3,
     "winningTeam": 5,
     "gameDuration": 3954,
     "schemaVersion": 1,
@@ -702,12 +676,225 @@
                 result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
                 accompanying textual error, for debugging purposes.</p>
 
-<pre class="pre-scrollable">
-    {
-        "result": 0,
-        "error" : "Bad JSON"
-    }
-</pre>
+            <pre class="pre-scrollable">
+{
+    "result": 0,
+    "error" : "Bad JSON"
+}
+            </pre>
+        </div>
+    </div>
+</div>
+
+<!--
+////////////////////////////////////////////////////
+//Client - CUSTOM
+////////////////////////////////////////////////////
+-->
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingSeven">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven"
+               aria-expanded="false" aria-controls="collapseSeven">
+                Client - CUSTOM DATA
+            </a>
+        </h4>
+    </div>
+    <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+        <div class="panel-body">
+            <p>If your mod wishes to capture additional data (such as scoring, items or abilities), you will need to
+                create a schema
+                and submit it to the site for discussion. Each implementation will be unique.</p>
+
+            <p><strong>Endpoint:</strong> <code>N/A</code></p>
+
+            <hr/>
+
+            <div>
+                <div class="row">
+                    <div class="col-sm-3"><strong>Key</strong></div>
+                    <div class="col-sm-2"><strong>Type</strong></div>
+                    <div class="col-sm-3"><strong>Example</strong></div>
+                    <div class="col-sm-4"><strong>Notes</strong></div>
+                </div>
+                <span class="h4">&nbsp;</span>
+
+                <div class="row">
+                    <div class="col-sm-3">authKey</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+                    <div class="col-sm-4">Obtained by pre-match API</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">matchID</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-3">"21347923432"</div>
+                    <div class="col-sm-4">Obtained by pre-match API</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">modID</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-7">"7adfki234jlk23"</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">schemaAuthKey</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-3">"jh345235ljhfads"</div>
+                    <div class="col-sm-4">Obtained by schema obtaining approval</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">schemaVersion</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-7">1</div>
+                </div>
+
+                <!--players array-->
+
+                <div class="row">
+                    <div class="col-sm-3">rounds</div>
+                    <div class="col-sm-2">array</div>
+                    <div class="col-sm-7">&nbsp;</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-3">players</div>
+                    <div class="col-sm-2">key-value array</div>
+                    <div class="col-sm-6">&nbsp;</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">steamID32</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-6">"2875155"</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">customValue1</div>
+                    <div class="col-sm-2">???</div>
+                    <div class="col-sm-6">XXXX</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">customValue2</div>
+                    <div class="col-sm-2">???</div>
+                    <div class="col-sm-6">YYYY</div>
+                </div>
+
+                <span class="h4">&nbsp;</span>
+            </div>
+
+            <hr/>
+
+            <h3>Example Schema</h3>
+
+            <pre class="pre-scrollable">
+{
+    "authKey": "asdfhkj324jklnfadssdafsd",
+    "matchID": "21347923432",
+    "modID": "7adfki234jlk23",
+    "schemaAuthKey": "jh345235ljhfads",
+    "schemaVersion": 1,
+    "rounds": [
+        {
+            "players": [
+                {
+                    "steamID32": "2875155",
+                    "score": 242,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "2875156",
+                    "score": 123,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "2875157",
+                    "score": 453,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "2875158",
+                    "score": 3,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                }
+            ]
+        },
+        {
+            "players": [
+                {
+                    "steamID32": "2875155",
+                    "score": 546,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "2875156",
+                    "score": 432,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "2875157",
+                    "score": 7,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "2875158",
+                    "score": 97,
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                }
+            ]
+        }
+    ]
+}
+            </pre>
+
+        </div>
+    </div>
+</div>
+
+
+<!--
+////////////////////////////////////////////////////
+//Server - CUSTOM
+////////////////////////////////////////////////////
+-->
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingEight">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight"
+               aria-expanded="false" aria-controls="collapseEight">
+                Server - CUSTOM DATA
+            </a>
+        </h4>
+    </div>
+    <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+        <div class="panel-body">
+            <p>This is the response from the server after receiving the communication from the client for CUSTOM DATA.
+                The
+                result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
+                accompanying textual error, for debugging purposes.</p>
+
+            <pre class="pre-scrollable">
+{
+    "result": 0,
+    "error": "Bad JSON"
+}
+            </pre>
         </div>
     </div>
 </div>

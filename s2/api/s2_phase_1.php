@@ -21,10 +21,6 @@ try {
         throw new Exception('Schema version out of date!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['gamePhase']) || empty($preGameAuthPayloadJSON['gamePhase']) || $preGameAuthPayloadJSON['gamePhase'] != 1) { //CHECK THAT gamePhase IS CORRECT
-        throw new Exception('Wrong endpoint for this phase!');
-    }
-
     $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $authKey = '';
     for ($i = 0; $i < 10; $i++)
@@ -59,7 +55,7 @@ try {
                 $authKey,
                 $preGameAuthPayloadJSON['modID'],
                 $preGameAuthPayloadJSON['hostSteamID32'],
-                $preGameAuthPayloadJSON['gamePhase'],
+                1,
                 $preGameAuthPayloadJSON['isDedicated'],
                 $numPlayers,
                 $preGameAuthPayloadJSON['schemaVersion']
@@ -81,15 +77,13 @@ try {
                 $steamID64 = $steamID_manipulator->getSteamID64();
 
                 $db->q(
-                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `playerName`, `teamID`, `slotID`, `heroID`, `connectionState`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `playerName`, `slotID`, `connectionState`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                         ON DUPLICATE KEY UPDATE
                           `playerName` = VALUES(`playerName`),
-                          `teamID` = VALUES(`teamID`),
                           `slotID` = VALUES(`slotID`),
-                          `heroID` = VALUES(`heroID`),
                           `connectionState` = VALUES(`connectionState`);',
-                    'sissssiiii',
+                    'sissssii',
                     array(
                         $matchID,
                         1,
@@ -97,30 +91,8 @@ try {
                         $steamID32,
                         $steamID64,
                         $value['playerName'],
-                        $value['teamID'],
                         $value['slotID'],
-                        $value['heroID'],
                         $value['connectionState']
-                    )
-                );
-            }
-        }
-    }
-
-    //FLAGS
-    {
-        if(!empty($preGameAuthPayloadJSON['flags'])){
-            foreach($preGameAuthPayloadJSON['flags'] as $key => $value){
-                $db->q(
-                    'INSERT INTO `s2_match_flags`(`matchID`, `modID`, `flag`)
-                        VALUES (?, ?, ?)
-                        ON DUPLICATE KEY UPDATE
-                          `flag` = VALUES(`flag`);',
-                    'sss',
-                    array(
-                        $matchID,
-                        $preGameAuthPayloadJSON['modID'],
-                        $value
                     )
                 );
             }

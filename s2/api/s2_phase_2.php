@@ -21,10 +21,6 @@ try {
         throw new Exception('Schema version out of date!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['gamePhase']) || empty($preGameAuthPayloadJSON['gamePhase']) || $preGameAuthPayloadJSON['gamePhase'] != 2) { //CHECK THAT gamePhase IS CORRECT
-        throw new Exception('Wrong endpoint for this phase!');
-    }
-
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
@@ -88,7 +84,7 @@ try {
             'si',
             array(
                 $matchID,
-                $preGameAuthPayloadJSON['gamePhase']
+                2
             )
         );
     }
@@ -125,6 +121,28 @@ try {
                         $value['slotID'],
                         $value['heroID'],
                         $value['connectionState']
+                    )
+                );
+            }
+        }
+    }
+
+    //FLAGS
+    {
+        if (!empty($preGameAuthPayloadJSON['flags'])) {
+            foreach ($preGameAuthPayloadJSON['flags'] as $key => $value) {
+                $db->q(
+                    'INSERT INTO `s2_match_flags`(`matchID`, `modID`, `flagName`, `flagValue`)
+                        VALUES (?, ?, ?, ?)
+                        ON DUPLICATE KEY UPDATE
+                          `flagName` = VALUES(`flagName`),
+                          `flagValue` = VALUES(`flagValue`);',
+                    'ssss',
+                    array(
+                        $matchID,
+                        $preGameAuthPayloadJSON['modID'],
+                        $key,
+                        $value
                     )
                 );
             }
