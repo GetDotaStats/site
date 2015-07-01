@@ -32,12 +32,11 @@ try {
     if (
         !isset($preGameAuthPayloadJSON['modID']) || empty($preGameAuthPayloadJSON['modID']) ||
         !isset($preGameAuthPayloadJSON['hostSteamID32']) || empty($preGameAuthPayloadJSON['hostSteamID32']) ||
-        !isset($preGameAuthPayloadJSON['players']) || empty($preGameAuthPayloadJSON['players'])
+        !isset($preGameAuthPayloadJSON['numPlayers']) || empty($preGameAuthPayloadJSON['numPlayers']) || !is_numeric($preGameAuthPayloadJSON['numPlayers'])
     ) {
         throw new Exception('Payload missing fields!');
     }
 
-    $numPlayers = count($preGameAuthPayloadJSON['players']);
     $preGameAuthPayloadJSON['isDedicated'] = !isset($preGameAuthPayloadJSON['isDedicated']) || empty($preGameAuthPayloadJSON['isDedicated'])
         ? 0
         : 1;
@@ -58,47 +57,13 @@ try {
                 1,
                 $preGameAuthPayloadJSON['isDedicated'],
                 $preGameAuthPayloadJSON['mapName'],
-                $numPlayers,
+                $preGameAuthPayloadJSON['numPlayers'],
                 $preGameAuthPayloadJSON['schemaVersion']
             )
         );
     }
 
     $matchID = $db->last_index();
-
-    //PLAYERS DETAILS
-    {
-        if (!empty($preGameAuthPayloadJSON['players'])) {
-            $steamID_manipulator = new SteamID();
-
-            foreach ($preGameAuthPayloadJSON['players'] as $key => $value) {
-                $steamID_manipulator->setSteamID($value['steamID32']);
-
-                $steamID32 = $steamID_manipulator->getSteamID32();
-                $steamID64 = $steamID_manipulator->getSteamID64();
-
-                $db->q(
-                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `playerName`, `slotID`, `connectionState`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        ON DUPLICATE KEY UPDATE
-                          `playerName` = VALUES(`playerName`),
-                          `slotID` = VALUES(`slotID`),
-                          `connectionState` = VALUES(`connectionState`);',
-                    'sissssii',
-                    array(
-                        $matchID,
-                        1,
-                        $preGameAuthPayloadJSON['modID'],
-                        $steamID32,
-                        $steamID64,
-                        $value['playerName'],
-                        $value['slotID'],
-                        $value['connectionState']
-                    )
-                );
-            }
-        }
-    }
 
     //HOST DETAILS
     {

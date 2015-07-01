@@ -94,57 +94,15 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-sm-3">numPlayers</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-7">4</div>
+                </div>
+
+                <div class="row">
                     <div class="col-sm-3">schemaVersion</div>
                     <div class="col-sm-2">integer</div>
                     <div class="col-sm-7">1</div>
-                </div>
-
-                <!--players array-->
-
-                <div class="row">
-                    <div class="col-sm-3">players</div>
-                    <div class="col-sm-2">key-value array</div>
-                    <div class="col-sm-7">&nbsp;</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">playerName</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"jimmydorry"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">steamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"2875155"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">slotID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">connectionState</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">2</div>
-                    <div class="col-sm-4">
-                        0 = unknown<br/>
-                        1 = not yet connected<br/>
-                        2 = connected<br/>
-                        3 = disconnected match<br/>
-                        4 = abandoned<br/>
-                        5 = loading<br/>
-                        6 = failed<br/>
-                        <a target="_blank"
-                           href="https://github.com/SteamRE/SteamKit/blob/f6c0578506690d63a2b159340fe19835fe33564c/Resources/Protobufs/dota/dota_gcmessages_common.proto#L564">Refer
-                            to enum DOTAConnectionState_t</a>
-                    </div>
                 </div>
 
                 <span class="h4">&nbsp;</span>
@@ -160,33 +118,8 @@
     "hostSteamID32": "2875155",
     "isDedicated": 1,
     "mapName": "dota_pvp",
-    "schemaVersion": 1,
-    "players": [
-        {
-            "playerName": "jimmydorry",
-            "steamID32": "2875155",
-            "slotID": 1,
-            "connectionState": 2
-        },
-        {
-            "playerName": "ash47",
-            "steamID32": "2875156",
-            "slotID": 2,
-            "connectionState": 2
-        },
-        {
-            "playerName": "BMD",
-            "steamID32": "2875157",
-            "slotID": 3,
-            "connectionState": 2
-        },
-        {
-            "playerName": "sinz",
-            "steamID32": "2875158",
-            "slotID": 4,
-            "connectionState": 2
-        }
-    ]
+    "numPlayers": 4,
+    "schemaVersion": 1
 }
             </pre>
 
