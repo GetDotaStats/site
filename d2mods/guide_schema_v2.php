@@ -976,28 +976,24 @@ try {
     );
 
     if (!empty($latestData)) {
-        echo '<div class="row">
-                <div class="col-sm-1"><strong>matchID</strong></div>
-                <div class="col-sm-3"><strong>modID</strong></div>
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-sm-3"><strong>Phase</strong></div>
-                        <div class="col-sm-3"><strong>Players</strong></div>
-                        <div class="col-sm-3"><strong>Rounds</strong></div>
-                        <div class="col-sm-3"><strong>Duration</strong></div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-sm-6"><strong>Updated</strong></div>
-                        <div class="col-sm-6"><strong>Recorded</strong></div>
-                    </div>
-                </div>
-            </div>
-            <span class="h4">&nbsp;</span>
-            ';
-
         foreach ($latestData as $key => $value) {
+            echo '<div class="row">
+                    <div class="col-sm-1"><strong>matchID</strong></div>
+                    <div class="col-sm-3"><strong>modID</strong></div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-3"><strong>Phase</strong></div>
+                            <div class="col-sm-3"><strong>Players</strong></div>
+                            <div class="col-sm-3"><strong>Rounds</strong></div>
+                            <div class="col-sm-3"><strong>Duration</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-3"><strong>Recorded</strong></div>
+                </div>
+                <span class="h4">&nbsp;</span>
+                ';
+
             $numPlayers = !empty($value['numPlayers']) && is_numeric($value['numPlayers'])
                 ? $value['numPlayers']
                 : 0;
@@ -1010,6 +1006,16 @@ try {
                 ? $value['matchDuration']
                 : '??';
 
+            $relativeDateRaw = relative_time_v2($value['dateUpdated'], 'hour', true);
+
+            $timeColour = $relativeDateRaw['number'] <= 2
+                ? ' hs_lb_recent_score'
+                : '';
+
+            $newBadge = $relativeDateRaw['number'] <= 2
+                ? ' <span class="badge">!</span>'
+                : '';
+
             echo '<div class="row">
                 <div class="col-sm-1">' . $value['matchID'] . '</div>
                 <div class="col-sm-3"><span class="db_link">' . $value['modID'] . '</span></div>
@@ -1021,13 +1027,8 @@ try {
                         <div class="col-sm-3">' . $duration . '</div>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-sm-6">' . relative_time_v3($value['dateUpdated'], 1) . '</div>
-                        <div class="col-sm-6">' . relative_time_v3($value['dateRecorded'], 1) . '</div>
-                    </div>
-                </div>
-
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm-3"><span class="' . $timeColour . '">' . relative_time_v3($value['dateUpdated'], 1) . $newBadge . '</span></div>
             </div>
             ';
 
@@ -1156,6 +1157,8 @@ try {
                 foreach ($latestPlayerData as $key2 => $value2) {
                     unset($value2['matchID']);
                     unset($value2['modID']);
+                    unset($value2['steamID64']);
+                    unset($value2['isWinner']);
                     unset($value2['dateRecorded']);
                     $playerList[] = $value2;
                 }
