@@ -151,16 +151,19 @@ try {
 
     if (!empty($sqlResult)) {
         $s2_response['result'] = 1;
+        $s2_response['schemaVersion'] = $currentSchemaVersion;
     } else {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
         $s2_response['error'] = 'Unknown error!';
+        $s2_response['schemaVersion'] = $currentSchemaVersion;
     }
 
 } catch (Exception $e) {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
+    $s2_response['schemaVersion'] = $currentSchemaVersion;
 } finally {
     if (isset($memcache)) $memcache->close();
 }

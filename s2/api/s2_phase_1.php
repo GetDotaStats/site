@@ -109,6 +109,7 @@ try {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
         $s2_response['error'] = 'Unknown error!';
+        $s2_response['schemaVersion'] = $currentSchemaVersion;
     }
 
     //$memcache->close();
@@ -117,6 +118,7 @@ try {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
+    $s2_response['schemaVersion'] = $currentSchemaVersion;
 }
 
 try {

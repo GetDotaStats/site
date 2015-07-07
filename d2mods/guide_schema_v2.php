@@ -161,6 +161,108 @@
 
 <!--
 ////////////////////////////////////////////////////
+//Client Check-In - Request
+////////////////////////////////////////////////////
+-->
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOneB">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOneB"
+               aria-expanded="false" aria-controls="collapseOneB">
+                Client Check-In - Request
+            </a>
+        </h4>
+    </div>
+    <div id="collapseOneB" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneB">
+        <div class="panel-body">
+
+            <p>This is for building an idea of where clients are connecting from.</p>
+
+            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_check_in.php || "payload" = <em>JSONschema</em></code>
+            </p>
+
+            <hr/>
+
+            <div>
+                <div class="row">
+                    <div class="col-sm-3"><strong>Key</strong></div>
+                    <div class="col-sm-2"><strong>Type</strong></div>
+                    <div class="col-sm-3"><strong>Example</strong></div>
+                    <div class="col-sm-4"><strong>Notes</strong></div>
+                </div>
+                <span class="h4">&nbsp;</span>
+
+                <div class="row">
+                    <div class="col-sm-3">modID</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-3">"7adfki234jlk23"</div>
+                    <div class="col-sm-4">
+                        <a class="nav-clickable" href="#d2mods__my_mods">Unique value assigned to your mod</a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">steamID32</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-7">"2875155"</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">matchID</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-7">"213123342"</div>
+                </div>
+
+                <span class="h4">&nbsp;</span>
+            </div>
+
+            <hr/>
+
+            <h3>Example Schema</h3>
+
+            <pre class="pre-scrollable">
+{
+    "modID": "7adfki234jlk23",
+    "steamID32": "2875155",
+    "matchID": "213123342"
+}
+            </pre>
+
+        </div>
+    </div>
+</div>
+
+<!--
+////////////////////////////////////////////////////
+//Client Check-In - Response
+////////////////////////////////////////////////////
+-->
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwoB">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwoB"
+               aria-expanded="false" aria-controls="collapseTwoB">
+                Client Check-In - Response
+            </a>
+        </h4>
+    </div>
+    <div id="collapseTwoB" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoB">
+        <div class="panel-body">
+            <p>This is the response from the server after receiving the communication from the client for the
+                check-in.</p>
+
+            <pre class="pre-scrollable">
+{
+    "result": 0,
+    "error": "Unknown Error"
+}
+            </pre>
+        </div>
+    </div>
+</div>
+
+<!--
+////////////////////////////////////////////////////
 //Phase 2 - Client - Pre Game
 ////////////////////////////////////////////////////
 -->
@@ -175,7 +277,8 @@
     </div>
     <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
         <div class="panel-body">
-            <p>This is for catching all of the games that crash.</p>
+            <p>This is for catching all of the games that crash, and understanding what heroes and game modes are
+                played.</p>
 
             <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_2.php || "payload" = <em>JSONschema</em></code>
             </p>
@@ -847,8 +950,8 @@
 
 
 <h3>Latest Data</h3>
-<p>Below is a simple table showing the latest matches recorded. It will serve as a debugging tool while we setup a more
-    sophisticated testing environment.</p>
+<p>Below is a simple table showing the five latest matches recorded. It will serve as a debugging tool while we setup a
+    more sophisticated testing environment.</p>
 
 <?php
 require_once('../global_functions.php');
@@ -861,24 +964,12 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+    //`matchID`, `matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `isDedicated`, `numPlayers`, `numRounds`, `matchWinningTeamID`, `matchDuration`, `schemaVersion`, `dateUpdated`, `dateRecorded`
     $latestData = cached_query('s2_latest_data',
-        'SELECT
-              `matchID`,
-              `matchAuthKey`,
-              `modID`,
-              `matchHostSteamID32`,
-              `matchPhaseID`,
-              `isDedicated`,
-              `numPlayers`,
-              `numRounds`,
-              `matchWinningTeamID`,
-              `matchDuration`,
-              `schemaVersion`,
-              `dateUpdated`,
-              `dateRecorded`
+        'SELECT *
             FROM `s2_match`
             ORDER BY `dateUpdated` DESC, `matchID` DESC
-            LIMIT 0,10;',
+            LIMIT 0,5;',
         NULL,
         NULL,
         5
@@ -886,8 +977,8 @@ try {
 
     if (!empty($latestData)) {
         echo '<div class="row">
-                <div class="col-sm-2"><strong>matchID</strong></div>
-                <div class="col-sm-2"><strong>modID</strong></div>
+                <div class="col-sm-1"><strong>matchID</strong></div>
+                <div class="col-sm-3"><strong>modID</strong></div>
                 <div class="col-sm-4">
                     <div class="row">
                         <div class="col-sm-3"><strong>Phase</strong></div>
@@ -896,8 +987,12 @@ try {
                         <div class="col-sm-3"><strong>Duration</strong></div>
                     </div>
                 </div>
-                <div class="col-sm-2"><strong>Updated</strong></div>
-                <div class="col-sm-2"><strong>Recorded</strong></div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-sm-6"><strong>Updated</strong></div>
+                        <div class="col-sm-6"><strong>Recorded</strong></div>
+                    </div>
+                </div>
             </div>
             <span class="h4">&nbsp;</span>
             ';
@@ -916,8 +1011,8 @@ try {
                 : '??';
 
             echo '<div class="row">
-                <div class="col-sm-2">' . $value['matchID'] . '</div>
-                <div class="col-sm-2">' . $value['modID'] . '</div>
+                <div class="col-sm-1">' . $value['matchID'] . '</div>
+                <div class="col-sm-3"><span class="db_link">' . $value['modID'] . '</span></div>
                 <div class="col-sm-4">
                     <div class="row">
                         <div class="col-sm-3">' . $value['matchPhaseID'] . '</div>
@@ -926,10 +1021,162 @@ try {
                         <div class="col-sm-3">' . $duration . '</div>
                     </div>
                 </div>
-                <div class="col-sm-2">' . relative_time_v3($value['dateUpdated'], 1) . '</div>
-                <div class="col-sm-2">' . relative_time_v3($value['dateRecorded'], 1) . '</div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-sm-6">' . relative_time_v3($value['dateUpdated'], 1) . '</div>
+                        <div class="col-sm-6">' . relative_time_v3($value['dateRecorded'], 1) . '</div>
+                    </div>
+                </div>
+
             </div>
             ';
+
+            /////////////////////////////
+            //Match Full Details
+            /////////////////////////////
+
+            $fullDetailsTemp = $value;
+            unset($fullDetailsTemp['matchID']);
+            unset($fullDetailsTemp['modID']);
+            unset($fullDetailsTemp['matchPhaseID']);
+            unset($fullDetailsTemp['numPlayers']);
+            unset($fullDetailsTemp['numRounds']);
+            unset($fullDetailsTemp['matchDuration']);
+            unset($fullDetailsTemp['isDedicated']);
+            unset($fullDetailsTemp['dateUpdated']);
+            unset($fullDetailsTemp['dateRecorded']);
+
+            echo '<div class="row">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-1"><strong>Match</strong></div>
+                    <div class="col-sm-10">' . json_encode($fullDetailsTemp) . '</div>
+                </div>';
+
+            /////////////////////////////
+            //FLAG LIST
+            /////////////////////////////
+            $latestFlagData = cached_query('s2_latest_flag_data' . $value['matchID'],
+                'SELECT
+                      `matchID`,
+                      `modID`,
+                      `flagName`,
+                      `flagValue`,
+                      `dateRecorded`
+                    FROM `s2_match_flags`
+                    WHERE `matchID` = ?
+                    ORDER BY `dateRecorded` DESC;',
+                's',
+                array(
+                    $value['matchID']
+                ),
+                5
+            );
+
+            if (!empty($latestFlagData)) {
+                $flagList = array();
+
+                foreach ($latestFlagData as $key2 => $value2) {
+                    $flagList[$value2['flagName']] = $value2['flagValue'];
+                }
+
+                echo '<div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-1"><strong>Flags</strong></div>
+                        <div class="col-sm-10">' . json_encode($flagList) . '</div>
+                    </div>';
+            } else {
+                echo '<div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-1"><strong>Flags</strong></div>
+                        <div class="col-sm-10">????</div>
+                    </div>';
+            }
+
+            /////////////////////////////
+            //Client LIST
+            /////////////////////////////
+            $latestClientData = cached_query('s2_latest_client_data' . $value['matchID'],
+                'SELECT
+                      `matchID`,
+                      `modID`,
+                      `steamID32`,
+                      `steamID64`,
+                      `clientIP`,
+                      `isHost`,
+                      `dateRecorded`
+                    FROM `s2_match_client_details`
+                    WHERE `matchID` = ?
+                    ORDER BY `dateRecorded` DESC;',
+                's',
+                array(
+                    $value['matchID']
+                ),
+                5
+            );
+
+            if (!empty($latestClientData)) {
+                $clientList = array();
+
+                foreach ($latestClientData as $key2 => $value2) {
+                    $clientList[] = $value2['clientIP'];
+                }
+
+                echo '<div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-1"><strong>Clients</strong></div>
+                        <div class="col-sm-10">' . json_encode($clientList) . '</div>
+                    </div>';
+            } else {
+                echo '<div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-1"><strong>Clients</strong></div>
+                        <div class="col-sm-10">????</div>
+                    </div>';
+            }
+
+
+            /////////////////////////////
+            //Players LIST
+            /////////////////////////////
+            $latestPlayerData = cached_query('s2_latest_player_data' . $value['matchID'],
+                'SELECT *
+                    FROM `s2_match_players`
+                    WHERE `matchID` = ?
+                    ORDER BY `dateRecorded` DESC;',
+                's',
+                array(
+                    $value['matchID']
+                ),
+                5
+            );
+
+            if (!empty($latestPlayerData)) {
+                $playerList = array();
+
+                foreach ($latestPlayerData as $key2 => $value2) {
+                    unset($value2['matchID']);
+                    unset($value2['modID']);
+                    unset($value2['dateRecorded']);
+                    $playerList[] = $value2;
+                }
+
+                echo '<div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-1"><strong>Players</strong></div>
+                        <div class="col-sm-10">' . json_encode($playerList) . '</div>
+                    </div>';
+            } else {
+                echo '<div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-1"><strong>Players</strong></div>
+                        <div class="col-sm-10">????</div>
+                    </div>';
+            }
+
+
+            echo '<hr />';
+
+            echo '<span class="h4">&nbsp;</span>';
         }
     } else {
         echo bootstrapMessage('Oh Snap', 'No data recorded yet!.', 'danger');
