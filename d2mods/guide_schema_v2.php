@@ -1032,6 +1032,8 @@ try {
             </div>
             ';
 
+            echo '<span class="h4">&nbsp;</span>';
+
             /////////////////////////////
             //Match Full Details
             /////////////////////////////
