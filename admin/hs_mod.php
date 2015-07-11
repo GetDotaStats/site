@@ -236,9 +236,14 @@ try {
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-1"><strong>Mod</strong></div>
                 <div class="col-md-5">' . $value['mod_name'] . '</div>
+            </div>';
 
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-1"><strong>HS ID</strong></div>
-                <div class="col-md-2">' . $value['highscoreID'] . '</div>
+                <div class="col-md-5">' . $value['highscoreID'] . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';

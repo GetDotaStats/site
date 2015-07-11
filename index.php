@@ -120,11 +120,7 @@ try {
                         <li class="dropdown-header">Dead</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer Guide <span
                                     class="label label-danger">DEAD</span></a></li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_guide">Minigame Developer Guide <span
-                                    class="label label-danger">DEAD</span></a></li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_list_old">Lobby List <span
-                                    class="label label-danger">DEAD</span></a></li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Minigame Highscores <span
                                     class="label label-danger">DEAD</span></a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR <span
@@ -150,7 +146,6 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
-                            <li><a class="nav-clickable" href="#admin__minigames">Mini-Game Manage</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_feedback">Mod Feedback</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
