@@ -402,13 +402,11 @@
   "jsonData": [
     {
       "highscoreID": "h2345kjn52314",
-      "highscoreAuthKey": "XXXXXX",
       "highscoreValue": 12321,
       "date_recorded": "2015-07-11 19:30:22"
     },
     {
       "highscoreID": "hj43152khjb342",
-      "highscoreAuthKey": "XXXXXX",
       "highscoreValue": 12321,
       "date_recorded": "2015-07-11 19:08:43"
     }
