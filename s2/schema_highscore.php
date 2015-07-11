@@ -401,20 +401,14 @@
   "type": "list",
   "jsonData": [
     {
-      "modID": "7689asdfjh1231",
       "highscoreID": "h2345kjn52314",
-      "steamID32": 28755155,
       "highscoreAuthKey": "XXXXXX",
-      "userName": "jimmydorry",
       "highscoreValue": 12321,
       "date_recorded": "2015-07-11 19:30:22"
     },
     {
-      "modID": "7689asdfjh1231",
       "highscoreID": "hj43152khjb342",
-      "steamID32": 28755155,
       "highscoreAuthKey": "XXXXXX",
-      "userName": "jimmydorry",
       "highscoreValue": 12321,
       "date_recorded": "2015-07-11 19:08:43"
     }

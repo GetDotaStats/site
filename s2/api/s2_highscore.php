@@ -153,11 +153,8 @@ try {
             $sqlResult = cached_query(
                 's2_highscore_list_lookup_' . $modID . '_' . $playerSteamID32,
                 'SELECT
-                        `modID`,
                         `highscoreID`,
-                        `steamID32`,
                         `highscoreAuthKey`,
-                        `userName`,
                         `highscoreValue`,
                         `date_recorded`
                     FROM `stat_highscore_mods`
