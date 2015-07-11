@@ -24,6 +24,7 @@ try {
         'mod_hs_schema',
         'SELECT
                 shms.`highscoreID`,
+                shms.`highscoreIdentifier`,
                 shms.`modID`,
                 shms.`highscoreName`,
                 shms.`highscoreDescription`,
@@ -62,7 +63,7 @@ try {
                         <span class="h4">&nbsp;</span>
 
                         <div class="text-center">
-                            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__mod_leaderboard?lid=' . $value['highscoreID'] . '">Leaderboard</a>
+                            <a class="nav-clickable btn btn-warning btn-lg" href="#d2mods__mod_leaderboard?lid=' . $value['highscoreIdentifier'] . '">Leaderboard</a>
                         </div>
 
                         <span class="h4">&nbsp;</span>
