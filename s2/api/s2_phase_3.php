@@ -17,12 +17,9 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] != $currentSchemaVersion) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] != $currentSchemaVersionPhase3) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
-
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if (
         !isset($preGameAuthPayloadJSON['authKey']) || empty($preGameAuthPayloadJSON['authKey']) ||
@@ -38,6 +35,9 @@ try {
     $authKey = $preGameAuthPayloadJSON['authKey'];
     $numRounds = count($preGameAuthPayloadJSON['rounds']);
     $numPlayers = count($preGameAuthPayloadJSON['rounds'][($numRounds - 1)]['players']);
+
+    $memcache = new Memcache;
+    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
@@ -148,19 +148,19 @@ try {
 
     if (!empty($sqlResult)) {
         $s2_response['result'] = 1;
-        $s2_response['schemaVersion'] = $currentSchemaVersion;
+        $s2_response['schemaVersion'] = $currentSchemaVersionPhase3;
     } else {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
         $s2_response['error'] = 'Unknown error!';
-        $s2_response['schemaVersion'] = $currentSchemaVersion;
+        $s2_response['schemaVersion'] = $currentSchemaVersionPhase3;
     }
 
 } catch (Exception $e) {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
-    $s2_response['schemaVersion'] = $currentSchemaVersion;
+    $s2_response['schemaVersion'] = $currentSchemaVersionPhase3;
 } finally {
     if (isset($memcache)) $memcache->close();
 }

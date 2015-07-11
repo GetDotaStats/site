@@ -79,17 +79,19 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-warning">NEW</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-header">Guides and Info</li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Mod Developer Guide</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide_schema_v2">stat-collection-v2 Schema <span
-                                    class="label label-warning">NEW</span></a></li>
+                        <li class="dropdown-header">Developers</li>
                         <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
+                        <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection <span
+                                    class="label label-warning">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#s2__schema_highscore">Schema stat-highscore <span
+                                    class="label label-warning">NEW</span></a></li>
+                        <li><a>Schema stat-rpg <span
+                                class="label label-danger">SOON</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trend Analysis</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback <span
-                                    class="label label-danger">HOT</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>

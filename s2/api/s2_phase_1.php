@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] != $currentSchemaVersion) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] != $currentSchemaVersionPhase1) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -25,9 +25,6 @@ try {
     $authKey = '';
     for ($i = 0; $i < 10; $i++)
         $authKey .= $characters[rand(0, 35)];
-
-    //$memcache = new Memcache;
-    //$memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     if (
         !isset($preGameAuthPayloadJSON['modID']) || empty($preGameAuthPayloadJSON['modID']) ||
@@ -40,6 +37,9 @@ try {
     $preGameAuthPayloadJSON['isDedicated'] = !isset($preGameAuthPayloadJSON['isDedicated']) || empty($preGameAuthPayloadJSON['isDedicated'])
         ? 0
         : 1;
+
+    //$memcache = new Memcache;
+    //$memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
@@ -104,22 +104,22 @@ try {
         $s2_response['authKey'] = $authKey;
         $s2_response['matchID'] = $matchID;
         $s2_response['modID'] = $preGameAuthPayloadJSON['modID'];
-        $s2_response['schemaVersion'] = $currentSchemaVersion;
+        $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
     } else {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
         $s2_response['error'] = 'Unknown error!';
-        $s2_response['schemaVersion'] = $currentSchemaVersion;
+        $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
     }
-
-    //$memcache->close();
 
 } catch (Exception $e) {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
-    $s2_response['schemaVersion'] = $currentSchemaVersion;
-}
+    $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
+} /*finally {
+    if (isset($memcache)) $memcache->close();
+}*/
 
 try {
     header('Content-Type: application/json');
