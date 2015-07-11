@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `stat_highscore_mods` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `stat_highscore_mods_schema` (
+  `highscoreIdentifier` int(11) NOT NULL,
   `highscoreID` varchar(255) NOT NULL,
   `modID` varchar(255) NOT NULL,
   `highscoreName` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -26,4 +27,7 @@ ALTER TABLE `stat_highscore_mods`
  ADD PRIMARY KEY (`modID`,`highscoreID`,`steamID32`), ADD KEY `highscoreID_value` (`highscoreID`,`highscoreValue`), ADD KEY `date_recorded` (`date_recorded`), ADD KEY `highscoreAuthKey` (`highscoreAuthKey`);
 
 ALTER TABLE `stat_highscore_mods_schema`
- ADD PRIMARY KEY (`highscoreID`), ADD KEY `highscoreActive` (`highscoreActive`), ADD KEY `highscoreObjective` (`highscoreObjective`), ADD KEY `highscoreOperator` (`highscoreOperator`), ADD KEY `highscoreFactor` (`highscoreFactor`), ADD KEY `date_recorded` (`date_recorded`), ADD KEY `modID` (`modID`);
+ ADD PRIMARY KEY (`highscoreIdentifier`), ADD KEY `highscoreActive` (`highscoreActive`), ADD KEY `highscoreObjective` (`highscoreObjective`), ADD KEY `highscoreOperator` (`highscoreOperator`), ADD KEY `highscoreFactor` (`highscoreFactor`), ADD KEY `date_recorded` (`date_recorded`), ADD KEY `modID` (`modID`), ADD KEY `highscoreID` (`highscoreID`);
+
+ALTER TABLE `stat_highscore_mods_schema`
+MODIFY `highscoreIdentifier` int(11) NOT NULL AUTO_INCREMENT;
