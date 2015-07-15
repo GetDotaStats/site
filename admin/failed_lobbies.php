@@ -122,7 +122,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>';
 
@@ -138,8 +138,8 @@ echo '
     <script>
         $(document).ready(function () {
             pageReloader = setTimeout(function () {
-                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list") {
-                    loadPage("#d2mods__lobby_list", 2);
+                if (document.getElementById("nav-refresh-holder").getAttribute("href") == "#d2mods__lobby_list_old") {
+                    loadPage("#d2mods__lobby_list_old", 2);
                 }
                 else {
                     clearTimeout(pageReloader);

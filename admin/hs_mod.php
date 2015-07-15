@@ -239,7 +239,11 @@ try {
                 <div class="col-md-5">' . $value['mod_name'] . '</div>
             </div>';
 
-        echo '<span class="h5">&nbsp;</span>';
+        echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-1"><strong>ModID</strong></div>
+                <div class="col-md-5">' . $value['modID'] . '</div>
+            </div>';
 
         echo '<div class="row">
                 <div class="col-md-1">&nbsp;</div>
