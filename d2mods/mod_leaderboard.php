@@ -131,8 +131,8 @@ try {
             ? number_format($highscore_value, $modHSDecimals)
             : '??';
 
-        $relativeDate = relative_time_v2($value_lb['date_recorded'], NULL, true);
-        $relativeDateRaw = relative_time_v2($value_lb['date_recorded'], 'hour', true);
+        $relativeDate = relative_time_v3($value_lb['date_recorded'], 1, NULL, true);
+        $relativeDateRaw = relative_time_v3($value_lb['date_recorded'], 1, 'hour', true, false);
 
         $timeColour = $relativeDateRaw['number'] <= 2
             ? ' hs_lb_recent_score'
