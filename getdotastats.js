@@ -24,9 +24,9 @@ $(document).ready(function () {
     //TO FACILITATE BACK BUTTON
     window.onhashchange = function () {
         //if (!mouseBoolean) {
-            if (window.location.hash != '#undefined') {
-                loadPage(window.location.hash, 0);
-            }
+        if (window.location.hash != '#undefined') {
+            loadPage(window.location.hash, 0);
+        }
         //}
     };
 
@@ -35,11 +35,12 @@ $(document).ready(function () {
     //NO BACKSPACING TO GO BACK
     $(document).bind("keydown", function (e) {
         /*if ((e.which || e.keyCode) == 8) { // 8 == backspace
-            if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
-                e.preventDefault();
-            }
-        }
-        else*/ if ((e.which || e.keyCode) == 116) { // 116 == f5 -- refreshing
+         if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
+         e.preventDefault();
+         }
+         }
+         else*/
+        if ((e.which || e.keyCode) == 116) { // 116 == f5 -- refreshing
             e.preventDefault();
             if (window.location.hash != '#undefined') {
                 loadPage(window.location.hash, 1);
@@ -48,7 +49,6 @@ $(document).ready(function () {
     });
 });
 
-var ϰ = "Kappa";
 var pageReloader;
 
 function loadPage(url, refresh) {
@@ -89,10 +89,13 @@ function loadPage(url, refresh) {
             dataType: "html",
             success: function (msg) {
                 setTimeout(function () {
-                    if (refresh == 1 && window.location.hash != oldURL) {
+                    //Need to update history and URL bar for new address as long as this is a new page
+                    if (window.location.hash != oldURL) {
                         window.history.pushState("", "", oldURL);
                     }
+
                     document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
+
                     if (parseInt(msg) != 0) {
                         $('#main_content').html(msg);
                     }
@@ -116,15 +119,20 @@ function loadPage(url, refresh) {
                         setTimeout(function () {
                             $('#loading').hide({
                                 complete: function () {
-                                    if (refresh == 1 && window.location.hash != oldURL) {
+                                    //if(window.location.hash != oldURL){
+                                    //Need to update history and URL bar for new address as long as this is a new page
+                                    if (window.location.hash != oldURL) {
                                         window.history.pushState("", "", oldURL);
                                     }
+
                                     document.getElementById("nav-refresh-holder").setAttribute("href", oldURL);
+
+                                    if (refresh == 0) {
+                                        $('html, body').animate({ scrollTop: 0 }, 'fast');
+                                    }
+
                                     if (parseInt(msg) != 0) {
                                         $('#main_content').html(msg);
-                                    }
-                                    if (refresh != 1) {
-                                        $('html, body').animate({ scrollTop: 0 }, 'fast');
                                     }
                                 }
                             });
@@ -133,8 +141,9 @@ function loadPage(url, refresh) {
                     error: function (jqXHR, textStatus, errorThrown) {
                         $('#loading').hide({
                             complete: function () {
-                                $('#main_content').html('Failed to load page. Try again later.');
                                 $('html, body').animate({ scrollTop: 0 }, 'fast');
+
+                                $('#main_content').html('Failed to load page. Try again later.');
                             }
                         });
                     }
