@@ -38,10 +38,18 @@
     <li>Technical mod related help <a target="_blank" href="https://kiwiirc.com/client/irc.gamesurge.net/?#dota2modhelpdesk">#dota2modhelpdesk IRC channel</a></li>
 </ul>
 
+<h2>Important Wiki Links</h2>
+<p>Interesting things that may not be easy to find.</p>
+
+<ul>
+    <li><a target="_blank" href="https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Addon_Overview/Simulating_Players_During_Development">Simulating Players During Development</a></li>
+</ul>
+
 <span class="h4">&nbsp;</span>
 
 <div class="text-center">
     <a class="nav-clickable btn btn-default btn-lg" href="#source2__css">CSS</a>
     <a class="nav-clickable btn btn-default btn-lg" href="#source2__asyncwebrequest">asyncWebRequest</a>
     <a class="nav-clickable btn btn-default btn-lg" href="#source2__createhttprequest">CreateHTTPRequest</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#source2__convars">convars</a>
 </div>

@@ -25,4 +25,6 @@
 <div class="text-center">
     <a class="nav-clickable btn btn-default btn-lg" href="#source2__beta_changes">Dota 2 Reborn Changes</a>
     <a class="nav-clickable btn btn-default btn-lg" href="#source2__css">CSS</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#source2__asyncwebrequest">asyncWebRequest</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#source2__convars">convars</a>
 </div>
