@@ -57,7 +57,7 @@ function loadPage(url, refresh) {
     //REFRESH 2 -- NO SPINNER NO SCROLL
 
     if (!url) {
-        url = '#d2mods__lobby_list';
+        url = '#home';
     }
     else {
         //SET THE MENU

@@ -77,35 +77,30 @@ try {
                 <li class="dropdown">
                     <!--<span class="label label-success">UPDATED</span>-->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-warning">UPDATED</span><b class="caret"></b></a>
+                            class="label label-warning">NEW</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-header">Guides</li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__guide">Mod Developer</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_guide">Minigame Developer</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Lobby Explorer</li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_list">Lobby List</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trends</a></li>
+                        <li class="dropdown-header">Developers</li>
+                        <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
+                        <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection <span
+                                    class="label label-warning">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#s2__schema_highscore">Schema stat-highscore <span
+                                    class="label label-warning">NEW</span></a></li>
+                        <li><a>Schema stat-rpg <span
+                                class="label label-danger">SOON</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trend Analysis</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback <span
-                                    class="label label-warning">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
                         <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
                         <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
                         <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__search">Search</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Mini Games Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__minigame_highscores">Highscores</a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
-                            <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
-                            <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games</a></li>
                         <?php } ?>
                     </ul>
                 </li>
@@ -121,6 +116,18 @@ try {
                         <li class="divider"></li>
                         <li class="dropdown-header">Browser Extensions</li>
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Dead</li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer Guide <span
+                                    class="label label-danger">DEAD</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__lobby_list_old">Lobby List <span
+                                    class="label label-danger">DEAD</span></a></li>
+                        <?php if (!empty($_SESSION['user_id64'])) { ?>
+                            <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR <span
+                                        class="label label-danger">DEAD</span></a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games <span
+                                        class="label label-danger">DEAD</span></a></li>
+                        <?php } ?>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#credits">Credits</a></li>
@@ -139,7 +146,6 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
-                            <li><a class="nav-clickable" href="#admin__minigames">Mini-Game Manage</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_feedback">Mod Feedback</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
@@ -190,7 +196,7 @@ try {
 
 <div class="container">
     <div class="text-center">
-        <a class="nav-clickable" href="#d2mods__lobby_list"><img width="400px"
+        <a class="nav-clickable" href="#home"><img width="400px"
                                                                  src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
                                                                  alt="site logo"/></a>
 
@@ -218,10 +224,11 @@ try {
 
                 <br/>
 
-                <iframe width="100%" height="550" scrolling="no"
-                        src="http://widget.mibbit.com/?settings=444700653d2683b29d7f0965230f38af&server=irc.web.gamesurge.net&channel=%23getdotastats-chat&autoConnect=false&delay=5&noServerMotd=true&noServerNotices=true&noServerTab=true&nick=gds_%3F%3F%3F%3F">
-                    Embedded chat
+                <!-- Begin chatwing.com chatbox -->
+                <iframe src="//chatwing.com/chatbox/e7f2bbd0-e292-4596-ab15-1667b4319e95" width="100%" height="650"
+                        frameborder="0" scrolling="0">Embedded chat
                 </iframe>
+                <!-- End chatwing.com chatbox -->
             </div>
         </div>
     </div>

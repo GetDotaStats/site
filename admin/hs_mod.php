@@ -160,6 +160,7 @@ try {
                 shms.`highscoreID`,
                 ml.`mod_name`,
                 shms.`modID`,
+                shms.`highscoreIdentifier`,
                 shms.`highscoreName`,
                 shms.`highscoreDescription`,
                 shms.`highscoreActive`,
@@ -220,7 +221,7 @@ try {
             ? '<input class="formTextArea boxsizingBorder" type="number" name="highscore_decimals" maxlength="20" size="4" value="' . $value['highscoreDecimals'] . '" min="0" max="10">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="highscore_decimals" maxlength="20" size="4" value="2" min="0" max="10">';
 
-        $hsModLBlink = '<a href="#d2mods__mod_leaderboard?lid=' . $value['highscoreID'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>';
+        $hsModLBlink = '<a href="#d2mods__mod_leaderboard?lid=' . $value['highscoreIdentifier'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>';
 
         echo '<div class="row">
                 <div class="col-md-1 text-center">' . $hsModLBlink . '</div>
@@ -236,9 +237,18 @@ try {
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-1"><strong>Mod</strong></div>
                 <div class="col-md-5">' . $value['mod_name'] . '</div>
+            </div>';
 
+        echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-1"><strong>ModID</strong></div>
+                <div class="col-md-5">' . $value['modID'] . '</div>
+            </div>';
+
+        echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-1"><strong>HS ID</strong></div>
-                <div class="col-md-2">' . $value['highscoreID'] . '</div>
+                <div class="col-md-5">' . $value['highscoreID'] . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';

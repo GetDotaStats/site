@@ -20,6 +20,7 @@ try {
                 ml.`mod_id`,
                 ml.`mod_identifier`,
                 shms.`highscoreID`,
+                shms.`highscoreIdentifier`,
                 shms.`highscoreName`,
                 shms.`highscoreDescription`,
                 shms.`highscoreActive`,
@@ -31,7 +32,7 @@ try {
                 ml.`mod_name`
             FROM `stat_highscore_mods_schema` shms
             JOIN `mod_list` ml ON shms.`modID` = ml.`mod_identifier`
-            WHERE shms.`highscoreID` = ?
+            WHERE shms.`highscoreIdentifier` = ?
             ORDER BY shms.`date_recorded`
             LIMIT 0,1;',
         's',

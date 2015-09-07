@@ -54,9 +54,12 @@ try {
         ? $_POST['highscore_decimals']
         : 2;
 
+    $highscoreID = md5($highscoreModID . '_' . $highscoreName . '_' . time());
+
     $insertSQL = $db->q(
         'INSERT INTO `stat_highscore_mods_schema`
               (
+                `highscoreID`,
                 `modID`,
                 `highscoreName`,
                 `highscoreDescription`,
@@ -65,9 +68,10 @@ try {
                 `highscoreFactor`,
                 `highscoreDecimals`
               )
-            VALUES (?, ?, ?, ?, ?, ?, ?);',
-        'sssssss', //STUPID x64 windows PHP is actually x86
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
+        'ssssssss', //STUPID x64 windows PHP is actually x86
         array(
+            $highscoreID,
             $highscoreModID,
             $highscoreName,
             $highscoreDescription,
