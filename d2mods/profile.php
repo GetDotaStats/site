@@ -112,7 +112,7 @@ try {
             echo '<div class="page-header"><h1>User Profile for: <small>' . $dbLink . '</small></h1></div>';
 
             echo '<div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__search">Find Another User</a>
                </div>';
 
@@ -419,7 +419,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__search">Find Another User</a>
         </div>';
 

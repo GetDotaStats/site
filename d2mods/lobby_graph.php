@@ -601,7 +601,7 @@ try {
 
     echo '<div class="h4">&nbsp;</div>';
     echo '<div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>';
     echo '<div class="h4">&nbsp;</div>';
