@@ -1,7 +1,8 @@
 <?php
 try {
-    require_once('../global_functions.php');
     require_once('../connections/parameters.php');
+    require_once('../global_functions.php');
+    require_once('./functions_v3.php');
 
     if (!isset($_SESSION)) {
         session_start();
@@ -43,6 +44,14 @@ try {
         }
     }
 
+    if (isset($_GET['refresh_db'])) {
+        updateUserDetails($steamID->getSteamID64(), $api_key1);
+
+        $cacheTimeHours = 2; //cache things for 2hours
+        $required_hero_min_play = 14; //need fourteen games with a hero for it to count
+        $user_details = get_account_details($steamID->getsteamID32(), 4, $required_hero_min_play, 1, $cacheTimeHours);
+    }
+
     echo '<div class="row">
             <div class="text-center">
                 <img src="http://getdotastats.com/sig/' . $steamID->getSteamID32() . '.png" /><br />
@@ -65,6 +74,7 @@ try {
     echo '<div class="row">
             <div class="text-center">
                 <a class="nav-clickable btn btn-danger btn-lg" href="#sig__generator?refresh">Refresh Signature</a>
+                <a class="nav-clickable btn btn-danger btn-lg" href="#sig__generator?refresh_db">Refresh Dotabuff Cache</a>
             </div>
        </div>';
 
@@ -146,10 +156,10 @@ try {
                     $DB_winRateHeroes = array();
                     if (!empty($DB_winRateHeroes_check)) {
                         foreach ($DB_winRateHeroes_tmp as $key => $value) {
-                            if (!empty($value['name'])) $DB_winRateHeroes[] = $value['name'];
+                            if (!empty($value['name'])) $DB_winRateHeroes[] = $value['name'] . ' (' . $value['winrate'] . ')';
                         }
 
-                        $DB_winRateHeroes = implode(' || ', $DB_winRateHeroes);
+                        $DB_winRateHeroes = '<ul><li>' . implode('</li><li>', $DB_winRateHeroes) . '</li></ul>';
                     } else {
                         throw new Exception();
                     }
@@ -184,10 +194,10 @@ try {
                     $DB_mostPlayedHeroes = array();
                     if (!empty($DB_mostPlayedHeroes_check)) {
                         foreach ($DB_mostPlayedHeroes_tmp as $key => $value) {
-                            if (!empty($value['name'])) $DB_mostPlayedHeroes[] = $value['name'];
+                            if (!empty($value['name'])) $DB_mostPlayedHeroes[] = $value['name'] . ' (' . $value['gamesplayed'] . ' games)';
                         }
 
-                        $DB_mostPlayedHeroes = implode(' || ', $DB_mostPlayedHeroes);
+                        $DB_mostPlayedHeroes = '<ul><li>' . implode('</li><li>', $DB_mostPlayedHeroes) . '</li></ul>';
                     } else {
                         throw new Exception();
                     }
@@ -287,90 +297,6 @@ try {
 
     }
 
-    /////////////////////////////
-    // MMR checklist
-    /////////////////////////////
-    echo '<div class="row">
-                <div class="col-sm-2 h3">MMR</div>
-            </div>';
-
-    {
-        $user_mmr_details = cached_query(
-            'sig_user_mmr_details' . $steamID->getsteamID32(),
-            'SELECT
-                    `user_id32`,
-                    `user_id64`,
-                    `user_name`,
-                    `user_games`,
-                    `user_mmr_solo`,
-                    `user_mmr_party`,
-                    `user_stats_disabled`,
-                    `date_recorded`
-                FROM `gds_users_mmr`
-                WHERE `user_id32` = ?
-                ORDER BY `date_recorded` DESC
-                LIMIT 0,1;',
-            's',
-            $steamID->getsteamID32(),
-            1
-        );
-        if (!empty($user_mmr_details)) $user_mmr_details = $user_mmr_details[0];
-
-        /////////////////////////////
-        // Last Shared
-        /////////////////////////////
-        $mmr_shared_date = !empty($user_mmr_details) && !empty($user_mmr_details['date_recorded'])
-            ? relative_time_v3($user_mmr_details['date_recorded'], 2, 'day', true)
-            : NULL;
-
-        $mmr_shared_check = !empty($user_mmr_details) && !empty($mmr_shared_date) && $mmr_shared_date['number'] <= 7
-            ? $glyph_true
-            : $glyph_false;
-
-        if (!empty($user_mmr_details)) {
-            $mmr_shared = !empty($user_mmr_details['date_recorded'])
-                ? relative_time_v3($user_mmr_details['date_recorded'])
-                : 'Un-determined';
-        } else {
-            $mmr_shared = '&nbsp;';
-        }
-
-        $mmr_shared_glyph = '<span class="glyphicon glyphicon-question-sign" title="Was your MMR shared with us in the last week?"></span>';
-        echo '<div class="row">
-                <div class="col-sm-2">' . $mmr_shared_glyph . ' <strong>Shared</strong></div>
-                <div class="col-sm-1">' . $mmr_shared_check . '</div>
-                <div class="col-sm-9">' . $mmr_shared . '</div>
-            </div>';
-
-        if (!empty($user_mmr_details)) {
-            /////////////////////////////
-            // Currently Enabled
-            /////////////////////////////
-            $mmr_enabled_check = empty($user_mmr_details['user_stats_disabled'])
-                ? $glyph_true
-                : $glyph_false;
-
-            $mmr_solo = !empty($user_mmr_details['user_mmr_solo'])
-                ? $user_mmr_details['user_mmr_solo']
-                : '??';
-
-            $mmr_party = !empty($user_mmr_details['user_mmr_party'])
-                ? $user_mmr_details['user_mmr_party']
-                : '??';
-
-            $mmr_enabled = empty($user_mmr_details['user_stats_disabled'])
-                ? 'Solo: ' . $mmr_solo . ' || Party: ' . $mmr_party
-                : 'Solo: ???? || Party: ????';
-
-            $mmr_enabled_glyph = '<span class="glyphicon glyphicon-question-sign" title="Are you currently sharing your MMR with us?"></span>';
-            echo '<div class="row">
-                    <div class="col-sm-2">' . $mmr_enabled_glyph . ' <strong>Enabled</strong></div>
-                    <div class="col-sm-1">' . $mmr_enabled_check . '</div>
-                    <div class="col-sm-9">' . $mmr_enabled . '</div>
-                </div>';
-        }
-    }
-
     echo '<hr />';
 
     echo '<h2>Questions & Answers</h2>';
@@ -392,47 +318,20 @@ try {
 
     //Q2
     echo '<div class="row">
-            <span class="h3">Q2. How do I add MMR?</span>
+            <span class="h3">Q2. Where did my MMR go?</span>
         </div>
 
         <div class="row">
-            <ol>
-                <li>Opt-in to the MMR sharing via the Lobby Explorer. You can download it from the
-                    <a class="nav-clickable" href="#d2mods__lobby_list">lobby list</a> page.</li>
-                <li>Tick the "Share MMR with GDS?" tick-box.</li>
-                <span class="h3">&nbsp;</span>
-                <div class="text-center"><img src="' . $CDN_generic . '/images/misc/sig/opt_in.png" width="500px"/></div>
-            </ol>
+            <ul>
+                <li>We can no longer offer this service in the Reborn client.</li>
+            </ul>
         </div>';
 
     echo '<span class="h3">&nbsp;</span>';
 
     //Q3
     echo '<div class="row">
-            <span class="h3">Q3. My MMR is not updating!</span>
-        </div>
-
-        <div class="row">
-            <ul>
-                <li>MMR is typically updated once a day, when you open the Dota2 client.</li>
-            </ul>
-            <ol>
-                <li>Refer to the checklist above, and confirm that "Shared" was within the last week.</li>
-                <li>Refer to the checklist above, and confirm that "Enabled" is green, and the MMRs match your
-                    correct MMR in-game.</li>
-                <li>Make sure you have opted into the MMR sharing via the Lobby Explorer. Refer to
-                    Q2 on how to set it up.</li>
-                <li>Report the issue on our <a target="_blank" href="http://github.com/GetDotaStats/site/issues">
-                    Issue Tracker</a>, making sure to reference: your steamID, the answers to the above three
-                    questions.</li>
-            </ol>
-        </div>';
-
-    echo '<span class="h3">&nbsp;</span>';
-
-    //Q4
-    echo '<div class="row">
-            <span class="h3">Q4. My steam name and avatar is not updating!</span>
+            <span class="h3">Q3. My steam name and avatar is not updating!</span>
         </div>
 
         <div class="row">
@@ -445,9 +344,37 @@ try {
 
     echo '<span class="h3">&nbsp;</span>';
 
+    //Q4
+    echo '<div class="row">
+            <span class="h3">Q4. I am missing heroes in my signature!</span>
+        </div>
+
+        <div class="row">
+            <ul>
+                <li>We only count heroes with at least 15 games played.</li>
+            </ul>
+        </div>';
+
+    echo '<span class="h3">&nbsp;</span>';
+
     //Q5
     echo '<div class="row">
-            <span class="h3">Q5. My issue is not on the list!</span>
+            <span class="h3">Q5. One of the heroes is missing its picture!</span>
+        </div>
+
+        <div class="row">
+            <ul>
+                <li>This happens when an existing hero is renamed or a new hero is added.</li>
+                <li>Report your issue in our <a target="_blank" href="http://github.com/GetDotaStats/site/issues">
+                    Issue Tracker</a> or in the chatbox on the right hand side of this page.</li>
+            </ul>
+        </div>';
+
+    echo '<span class="h3">&nbsp;</span>';
+
+    //Q6
+    echo '<div class="row">
+            <span class="h3">Q6. My issue is not on the list!</span>
         </div>
 
         <div class="row">

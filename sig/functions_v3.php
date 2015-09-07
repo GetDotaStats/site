@@ -71,7 +71,6 @@ if (!function_exists("getAndUpdateDBDetails")) {
         if (empty($bigArray)) throw new Exception('No data returned from Dotabuff');
         if (empty($bigArray['winRateHeroes']) || empty($bigArray['mostPlayedHeroes'])) throw new Exception('Not enough games played');
 
-
         $db->q(
             'INSERT INTO `sigs_dotabuff_info`
                 (

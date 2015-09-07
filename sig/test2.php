@@ -1,6 +1,6 @@
 <?php
 require_once('../connections/parameters.php');
-require_once('./functions_v2.php');
+require_once('./functions_v3.php');
 require_once('../global_functions.php');
 
 try {
@@ -29,8 +29,9 @@ try {
     echo '<hr />';
 
 } catch (Exception $e) {
-    echo '<br /><br />' . $e->getMessage();
-    echo '<br /><br />' . $e->getCode();
+    echo formatExceptionHandling($e,1);
+    //echo '<br /><br />' . $e->getMessage();
+    //echo '<br /><br />' . $e->getCode();
 } finally {
     if (isset($memcache)) $memcache->close();
 }

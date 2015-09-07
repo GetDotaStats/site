@@ -35,7 +35,7 @@ try {
 
     require_once('../connections/parameters.php');
     require_once('../global_functions.php');
-    require_once('./functions_v2.php');
+    require_once('./functions_v3.php');
     set_time_limit(60);
 
     header("Content-type: image/png");
@@ -181,12 +181,12 @@ try {
         if (!empty($user_details['mostPlayedHeroes'])) {
             $x = $y = 0;
             for ($i = 0; $i < count($user_details['mostPlayedHeroes']); $i++) {
-                $image_file = './images/' . $user_details['mostPlayedHeroes'][$i]['pic'] . '.png';
+                $image_file = './images/heroes/' . $user_details['mostPlayedHeroes'][$i]['pic'] . '.png';
 
                 if (file_exists($image_file)) {
                     $image = imagecreatefrompng($image_file);
                 } else {
-                    $image = './images/bases/hero_default.png';
+                    $image = imagecreatefrompng('./images/bases/hero_default.png');
                 }
 
                 //list($overlay_width, $overlay_height) = getimagesize($image_file);
@@ -241,12 +241,12 @@ try {
         if (!empty($user_details['winRateHeroes'])) {
             $x = $y = 0;
             for ($i = 0; $i < count($user_details['winRateHeroes']); $i++) {
-                $image_file = './images/' . $user_details['winRateHeroes'][$i]['pic'] . '.png';
+                $image_file = './images/heroes/' . $user_details['winRateHeroes'][$i]['pic'] . '.png';
 
                 if (file_exists($image_file)) {
                     $image = imagecreatefrompng($image_file);
                 } else {
-                    $image = './images/bases/hero_default.png';
+                    $image = imagecreatefrompng('./images/bases/hero_default.png');
                 }
 
                 //list($overlay_width, $overlay_height) = getimagesize($image_file);
@@ -391,6 +391,7 @@ try {
         //ACCOUNT MMR
         //////////////////////////
 
+        /*
         if (!empty($lx_user_details) && empty($lx_user_details[0]['user_stats_disabled'])) {
             $rank_solo = !empty($lx_user_details[0]['user_mmr_solo'])
                 ? $lx_user_details[0]['user_mmr_solo']
@@ -424,10 +425,12 @@ try {
             $text_colour,
             $font_bold,
             $overlay_text);
+        */
 
         //////////////////////////
         //VALVE MMR LOGO
         //////////////////////////
+        /*
         $image_file_src = './images/bases/mmr_logo_v2.png';
         $image_file = imagecreatefrompng($image_file_src);
 
@@ -453,6 +456,7 @@ try {
             24);
 
         imagedestroy($image_file);
+        */
 
         $db->q("INSERT INTO `sigs_generated` (`user_id32`, `user_id64`, `date_modified`)
 				  VALUES (?, ?, FROM_UNIXTIME(?))

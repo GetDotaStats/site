@@ -315,7 +315,7 @@ try {
         //////////////////////////
         //ACCOUNT MMR
         //////////////////////////
-
+        /*
         if (!empty($lx_user_details) && empty($lx_user_details[0]['user_stats_disabled'])) {
             $rank_solo = !empty($lx_user_details[0]['user_mmr_solo'])
                 ? $lx_user_details[0]['user_mmr_solo']
@@ -349,10 +349,12 @@ try {
             $text_colour,
             $font_norm,
             $overlay_text);
+        */
 
         //////////////////////////
         //VALVE MMR LOGO
         //////////////////////////
+        /*
         $image_file_src = './images/bases/mmr_logo_v2.png';
         $image_file = imagecreatefrompng($image_file_src);
 
@@ -378,6 +380,7 @@ try {
             24);
 
         imagedestroy($image_file);
+        */
 
         $db->q("INSERT INTO `sigs_generated` (`user_id32`, `user_id64`, `date_modified`)
 				  VALUES (?, ?, FROM_UNIXTIME(?))
