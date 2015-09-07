@@ -15,6 +15,8 @@ try {
 
     //UPDATE WORKSHOP DETAILS
     {
+        set_time_limit(0);
+
         $modList = $db->q(
             'SELECT
                     `mod_id`,
@@ -54,10 +56,10 @@ try {
 
                     $tempArray = array();
 
-                    if ($modWorkshopDetails['response']['result'] == 1) {
+                    if ($modWorkshopDetails['response']['result'] == 1 && $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1) {
                         try {
                             if (!empty($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'])) {
-                                curl_download($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'], '../../../images/mods/thumbs/' . $value['mod_id'] . '.png');
+                                curl_download($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'], '../../../images/mods/thumbs/', $value['mod_id'] . '.png');
                             }
                         } catch (Exception $e) {
                             echo '<br />' . $e->getMessage() . '<br /><br />';
