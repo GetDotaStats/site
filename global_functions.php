@@ -31,7 +31,7 @@ $path_lib_html5shivJS_name = 'html5shiv-3-7-0.js?20';
 $path_lib_html5shivJS_full = $CDN_generic . $path_lib_html5shivJS . $path_lib_html5shivJS_name;
 
 $path_lib_siteJS = '/';
-$path_lib_siteJS_name = 'getdotastats.js?32';
+$path_lib_siteJS_name = 'getdotastats.js?35';
 $path_lib_siteJS_full = $CDN_generic . $path_lib_siteJS . $path_lib_siteJS_name;
 //$path_lib_siteJS_full = '.' . $path_lib_siteJS . $path_lib_siteJS_name;
 
@@ -44,7 +44,7 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.css?28';
+$path_css_site_name = 'getdotastats.min.css?31';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
 
 $path_css_bootstrap = '/bootstrap/css/';
@@ -367,7 +367,7 @@ if (!class_exists("dbWrapper_v3")) {
 
 
 if (!function_exists("curl")) {
-    function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeout = false)
+    function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeoutConnect = false, $timeoutExecute = false)
     {
         empty($user_agent)
             ? $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1'
@@ -381,9 +381,11 @@ if (!function_exists("curl")) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
-        if ($timeout) {
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); //timeout in seconds
+        if ($timeoutConnect) {
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeoutConnect);
+        }
+        if($timeoutExecute){
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutExecute); //timeout in seconds
         }
         if ($refer) {
             curl_setopt($ch, CURLOPT_REFERER, $refer);
@@ -405,6 +407,58 @@ if (!function_exists("curl")) {
 
         curl_close($ch);
         return $page;
+    }
+}
+
+if (!function_exists("curl_download")) {
+    function curl_download($url, $savePath = '../../images/', $saveName = 'test.png')
+    {
+        if (
+            empty($url) ||
+            empty($savePath) || $savePath == '../../images/' ||
+            empty($saveName) || $saveName == 'test.png'
+        ) {
+            throw new Exception('Missing required parameter!');
+        }
+
+        if (!is_dir($savePath)) throw new Exception('Save path does not exist!');
+
+        $image = curl($url, NULL, NULL, NULL, NULL, 30, 120);
+
+        if (empty($image)) throw new Exception('No image downloaded!');
+
+        if (is_file($savePath . $saveName)) {
+            $saveNameFinal = $saveName . '2';
+        } else {
+            $saveNameFinal = $saveName;
+        }
+
+        $saveFileHandler = fopen($savePath . $saveNameFinal, 'w');
+        fwrite($saveFileHandler, $image);
+        fclose($saveFileHandler);
+        unset($saveFileHandler);
+
+        if ($saveName != $saveNameFinal) {
+            $saveFileHandler = unlink($savePath . $saveName);
+            if ($saveFileHandler) {
+                $saveFileHandler = rename($savePath . $saveNameFinal, $savePath . $saveName);
+                if ($saveFileHandler) {
+                    if (!is_file($savePath . $saveName)) {
+                        throw new Exception('New version of file not found!');
+                    } else {
+                        return true;
+                    }
+                } else {
+                    throw new Exception('New version of file was not renamed!');
+                }
+            } else {
+                throw new Exception('Old version of file was not deleted!');
+            }
+        } else if (!is_file($savePath . $saveNameFinal)) {
+            throw new Exception('No image downloaded!');
+        } else {
+            return true;
+        }
     }
 }
 
@@ -551,7 +605,7 @@ if (!function_exists('relative_time_v2')) {
 //A STRING DENOMINATOR OF SINGLE TIME (SECOND, MINUTE, etc) WILL FORCE FORMATTED OUTPUT
 //RETURNARRAY WILL RETURN ARRAY INSTEAD OF STRING
 if (!function_exists('relative_time_v3')) {
-    function relative_time_v3($time, $decimals = 1, $output = NULL, $returnArray = false, $returnFormattedNumber = true)
+    function relative_time_v3($time, $decimals = 1, $output = NULL, $returnArray = false, $returnFormattedNumber = true, $returnCompactString = false)
     {
         if (!is_numeric($time)) {
             if (strtotime($time)) {
@@ -569,65 +623,65 @@ if (!function_exists('relative_time_v3')) {
             switch ($time) {
                 case ((time() - $time) >= 31536000):
                     $number = number_format(((time() - $time) / 31536000), $decimals);
-                    $timeString = 'year';
+                    $timeString = !$returnCompactString ? 'year' : 'yr';
                     break;
                 case ((time() - $time) >= 2592000):
                     $number = number_format(((time() - $time) / 2592000), $decimals);
-                    $timeString = 'month';
+                    $timeString = !$returnCompactString ? 'month' : 'mo';
                     break;
                 case ((time() - $time) >= 86400):
                     $number = number_format(((time() - $time) / 86400), $decimals);
-                    $timeString = 'day';
+                    $timeString = !$returnCompactString ? 'day' : 'day';
                     break;
                 case ((time() - $time) >= 3600):
                     $number = number_format(((time() - $time) / 3600), $decimals);
-                    $timeString = 'hour';
+                    $timeString = !$returnCompactString ? 'hour' : 'hr';
                     break;
                 default:
                     $number = number_format(((time() - $time) / 60), 0);
-                    $timeString = 'minute';
+                    $timeString = !$returnCompactString ? 'minute' : 'min';
                     break;
             }
         } else {
             switch ($output) {
                 case 'year':
                     $number = number_format(((time() - $time) / 31536000), $decimals);
-                    $timeString = 'year';
+                    $timeString = !$returnCompactString ? 'year' : 'yr';
                     break;
                 case 'month':
                     $number = number_format(((time() - $time) / 2592000), $decimals);
-                    $timeString = 'month';
+                    $timeString = !$returnCompactString ? 'month' : 'mo';
                     break;
                 case 'day':
                     $number = number_format(((time() - $time) / 86400), $decimals);
-                    $timeString = 'day';
+                    $timeString = !$returnCompactString ? 'day' : 'day';
                     break;
                 case 'hour':
                     $number = number_format(((time() - $time) / 3600), $decimals);
-                    $timeString = 'hour';
+                    $timeString = !$returnCompactString ? 'hour' : 'hr';
                     break;
                 case 'minute':
                     $number = number_format(((time() - $time) / 60), 0);
-                    $timeString = 'minute';
+                    $timeString = !$returnCompactString ? 'minute' : 'min';
                     break;
                 case 'second':
                     $number = number_format(((time() - $time)), 0);
-                    $timeString = 'second';
+                    $timeString = !$returnCompactString ? 'second' : 'sec';
                     break;
                 default:
                     $number = number_format(((time() - $time)), $decimals);
-                    $timeString = 'second';
+                    $timeString = !$returnCompactString ? 'second' : 'sec';
                     break;
             }
         }
 
         if ($number == 1) {
-            $timeString = $timeString . ' ago';
+            $timeString = !$returnCompactString ? $timeString . ' ago' : $timeString . '. ago';
         } else {
-            $timeString = $timeString . 's ago';
+            $timeString = !$returnCompactString ? $timeString . 's ago' : $timeString . 's. ago';
         }
 
-        if($returnFormattedNumber == false){
+        if ($returnFormattedNumber == false) {
             $number = str_replace(',', '', $number);
         }
 
