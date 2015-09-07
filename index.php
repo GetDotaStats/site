@@ -139,7 +139,8 @@ try {
                 </li>
                 <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span
+                                class="label label-danger">NEW</span> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Management</li>
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
@@ -147,6 +148,8 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_feedback">Mod Feedback</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema <span
+                                        class="label label-danger">NEW</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Users</li>
                             <li><a class="nav-clickable" href="#admin__user_mmr">MMR List</a></li>
