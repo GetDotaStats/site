@@ -213,6 +213,12 @@
                     <div class="col-sm-7">"213123342"</div>
                 </div>
 
+                <div class="row">
+                    <div class="col-sm-3">schemaVersion</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-7">1</div>
+                </div>
+
                 <span class="h4">&nbsp;</span>
             </div>
 
@@ -224,7 +230,8 @@
 {
     "modID": "7adfki234jlk23",
     "steamID32": "2875155",
-    "matchID": "213123342"
+    "matchID": "213123342",
+    "schemaVersion": 1
 }
             </pre>
 
@@ -565,13 +572,6 @@
 
     <div class="row">
         <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">playerName</div>
-        <div class="col-sm-2">string</div>
-        <div class="col-sm-6">"jimmydorry"</div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-2">&nbsp;</div>
         <div class="col-sm-2">steamID32</div>
         <div class="col-sm-2">string</div>
         <div class="col-sm-6">"2875155"</div>
@@ -624,7 +624,6 @@
         {
             "players": [
                 {
-                    "playerName": "jimmydorry",
                     "steamID32": "2875155",
                     "teamID": 2,
                     "slotID": 1,
@@ -632,7 +631,6 @@
                     "connectionState": 2
                 },
                 {
-                    "playerName": "ash47",
                     "steamID32": "2875156",
                     "teamID": 3,
                     "slotID": 2,
@@ -640,7 +638,6 @@
                     "connectionState": 2
                 },
                 {
-                    "playerName": "BMD",
                     "steamID32": "2875157",
                     "teamID": 4,
                     "slotID": 3,
@@ -648,7 +645,6 @@
                     "connectionState": 2
                 },
                 {
-                    "playerName": "sinz",
                     "steamID32": "2875158",
                     "teamID": 5,
                     "slotID": 4,
@@ -660,7 +656,6 @@
         {
             "players": [
                 {
-                    "playerName": "jimmydorry",
                     "steamID32": "2875155",
                     "teamID": 2,
                     "slotID": 1,
@@ -668,7 +663,6 @@
                     "connectionState": 2
                 },
                 {
-                    "playerName": "ash47",
                     "steamID32": "2875156",
                     "teamID": 3,
                     "slotID": 2,
@@ -676,7 +670,6 @@
                     "connectionState": 2
                 },
                 {
-                    "playerName": "BMD",
                     "steamID32": "2875157",
                     "teamID": 4,
                     "slotID": 3,
@@ -684,7 +677,6 @@
                     "connectionState": 2
                 },
                 {
-                    "playerName": "sinz",
                     "steamID32": "2875158",
                     "teamID": 5,
                     "slotID": 4,
@@ -746,9 +738,10 @@
     </div>
     <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
         <div class="panel-body">
-            <p>If your mod wishes to capture additional data (such as scoring, items or abilities), you will need to
-                create a schema
-                and submit it to the site for discussion. Each implementation will be unique.</p>
+            <p>If your mod wishes to capture additional data (such as scoring, items or abilities), the developer will
+                need to contact an admin and have their schema entered and approved in the system (<a
+                    class="nav-clickable" href="#admin__mod_schema">HERE</a>). Each implementation is unique and
+                requires careful planning for current and future needs.</p>
 
             <p><strong>Endpoint:</strong> <code>N/A</code></p>
 
@@ -796,13 +789,36 @@
                     <div class="col-sm-7">1</div>
                 </div>
 
-                <!--players array-->
-
                 <div class="row">
                     <div class="col-sm-3">rounds</div>
                     <div class="col-sm-2">array</div>
                     <div class="col-sm-7">&nbsp;</div>
                 </div>
+
+                <!--game array-->
+
+                <div class="row">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-3">game</div>
+                    <div class="col-sm-2">key-value array</div>
+                    <div class="col-sm-6">&nbsp;</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">customValue1</div>
+                    <div class="col-sm-2">???</div>
+                    <div class="col-sm-6">XXXX</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">customValue2</div>
+                    <div class="col-sm-2">???</div>
+                    <div class="col-sm-6">YYYY</div>
+                </div>
+
+                <!--players array-->
 
                 <div class="row">
                     <div class="col-sm-1">&nbsp;</div>
@@ -841,63 +857,66 @@
 
             <pre class="pre-scrollable">
 {
-    "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
     "modID": "7adfki234jlk23",
-    "schemaAuthKey": "jh345235ljhfads",
+    "schemaAuthKey": "K65S5J7HFD",
     "schemaVersion": 1,
     "rounds": [
         {
+            "game": [
+                {
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                }
+            ],
             "players": [
                 {
                     "steamID32": "2875155",
-                    "score": 242,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 },
                 {
                     "steamID32": "2875156",
-                    "score": 123,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 },
                 {
                     "steamID32": "2875157",
-                    "score": 453,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 },
                 {
                     "steamID32": "2875158",
-                    "score": 3,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 }
             ]
         },
         {
+            "game": [
+                {
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                }
+            ],
             "players": [
                 {
                     "steamID32": "2875155",
-                    "score": 546,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 },
                 {
                     "steamID32": "2875156",
-                    "score": 432,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 },
                 {
                     "steamID32": "2875157",
-                    "score": 7,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 },
                 {
                     "steamID32": "2875158",
-                    "score": 97,
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 }
@@ -929,8 +948,7 @@
     <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
         <div class="panel-body">
             <p>This is the response from the server after receiving the communication from the client for CUSTOM DATA.
-                The
-                result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
+                The result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
                 accompanying textual error, for debugging purposes.</p>
 
             <pre class="pre-scrollable">
@@ -1142,8 +1160,11 @@ try {
             //Players LIST
             /////////////////////////////
             $latestPlayerData = cached_query('s2_latest_player_data' . $value['matchID'],
-                'SELECT *
-                    FROM `s2_match_players`
+                'SELECT
+                      s2mpn.`playerName`,
+                      s2mp.*
+                    FROM `s2_match_players` s2mp
+                    LEFT JOIN `s2_match_players_name` s2mpn ON s2mp.`steamID64` = s2mpn.`steamID64`
                     WHERE `matchID` = ?
                     ORDER BY `dateRecorded` DESC;',
                 's',
@@ -1160,7 +1181,7 @@ try {
                     unset($value2['matchID']);
                     unset($value2['modID']);
                     unset($value2['steamID64']);
-                    unset($value2['isWinner']);
+                    //unset($value2['isWinner']);
                     unset($value2['dateRecorded']);
                     $playerList[] = $value2;
                 }

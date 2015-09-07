@@ -101,26 +101,37 @@ try {
                 $steamID64 = $steamID_manipulator->getSteamID64();
 
                 $db->q(
-                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `playerName`, `teamID`, `slotID`, `heroID`, `connectionState`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `teamID`, `slotID`, `heroID`, `connectionState`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ON DUPLICATE KEY UPDATE
-                          `playerName` = VALUES(`playerName`),
                           `teamID` = VALUES(`teamID`),
                           `slotID` = VALUES(`slotID`),
                           `heroID` = VALUES(`heroID`),
                           `connectionState` = VALUES(`connectionState`);',
-                    'sissssiiii',
+                    'sisssiiii',
                     array(
                         $matchID,
                         1,
                         $preGameAuthPayloadJSON['modID'],
                         $steamID32,
                         $steamID64,
-                        $value['playerName'],
                         $value['teamID'],
                         $value['slotID'],
                         $value['heroID'],
                         $value['connectionState']
+                    )
+                );
+
+                $db->q('INSERT INTO `s2_match_players_name`
+                                (`steamID32`, `steamID64`, `playerName`)
+                            VALUES (?, ?, ?)
+                            ON DUPLICATE KEY UPDATE
+                                  `playerName` = VALUES(`playerName`);',
+                    'sss',
+                    array(
+                        $steamID32,
+                        $steamID64,
+                        $value['playerName']
                     )
                 );
             }

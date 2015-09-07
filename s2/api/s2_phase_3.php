@@ -116,23 +116,21 @@ try {
                             : 0;
 
                         $db->q(
-                            'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `playerName`, `teamID`, `slotID`, `heroID`, `connectionState`, `isWinner`)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `teamID`, `slotID`, `heroID`, `connectionState`, `isWinner`)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                 ON DUPLICATE KEY UPDATE
-                                  `playerName` = VALUES(`playerName`),
                                   `teamID` = VALUES(`teamID`),
                                   `slotID` = VALUES(`slotID`),
                                   `heroID` = VALUES(`heroID`),
                                   `connectionState` = VALUES(`connectionState`),
                                   `isWinner` = VALUES(`isWinner`);',
-                            'sissssiiiii',
+                            'sisssiiiii',
                             array(
                                 $matchID,
                                 ($key + 1),
                                 $preGameAuthPayloadJSON['modID'],
                                 $steamID32,
                                 $steamID64,
-                                $value2['playerName'],
                                 $value2['teamID'],
                                 $value2['slotID'],
                                 $value2['heroID'],
