@@ -138,7 +138,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>';
 
@@ -221,9 +221,13 @@ try {
 
             $modLinks = $workshopLink . ' || ' . $steamGroupLink;
 
-            $modThumb = !empty($value['mod_thumbnail'])
-                ? $value['mod_thumbnail']
+            $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
+                ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
+
+            /*$modThumb = !empty($value['mod_thumbnail'])
+                ? $value['mod_thumbnail']
+                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';*/
 
             if (!empty($value['date_last_updated'])) {
                 $modLastUpdate = relative_time_v3($value['date_last_updated'], 0, 'day', 1);
@@ -279,7 +283,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list">Lobby List</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>';
 
