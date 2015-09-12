@@ -42,7 +42,7 @@ try {
     foreach ($modList as $key => $value) {
         echo '<form id="modApprove' . $key . '">';
 
-        $modID = !empty($value['mod_identifier'])
+        $modIDfield = !empty($value['mod_identifier'])
             ? '<input class="formTextArea boxsizingBorder" type="text" value="' . $value['mod_identifier'] . '" disabled>'
             : '<input class="formTextArea boxsizingBorder" type="text" value="UNKNOWN" disabled>';
 
@@ -86,7 +86,7 @@ try {
         echo '<div class="row">
                 <div class="col-md-1"><span class="h4">ID</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The identifier for this custom game"></span></div>
-                <div class="col-md-6">' . $modID . '</div>
+                <div class="col-md-6">' . $modIDfield . '</div>
 
                 <div class="col-md-1"><span class="h4">Games</span></div>
                 <div class="col-md-3">' . $modGames . '</div>
@@ -154,7 +154,7 @@ try {
                 <div class="col-md-4">&nbsp;</div>
             </div>';
 
-        echo '<input type="hidden" name="modID" value="' . $value['mod_identifier'] . '">';
+        echo '<input type="hidden" name="modID" value="' . $value['mod_id'] . '">';
 
         echo '<input type="hidden" name="m_submit" value=""/>';
 

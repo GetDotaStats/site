@@ -113,7 +113,7 @@ try {
                 <div class="col-md-4">&nbsp;</div>
             </div>';
 
-        echo '<input type="hidden" name="modID" value="' . $value['mod_identifier'] . '">';
+        echo '<input type="hidden" name="modID" value="' . $value['mod_id'] . '">';
 
         echo '</form>';
 

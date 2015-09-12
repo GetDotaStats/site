@@ -67,13 +67,40 @@ try {
             `mod_workshop_link` = ?,
             `mod_options` = ?,
             `mod_options_enabled` = ?
-          WHERE `mod_identifier` = ?;',
+          WHERE `mod_id` = ?;',
         'issssissis',
         $modActive, $modName, $modDescription, $modGroup, $modMaps, $modMaxPlayers, $modWorkshop, $modOptions, $modOptionsActive, $modID
     );
 
     if ($insertSQL) {
         $json_response['result'] = 'Custom Game updated!';
+
+        $irc_message = new irc_message($webhook_gds_site_live);
+
+        $message = array(
+            array(
+                $irc_message->colour_generator('red'),
+                '[ADMIN]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('green'),
+                '[MOD]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('bold'),
+                $irc_message->colour_generator('blue'),
+                'Edited:',
+                $irc_message->colour_generator(NULL),
+                $irc_message->colour_generator('bold'),
+            ),
+            array($modName),
+            array(' || http://getdotastats.com/#d2mods__stats?id=' . $modID),
+        );
+
+        $message = $irc_message->combine_message($message);
+        $irc_message->post_message($message);
     } else {
         throw new Exception('Custom Game not updated!');
     }

@@ -55,18 +55,11 @@ try {
                 gdsu.`user_avatar`
 
             FROM `s2_mod_custom_schema` s2mcs
-            INNER JOIN (
-                SELECT `modID`, MAX(`schemaVersion`) AS `schemaVersion`
-                FROM `s2_mod_custom_schema`
-                WHERE `schemaApproved` = 0 AND `schemaRejected` = 0
-                GROUP BY `modID`
-            ) s2mcs2
-                ON s2mcs.`modID` = s2mcs2.`modID`
-                    AND s2mcs.`schemaVersion` = s2mcs2.`schemaVersion`
             INNER JOIN `mod_list` ml
                 ON s2mcs.`modID` = ml.`mod_id`
             LEFT JOIN `gds_users` gdsu
                 ON ml.`steam_id64` = gdsu.`user_id64`
+            WHERE s2mcs.`schemaApproved` = 0 AND s2mcs.`schemaRejected` = 0
             ORDER BY s2mcs.`dateRecorded` DESC;',
         NULL,
         NULL,
@@ -142,18 +135,11 @@ try {
                 gdsu.`user_avatar`
 
             FROM `s2_mod_custom_schema` s2mcs
-            INNER JOIN (
-                SELECT `modID`, MAX(`schemaVersion`) AS `schemaVersion`
-                FROM `s2_mod_custom_schema`
-                WHERE `schemaApproved` = 1
-                GROUP BY `modID`
-            ) s2mcs2
-                ON s2mcs.`modID` = s2mcs2.`modID`
-                    AND s2mcs.`schemaVersion` = s2mcs2.`schemaVersion`
             INNER JOIN `mod_list` ml
                 ON s2mcs.`modID` = ml.`mod_id`
             LEFT JOIN `gds_users` gdsu
                 ON ml.`steam_id64` = gdsu.`user_id64`
+            WHERE s2mcs.`schemaApproved` = 1
             ORDER BY s2mcs.`dateRecorded` DESC;',
         NULL,
         NULL,
@@ -227,18 +213,11 @@ try {
                 gdsu.`user_avatar`
 
             FROM `s2_mod_custom_schema` s2mcs
-            INNER JOIN (
-                SELECT `modID`, MAX(`schemaVersion`) AS `schemaVersion`
-                FROM `s2_mod_custom_schema`
-                WHERE `schemaRejected` = 1
-                GROUP BY `modID`
-            ) s2mcs2
-                ON s2mcs.`modID` = s2mcs2.`modID`
-                    AND s2mcs.`schemaVersion` = s2mcs2.`schemaVersion`
             INNER JOIN `mod_list` ml
                 ON s2mcs.`modID` = ml.`mod_id`
             LEFT JOIN `gds_users` gdsu
                 ON ml.`steam_id64` = gdsu.`user_id64`
+            WHERE s2mcs.`schemaRejected` = 1
             ORDER BY s2mcs.`dateRecorded` DESC;',
         NULL,
         NULL,

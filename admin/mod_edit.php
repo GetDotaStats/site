@@ -204,7 +204,7 @@ try {
                 <div class="col-md-12 text-center"><input type="submit" value="Edit"></div>
             </div>';
 
-        echo '<input type="hidden" name="modID" value="' . $value['mod_identifier'] . '">';
+        echo '<input type="hidden" name="modID" value="' . $value['mod_id'] . '">';
 
         echo '<span class="h5">&nbsp;</span>';
 

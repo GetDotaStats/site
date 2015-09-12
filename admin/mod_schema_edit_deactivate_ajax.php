@@ -37,19 +37,47 @@ try {
             WHERE s2mcs.`schemaID` = ? AND s2mcs.`modID` = ?
             LIMIT 0,1;',
         'ii',
-        array($schemaID, $schemaModID)
+        array($schemaID, $schemaModID),
+        1
     );
 
     if(empty($schemaCheck)) throw new Exception('Invalid schema!');
 
     $updateSQL = $db->q(
-        'UPDATE `s2_mod_custom_schema` SET `schemaApproved` = 0 WHERE `modID` = ? AND `schemaID` <> ?;',
+        'UPDATE `s2_mod_custom_schema` SET `schemaApproved` = 0 WHERE `schemaRejected` = 0 AND `modID` = ? AND `schemaID` <> ?;',
         'ii',
         $schemaModID, $schemaID
     );
 
     if ($updateSQL) {
         $json_response['result'] = "Success! Custom Game Schemas for mod #$schemaModID now de-activated.";
+
+        $irc_message = new irc_message($webhook_gds_site_live);
+
+        $message = array(
+            array(
+                $irc_message->colour_generator('red'),
+                '[ADMIN]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('green'),
+                '[SCHEMA]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('bold'),
+                $irc_message->colour_generator('blue'),
+                'De-activated schemas for:',
+                $irc_message->colour_generator(NULL),
+                $irc_message->colour_generator('bold'),
+            ),
+            array($schemaCheck[0]['mod_name']),
+            array(' || http://getdotastats.com/#admin__mod_schema_edit?id=' . $schemaID),
+        );
+
+        $message = $irc_message->combine_message($message);
+        $irc_message->post_message($message);
     } else {
         throw new Exception('No changes made to DB. There were probably no schemas to de-activate.');
     }

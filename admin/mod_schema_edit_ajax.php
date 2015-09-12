@@ -29,15 +29,18 @@ try {
     $schemaDetails = cached_query(
         'admin_custom_schema_sic' . $schemaID,
         'SELECT
-              `schemaID`,
-              `modID`,
-              `schemaAuth`,
-              `schemaApproved`,
-              `schemaRejected`,
-              `schemaVersion`,
-              `dateRecorded`
-            FROM `s2_mod_custom_schema`
-            WHERE `schemaID` = ?
+              s2mcs.`schemaID`,
+              s2mcs.`modID`,
+              s2mcs.`schemaAuth`,
+              s2mcs.`schemaApproved`,
+              s2mcs.`schemaRejected`,
+              s2mcs.`schemaVersion`,
+              s2mcs.`dateRecorded`,
+
+              ml.*
+            FROM `s2_mod_custom_schema` s2mcs
+            LEFT JOIN `mod_list` ml ON s2mcs.`modID` = ml.`mod_id`
+            WHERE s2mcs.`schemaID` = ?
             LIMIT 0,1;',
         'i',
         $schemaID,
@@ -50,128 +53,164 @@ try {
 
     $schemaModID = $schemaDetails[0]['modID'];
     $schemaSubmitterUserID64 = $_SESSION['user_id64'];
-    $schemaApproved = !empty($_POST['schema_approved']) && $_POST['schema_approved'] == 1
-        ? 1
-        : 0;
-    $schemaRejected = !empty($_POST['schema_rejected']) && $_POST['schema_rejected'] == 1
-        ? 1
-        : 0;
 
-    if ($schemaRejected == 1) {
-        //ensure that rejected schemas have a reason
-        if (empty($_POST['schema_rejected_reason'])) throw new Exception('Must give reason for rejecting mod!');
-        //prevent approving and rejecting a mod at the same time
-        if ($schemaApproved == 1) throw new Exception('Must un-approve mod if rejecting!');
-
-        $schemaRejectedReason = htmlentities($_POST['schema_rejected_reason']);
-
-        //rejected schemas can't be approved
-        $schemaApproved = 0;
-    } else {
-        $schemaRejectedReason = NULL;
-    }
-
-    if (($schemaApproved == 1 && $schemaDetails[0]['schemaApproved'] == 0) || ($schemaRejected == 1 && $schemaDetails[0]['schemaRejected'] == 0)) {
-        //use old version and auth key if approving or rejecting a schema
-        $schemaVersion = $schemaDetails[0]['schemaVersion'];
-        $schemaAuth = $schemaDetails[0]['schemaAuth'];
-    } else {
-        //find out what the highest schema version is
-        $highestSchemaVersion = cached_query(
-            'admin_custom_schema_hsv' . $schemaModID,
-            'SELECT
-                MAX(schemaVersion) AS schemaVersion
-                FROM `s2_mod_custom_schema`
-                WHERE `modID` = ?
-                LIMIT 0,1;',
-            'i',
-            $schemaModID,
-            1
-        );
-
-        //increment the schema version
-        $schemaVersion = $highestSchemaVersion[0]['schemaVersion'] + 1;
-
-        //Generate the schema auth key
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $schemaAuth = '';
-        for ($i = 0; $i < 16; $i++) {
-            $schemaAuth .= $characters[rand(0, 35)];
-        }
-    }
-
-    //Let's start constructing our query!
-    $sqlFieldsName = '`modID`, `schemaAuth`, `schemaVersion`, `schemaApproved`, `schemaRejected`, `schemaRejectedReason`, `schemaSubmitterUserID64`';
-    $sqlFieldsPlaceholder = '?, ?, ?, ?, ?, ?, ?';
-    $sqlFieldsDeclaration = 'isiiiss';
-    $sqlFields = array($schemaModID, $schemaAuth, $schemaVersion, $schemaApproved, $schemaRejected, $schemaRejectedReason, $schemaSubmitterUserID64);
-
-    //Add the custom Game fields to the SQL input fields
-    $schemaCustomGameMaxFields = 5;
-    for ($i = 1; $i <= $schemaCustomGameMaxFields; $i++) {
-        //While we are looping, let's name our table fields and make placeholders too!
-        $sqlFieldsName .= ', `customGameValue' . $i . '_display`, `customGameValue' . $i . '_name`, `customGameValue' . $i . '_objective`';
-        $sqlFieldsPlaceholder .= ', ?, ?, ?';
-        $sqlFieldsDeclaration .= 'ssi';
-
-        if (!empty($_POST['cgv' . $i . '_display']) && !empty($_POST['cgv' . $i . '_name'])) {
-            if (empty($_POST['cgv' . $i . '_objective'])) {
-                throw new Exception('Missing objective for custom Game Value ' . $i . '!');
-            }
-
-            $sqlFields[] = htmlentities($_POST['cgv' . $i . '_display']);
-            $sqlFields[] = htmlentities($_POST['cgv' . $i . '_name']);
-            $sqlFields[] = htmlentities($_POST['cgv' . $i . '_objective']);
-        } else {
-            $sqlFields[] = NULL;
-            $sqlFields[] = NULL;
-            $sqlFields[] = NULL;
-        }
-    }
-
-    //Add the custom Player fields to the SQL input fields
-    $schemaCustomPlayerMaxFields = 15;
-    for ($i = 1; $i <= $schemaCustomPlayerMaxFields; $i++) {
-        //While we are looping, let's name our table fields and make placeholders too!
-        $sqlFieldsName .= ', `customPlayerValue' . $i . '_display`, `customPlayerValue' . $i . '_name`, `customPlayerValue' . $i . '_objective`';
-        $sqlFieldsPlaceholder .= ', ?, ?, ?';
-        $sqlFieldsDeclaration .= 'ssi';
-
-        if (!empty($_POST['cpv' . $i . '_display']) && !empty($_POST['cpv' . $i . '_name'])) {
-            if (empty($_POST['cpv' . $i . '_objective'])) {
-                throw new Exception('Missing objective for custom Player Value ' . $i . '!');
-            }
-
-            $sqlFields[] = htmlentities($_POST['cpv' . $i . '_display']);
-            $sqlFields[] = htmlentities($_POST['cpv' . $i . '_name']);
-            $sqlFields[] = htmlentities($_POST['cpv' . $i . '_objective']);
-        } else {
-            $sqlFields[] = NULL;
-            $sqlFields[] = NULL;
-            $sqlFields[] = NULL;
-        }
-    }
-
-    $insertSQL = $db->q(
-        'INSERT INTO `s2_mod_custom_schema`
-              (' . $sqlFieldsName . ')
-            VALUES (' . $sqlFieldsPlaceholder . ')
-            ON DUPLICATE KEY UPDATE
-                `schemaApproved` = VALUES(`schemaApproved`),
-                `schemaRejected` = VALUES(`schemaRejected`),
-                `schemaRejectedReason` = VALUES(`schemaRejectedReason`);',
-        $sqlFieldsDeclaration,
-        $sqlFields
+    //find out what the highest schema version is
+    $highestSchemaVersion = $db->q(
+        'SELECT
+            MAX(schemaVersion) AS schemaVersion
+            FROM `s2_mod_custom_schema`
+            WHERE `modID` = ?
+            LIMIT 0,1;',
+        'i',
+        $schemaModID
     );
 
-    $schemaIDNew = $db->last_index();
+    //increment the schema version
+    $schemaVersion = $highestSchemaVersion[0]['schemaVersion'] + 1;
 
-    if ($insertSQL) {
-        $json_response['result'] = "Success! Custom Game Schema #$schemaIDNew added to DB.";
+    //Generate the schema auth key
+    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $schemaAuth = '';
+    for ($i = 0; $i < 16; $i++) {
+        $schemaAuth .= $characters[rand(0, 35)];
+    }
+
+
+    //////////////////////////////
+    //EDIT SCHEMA
+    //////////////////////////////
+    $insertSQLschema = $db->q(
+        'INSERT INTO `s2_mod_custom_schema`
+              (`modID`, `schemaAuth`, `schemaVersion`, `schemaSubmitterUserID64`)
+            VALUES (?, ?, ?, ?);',
+        'isis',
+        array($schemaModID, $schemaAuth, $schemaVersion, $schemaSubmitterUserID64)
+    );
+
+    if ($insertSQLschema) {
+        $schemaIDNew = $db->last_index();
+        $json_response['resultS'] = "Success! Custom Game Schema #$schemaIDNew added to DB.";
         $json_response['schemaID'] = $schemaIDNew;
     } else {
         throw new Exception('No change made to schema! Ensure there are new changes above and is not rejected!');
     }
+
+
+    //////////////////////////////
+    //EDIT SCHEMA FIELDS
+    //////////////////////////////
+    $numPostFields = floor(count($_POST) / 3);
+
+    for ($i = 1; $i <= $numPostFields; $i++) {
+        if (!empty($_POST['cgv' . $i . '_display']) && !empty($_POST['cgv' . $i . '_name'])) {
+            //Custom Game Values check and insert
+
+            if (empty($_POST['cgv' . $i . '_objective'])) {
+                throw new Exception('Missing objective for custom Game Value ' . $i . '!');
+            }
+
+            $insertSQL = $db->q(
+                'INSERT INTO `s2_mod_custom_schema_fields`
+                      (
+                        `schemaID`,
+                        `fieldOrder`,
+                        `fieldType`,
+                        `customValueDisplay`,
+                        `customValueName`,
+                        `customValueObjective`
+                      )
+                    VALUES (?, ?, 1, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        `customValueDisplay` = VALUES(`customValueDisplay`),
+                        `customValueName` = VALUES(`customValueName`),
+                        `customValueObjective` = VALUES(`customValueObjective`);',
+                'iissi',
+                array(
+                    $schemaIDNew,
+                    $i,
+                    htmlentities($_POST['cgv' . $i . '_display']),
+                    htmlentities($_POST['cgv' . $i . '_name']),
+                    htmlentities($_POST['cgv' . $i . '_objective'])
+                )
+            );
+
+            if ($insertSQL) {
+                $json_response['resultG' . $i] = "Success! Custom Game Value #$i added to DB.";
+            }
+        }
+
+        if (!empty($_POST['cpv' . $i . '_display']) && !empty($_POST['cpv' . $i . '_name'])) {
+            //Custom Player Values check and insert
+
+            if (empty($_POST['cpv' . $i . '_objective'])) {
+                throw new Exception('Missing objective for custom Player Value ' . $i . '!');
+            }
+
+            $insertSQL = $db->q(
+                'INSERT INTO `s2_mod_custom_schema_fields`
+                      (
+                        `schemaID`,
+                        `fieldOrder`,
+                        `fieldType`,
+                        `customValueDisplay`,
+                        `customValueName`,
+                        `customValueObjective`
+                      )
+                    VALUES (?, ?, 2, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        `customValueDisplay` = VALUES(`customValueDisplay`),
+                        `customValueName` = VALUES(`customValueName`),
+                        `customValueObjective` = VALUES(`customValueObjective`);',
+                'iissi',
+                array(
+                    $schemaIDNew,
+                    $i,
+                    htmlentities($_POST['cpv' . $i . '_display']),
+                    htmlentities($_POST['cpv' . $i . '_name']),
+                    htmlentities($_POST['cpv' . $i . '_objective'])
+                )
+            );
+
+            if ($insertSQL) {
+                $json_response['resultP' . $i] = "Success! Custom Player Value #$i added to DB.";
+            }
+        }
+    }
+
+    if ($insertSQLschema) {
+        $irc_message = new irc_message($webhook_gds_site_live);
+
+        $message = array(
+            array(
+                $irc_message->colour_generator('red'),
+                '[ADMIN]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('green'),
+                '[SCHEMA]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('bold'),
+                $irc_message->colour_generator('blue'),
+                'Edited:',
+                $irc_message->colour_generator(NULL),
+                $irc_message->colour_generator('bold'),
+            ),
+            array($schemaDetails[0]['mod_name']),
+            array(
+                $irc_message->colour_generator('orange'),
+                'v' . $schemaVersion,
+                $irc_message->colour_generator(NULL),
+            ),
+            array(' || http://getdotastats.com/#admin__mod_schema_edit?id=' . $schemaID),
+        );
+
+        $message = $irc_message->combine_message($message);
+        $irc_message->post_message($message);
+    }
+
 } catch (Exception $e) {
     $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
 } finally {

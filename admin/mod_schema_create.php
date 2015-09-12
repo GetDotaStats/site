@@ -77,6 +77,8 @@ try {
         array('display' => 'Lives Lost Team1', 'name' => 'game_lives_lost_team1'),
         array('display' => 'Betting Rounds', 'name' => 'game_betting_rounds'),
         array('display' => 'Zeny Investment', 'name' => 'game_investment_zeny_total'),
+        array('display' => 'Game Duration', 'name' => 'game_duration'),
+        array('display' => 'Hero Picks', 'name' => 'game_hero_picks_allowed'),
     );
     $modSchemaCreateFields_CustomGame = 5;
     for ($i = 1; $i <= $modSchemaCreateFields_CustomGame; $i++) {
@@ -111,13 +113,18 @@ try {
     echo '<span class="h5">&nbsp;</span>';
 
     $modSchemaCreateFields_CustomPlayer_examples = array(
+        array('display' => 'Hero', 'name' => 'player_hero_id'),
+        array('display' => 'Level', 'name' => 'player_hero_level'),
+        array('display' => 'Deaths', 'name' => 'player_deaths'),
+        array('display' => 'Assists', 'name' => 'player_assists'),
+        array('display' => 'Denies', 'name' => 'player_denies'),
+        array('display' => 'Skill 1', 'name' => 'player_skill_1'),
+        array('display' => 'Item 1', 'name' => 'player_item_1'),
         array('display' => 'Roshan Kills', 'name' => 'player_roshan_kills'),
         array('display' => 'Pickup Time - Item Slot #1', 'name' => 'player_item1_pickup_time'),
         array('display' => 'Damage Upgrades Purchased', 'name' => 'player_upgrades_dmg_count'),
         array('display' => 'Selected Skills', 'name' => 'player_skills_selected_hash'),
         array('display' => 'Items at 5mins', 'name' => 'player_items_5mins_hash'),
-        array('display' => 'Items at 10mins', 'name' => 'player_items_10mins_hash'),
-        array('display' => 'Items at 15mins', 'name' => 'player_items_15mins_hash'),
     );
     $modSchemaCreateFields_CustomPlayer = 15;
     for ($i = 1; $i <= $modSchemaCreateFields_CustomPlayer; $i++) {

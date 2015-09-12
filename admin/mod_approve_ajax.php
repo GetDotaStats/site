@@ -61,13 +61,52 @@ try {
             `mod_maps` = ?,
             `mod_rejected` = ?,
             `mod_rejected_reason` = ?
-          WHERE `mod_identifier` = ?;',
+          WHERE `mod_id` = ?;',
         'issssiss',
         $modActive, $modName, $modDescription, $modGroup, $modMaps, $modRejected, $modRejectedReason, $modID
     );
 
     if ($insertSQL) {
         $json_response['result'] = 'Custom Game updated!';
+
+        $queryResult = $modRejected == 1
+            ? 'Rejected'
+            : 'Approved';
+
+        $irc_message = new irc_message($webhook_gds_site_live);
+
+        $message = array(
+            array(
+                $irc_message->colour_generator('red'),
+                '[ADMIN]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('green'),
+                '[MOD]',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('bold'),
+                $irc_message->colour_generator('blue'),
+                $queryResult . ':',
+                $irc_message->colour_generator(NULL),
+                $irc_message->colour_generator('bold'),
+            ),
+            array($modName),
+            array(
+                $irc_message->colour_generator('bold'),
+                $irc_message->colour_generator('blue'),
+                'Reason:',
+                $irc_message->colour_generator(NULL),
+                $irc_message->colour_generator('bold'),
+            ),
+            array(substr($modRejectedReason, 0, 100)),
+            array(' || http://getdotastats.com/#d2mods__stats?id=' . $modID),
+        );
+
+        $message = $irc_message->combine_message($message);
+        $irc_message->post_message($message);
     } else {
         throw new Exception('Custom Game not updated!');
     }
@@ -76,7 +115,7 @@ try {
     $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
 } finally {
     if (isset($memcache)) $memcache->close();
-    if(!isset($json_response)) $json_response = array('error' => 'Unknown exception');
+    if (!isset($json_response)) $json_response = array('error' => 'Unknown exception');
 }
 
 try {
