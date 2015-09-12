@@ -146,8 +146,6 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
-                            <li><a class="nav-clickable" href="#admin__hs_mod">Mod Highscore Manage</a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_feedback">Mod Feedback</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema <span
                                         class="label label-danger">NEW</span></a></li>
                             <li class="divider"></li>

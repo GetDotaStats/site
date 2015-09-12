@@ -44,7 +44,7 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.min.css?31';
+$path_css_site_name = 'getdotastats.min.css?34';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
 
 $path_css_bootstrap = '/bootstrap/css/';
@@ -384,7 +384,7 @@ if (!function_exists("curl")) {
         if ($timeoutConnect) {
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeoutConnect);
         }
-        if($timeoutExecute){
+        if ($timeoutExecute) {
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutExecute); //timeout in seconds
         }
         if ($refer) {
@@ -458,6 +458,143 @@ if (!function_exists("curl_download")) {
             throw new Exception('No image downloaded!');
         } else {
             return true;
+        }
+    }
+}
+
+if (!class_exists('irc_message')) {
+    class irc_message
+    {
+        private $webhook_url = '';
+
+        public function __construct($webhook_gds_site)
+        {
+            $this->webhook_url = $webhook_gds_site;
+        }
+
+        public function post_message($message, $options = array('useExceptions' => false, 'timeoutConnect' => 5, 'timeoutExecute' => 10,))
+        {
+            $ch = curl_init($this->webhook_url);
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('payload' => $message)));
+            if (!empty($options['timeoutConnect'])) {
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $options['timeoutConnect']);
+            }
+            if (!empty($options['timeoutExecute'])) {
+                curl_setopt($ch, CURLOPT_TIMEOUT, $options['timeoutExecute']); //timeout in seconds
+            }
+
+            curl_exec($ch);
+            $response = curl_getinfo($ch);
+            curl_close($ch);
+
+            if ($response['http_code'] != 200) {
+                if (!empty($options['useExceptions'])) {
+                    throw new Exception('Bad header of #' . $response['http_code'] . ' returned!');
+                } else {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public function colour_generator($colour)
+        {
+            if ($colour == 'bold') return chr(2);
+
+            $code = chr(3);
+
+            switch ($colour) {
+                case '0':
+                case 'black':
+                    $code .= '0';
+                    break;
+                case '1':
+                case 'white':
+                    $code .= '1';
+                    break;
+                case '2':
+                case 'blue':
+                    $code .= '2';
+                    break;
+                case '3':
+                case 'green':
+                    $code .= '3';
+                    break;
+                case '4':
+                case 'red':
+                    $code .= '4';
+                    break;
+                case '5':
+                case 'brown':
+                    $code .= '5';
+                    break;
+                case '6':
+                case 'purple':
+                    $code .= '6';
+                    break;
+                case '7':
+                case 'orange':
+                    $code .= '7';
+                    break;
+                case '8':
+                case 'yellow':
+                    $code .= '8';
+                    break;
+                case '9':
+                case 'limegreen':
+                    $code .= '9';
+                    break;
+                case '10':
+                case 'turquise':
+                    $code .= '10';
+                    break;
+                case '11':
+                case 'cyan':
+                    $code .= '11';
+                    break;
+                case '12':
+                case 'lightblue':
+                    $code .= '12';
+                    break;
+                case '13':
+                case 'pink':
+                    $code .= '13';
+                    break;
+                case '14':
+                case 'grey':
+                    $code .= '14';
+                    break;
+                case '15':
+                case 'lightgrey':
+                    $code .= '15';
+                    break;
+            }
+
+            return $code;
+        }
+
+        public function combine_message($message_array)
+        {
+            if (!is_array($message_array)) throw new Exception('combine_message() requires an array!');
+
+            $message = '';
+            foreach ($message_array as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+                    $message .= $value2;
+                }
+
+                $message .= ' ';
+            }
+
+            return $message;
         }
     }
 }

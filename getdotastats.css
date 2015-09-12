@@ -334,6 +334,18 @@ table td.bashful, table th.bashful {
     padding: 5px;
 }
 
+.formBackgroundGreen {
+    background-color: #98F098;
+}
+
+.formBackgroundRed {
+    background-color: #EFADAD;
+}
+
+.formBackgroundYellow {
+    background-color: #FFFFB0;
+}
+
 .labelWarnings {
     display: inline-block;
 }
