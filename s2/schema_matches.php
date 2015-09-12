@@ -568,7 +568,6 @@
     "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
     "modIdentifier": "7adfki234jlk23",
-    "winningTeam": 5,
     "gameDuration": 3954,
     "schemaVersion": 1,
     "rounds": [

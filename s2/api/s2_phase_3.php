@@ -86,7 +86,6 @@ try {
                 `matchPhaseID`,
                 `isDedicated`,
                 `numPlayers`,
-                `matchWinningTeamID`,
                 `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
@@ -110,21 +109,19 @@ try {
     //MATCH DETAILS
     {
         $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numPlayers`, `numRounds`, `matchWinningTeamID`, `matchDuration`)
-                VALUES (?, ?, ?, ?, ?, ?)
+            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numPlayers`, `numRounds`, `matchDuration`)
+                VALUES (?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                   `matchPhaseID` = VALUES(`matchPhaseID`),
                   `numPlayers` = VALUES(`numPlayers`),
                   `numRounds` = VALUES(`numRounds`),
-                  `matchWinningTeamID` = VALUES(`matchWinningTeamID`),
                   `matchDuration` = VALUES(`matchDuration`);',
-            'siiiii',
+            'siiii',
             array(
                 $matchID,
                 3,
                 $numPlayers,
                 $numRounds,
-                $preGameAuthPayloadJSON['winningTeam'],
                 $preGameAuthPayloadJSON['gameDuration']
             )
         );
@@ -148,24 +145,18 @@ try {
                             : 0;
 
                         $db->q(
-                            'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `teamID`, `slotID`, `heroID`, `connectionState`, `isWinner`)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `connectionState`, `isWinner`)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)
                                 ON DUPLICATE KEY UPDATE
-                                  `teamID` = VALUES(`teamID`),
-                                  `slotID` = VALUES(`slotID`),
-                                  `heroID` = VALUES(`heroID`),
                                   `connectionState` = VALUES(`connectionState`),
                                   `isWinner` = VALUES(`isWinner`);',
-                            'sisssiiiii',
+                            'sisssii',
                             array(
                                 $matchID,
                                 ($key + 1),
                                 $modID,
                                 $steamID32,
                                 $steamID64,
-                                $value2['teamID'],
-                                $value2['slotID'],
-                                $value2['heroID'],
                                 $value2['connectionState'],
                                 $isWinner
                             )
