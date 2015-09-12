@@ -342,6 +342,8 @@
                     <div class="col-sm-7">&nbsp;</div>
                 </div>
 
+                <span class="h4">&nbsp;</span>
+
                 <div class="row">
                     <div class="col-sm-1">&nbsp;</div>
                     <div class="col-sm-2">playerName</div>
@@ -354,27 +356,6 @@
                     <div class="col-sm-2">steamID32</div>
                     <div class="col-sm-2">string</div>
                     <div class="col-sm-7">"2875155"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">teamID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">2</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">slotID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">heroID</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">15</div>
                 </div>
 
                 <div class="row">
@@ -418,33 +399,21 @@
         {
             "playerName": "jimmydorry",
             "steamID32": "2875155",
-            "teamID": 2,
-            "slotID": 1,
-            "heroID": 15,
             "connectionState": 2
         },
         {
             "playerName": "ash47",
             "steamID32": "2875156",
-            "teamID": 3,
-            "slotID": 2,
-            "heroID": 22,
             "connectionState": 2
         },
         {
             "playerName": "BMD",
             "steamID32": "2875157",
-            "teamID": 4,
-            "slotID": 3,
-            "heroID": 33,
             "connectionState": 2
         },
         {
             "playerName": "sinz",
             "steamID32": "2875158",
-            "teamID": 5,
-            "slotID": 4,
-            "heroID": 2,
             "connectionState": 2
         }
     ]
@@ -538,12 +507,6 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-3">winningTeam</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-7">5</div>
-    </div>
-
-    <div class="row">
         <div class="col-sm-3">gameDuration</div>
         <div class="col-sm-2">integer</div>
         <div class="col-sm-7">3954</div>
@@ -565,10 +528,12 @@
 
     <div class="row">
         <div class="col-sm-1">&nbsp;</div>
-        <div class="col-sm-3">players</div>
-        <div class="col-sm-2">key-value array</div>
-        <div class="col-sm-6">&nbsp;</div>
+        <div class="col-sm-2">players</div>
+        <div class="col-sm-2">array</div>
+        <div class="col-sm-7">&nbsp;</div>
     </div>
+
+    <span class="h4">&nbsp;</span>
 
     <div class="row">
         <div class="col-sm-2">&nbsp;</div>
@@ -579,23 +544,9 @@
 
     <div class="row">
         <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">teamID</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-6">2</div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">slotID</div>
+        <div class="col-sm-2">isWinner</div>
         <div class="col-sm-2">integer</div>
         <div class="col-sm-6">1</div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">heroID</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-6">15</div>
     </div>
 
     <div class="row">
@@ -621,70 +572,50 @@
     "gameDuration": 3954,
     "schemaVersion": 1,
     "rounds": [
-        {
-            "players": [
-                {
-                    "steamID32": "2875155",
-                    "teamID": 2,
-                    "slotID": 1,
-                    "heroID": 15,
-                    "connectionState": 2
-                },
-                {
-                    "steamID32": "2875156",
-                    "teamID": 3,
-                    "slotID": 2,
-                    "heroID": 22,
-                    "connectionState": 2
-                },
-                {
-                    "steamID32": "2875157",
-                    "teamID": 4,
-                    "slotID": 3,
-                    "heroID": 33,
-                    "connectionState": 2
-                },
-                {
-                    "steamID32": "2875158",
-                    "teamID": 5,
-                    "slotID": 4,
-                    "heroID": 2,
-                    "connectionState": 2
-                }
-            ]
-        },
-        {
-            "players": [
-                {
-                    "steamID32": "2875155",
-                    "teamID": 2,
-                    "slotID": 1,
-                    "heroID": 15,
-                    "connectionState": 2
-                },
-                {
-                    "steamID32": "2875156",
-                    "teamID": 3,
-                    "slotID": 2,
-                    "heroID": 22,
-                    "connectionState": 2
-                },
-                {
-                    "steamID32": "2875157",
-                    "teamID": 4,
-                    "slotID": 3,
-                    "heroID": 33,
-                    "connectionState": 2
-                },
-                {
-                    "steamID32": "2875158",
-                    "teamID": 5,
-                    "slotID": 4,
-                    "heroID": 2,
-                    "connectionState": 2
-                }
-            ]
-        }
+        [
+            {
+                "steamID32": "2875155",
+                "isWinner": 1,
+                "connectionState": 2
+            },
+            {
+                "steamID32": "2875156",
+                "isWinner": 0,
+                "connectionState": 2
+            },
+            {
+                "steamID32": "2875157",
+                "isWinner": 0,
+                "connectionState": 2
+            },
+            {
+                "steamID32": "2875158",
+                "isWinner": 1,
+                "connectionState": 2
+            }
+        ],
+        [
+            {
+                "steamID32": "2875155",
+                "isWinner": 1,
+                "connectionState": 2
+            },
+            {
+                "steamID32": "2875156",
+                "isWinner": 0,
+                "connectionState": 2
+            },
+            {
+                "steamID32": "2875157",
+                "isWinner": 0,
+                "connectionState": 2
+            },
+            {
+                "steamID32": "2875158",
+                "isWinner": 0,
+                "connectionState": 2
+            }
+        ]
     ]
 }
             </pre>
