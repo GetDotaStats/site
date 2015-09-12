@@ -204,7 +204,7 @@ try {
                 'v' . $schemaVersion,
                 $irc_message->colour_generator(NULL),
             ),
-            array(' || http://getdotastats.com/#admin__mod_schema_edit?id=' . $schemaID),
+            array(' || http://getdotastats.com/#admin__mod_schema_edit?id=' . $schemaIDNew),
         );
 
         $message = $irc_message->combine_message($message);
