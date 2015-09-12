@@ -17,14 +17,14 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] != $currentSchemaVersionPhase2) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] >= $currentSchemaVersionPhase2) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
     if (
         !isset($preGameAuthPayloadJSON['authKey']) || empty($preGameAuthPayloadJSON['authKey']) ||
         !isset($preGameAuthPayloadJSON['matchID']) || empty($preGameAuthPayloadJSON['matchID']) || !is_numeric($preGameAuthPayloadJSON['matchID']) ||
-        !isset($preGameAuthPayloadJSON['modID']) || empty($preGameAuthPayloadJSON['modID']) ||
+        !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
         !isset($preGameAuthPayloadJSON['players']) || empty($preGameAuthPayloadJSON['players'])
     ) {
         throw new Exception('Payload missing fields!');
@@ -32,7 +32,7 @@ try {
 
     $numPlayers = count($preGameAuthPayloadJSON['players']);
     $matchID = $preGameAuthPayloadJSON['matchID'];
-    $modID = $preGameAuthPayloadJSON['modID'];
+    $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $authKey = $preGameAuthPayloadJSON['authKey'];
 
     $memcache = new Memcache;
@@ -40,6 +40,38 @@ try {
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
+
+    //Check if the modIdentifier is valid
+    $modIdentifierCheck = cached_query(
+        's2_mod_identifier_check' . $modIdentifier,
+        'SELECT
+                `mod_id`,
+                `steam_id64`,
+                `mod_name`,
+                `mod_description`,
+                `mod_workshop_link`,
+                `mod_steam_group`,
+                `mod_active`,
+                `mod_rejected`,
+                `mod_rejected_reason`,
+                `mod_maps`,
+                `mod_max_players`,
+                `mod_options_enabled`,
+                `mod_options`,
+                `date_recorded`
+            FROM `mod_list`
+            WHERE `mod_identifier` = ?
+            LIMIT 0,1;',
+        'i',
+        $modIdentifier,
+        15
+    );
+
+    if (empty($modIdentifierCheck)) {
+        throw new Exception('Invalid modID!');
+    }
+
+    $modID = $modIdentifierCheck[0]['mod_id'];
 
     //MATCH CHECK
     {
@@ -53,7 +85,6 @@ try {
                 `matchPhaseID`,
                 `isDedicated`,
                 `numPlayers`,
-                `matchWinningTeamID`,
                 `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
@@ -101,23 +132,17 @@ try {
                 $steamID64 = $steamID_manipulator->getSteamID64();
 
                 $db->q(
-                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `teamID`, `slotID`, `heroID`, `connectionState`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `connectionState`)
+                        VALUES (?, ?, ?, ?, ?, ?)
                         ON DUPLICATE KEY UPDATE
-                          `teamID` = VALUES(`teamID`),
-                          `slotID` = VALUES(`slotID`),
-                          `heroID` = VALUES(`heroID`),
                           `connectionState` = VALUES(`connectionState`);',
-                    'sisssiiii',
+                    'sisssi',
                     array(
                         $matchID,
                         1,
-                        $preGameAuthPayloadJSON['modID'],
+                        $modID,
                         $steamID32,
                         $steamID64,
-                        $value['teamID'],
-                        $value['slotID'],
-                        $value['heroID'],
                         $value['connectionState']
                     )
                 );
@@ -151,7 +176,7 @@ try {
                     'ssss',
                     array(
                         $matchID,
-                        $preGameAuthPayloadJSON['modID'],
+                        $modID,
                         $key,
                         $value
                     )

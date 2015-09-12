@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-3">modID</div>
+                        <div class="col-sm-3">modIdentifier</div>
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"7689asdfjh1231"</div>
                         <div class="col-sm-4">
@@ -112,7 +112,7 @@
             <pre class="pre-scrollable">
 {
     "type": "SAVE",
-    "modID": "7689asdfjh1231",
+    "modIdentifier": "7689asdfjh1231",
     "highscoreID": "hj43152khjb342",
     "steamID32": "28755155",
     "userName": "jimmydorry",
@@ -202,7 +202,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-3">modID</div>
+                        <div class="col-sm-3">modIdentifier</div>
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"7689asdfjh1231"</div>
                         <div class="col-sm-4">
@@ -224,7 +224,7 @@
             <pre class="pre-scrollable">
 {
     "type": "TOP",
-    "modID": "7689asdfjh1231",
+    "modIdentifier": "7689asdfjh1231",
     "schemaVersion": 1
 }</pre>
 
@@ -338,7 +338,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-3">modID</div>
+                        <div class="col-sm-3">modIdentifier</div>
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"7689asdfjh1231"</div>
                         <div class="col-sm-4">

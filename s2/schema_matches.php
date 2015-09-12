@@ -67,7 +67,7 @@
                 <span class="h4">&nbsp;</span>
 
                 <div class="row">
-                    <div class="col-sm-3">modID</div>
+                    <div class="col-sm-3">modIdentifier</div>
                     <div class="col-sm-2">string</div>
                     <div class="col-sm-3">"7adfki234jlk23"</div>
                     <div class="col-sm-4">
@@ -114,7 +114,7 @@
 
             <pre class="pre-scrollable">
 {
-    "modID": "7adfki234jlk23",
+    "modIdentifier": "7adfki234jlk23",
     "hostSteamID32": "2875155",
     "isDedicated": 1,
     "mapName": "dota_pvp",
@@ -151,7 +151,7 @@
 {
     "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
-    "modID": "7adfki234jlk23",
+    "modIdentifier": "7adfki234jlk23",
     "schemaVersion": 1
 }
             </pre>
@@ -193,7 +193,7 @@
                 <span class="h4">&nbsp;</span>
 
                 <div class="row">
-                    <div class="col-sm-3">modID</div>
+                    <div class="col-sm-3">modIdentifier</div>
                     <div class="col-sm-2">string</div>
                     <div class="col-sm-3">"7adfki234jlk23"</div>
                     <div class="col-sm-4">
@@ -228,7 +228,7 @@
 
             <pre class="pre-scrollable">
 {
-    "modID": "7adfki234jlk23",
+    "modIdentifier": "7adfki234jlk23",
     "steamID32": "2875155",
     "matchID": "213123342",
     "schemaVersion": 1
@@ -316,7 +316,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-3">modID</div>
+                    <div class="col-sm-3">modIdentifier</div>
                     <div class="col-sm-2">string</div>
                     <div class="col-sm-7">"7adfki234jlk23"</div>
                 </div>
@@ -388,7 +388,7 @@
 {
     "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
-    "modID": "7adfki234jlk23",
+    "modIdentifier": "7adfki234jlk23",
     "flags": {
         "mode": "ctf15",
         "winCondition": "kill50",
@@ -501,7 +501,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-3">modID</div>
+        <div class="col-sm-3">modIdentifier</div>
         <div class="col-sm-2">string</div>
         <div class="col-sm-7">"7adfki234jlk23"</div>
     </div>
@@ -567,7 +567,7 @@
 {
     "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
-    "modID": "7adfki234jlk23",
+    "modIdentifier": "7adfki234jlk23",
     "winningTeam": 5,
     "gameDuration": 3954,
     "schemaVersion": 1,
@@ -702,7 +702,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-3">modID</div>
+                    <div class="col-sm-3">modIdentifier</div>
                     <div class="col-sm-2">string</div>
                     <div class="col-sm-7">"7adfki234jlk23"</div>
                 </div>
@@ -789,7 +789,7 @@
             <pre class="pre-scrollable">
 {
     "matchID": "21347923432",
-    "modID": "7adfki234jlk23",
+    "modIdentifier": "7adfki234jlk23",
     "schemaAuthKey": "K65S5J7HFD",
     "schemaVersion": 1,
     "rounds": [
@@ -913,7 +913,6 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    //`matchID`, `matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `isDedicated`, `numPlayers`, `numRounds`, `matchWinningTeamID`, `matchDuration`, `schemaVersion`, `dateUpdated`, `dateRecorded`
     $latestData = cached_query('s2_latest_data',
         'SELECT *
             FROM `s2_match`

@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] != $currentSchemaVersionHighscore) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] >= $currentSchemaVersionHighscore) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -50,7 +50,7 @@ try {
             $s2_response['type'] = 'save';
 
             if (
-                !isset($preGameAuthPayloadJSON['modID']) || empty($preGameAuthPayloadJSON['modID']) ||
+                !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
                 !isset($preGameAuthPayloadJSON['highscoreID']) || empty($preGameAuthPayloadJSON['highscoreID']) ||
                 !isset($preGameAuthPayloadJSON['steamID32']) || empty($preGameAuthPayloadJSON['steamID32']) ||
                 !isset($preGameAuthPayloadJSON['userName']) || empty($preGameAuthPayloadJSON['userName']) ||
@@ -60,12 +60,44 @@ try {
             }
 
             $highscoreID = $preGameAuthPayloadJSON['highscoreID'];
-            $modID = $preGameAuthPayloadJSON['modID'];
+            $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
             $highscoreType = $preGameAuthPayloadJSON['type'];
             $playerSteamID32 = $preGameAuthPayloadJSON['steamID32'];
             $playerName = $preGameAuthPayloadJSON['userName'];
             $highscoreValue = $preGameAuthPayloadJSON['highscoreValue'];
             $highscoreAuthKey = 'XXXXXX';
+
+            //Check if the modIdentifier is valid
+            $modIdentifierCheck = cached_query(
+                's2_mod_identifier_check' . $modIdentifier,
+                'SELECT
+                        `mod_id`,
+                        `steam_id64`,
+                        `mod_name`,
+                        `mod_description`,
+                        `mod_workshop_link`,
+                        `mod_steam_group`,
+                        `mod_active`,
+                        `mod_rejected`,
+                        `mod_rejected_reason`,
+                        `mod_maps`,
+                        `mod_max_players`,
+                        `mod_options_enabled`,
+                        `mod_options`,
+                        `date_recorded`
+                    FROM `mod_list`
+                    WHERE `mod_identifier` = ?
+                    LIMIT 0,1;',
+                'i',
+                $modIdentifier,
+                15
+            );
+
+            if (empty($modIdentifierCheck)) {
+                throw new Exception('Invalid modID!');
+            }
+
+            $modID = $modIdentifierCheck[0]['mod_id'];
 
             $hsidLookup = cached_query(
                 's2_highscore_hsid_lookup_' . $highscoreID,
@@ -94,7 +126,7 @@ try {
                         FROM `stat_highscore_mods`
                         WHERE `modID` = ? AND `highscoreID` = ? AND `steamID32` = ?
                         LIMIT 0,1;',
-                    'sss',
+                    'iss',
                     array(
                         $modID,
                         $highscoreID,
@@ -115,7 +147,7 @@ try {
                           `highscoreValue` = GREATEST(`highscoreValue`, VALUES(`highscoreValue`)),
                           `userName` = VALUES(`userName`),
                           `date_recorded` = NULL;',
-                    'sssssi',
+                    'issssi',
                     array(
                         $modID,
                         $highscoreID,
@@ -141,14 +173,48 @@ try {
             $s2_response['type'] = 'list';
 
             if (
-                !isset($preGameAuthPayloadJSON['modID']) || empty($preGameAuthPayloadJSON['modID']) ||
+                !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
                 !isset($preGameAuthPayloadJSON['steamID32']) || empty($preGameAuthPayloadJSON['steamID32'])
             ) {
                 throw new Exception('Payload missing fields for given type!');
             }
 
-            $modID = $preGameAuthPayloadJSON['modID'];
+            $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
             $playerSteamID32 = $preGameAuthPayloadJSON['steamID32'];
+
+            //Check if the modIdentifier is valid
+            $modIdentifierCheck = cached_query(
+                's2_mod_identifier_check' . $modIdentifier,
+                'SELECT
+                        `mod_id`,
+                        `steam_id64`,
+                        `mod_name`,
+                        `mod_description`,
+                        `mod_workshop_link`,
+                        `mod_steam_group`,
+                        `mod_active`,
+                        `mod_rejected`,
+                        `mod_rejected_reason`,
+                        `mod_maps`,
+                        `mod_max_players`,
+                        `mod_options_enabled`,
+                        `mod_options`,
+                        `date_recorded`
+                    FROM `mod_list`
+                    WHERE `mod_identifier` = ?
+                    LIMIT 0,1;',
+                'i',
+                $modIdentifier,
+                15
+            );
+
+            if (empty($modIdentifierCheck)) {
+                throw new Exception('Invalid modID!');
+            }
+
+            $modID = $modIdentifierCheck[0]['mod_id'];
+
+
 
             $sqlResult = cached_query(
                 's2_highscore_list_lookup_' . $modID . '_' . $playerSteamID32,
@@ -158,7 +224,7 @@ try {
                         `date_recorded`
                     FROM `stat_highscore_mods`
                     WHERE `modID` = ? AND `steamID32` = ?;',
-                'ss',
+                'is',
                 array(
                     $modID,
                     $playerSteamID32
@@ -178,12 +244,44 @@ try {
             $s2_response['type'] = 'top';
 
             if (
-                !isset($preGameAuthPayloadJSON['modID']) || empty($preGameAuthPayloadJSON['modID'])
+                !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier'])
             ) {
                 throw new Exception('Payload missing fields for given type!');
             }
 
-            $modID = $preGameAuthPayloadJSON['modID'];
+            $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
+
+            //Check if the modIdentifier is valid
+            $modIdentifierCheck = cached_query(
+                's2_mod_identifier_check' . $modIdentifier,
+                'SELECT
+                        `mod_id`,
+                        `steam_id64`,
+                        `mod_name`,
+                        `mod_description`,
+                        `mod_workshop_link`,
+                        `mod_steam_group`,
+                        `mod_active`,
+                        `mod_rejected`,
+                        `mod_rejected_reason`,
+                        `mod_maps`,
+                        `mod_max_players`,
+                        `mod_options_enabled`,
+                        `mod_options`,
+                        `date_recorded`
+                    FROM `mod_list`
+                    WHERE `mod_identifier` = ?
+                    LIMIT 0,1;',
+                'i',
+                $modIdentifier,
+                15
+            );
+
+            if (empty($modIdentifierCheck)) {
+                throw new Exception('Invalid modID!');
+            }
+
+            $modID = $modIdentifierCheck[0]['mod_id'];
 
             $topLookup = cached_query(
                 's2_highscore_top_schema_lookup_' . $modID,
