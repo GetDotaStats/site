@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] >= $currentSchemaVersionClientCheckIn) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $currentSchemaVersionClientCheckIn) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -30,6 +30,7 @@ try {
     }
 
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
+    $matchID = $preGameAuthPayloadJSON['matchID'];
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
@@ -72,7 +73,7 @@ try {
     //MATCH CHECK
     {
         $matchDetails = cached_query(
-            's2_match_query_' . $preGameAuthPayloadJSON['matchID'],
+            's2_match_query_' . $matchID,
             'SELECT
                 `matchID`,
                 `matchAuthKey`,
@@ -80,24 +81,25 @@ try {
                 `matchHostSteamID32`,
                 `matchPhaseID`,
                 `isDedicated`,
+                `matchMapName`,
                 `numPlayers`,
-                `matchWinningTeamID`,
+                `numRounds`,
                 `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
                 `dateRecorded`
             FROM `s2_match`
             WHERE `matchID` = ? AND `modID` = ?;',
-            'si',
+            'ss',
             array(
-                $preGameAuthPayloadJSON['matchID'],
-                $preGameAuthPayloadJSON['modID']
+                $matchID,
+                $modID
             ),
             5
         );
     }
 
-    if (!isset($matchDetails) || empty($matchDetails)) {
+    if (empty($matchDetails)) {
         throw new Exception('No match found matching parameters!');
     }
 
@@ -122,7 +124,7 @@ try {
                       `clientIP` = VALUES(`clientIP`);',
                 'sssssi',
                 array(
-                    $preGameAuthPayloadJSON['matchID'],
+                    $matchID,
                     $modID,
                     $steamID32,
                     $steamID64,
@@ -133,15 +135,8 @@ try {
         }
     }
 
-    if (!empty($sqlResult)) {
-        $s2_response['result'] = 1;
-        $s2_response['schemaVersion'] = $currentSchemaVersionClientCheckIn;
-    } else {
-        //SOMETHING FUNKY HAPPENED
-        $s2_response['result'] = 0;
-        $s2_response['error'] = 'Unknown error!';
-        $s2_response['schemaVersion'] = $currentSchemaVersionClientCheckIn;
-    }
+    $s2_response['result'] = 1;
+    $s2_response['schemaVersion'] = $currentSchemaVersionClientCheckIn;
 
 } catch (Exception $e) {
     unset($s2_response);

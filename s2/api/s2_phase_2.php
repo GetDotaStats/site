@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] >= $currentSchemaVersionPhase2) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $currentSchemaVersionPhase2) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -84,7 +84,9 @@ try {
                 `matchHostSteamID32`,
                 `matchPhaseID`,
                 `isDedicated`,
+                `matchMapName`,
                 `numPlayers`,
+                `numRounds`,
                 `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
@@ -101,7 +103,7 @@ try {
         );
     }
 
-    if (!isset($matchDetails) || empty($matchDetails)) {
+    if (empty($matchDetails)) {
         throw new Exception('No match found matching parameters!');
     }
 

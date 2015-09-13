@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] >= $currentSchemaVersionPhase3) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $currentSchemaVersionPhase3) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -34,7 +34,6 @@ try {
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $authKey = $preGameAuthPayloadJSON['authKey'];
     $numRounds = count($preGameAuthPayloadJSON['rounds']);
-    $numPlayers = count($preGameAuthPayloadJSON['rounds'][($numRounds - 1)]['players']);
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
@@ -85,7 +84,9 @@ try {
                 `matchHostSteamID32`,
                 `matchPhaseID`,
                 `isDedicated`,
+                `matchMapName`,
                 `numPlayers`,
+                `numRounds`,
                 `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
@@ -102,25 +103,23 @@ try {
         );
     }
 
-    if (!isset($matchDetails) || empty($matchDetails)) {
+    if (empty($matchDetails)) {
         throw new Exception('No match found matching parameters!');
     }
 
     //MATCH DETAILS
     {
         $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numPlayers`, `numRounds`, `matchDuration`)
-                VALUES (?, ?, ?, ?, ?)
+            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numRounds`, `matchDuration`)
+                VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                   `matchPhaseID` = VALUES(`matchPhaseID`),
-                  `numPlayers` = VALUES(`numPlayers`),
                   `numRounds` = VALUES(`numRounds`),
                   `matchDuration` = VALUES(`matchDuration`);',
-            'siiii',
+            'siii',
             array(
                 $matchID,
                 3,
-                $numPlayers,
                 $numRounds,
                 $preGameAuthPayloadJSON['gameDuration']
             )
@@ -140,10 +139,6 @@ try {
                         $steamID32 = $steamID_manipulator->getSteamID32();
                         $steamID64 = $steamID_manipulator->getSteamID64();
 
-                        $isWinner = $value2['teamID'] == $preGameAuthPayloadJSON['winningTeam']
-                            ? 1
-                            : 0;
-
                         $db->q(
                             'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `connectionState`, `isWinner`)
                                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -158,7 +153,7 @@ try {
                                 $steamID32,
                                 $steamID64,
                                 $value2['connectionState'],
-                                $isWinner
+                                $value2['isWinner']
                             )
                         );
                     }
