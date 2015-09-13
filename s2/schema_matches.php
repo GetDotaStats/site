@@ -787,6 +787,7 @@
 
             <pre class="pre-scrollable">
 {
+    "authKey": "asdfhkj324jklnfadssdafsd",
     "matchID": "21347923432",
     "modIdentifier": "7adfki234jlk23",
     "schemaAuthKey": "K65S5J7HFD",
