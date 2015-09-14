@@ -102,11 +102,11 @@ try {
     $numPostFields = floor(count($_POST) / 3);
 
     for ($i = 1; $i <= $numPostFields; $i++) {
-        if (!empty($_POST['cgv' . $i . '_display']) && !empty($_POST['cgv' . $i . '_name'])) {
+        if (!empty($_POST['cgv_display' . $i]) && !empty($_POST['cgv_name' . $i])) {
             //Custom Game Values check and insert
 
-            if (empty($_POST['cgv' . $i . '_objective'])) {
-                throw new Exception('Missing objective for custom Game Value ' . $i . '!');
+            if (empty($_POST['cgv_objective' . $i])) {
+                throw new Exception("Missing objective for custom Game Value $i!");
             }
 
             $insertSQL = $db->q(
@@ -128,9 +128,9 @@ try {
                 array(
                     $schemaIDNew,
                     $i,
-                    htmlentities($_POST['cgv' . $i . '_display']),
-                    htmlentities($_POST['cgv' . $i . '_name']),
-                    htmlentities($_POST['cgv' . $i . '_objective'])
+                    htmlentities($_POST['cgv_display' . $i]),
+                    htmlentities($_POST['cgv_name' . $i]),
+                    htmlentities($_POST['cgv_objective' . $i])
                 )
             );
 
@@ -139,11 +139,11 @@ try {
             }
         }
 
-        if (!empty($_POST['cpv' . $i . '_display']) && !empty($_POST['cpv' . $i . '_name'])) {
+        if (!empty($_POST['cpv_display' . $i]) && !empty($_POST['cpv_name' . $i])) {
             //Custom Player Values check and insert
 
-            if (empty($_POST['cpv' . $i . '_objective'])) {
-                throw new Exception('Missing objective for custom Player Value ' . $i . '!');
+            if (empty($_POST['cpv_objective' . $i])) {
+                throw new Exception("Missing objective for custom Player Value $i!");
             }
 
             $insertSQL = $db->q(
@@ -165,9 +165,9 @@ try {
                 array(
                     $schemaIDNew,
                     $i,
-                    htmlentities($_POST['cpv' . $i . '_display']),
-                    htmlentities($_POST['cpv' . $i . '_name']),
-                    htmlentities($_POST['cpv' . $i . '_objective'])
+                    htmlentities($_POST['cpv_display' . $i]),
+                    htmlentities($_POST['cpv_name' . $i]),
+                    htmlentities($_POST['cpv_objective' . $i])
                 )
             );
 

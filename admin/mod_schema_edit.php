@@ -602,6 +602,57 @@ try {
     // Form for editing the schema
     ///////////////////////////////////////////////////
 
+
+    echo '<div id="custom_game_master" style="display: none">';
+    {
+        echo '<div class="row">
+                    <div class="col-md-1"><span id="customValueIdentifierName" class="h4">#</span></div>
+                    <div class="col-md-1">Display</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cgv_display" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Name</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cgv_name" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Objective</div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_objective" value="1">Minimise<br />
+                        <input type="radio" name="cgv_objective" value="2">Maximise<br />
+                        <input type="radio" name="cgv_objective" value="3" checked>Info
+                    </div>
+                </div>';
+    }
+    echo '</div>';
+
+
+    echo '<div id="custom_player_master" style="display: none">';
+    {
+        echo '<div class="row">
+                    <div class="col-md-1"><span id="customValueIdentifierName" class="h4">#</span></div>
+                    <div class="col-md-1">Display</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cpv_display" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Name</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cpv_name" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Objective</div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_objective" value="1">Minimise<br />
+                        <input type="radio" name="cpv_objective" value="2">Maximise<br />
+                        <input type="radio" name="cpv_objective" value="3" checked>Info
+                    </div>
+                </div>';
+    }
+    echo '</div>';
+
+
     echo '<form id="modSchemaEdit">';
     echo '<input name="schema_id" type="hidden" value="' . $selectedSchemaIDLookup[0]['schemaID'] . '">';
 
@@ -615,25 +666,10 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
-    $modSchemaEditFields_examples = array(
-        array('display' => 'Roshan Attempts', 'name' => 'game_roshan_attempts'),
-        array('display' => 'Radiant Creeps Trained', 'name' => 'game_team1_creeps_levelups'),
-        array('display' => 'First Life Lost', 'name' => 'game_time_firstblood'),
-        array('display' => 'Heroes Banned', 'name' => 'game_banned_heroes_hash'),
-        array('display' => 'Tower1 Lifetime', 'name' => 'game_tower1_fall_time'),
-        array('display' => 'Tower2 Lifetime', 'name' => 'game_tower2_fall_time'),
-        array('display' => 'Highest Wave Beaten', 'name' => 'game_highest_wave_beaten'),
-        array('display' => 'Lives Lost Team1', 'name' => 'game_lives_lost_team1'),
-        array('display' => 'Betting Rounds', 'name' => 'game_betting_rounds'),
-        array('display' => 'Zeny Investment', 'name' => 'game_investment_zeny_total'),
-        array('display' => 'Game Duration', 'name' => 'game_duration'),
-        array('display' => 'Hero Picks', 'name' => 'game_hero_picks_allowed'),
-    );
-
-    $modSchemaEditFields = !empty($selectedSchemaGameFields) && count($selectedSchemaGameFields) > 3
-        ? count($selectedSchemaGameFields) + 3
-        : 5;
-    for ($i = 1; $i <= $modSchemaEditFields; $i++) {
+    $modSchemaEditGameFields = !empty($selectedSchemaGameFields) && count($selectedSchemaGameFields)
+        ? count($selectedSchemaGameFields)
+        : 1;
+    for ($i = 1; $i <= $modSchemaEditGameFields; $i++) {
         if (!empty($selectedSchemaGameFields[$i - 1])) {
             $modCustomDisplay = $selectedSchemaGameFields[$i - 1]['customValueDisplay'];
             $modCustomName = $selectedSchemaGameFields[$i - 1]['customValueName'];
@@ -651,30 +687,38 @@ try {
             $modCustomObjective = NULL;
         }
 
-        $randomExample = rand(0, (count($modSchemaEditFields_examples) - 1));
-
         echo '<div class="row">
                     <div class="col-md-1"><span class="h4">#' . $i . '</span></div>
                     <div class="col-md-1">Display</div>
-                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomDisplay_class . '" name="cgv' . $i . '_display" type="text" maxlength="70" size="45" placeholder="' . $modSchemaEditFields_examples[$randomExample]['display'] . '"' . $modCustomDisplay_value . '></div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomDisplay_class . '" name="cgv_display' . $i . '" type="text" maxlength="70" size="45"' . $modCustomDisplay_value . '></div>
                 </div>';
         echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Name</div>
-                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomName_class . '" name="cgv' . $i . '_name" type="text" maxlength="70" size="45" placeholder="' . $modSchemaEditFields_examples[$randomExample]['name'] . '"' . $modCustomName_value . '></div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomName_class . '" name="cgv_name' . $i . '" type="text" maxlength="70" size="45"' . $modCustomName_value . '></div>
                 </div>';
         echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Objective</div>
                     <div class="col-md-2">
-                        <input type="radio" name="cgv' . $i . '_objective" value="1"' . ((!empty($modCustomObjective) && $modCustomObjective == 1) ? ' checked' : '') . '>Minimise<br />
-                        <input type="radio" name="cgv' . $i . '_objective" value="2"' . ((!empty($modCustomObjective) && $modCustomObjective == 2) ? ' checked' : '') . '>Maximise<br />
-                        <input type="radio" name="cgv' . $i . '_objective" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
+                        <input type="radio" name="cgv_objective' . $i . '" value="1"' . ((!empty($modCustomObjective) && $modCustomObjective == 1) ? ' checked' : '') . '>Minimise<br />
+                        <input type="radio" name="cgv_objective' . $i . '" value="2"' . ((!empty($modCustomObjective) && $modCustomObjective == 2) ? ' checked' : '') . '>Maximise<br />
+                        <input type="radio" name="cgv_objective' . $i . '" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
                     </div>
                 </div>';
 
         echo '<span class="h5">&nbsp;</span>';
     }
+
+    echo '<span id="customGameValuesPlaceholder"></span>';
+
+    echo '<div class="row">
+                <div class="col-md-8 text-center">
+                    <button id="moreGameFields" class="btn btn-warning">moreFields</button>
+                </div>
+            </div>';
+
+    echo '<span class="h5">&nbsp;</span>';
 
 
     /////////////////////////
@@ -687,24 +731,10 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
-    $modSchemaEditFields_examples = array(
-        array('display' => 'Hero', 'name' => 'player_hero_id'),
-        array('display' => 'Level', 'name' => 'player_hero_level'),
-        array('display' => 'Deaths', 'name' => 'player_deaths'),
-        array('display' => 'Assists', 'name' => 'player_assists'),
-        array('display' => 'Denies', 'name' => 'player_denies'),
-        array('display' => 'Skill 1', 'name' => 'player_skill_1'),
-        array('display' => 'Item 1', 'name' => 'player_item_1'),
-        array('display' => 'Roshan Kills', 'name' => 'player_roshan_kills'),
-        array('display' => 'Pickup Time - Item Slot #1', 'name' => 'player_item1_pickup_time'),
-        array('display' => 'Damage Upgrades Purchased', 'name' => 'player_upgrades_dmg_count'),
-        array('display' => 'Selected Skills', 'name' => 'player_skills_selected_hash'),
-        array('display' => 'Items at 5mins', 'name' => 'player_items_5mins_hash'),);
-
-    $modSchemaEditFields = !empty($selectedSchemaPlayerFields) && count($selectedSchemaPlayerFields) > 11
-        ? count($selectedSchemaPlayerFields) + 5
-        : 15;
-    for ($i = 1; $i <= $modSchemaEditFields; $i++) {
+    $modSchemaEditPlayerFields = !empty($selectedSchemaPlayerFields) && count($selectedSchemaPlayerFields)
+        ? count($selectedSchemaPlayerFields)
+        : 1;
+    for ($i = 1; $i <= $modSchemaEditPlayerFields; $i++) {
         if (!empty($selectedSchemaPlayerFields[$i - 1])) {
             $modCustomDisplay = $selectedSchemaPlayerFields[$i - 1]['customValueDisplay'];
             $modCustomName = $selectedSchemaPlayerFields[$i - 1]['customValueName'];
@@ -722,34 +752,43 @@ try {
             $modCustomObjective = NULL;
         }
 
-        $randomExample = rand(0, (count($modSchemaEditFields_examples) - 1));
-
         echo '<div class="row">
                     <div class="col-md-1"><span class="h4">#' . $i . '</span></div>
                     <div class="col-md-1">Display</div>
-                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomDisplay_class . '" name="cpv' . $i . '_display" type="text" maxlength="70" size="45" placeholder="' . $modSchemaEditFields_examples[$randomExample]['display'] . '"' . $modCustomDisplay_value . '></div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomDisplay_class . '" name="cpv_display' . $i . '" type="text" maxlength="70" size="45"' . $modCustomDisplay_value . '></div>
                 </div>';
         echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Name</div>
-                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomName_class . '" name="cpv' . $i . '_name" type="text" maxlength="70" size="45" placeholder="' . $modSchemaEditFields_examples[$randomExample]['name'] . '"' . $modCustomName_value . '></div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder' . $modCustomName_class . '" name="cpv_name' . $i . '" type="text" maxlength="70" size="45"' . $modCustomName_value . '></div>
                 </div>';
         echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Objective</div>
                     <div class="col-md-2">
-                        <input type="radio" name="cpv' . $i . '_objective" value="1"' . ((!empty($modCustomObjective) && $modCustomObjective == 1) ? ' checked' : '') . '>Minimise<br />
-                        <input type="radio" name="cpv' . $i . '_objective" value="2"' . ((!empty($modCustomObjective) && $modCustomObjective == 2) ? ' checked' : '') . '>Maximise<br />
-                        <input type="radio" name="cpv' . $i . '_objective" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
+                        <input type="radio" name="cpv_objective' . $i . '" value="1"' . ((!empty($modCustomObjective) && $modCustomObjective == 1) ? ' checked' : '') . '>Minimise<br />
+                        <input type="radio" name="cpv_objective' . $i . '" value="2"' . ((!empty($modCustomObjective) && $modCustomObjective == 2) ? ' checked' : '') . '>Maximise<br />
+                        <input type="radio" name="cpv_objective' . $i . '" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
                     </div>
                 </div>';
 
         echo '<span class="h5">&nbsp;</span>';
     }
 
+    echo '<span id="customPlayerValuesPlaceholder"></span>';
+
+    echo '<div class="row">
+                <div class="col-md-8 text-center">
+                    <button id="morePlayerFields" class="btn btn-warning">moreFields</button>
+                </div>
+            </div>';
+
+    echo '<span class="h5">&nbsp;</span>';
+
+
     echo '<div class="row">
                     <div class="col-md-8 text-center">
-                        <button>Edit</button>
+                        <button id="sub" class="btn btn-success">Edit</button>
                     </div>
                 </div>';
 
@@ -760,33 +799,78 @@ try {
     echo '<span id="schemaCustomAJAXResult" class="labelWarnings label label-danger"></span>';
 
     echo '<script type="application/javascript">
-                        $("#modSchemaEdit").submit(function (event) {
-                            event.preventDefault();
+            var counterGame = ' . $modSchemaEditGameFields . ';
+            var counterPlayer = ' . $modSchemaEditPlayerFields . ';
 
-                            $.post("./admin/mod_schema_edit_ajax.php", $("#modSchemaEdit").serialize(), function (data) {
-                                try {
-                                    if(data){
-                                        var response = JSON.parse(data);
-                                        if(response && response.error){
-                                            $("#schemaCustomAJAXResult").html(response.error);
-                                        }
-                                        else if(response && response.schemaID){
-                                            loadPage("#admin__mod_schema_edit?id="+response.schemaID,0);
-                                        }
-                                        else if(response && response.result){
-                                            $("#schemaCustomAJAXResult").html(response.result);
-                                        }
-                                        else{
-                                            $("#schemaCustomAJAXResult").html(data);
-                                        }
-                                    }
-                                }
-                                catch(err) {
-                                    $("#schemaCustomAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
-                                }
-                            }, "text");
-                        });
-                    </script>';
+            $("#moreGameFields").click(event, function(){
+                event.preventDefault();
+                addMoreFields("game");
+            });
+
+            $("#morePlayerFields").click(event, function(){
+                event.preventDefault();
+                addMoreFields("player");
+            });
+
+            function addMoreFields(type){
+                var tempClone = null,
+                    counter = null;
+
+                if(type == "game"){
+                    counterGame++;
+                    counter = counterGame;
+                    tempClone = $("#custom_game_master").clone();
+                } else if(type == "player"){
+                    counterPlayer++;
+                    counter = counterPlayer;
+                    tempClone = $("#custom_player_master").clone();
+                }
+
+                tempClone.attr("id", function(i,val){ return val + counter; }).removeAttr("style");
+
+                $("input", tempClone).each(function () {
+                    $(this).attr("name", function(i,val){ return val + counter; });
+                });
+
+                $("#customValueIdentifierName", tempClone).each(function(){
+                    $(this).html("#" + counter);
+                });
+
+                if(type == "game"){
+                    tempClone.appendTo("#customGameValuesPlaceholder");
+                } else if(type == "player"){
+                    tempClone.appendTo("#customPlayerValuesPlaceholder");
+                }
+            }
+
+
+            $("#modSchemaEdit").submit(function (event) {
+                event.preventDefault();
+
+                $.post("./admin/mod_schema_edit_ajax.php", $("#modSchemaEdit").serialize(), function (data) {
+                    try {
+                        if(data){
+                            var response = JSON.parse(data);
+                            if(response && response.error){
+                                $("#schemaCustomAJAXResult").html(response.error);
+                            }
+                            else if(response && response.schemaID){
+                                loadPage("#admin__mod_schema_edit?id="+response.schemaID,0);
+                            }
+                            else if(response && response.result){
+                                $("#schemaCustomAJAXResult").html(response.result);
+                            }
+                            else{
+                                $("#schemaCustomAJAXResult").html(data);
+                            }
+                        }
+                    }
+                    catch(err) {
+                        $("#schemaCustomAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
+                    }
+                }, "text");
+            });
+        </script>';
 
     echo '<span class="h4">&nbsp;</span>';
 
