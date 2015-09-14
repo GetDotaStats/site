@@ -77,7 +77,40 @@ try {
                         );
 
                         if ($insertSQL) {
-                            $json_response['result'] = 'Success! Found mod and added to DB for approval.';
+                            $modID = $db->last_index();
+                            $json_response['result'] = 'Success! Found mod and added to DB for approval as #' . $modID;
+
+                            $irc_message = new irc_message($webhook_gds_site_live);
+
+                            $message = array(
+                                array(
+                                    $irc_message->colour_generator('red'),
+                                    '[ADMIN]',
+                                    $irc_message->colour_generator(NULL),
+                                ),
+                                array(
+                                    $irc_message->colour_generator('green'),
+                                    '[MOD]',
+                                    $irc_message->colour_generator(NULL),
+                                ),
+                                array(
+                                    $irc_message->colour_generator('bold'),
+                                    $irc_message->colour_generator('blue'),
+                                    'Pending approval:',
+                                    $irc_message->colour_generator(NULL),
+                                    $irc_message->colour_generator('bold'),
+                                ),
+                                array(
+                                    $irc_message->colour_generator('orange'),
+                                    '{' . $modID . '}',
+                                    $irc_message->colour_generator(NULL),
+                                ),
+                                array($modName),
+                                array(' || http://getdotastats.com/#admin__mod_approve'),
+                            );
+
+                            $message = $irc_message->combine_message($message);
+                            $irc_message->post_message($message);
                         } else {
                             $json_response['error'] = 'Mod not added to database. Failed to add mod for approval.';
                         }
