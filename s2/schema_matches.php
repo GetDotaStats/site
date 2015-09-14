@@ -673,7 +673,8 @@
                     class="nav-clickable" href="#admin__mod_schema">HERE</a>). Each implementation is unique and
                 requires careful planning for current and future needs.</p>
 
-            <p><strong>Endpoint:</strong> <code>N/A</code></p>
+            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_custom.php || "payload" =
+                    <em>JSONschema</em></code></p>
 
             <hr/>
 
@@ -794,12 +795,10 @@
     "schemaVersion": 1,
     "rounds": [
         {
-            "game": [
-                {
+            "game": {
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
-                }
-            ],
+            },
             "players": [
                 {
                     "steamID32": "2875155",
@@ -824,12 +823,10 @@
             ]
         },
         {
-            "game": [
-                {
+            "game": {
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
-                }
-            ],
+            },
             "players": [
                 {
                     "steamID32": "2875155",
@@ -926,8 +923,8 @@ try {
     if (!empty($latestData)) {
         foreach ($latestData as $key => $value) {
             echo '<div class="row">
-                    <div class="col-sm-1"><strong>matchID</strong></div>
-                    <div class="col-sm-3"><strong>modID</strong></div>
+                    <div class="col-sm-2"><strong>matchID</strong></div>
+                    <div class="col-sm-2"><strong>modID</strong></div>
                     <div class="col-sm-4">
                         <div class="row">
                             <div class="col-sm-3"><strong>Phase</strong></div>
@@ -937,7 +934,7 @@ try {
                         </div>
                     </div>
                     <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-3"><strong>Recorded</strong></div>
+                    <div class="col-sm-3 text-center"><strong>Recorded</strong></div>
                 </div>
                 <span class="h4">&nbsp;</span>
                 ';
@@ -965,8 +962,8 @@ try {
                 : '';
 
             echo '<div class="row">
-                <div class="col-sm-1">' . $value['matchID'] . '</div>
-                <div class="col-sm-3"><span class="db_link">' . $value['modID'] . '</span></div>
+                <div class="col-sm-2">' . $value['matchID'] . '</div>
+                <div class="col-sm-2">' . $value['modID'] . '</div>
                 <div class="col-sm-4">
                     <div class="row">
                         <div class="col-sm-3">' . $value['matchPhaseID'] . '</div>
@@ -976,7 +973,7 @@ try {
                     </div>
                 </div>
                 <div class="col-sm-1">&nbsp;</div>
-                <div class="col-sm-3"><span class="' . $timeColour . '">' . relative_time_v3($value['dateUpdated'], 1) . $newBadge . '</span></div>
+                <div class="col-sm-3 text-right"><span class="' . $timeColour . '">' . relative_time_v3($value['dateUpdated'], 1) . $newBadge . '</span></div>
             </div>
             ';
 
