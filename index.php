@@ -193,11 +193,11 @@ try {
 </div>
 <div class="clear"></div>
 
-<span class="h4 clearfix">&nbsp;</span>
+<span class="h4 clearfix hidden">&nbsp;</span>
 
 <div class="container">
     <div class="text-center">
-        <a class="nav-clickable" href="#home"><img width="400px"
+        <a class="nav-clickable" href="#home"><img width="300px"
                                                                  src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
                                                                  alt="site logo"/></a>
 
