@@ -472,8 +472,12 @@ if (!class_exists('irc_message')) {
             $this->webhook_url = $webhook_gds_site;
         }
 
-        public function post_message($message, $options = array('useExceptions' => false, 'timeoutConnect' => 5, 'timeoutExecute' => 10,))
+        public function post_message($message, $options = array('localDev' => false, 'useExceptions' => false, 'timeoutConnect' => 5, 'timeoutExecute' => 10,))
         {
+            if (!empty($options['localDev'])) {
+                return false;
+            }
+
             $ch = curl_init($this->webhook_url);
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
