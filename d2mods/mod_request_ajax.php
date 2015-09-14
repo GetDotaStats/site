@@ -110,7 +110,7 @@ try {
                             );
 
                             $message = $irc_message->combine_message($message);
-                            $irc_message->post_message($message);
+                            $irc_message->post_message($message, array('localDev' => $localDev));
                         } else {
                             $json_response['error'] = 'Mod not added to database. Failed to add mod for approval.';
                         }

@@ -208,7 +208,7 @@ try {
         );
 
         $message = $irc_message->combine_message($message);
-        $irc_message->post_message($message);
+        $irc_message->post_message($message, array('localDev' => $localDev));
     }
 
 } catch (Exception $e) {
