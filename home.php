@@ -1,7 +1,21 @@
-<h2>News</h2>
-<p><strong>RIP LobbyExplorer</strong></p>
+<?php
+try {
+    require_once('./global_functions.php');
+    require_once('./connections/parameters.php');
 
-<p>The release of the Dota2 Alpha - Reborn client has marked the end of an era as we know it.</p>
+    echo '<h2>News</h2>';
 
-<p>Fear not! We are taking a short break to update our libraries and re-organise. You will see us in the modding
-    community again shortly. Join our Steam group to ensure you always get the latest news!</p>
+    echo '<p>We are just putting the finishing touches on our new custom stats solution.</p>';
+
+    echo '<p>What we are offering is far more flexible for modders to use and allows us to
+        gain a far better insight into how mods are being played.</p>';
+
+    echo '<p>Remember to join our Steam group to ensure you always get the latest news!</p>';
+
+    echo '<p><strong>Posted:</strong> ' . relative_time_v3('1442190074') . '</p>';
+
+} catch (Exception $e) {
+    echo formatExceptionHandling($e);
+} finally {
+    if (isset($memcache)) $memcache->close();
+}
