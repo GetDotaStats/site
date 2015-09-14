@@ -37,6 +37,57 @@ try {
         30
     );
 
+    echo '<div id="custom_game_master" style="display: none">';
+    {
+        echo '<div class="row">
+                    <div class="col-md-1"><span id="customValueIdentifierName" class="h4">#</span></div>
+                    <div class="col-md-1">Display</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cgv_display" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Name</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cgv_name" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Objective</div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_objective" value="1">Minimise<br />
+                        <input type="radio" name="cgv_objective" value="2">Maximise<br />
+                        <input type="radio" name="cgv_objective" value="3" checked>Info
+                    </div>
+                </div>';
+        echo '<span class="h5">&nbsp;</span>';
+    }
+    echo '</div>';
+
+
+    echo '<div id="custom_player_master" style="display: none">';
+    {
+        echo '<div class="row">
+                    <div class="col-md-1"><span id="customValueIdentifierName" class="h4">#</span></div>
+                    <div class="col-md-1">Display</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cpv_display" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Name</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cpv_name" type="text" maxlength="70" size="45"></div>
+                </div>';
+        echo '<div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Objective</div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_objective" value="1">Minimise<br />
+                        <input type="radio" name="cpv_objective" value="2">Maximise<br />
+                        <input type="radio" name="cpv_objective" value="3" checked>Info
+                    </div>
+                </div>';
+    }
+    echo '</div>';
+
+
     echo '<form id="modSchemaCreate">';
 
     echo '<div class="row">
@@ -60,51 +111,28 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
+    ////////////////////////////////////
+    //CUSTOM GAME FIELDS
+    ////////////////////////////////////
     echo '<div class="row">
                 <div class="col-md-4"><span class="h4">Custom Game Values</span> <span class="glyphicon glyphicon-question-sign" title="This is where all of your schema fields that relate to the entire game are defined"></span></div>
             </div>';
 
     echo '<span class="h5">&nbsp;</span>';
 
-    $modSchemaCreateFields_CustomGame_examples = array(
-        array('display' => 'Roshan Attempts', 'name' => 'game_roshan_attempts'),
-        array('display' => 'Radiant Creeps Trained', 'name' => 'game_team1_creeps_levelups'),
-        array('display' => 'First Life Lost', 'name' => 'game_time_firstblood'),
-        array('display' => 'Heroes Banned', 'name' => 'game_banned_heroes_hash'),
-        array('display' => 'Tower1 Lifetime', 'name' => 'game_tower1_fall_time'),
-        array('display' => 'Tower2 Lifetime', 'name' => 'game_tower2_fall_time'),
-        array('display' => 'Highest Wave Beaten', 'name' => 'game_highest_wave_beaten'),
-        array('display' => 'Lives Lost Team1', 'name' => 'game_lives_lost_team1'),
-        array('display' => 'Betting Rounds', 'name' => 'game_betting_rounds'),
-        array('display' => 'Zeny Investment', 'name' => 'game_investment_zeny_total'),
-        array('display' => 'Game Duration', 'name' => 'game_duration'),
-        array('display' => 'Hero Picks', 'name' => 'game_hero_picks_allowed'),
-    );
-    $modSchemaCreateFields_CustomGame = 5;
-    for ($i = 1; $i <= $modSchemaCreateFields_CustomGame; $i++) {
-        $randomExample = rand(0, (count($modSchemaCreateFields_CustomGame_examples) - 1));
-        echo '<div class="row">
-                <div class="col-md-1"><span class="h4">#' . $i . '</span></div>
-                <div class="col-md-1">Display</div>
-                <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cgv' . $i . '_display" type="text" maxlength="70" size="45" placeholder="' . $modSchemaCreateFields_CustomGame_examples[$randomExample]['display'] . '"></div>
-            </div>';
-        echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1">Name</div>
-                <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cgv' . $i . '_name" type="text" maxlength="70" size="45" placeholder="' . $modSchemaCreateFields_CustomGame_examples[$randomExample]['name'] . '"></div>
-            </div>';
-        echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1">Objective</div>
-                <div class="col-md-2">
-                    <input type="radio" name="cgv' . $i . '_objective" value="1">Minimise<br />
-                    <input type="radio" name="cgv' . $i . '_objective" value="2">Maximise<br />
-                    <input type="radio" name="cgv' . $i . '_objective" value="3" checked>Info
+    echo '<span id="customGameValuesPlaceholder"></span>';
+
+    echo '<div class="row">
+                <div class="col-md-8 text-center">
+                    <button id="moreGameFields" class="btn btn-warning">moreFields</button>
                 </div>
             </div>';
 
-        echo '<span class="h5">&nbsp;</span>';
-    }
+    echo '<span class="h5">&nbsp;</span>';
+
+    ////////////////////////////////////
+    //CUSTOM PLAYER FIELDS
+    ////////////////////////////////////
 
     echo '<div class="row">
                 <div class="col-md-4"><span class="h4">Custom Player Values</span> <span class="glyphicon glyphicon-question-sign" title="This is where all of your schema fields that relate to individual players are defined"></span></div>
@@ -112,49 +140,22 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
-    $modSchemaCreateFields_CustomPlayer_examples = array(
-        array('display' => 'Hero', 'name' => 'player_hero_id'),
-        array('display' => 'Level', 'name' => 'player_hero_level'),
-        array('display' => 'Deaths', 'name' => 'player_deaths'),
-        array('display' => 'Assists', 'name' => 'player_assists'),
-        array('display' => 'Denies', 'name' => 'player_denies'),
-        array('display' => 'Skill 1', 'name' => 'player_skill_1'),
-        array('display' => 'Item 1', 'name' => 'player_item_1'),
-        array('display' => 'Roshan Kills', 'name' => 'player_roshan_kills'),
-        array('display' => 'Pickup Time - Item Slot #1', 'name' => 'player_item1_pickup_time'),
-        array('display' => 'Damage Upgrades Purchased', 'name' => 'player_upgrades_dmg_count'),
-        array('display' => 'Selected Skills', 'name' => 'player_skills_selected_hash'),
-        array('display' => 'Items at 5mins', 'name' => 'player_items_5mins_hash'),
-    );
-    $modSchemaCreateFields_CustomPlayer = 15;
-    for ($i = 1; $i <= $modSchemaCreateFields_CustomPlayer; $i++) {
-        $randomExample = rand(0, (count($modSchemaCreateFields_CustomPlayer_examples) - 1));
-        echo '<div class="row">
-                <div class="col-md-1"><span class="h4">#' . $i . '</span></div>
-                <div class="col-md-1">Display</div>
-                <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cpv' . $i . '_display" type="text" maxlength="70" size="45" placeholder="' . $modSchemaCreateFields_CustomPlayer_examples[$randomExample]['display'] . '"></div>
-            </div>';
-        echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1">Name</div>
-                <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="cpv' . $i . '_name" type="text" maxlength="70" size="45" placeholder="' . $modSchemaCreateFields_CustomPlayer_examples[$randomExample]['name'] . '"></div>
-            </div>';
-        echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1">Objective</div>
-                <div class="col-md-2">
-                    <input type="radio" name="cpv' . $i . '_objective" value="1">Minimise<br />
-                    <input type="radio" name="cpv' . $i . '_objective" value="2">Maximise<br />
-                    <input type="radio" name="cpv' . $i . '_objective" value="3" checked>Info
-                </div>
-            </div>';
-
-        echo '<span class="h5">&nbsp;</span>';
-    }
+    echo '<span id="customPlayerValuesPlaceholder"></span>';
 
     echo '<div class="row">
                 <div class="col-md-8 text-center">
-                    <button id="sub">Create</button>
+                    <button id="morePlayerFields" class="btn btn-warning">moreFields</button>
+                </div>
+            </div>';
+
+    echo '<span class="h5">&nbsp;</span>';
+
+
+    ///////////////////////////////////
+
+    echo '<div class="row">
+                <div class="col-md-8 text-center">
+                    <button id="sub" class="btn btn-success">Create</button>
                 </div>
             </div>';
 
@@ -165,30 +166,78 @@ try {
     echo '<span id="schemaCustomAJAXResult" class="labelWarnings label label-danger"></span>';
 
     echo '<script type="application/javascript">
-                    $("#modSchemaCreate").submit(function (event) {
-                        event.preventDefault();
+            var counterGame = 0;
+            var counterPlayer = 0;
 
-                        $.post("./admin/mod_schema_create_ajax.php", $("#modSchemaCreate").serialize(), function (data) {
-                            try {
-                                if(data){
-                                    var response = JSON.parse(data);
-                                    if(response && response.error){
-                                        $("#schemaCustomAJAXResult").html(response.error);
-                                    }
-                                    else if(response && response.result){
-                                        loadPage("#admin__mod_schema",1);
-                                    }
-                                    else{
-                                        $("#schemaCustomAJAXResult").html(data);
-                                    }
-                                }
+            addMoreFields("game");
+            addMoreFields("player");
+
+            $("#moreGameFields").click(event, function(){
+                event.preventDefault();
+                addMoreFields("game");
+            });
+
+            $("#morePlayerFields").click(event, function(){
+                event.preventDefault();
+                addMoreFields("player");
+            });
+
+            function addMoreFields(type){
+                var tempClone = null,
+                    counter = null;
+
+                if(type == "game"){
+                    counterGame++;
+                    counter = counterGame;
+                    tempClone = $("#custom_game_master").clone();
+                } else if(type == "player"){
+                    counterPlayer++;
+                    counter = counterPlayer;
+                    tempClone = $("#custom_player_master").clone();
+                }
+
+                tempClone.attr("id", function(i,val){ return val + counter; }).removeAttr("style");
+
+                $("input", tempClone).each(function () {
+                    $(this).attr("name", function(i,val){ return val + counter; });
+                });
+
+                $("#customValueIdentifierName", tempClone).each(function(){
+                    $(this).html("#" + counter);
+                });
+
+                if(type == "game"){
+                    tempClone.appendTo("#customGameValuesPlaceholder");
+                } else if(type == "player"){
+                    tempClone.appendTo("#customPlayerValuesPlaceholder");
+                }
+            }
+
+
+            $("#modSchemaCreate").submit(function (event) {
+                event.preventDefault();
+
+                $.post("./admin/mod_schema_create_ajax.php", $("#modSchemaCreate").serialize(), function (data) {
+                    try {
+                        if(data){
+                            var response = JSON.parse(data);
+                            if(response && response.error){
+                                $("#schemaCustomAJAXResult").html(response.error);
                             }
-                            catch(err) {
-                                $("#schemaCustomAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
+                            else if(response && response.result){
+                                loadPage("#admin__mod_schema",1);
                             }
-                        }, "text");
-                    });
-                </script>';
+                            else{
+                                $("#schemaCustomAJAXResult").html(data);
+                            }
+                        }
+                    }
+                    catch(err) {
+                        $("#schemaCustomAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
+                    }
+                }, "text");
+            });
+        </script>';
 
     echo '<span class="h4">&nbsp;</span>';
 
