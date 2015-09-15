@@ -97,7 +97,7 @@ try {
                 <div class="col-md-4">' . $modNameLink . '</div>
                 <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
                 <div class="col-md-2">' . $developerLink . '</div>
-                <div class="col-md-2">' . $value['schemaAuth'] . '</div>
+                <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
                 <div class="col-md-1 text-center">' . $editLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
             </div>';
@@ -178,7 +178,7 @@ try {
                 <div class="col-md-4">' . $modNameLink . '</div>
                 <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
                 <div class="col-md-2">' . $developerLink . '</div>
-                <div class="col-md-2">' . $value['schemaAuth'] . '</div>
+                <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
                 <div class="col-md-1 text-center">' . $editLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
             </div>';
@@ -257,7 +257,7 @@ try {
                 <div class="col-md-4">' . $modNameLink . '</div>
                 <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
                 <div class="col-md-2">' . $developerLink . '</div>
-                <div class="col-md-2">' . $value['schemaAuth'] . '</div>
+                <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
                 <div class="col-md-1 text-center">' . $editLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
             </div>';
