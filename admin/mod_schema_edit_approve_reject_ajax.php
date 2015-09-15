@@ -74,7 +74,7 @@ try {
             : 'Rejected';
         $json_response['result'] = "Success! Custom Game Schema #$schemaID now $SQLresult.";
 
-        $irc_message = new irc_message($webhook_gds_site_live);
+        $irc_message = new irc_message($webhook_gds_site_admin);
 
         $message = array(
             array(

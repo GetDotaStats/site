@@ -73,7 +73,7 @@ try {
             ? 'Rejected'
             : 'Approved';
 
-        $irc_message = new irc_message($webhook_gds_site_live);
+        $irc_message = new irc_message($webhook_gds_site_admin);
 
         $message = array(
             array(

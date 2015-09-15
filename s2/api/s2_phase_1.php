@@ -140,6 +140,35 @@ try {
         $s2_response['modID'] = $modID;
         $s2_response['modIdentifier'] = $modIdentifier;
         $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
+
+        $irc_message = new irc_message($webhook_gds_site_announce);
+
+        $message = array(
+            array(
+                '[',
+                $irc_message->colour_generator('bold'),
+                $irc_message->colour_generator('blue'),
+                'PHASE1',
+                $irc_message->colour_generator(NULL),
+                $irc_message->colour_generator('bold'),
+                ']',
+            ),
+            array(
+                $irc_message->colour_generator('red'),
+                '[' . $modIdentifierCheck[0]['mod_name'] . ']',
+                $irc_message->colour_generator(NULL),
+            ),
+            array(
+                $irc_message->colour_generator('pink'),
+                'Players:',
+                $irc_message->colour_generator(NULL),
+            ),
+            array($preGameAuthPayloadJSON['numPlayers']),
+            array(' || http://getdotastats.com/#s2__match?id=' . $matchID),
+        );
+
+        $message = $irc_message->combine_message($message);
+        $irc_message->post_message($message, array('localDev' => $localDev));
     } else {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;

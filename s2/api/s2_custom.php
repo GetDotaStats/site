@@ -214,7 +214,7 @@ try {
             foreach ($schemaFieldsGameArrayResult as $key => $value) {
                 //Iterate over fields in round
                 foreach ($value as $key2 => $value2) {
-                    $db->q(
+                    $sqlResultGame = $db->q(
                         'INSERT INTO `s2_match_custom`
                                 (`matchID`, `modID`, `schemaID`, `round`, `fieldOrder`, `fieldValue`)
                             VALUES (?, ?, ?, ?, ?, ?)
@@ -245,7 +245,7 @@ try {
                 foreach ($value as $key2 => $value2) {
                     //Iterate over fields in player
                     foreach ($value2 as $key3 => $value3) {
-                        $db->q(
+                        $sqlResultPlayer = $db->q(
                             'INSERT INTO `s2_match_players_custom`
                                     (`matchID`, `modID`, `schemaID`, `round`, `userID32`, `fieldOrder`, `fieldValue`)
                                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -270,15 +270,31 @@ try {
     }
 
 
-    if (!empty($sqlResult)) {
-        $s2_response['result'] = 1;
-        $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
-    } else {
-        //SOMETHING FUNKY HAPPENED
-        $s2_response['result'] = 0;
-        $s2_response['error'] = 'Unknown error!';
-        $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
-    }
+    $s2_response['result'] = 1;
+    $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
+
+    $irc_message = new irc_message($webhook_gds_site_announce);
+
+    $message = array(
+        array(
+            '[',
+            $irc_message->colour_generator('bold'),
+            $irc_message->colour_generator('blue'),
+            'CUSTOM',
+            $irc_message->colour_generator(NULL),
+            $irc_message->colour_generator('bold'),
+            ']',
+        ),
+        array(
+            $irc_message->colour_generator('red'),
+            '[' . $modIdentifierCheck[0]['mod_name'] . ']',
+            $irc_message->colour_generator(NULL),
+        ),
+        array(' || http://getdotastats.com/#s2__match?id=' . $matchID),
+    );
+
+    $message = $irc_message->combine_message($message);
+    $irc_message->post_message($message, array('localDev' => $localDev));
 
 } catch (Exception $e) {
     unset($s2_response);

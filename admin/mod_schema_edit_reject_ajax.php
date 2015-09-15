@@ -65,7 +65,7 @@ try {
     if ($updateSQL) {
         $json_response['result'] = "Success! Custom Game Schemas for mod #$schemaModID now rejected.";
 
-        $irc_message = new irc_message($webhook_gds_site_live);
+        $irc_message = new irc_message($webhook_gds_site_admin);
 
         $message = array(
             array(

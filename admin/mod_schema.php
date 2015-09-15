@@ -72,7 +72,8 @@ try {
         echo '<div class="row">
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
-                <div class="col-md-3"><span class="h4">Modder</span></div>
+                <div class="col-md-2"><span class="h4">Modder</span></div>
+                <div class="col-md-2"><span class="h4">Auth</span></div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -95,8 +96,8 @@ try {
             echo '<div class="row">
                 <div class="col-md-4">' . $modNameLink . '</div>
                 <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                <div class="col-md-3">' . $developerLink . '</div>
-                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-2">' . $developerLink . '</div>
+                <div class="col-md-2">' . $value['schemaAuth'] . '</div>
                 <div class="col-md-1 text-center">' . $editLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
             </div>';
@@ -152,7 +153,8 @@ try {
         echo '<div class="row">
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
-                <div class="col-md-3"><span class="h4">Modder</span></div>
+                <div class="col-md-2"><span class="h4">Modder</span></div>
+                <div class="col-md-2"><span class="h4">Auth</span></div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -175,8 +177,8 @@ try {
             echo '<div class="row">
                 <div class="col-md-4">' . $modNameLink . '</div>
                 <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                <div class="col-md-3">' . $developerLink . '</div>
-                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-2">' . $developerLink . '</div>
+                <div class="col-md-2">' . $value['schemaAuth'] . '</div>
                 <div class="col-md-1 text-center">' . $editLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
             </div>';
@@ -230,7 +232,8 @@ try {
         echo '<div class="row">
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
-                <div class="col-md-3"><span class="h4">Modder</span></div>
+                <div class="col-md-2"><span class="h4">Modder</span></div>
+                <div class="col-md-2"><span class="h4">Auth</span></div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -253,8 +256,8 @@ try {
             echo '<div class="row">
                 <div class="col-md-4">' . $modNameLink . '</div>
                 <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                <div class="col-md-3">' . $developerLink . '</div>
-                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-2">' . $developerLink . '</div>
+                <div class="col-md-2">' . $value['schemaAuth'] . '</div>
                 <div class="col-md-1 text-center">' . $editLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
             </div>';
