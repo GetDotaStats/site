@@ -153,6 +153,7 @@ try {
     $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
 } finally {
     if (isset($memcache)) $memcache->close();
+    if (!isset($json_response)) $json_response = array('error' => 'Unknown exception');
 }
 
 try {

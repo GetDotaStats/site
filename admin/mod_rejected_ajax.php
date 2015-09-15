@@ -20,7 +20,7 @@ try {
     if (empty($adminCheck)) throw new Exception('Not an admin!');
 
     if (
-        empty($_POST['modID'])
+    empty($_POST['modID'])
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
     }
@@ -69,7 +69,7 @@ try {
         );
 
         $message = $irc_message->combine_message($message);
-        $irc_message->post_message($message);
+        $irc_message->post_message($message, array('localDev' => $localDev));
     } else {
         throw new Exception('Custom Game not re-queued!');
     }
@@ -78,7 +78,7 @@ try {
     $json_response['error'] = 'Caught Exception: ' . $e->getMessage();
 } finally {
     if (isset($memcache)) $memcache->close();
-    if(!isset($json_response)) $json_response = array('error' => 'Unknown exception');
+    if (!isset($json_response)) $json_response = array('error' => 'Unknown exception');
 }
 
 try {
