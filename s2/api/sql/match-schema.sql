@@ -67,17 +67,13 @@ CREATE TABLE IF NOT EXISTS `s2_match_players` (
   `modID` varchar(255) NOT NULL,
   `steamID32` bigint(255) NOT NULL,
   `steamID64` bigint(255) NOT NULL,
-  `teamID` int(10) DEFAULT NULL,
-  `slotID` int(10) NOT NULL,
-  `heroID` int(255) DEFAULT NULL,
   `connectionState` tinyint(1) NOT NULL,
   `isWinner` tinyint(1) DEFAULT NULL,
   `dateRecorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`matchID`,`roundID`,`steamID32`),
-  KEY `indx_match_team_slot` (`matchID`,`teamID`,`slotID`),
+  KEY `indx_match_team_slot` (`matchID`),
   KEY `indx_dateRecorded` (`dateRecorded`),
-  KEY `indx_mod_connection` (`modID`,`connectionState`),
-  KEY `indx_mod_hero` (`modID`,`heroID`)
+  KEY `indx_mod_connection` (`modID`,`connectionState`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `s2_match_players_custom` (
