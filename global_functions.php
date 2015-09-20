@@ -44,7 +44,7 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.min.css?34';
+$path_css_site_name = 'getdotastats.min.css?38';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
 
 $path_css_bootstrap = '/bootstrap/css/';

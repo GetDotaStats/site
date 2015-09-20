@@ -45,10 +45,10 @@ try {
           default-src 'none';
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
-          script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com 'unsafe-eval' 'unsafe-inline' data:;
+          script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com *.changetip.com 'unsafe-eval' 'unsafe-inline' data:;
           img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net  *.google-analytics.com *.steamusercontent.com;
           font-src 'self' static.getdotastats.com getdotastats.com;
-          frame-src chatwing.com *.youtube.com *.mibbit.com;
+          frame-src chatwing.com *.youtube.com *.mibbit.com *.changetip.com;
           object-src 'none';
           media-src 'none';
           report-uri ./csp_reports.php;">
@@ -86,7 +86,7 @@ try {
                         <li><a class="nav-clickable" href="#s2__schema_highscore">Schema stat-highscore <span
                                     class="label label-warning">NEW</span></a></li>
                         <li><a>Schema stat-rpg <span
-                                class="label label-danger">SOON</span></a></li>
+                                    class="label label-danger">SOON</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trend Analysis</a></li>
@@ -198,8 +198,8 @@ try {
 <div class="container">
     <div class="text-center">
         <a class="nav-clickable" href="#home"><img width="300px"
-                                                                 src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
-                                                                 alt="site logo"/></a>
+                                                   src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
+                                                   alt="site logo"/></a>
 
         <div id="loading">
             <img id="loading_spinner1" src="<?= $CDN_generic ?>/images/spinner_v2.gif" alt="loading"/>
@@ -220,10 +220,14 @@ try {
                     <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank" class="flattr-button"><span
                             class="flattr-icon"></span></a>
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
-                            class="steam-group-icon"></span><span class="steam-group-label">Join us on Steam</span></a>
-                </div>
+                            class="steam-group-icon"></span><span class="steam-group-label">Steam Group</span></a>
 
-                <br/>
+                    <br />
+
+                    <iframe class="text-left changetip-button" frameborder="0" scrolling="no" allowtransparency="true"
+                            title="Tip Bitcoin with Changetip"
+                            src="//www.changetip.com/widget/tipme/fe9904fe98334f52a4bafbf346226429?context=d6db5ef7-a851-48b6-8185-1567273c3cfd&amp;brid=16948518&amp;max_age=600"></iframe>
+                </div>
 
                 <!-- Begin chatwing.com chatbox -->
                 <iframe src="//chatwing.com/chatbox/e7f2bbd0-e292-4596-ab15-1667b4319e95" width="100%" height="650"
