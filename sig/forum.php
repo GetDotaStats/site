@@ -17,14 +17,21 @@ try {
 
     $cacheTimeSeconds = $cacheTimeHours * 60 * 60;
 
-    $file_name_location = $areWeLocalDevEnv
-        ? '.\images\generated\\' . $account_id . '_forum.png'
-        : './images/generated/' . $account_id . '_forum.png';
+    if (!empty($_GET["base"]) && file_exists('./images/bases/' . $_GET["base"] . '.png')) {
+        $file_name_location = $areWeLocalDevEnv
+            ? '.\images\generated\\' . $account_id . '_' . $base_img_name . '_forum.png'
+            : './images/generated/' . $account_id . '_' . $base_img_name . '_forum.png';
+    } else {
+        $file_name_location = $areWeLocalDevEnv
+            ? '.\images\generated\\' . $account_id . '_forum.png'
+            : './images/generated/' . $account_id . '_forum.png';
+    }
+
     //////////////////////////////////
 
     require_once('../connections/parameters.php');
     require_once('../global_functions.php');
-    require_once('./functions_v2.php');
+    require_once('./functions_v3.php');
     set_time_limit(60);
 
     header("Content-type: image/png");
@@ -43,9 +50,17 @@ try {
     $steamID = new SteamID($account_id);
     if (empty($steamID->getSteamID32()) || empty($steamID->getSteamID64())) throw new Exception('Bad steamID!');
 
-    $file_name_location = $areWeLocalDevEnv
-        ? '.\images\generated\\' . $steamID->getsteamID32() . '_forum.png'
-        : './images/generated/' . $steamID->getsteamID32() . '_forum.png';
+    ///////////////////
+    if (!empty($_GET["base"]) && file_exists('./images/bases/' . $_GET["base"] . '.png')) {
+        $file_name_location = $areWeLocalDevEnv
+            ? '.\images\generated\\' . $steamID->getsteamID32() . '_' . $base_img_name . '_forum.png'
+            : './images/generated/' . $steamID->getsteamID32() . '_' . $base_img_name . '_forum.png';
+    } else {
+        $file_name_location = $areWeLocalDevEnv
+            ? '.\images\generated\\' . $steamID->getsteamID32() . '_forum.png'
+            : './images/generated/' . $steamID->getsteamID32() . '_forum.png';
+    }
+    ///////////////////////
 
     $webAPI = new steam_webapi($api_key1);
 
@@ -165,12 +180,12 @@ try {
         if (!empty($user_details['mostPlayedHeroes'])) {
             $x = $y = 0;
             for ($i = 0; $i < count($user_details['mostPlayedHeroes']); $i++) {
-                $image_file = './images/' . $user_details['mostPlayedHeroes'][$i]['pic'] . '.png';
+                $image_file = './images/heroes/' . $user_details['mostPlayedHeroes'][$i]['pic'] . '.png';
 
                 if (file_exists($image_file)) {
                     $image = imagecreatefrompng($image_file);
                 } else {
-                    $image = './images/bases/hero_default.png';
+                    $image = imagecreatefrompng('./images/bases/hero_default.png');
                 }
 
                 //list($overlay_width, $overlay_height) = getimagesize($image_file);
@@ -225,12 +240,12 @@ try {
         if (!empty($user_details['winRateHeroes'])) {
             $x = $y = 0;
             for ($i = 0; $i < count($user_details['winRateHeroes']); $i++) {
-                $image_file = './images/' . $user_details['winRateHeroes'][$i]['pic'] . '.png';
+                $image_file = './images/heroes/' . $user_details['winRateHeroes'][$i]['pic'] . '.png';
 
                 if (file_exists($image_file)) {
                     $image = imagecreatefrompng($image_file);
                 } else {
-                    $image = './images/bases/hero_default.png';
+                    $image = imagecreatefrompng('./images/bases/hero_default.png');
                 }
 
                 //list($overlay_width, $overlay_height) = getimagesize($image_file);
@@ -315,6 +330,7 @@ try {
         //////////////////////////
         //ACCOUNT MMR
         //////////////////////////
+
         /*
         if (!empty($lx_user_details) && empty($lx_user_details[0]['user_stats_disabled'])) {
             $rank_solo = !empty($lx_user_details[0]['user_mmr_solo'])
