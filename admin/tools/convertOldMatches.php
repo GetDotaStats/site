@@ -31,13 +31,15 @@ try {
         throw new Exception('No more matches to count!');
     }
 
-    $numReps = round($numMatches[0]['total_reps'] / 500);
+    $repSize = 400;
+
+    $numReps = round($numMatches[0]['total_reps'] / $repSize);
 
     if (empty($numReps)) {
         throw new Exception('No more reps to rep!');
     }
 
-    echo $numReps . ' total reps of 1000<hr />';
+    echo $numReps . ' total reps of ' . $repSize . '<hr />';
 
 
     for ($i = 0; $i <= $numReps; $i++) {
@@ -62,7 +64,7 @@ try {
                     nl.`date_recorded`
                 FROM `node_listener` nl
                 ORDER BY nl.`date_recorded` ASC
-                LIMIT 0,500;'
+                LIMIT 0,' . $repSize . ';'
         );
 
         if (empty($oldMatches)) {
@@ -73,16 +75,30 @@ try {
             try {
                 $oldMessage = json_decode($value['message'], true);
 
+                if(empty($oldMessage)){
+                    $db->q(
+                        'DELETE FROM `node_listener` WHERE `test_id` = ?;',
+                        'i',
+                        $value['test_id']
+                    );
+
+                    continue;
+                }
+
                 $matchID = $oldMessage['matchID'];
 
                 //Check if match already recorded
-                $matchIDLookup = $db->q(
-                    'SELECT *
+
+                $matchIDLookup = cached_query(
+                    'tool_maid' . $matchID,
+                    'SELECT
+                          `matchID`
                         FROM `s2_match`
                         WHERE `oldMatchID` = ?
                         LIMIT 0,1;',
                     's',
-                    $matchID
+                    $matchID,
+                    5
                 );
 
                 if (!empty($matchIDLookup)) {
@@ -167,11 +183,17 @@ try {
                         LIMIT 0,1;',
                     'i',
                     $modIdentifier,
-                    15
+                    60
                 );
 
-                if (empty($modIdentifierCheck)) {
-                    throw new Exception('Invalid modIdentifier!');
+                if(empty($modIdentifierCheck)){
+                    $db->q(
+                        'DELETE FROM `node_listener` WHERE `test_id` = ?;',
+                        'i',
+                        $value['test_id']
+                    );
+
+                    continue;
                 }
 
                 $modID = $modIdentifierCheck[0]['mod_id'];
@@ -189,7 +211,6 @@ try {
                     'matchMapName' => $map,
                     'numPlayers' => $numPlayers,
                     'numRounds' => $numRounds,
-                    'matchWinningTeamID' => $winningTeam,
                     'matchDuration' => $duration,
                     'schemaVersion' => $version,
                     'oldMatchID' => $matchID,
@@ -208,15 +229,14 @@ try {
                                 `matchMapName`,
                                 `numPlayers`,
                                 `numRounds`,
-                                `matchWinningTeamID`,
                                 `matchDuration`,
                                 `schemaVersion`,
                                 `oldMatchID`,
                                 `dateUpdated`,
                                 `dateRecorded`
                             )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
-                    'sisiisiiiiisss',
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                    'sisiisiiiisss',
                     $newMatchDetails
                 );
 
