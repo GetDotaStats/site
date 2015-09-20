@@ -220,13 +220,12 @@ try {
                     <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank" class="flattr-button"><span
                             class="flattr-icon"></span></a>
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
-                            class="steam-group-icon"></span><span class="steam-group-label">Steam Group</span></a>
+                            class="steam-group-icon"></span> <span class="steam-group-label">Steam Group</span></a>
 
-                    <br />
+                    <br/>
 
-                    <iframe class="text-left changetip-button" frameborder="0" scrolling="no" allowtransparency="true"
-                            title="Tip Bitcoin with Changetip"
-                            src="//www.changetip.com/widget/tipme/fe9904fe98334f52a4bafbf346226429?context=d6db5ef7-a851-48b6-8185-1567273c3cfd&amp;brid=16948518&amp;max_age=600"></iframe>
+                    <a href="https://www.changetip.com/tipme/jimmydorry" target="_blank" class="changetip-button"><span
+                            class="changetip-icon"></span> <span class="changetip-label">Tip.me</span></a>
                 </div>
 
                 <!-- Begin chatwing.com chatbox -->
