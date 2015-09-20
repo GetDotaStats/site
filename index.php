@@ -217,12 +217,8 @@ try {
         <div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <div class="text-center">
-                    <a href="//flattr.com/thing/3621831/GetDotaStats" target="_blank" class="flattr-button"><span
-                            class="flattr-icon"></span></a>
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
                             class="steam-group-icon"></span> <span class="steam-group-label">Steam Group</span></a>
-
-                    <br/>
 
                     <a href="https://www.changetip.com/tipme/jimmydorry" target="_blank" class="changetip-button"><span
                             class="changetip-icon"></span> <span class="changetip-label">Tip.me</span></a>
