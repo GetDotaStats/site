@@ -303,6 +303,7 @@ try {
     $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
 } finally {
     if (isset($memcache)) $memcache->close();
+    if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');
 }
 
 try {

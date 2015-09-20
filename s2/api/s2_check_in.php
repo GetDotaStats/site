@@ -177,6 +177,7 @@ try {
     $s2_response['schemaVersion'] = $currentSchemaVersionClientCheckIn;
 } finally {
     if (isset($memcache)) $memcache->close();
+    if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');
 }
 
 try {

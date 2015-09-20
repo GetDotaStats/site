@@ -513,6 +513,13 @@
     </div>
 
     <div class="row">
+        <div class="col-sm-3">gameFinished</div>
+        <div class="col-sm-2">integer</div>
+        <div class="col-sm-3">1</div>
+        <div class="col-sm-4">Default value of 1 if not defined</div>
+    </div>
+
+    <div class="row">
         <div class="col-sm-3">schemaVersion</div>
         <div class="col-sm-2">integer</div>
         <div class="col-sm-7">1</div>
@@ -569,6 +576,7 @@
     "matchID": "21347923432",
     "modIdentifier": "7adfki234jlk23",
     "gameDuration": 3954,
+    "gameFinished": 0,
     "schemaVersion": 1,
     "rounds": [
         [
@@ -1008,11 +1016,10 @@ try {
                       `matchID`,
                       `modID`,
                       `flagName`,
-                      `flagValue`,
-                      `dateRecorded`
+                      `flagValue`
                     FROM `s2_match_flags`
                     WHERE `matchID` = ?
-                    ORDER BY `dateRecorded` DESC;',
+                    ORDER BY `flagName` ASC;',
                 's',
                 array(
                     $value['matchID']
@@ -1093,7 +1100,7 @@ try {
                     FROM `s2_match_players` s2mp
                     LEFT JOIN `s2_match_players_name` s2mpn ON s2mp.`steamID64` = s2mpn.`steamID64`
                     WHERE `matchID` = ?
-                    ORDER BY `dateRecorded` DESC;',
+                    ORDER BY `steamID64` ASC;',
                 's',
                 array(
                     $value['matchID']
@@ -1109,7 +1116,6 @@ try {
                     unset($value2['modID']);
                     unset($value2['steamID64']);
                     //unset($value2['isWinner']);
-                    unset($value2['dateRecorded']);
                     $playerList[] = $value2;
                 }
 

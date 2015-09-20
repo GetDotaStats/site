@@ -110,19 +110,25 @@ try {
 
     //MATCH DETAILS
     {
+        $gameFinished = isset($preGameAuthPayloadJSON['gameFinished']) && $preGameAuthPayloadJSON['gameFinished'] == 0
+            ? 0
+            : 1;
+
         $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numRounds`, `matchDuration`)
-                VALUES (?, ?, ?, ?)
+            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numRounds`, `matchDuration`, `matchFinished`)
+                VALUES (?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                   `matchPhaseID` = VALUES(`matchPhaseID`),
                   `numRounds` = VALUES(`numRounds`),
-                  `matchDuration` = VALUES(`matchDuration`);',
-            'siii',
+                  `matchDuration` = VALUES(`matchDuration`),
+                  `matchFinished` = VALUES(`matchFinished`);',
+            'siiii',
             array(
                 $matchID,
                 3,
                 $numRounds,
-                $preGameAuthPayloadJSON['gameDuration']
+                $preGameAuthPayloadJSON['gameDuration'],
+                $gameFinished
             )
         );
     }
@@ -203,6 +209,7 @@ try {
     $s2_response['schemaVersion'] = $currentSchemaVersionPhase3;
 } finally {
     if (isset($memcache)) $memcache->close();
+    if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');
 }
 
 try {
