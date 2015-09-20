@@ -8,16 +8,17 @@ CREATE TABLE IF NOT EXISTS `s2_match` (
   `matchMapName` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `numPlayers` int(10) NOT NULL,
   `numRounds` int(10) NOT NULL DEFAULT '1',
-  `matchWinningTeamID` tinyint(2) DEFAULT NULL,
   `matchDuration` int(50) DEFAULT NULL,
+  `matchFinished` tinyint(1) NOT NULL DEFAULT '1',
   `schemaVersion` int(1) NOT NULL,
+  `oldMatchID` varchar(100) DEFAULT NULL,
   `dateUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `dateRecorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`matchID`),
   KEY `indx_mod_numplayers` (`modID`,`numPlayers`),
   KEY `indx_mod_dedicated` (`modID`,`isDedicated`),
   KEY `indx_mod_duration` (`modID`,`matchDuration`),
-  KEY `indx_mod_winner` (`modID`,`matchWinningTeamID`),
+  KEY `indx_mod_winner` (`modID`),
   KEY `indx_mod_map` (`modID`,`matchMapName`),
   KEY `indx_schemaVersion` (`schemaVersion`),
   KEY `indx_dateRecorded` (`dateRecorded`),
@@ -55,9 +56,7 @@ CREATE TABLE IF NOT EXISTS `s2_match_flags` (
   `modID` varchar(255) NOT NULL,
   `flagName` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `flagValue` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `dateRecorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`matchID`,`flagName`),
-  KEY `indx_dateRecorded` (`dateRecorded`),
   KEY `indx_mod_flag` (`modID`,`flagName`,`flagValue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -69,11 +68,10 @@ CREATE TABLE IF NOT EXISTS `s2_match_players` (
   `steamID64` bigint(255) NOT NULL,
   `connectionState` tinyint(1) NOT NULL,
   `isWinner` tinyint(1) DEFAULT NULL,
-  `dateRecorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`matchID`,`roundID`,`steamID32`),
   KEY `indx_match_team_slot` (`matchID`),
-  KEY `indx_dateRecorded` (`dateRecorded`),
-  KEY `indx_mod_connection` (`modID`,`connectionState`)
+  KEY `indx_mod_connection` (`modID`,`connectionState`),
+  KEY `indx_mod_hero` (`modID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `s2_match_players_custom` (
