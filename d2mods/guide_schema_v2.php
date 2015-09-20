@@ -964,7 +964,6 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    //`matchID`, `matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `isDedicated`, `numPlayers`, `numRounds`, `matchWinningTeamID`, `matchDuration`, `schemaVersion`, `dateUpdated`, `dateRecorded`
     $latestData = cached_query('s2_latest_data',
         'SELECT *
             FROM `s2_match`
