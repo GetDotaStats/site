@@ -463,3 +463,17 @@ table td.bashful, table th.bashful {
     color: darkred;
     background-color: darkseagreen;
 }
+
+.mod_info_panel{
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    border-radius: 2px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border: #333 solid 1px;
+    background-color: #FFD4FF;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#FFD4FF), to(#FFEEFF));
+    background-image: -moz-linear-gradient(top, #FFD4FF, #FFEEFF);
+    background-image: linear-gradient(top, #FFD4FF, #FFEEFF);
+}

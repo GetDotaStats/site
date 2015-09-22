@@ -44,7 +44,7 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.min.css?42';
+$path_css_site_name = 'getdotastats.css?43';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
 
 $path_css_bootstrap = '/bootstrap/css/';
@@ -1255,7 +1255,7 @@ if (!class_exists('steam_webapi')) {
 
         function ResolveVanityURL($vanityURL)
         {
-            $APIresult = curl('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' . $this->steamAPIKey . '&vanityurl=' . $vanityURL, NULL,NULL,NULL,NULL,5,5);
+            $APIresult = curl('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' . $this->steamAPIKey . '&vanityurl=' . $vanityURL, NULL, NULL, NULL, NULL, 5, 5);
 
             $APIresult = !empty($APIresult)
                 ? json_decode($APIresult, 1)
