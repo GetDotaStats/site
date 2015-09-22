@@ -156,7 +156,7 @@ try {
 
                 echo '<div class="row"><div class="col-md-4 h4">Round #' . $value['roundID'] . '</div></div>';
                 echo '<div class="row">
-                        <div class="col-md-3"><strong>Player</strong></div>
+                        <div class="col-md-4"><strong>Player</strong></div>
                         <div class="col-md-2"><strong>Connection</strong></div>
                         <div class="col-md-1"><strong>Winner</strong></div>
                     </div>';
@@ -173,7 +173,7 @@ try {
             $usernameLink = '<a class="nav-clickable" href="#s2__user?id=' . $value['steamID64'] . '">' . $value['playerName'] . '</a>';
 
             echo '<div class="row">
-                        <div class="col-md-3">' . $userAvatarLink . ' ' . $usernameLink . '</div>
+                        <div class="col-md-4">' . $userAvatarLink . ' ' . $usernameLink . '</div>
                         <div class="col-md-2">' . $value['connectionState'] . '</div>
                         <div class="col-md-1">' . $value['isWinner'] . '</div>
                     </div>';
