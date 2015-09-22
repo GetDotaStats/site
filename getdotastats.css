@@ -454,3 +454,12 @@ table td.bashful, table th.bashful {
 }
 
 /* End star system! */
+
+.searchRow {
+}
+
+.searchRow:hover{
+    font-weight: bold;
+    color: darkred;
+    background-color: darkseagreen;
+}
