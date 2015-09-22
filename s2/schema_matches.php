@@ -16,18 +16,10 @@
 
 <h3>Notes</h3>
 
-<ul>
-    <li>It is unknown whether players have a connectionState available in Lua before they connect</li>
-    <li>It is unknown whether players have a slotID available in Lua before they connect</li>
-</ul>
-
-<h3>For Consideration</h3>
-
-<ul>
-    <li>Do we want each client to check in via a special endpoint, or even just the host report all of the clients? This
-        would let us build a picture of where all of the users are playing from.
-    </li>
-</ul>
+<p>We have just finished updating this library. We are working on making a simple guide, and ensuring this library is as
+    easy to use as possible. If you are interested in testing or helping us, get in <a class="nav-clickable"
+                                                                                       href="#contact">contact</a> with
+    us.</p>
 
 <hr/>
 

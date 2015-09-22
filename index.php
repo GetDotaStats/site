@@ -82,20 +82,17 @@ try {
                         <li class="dropdown-header">Developers</li>
                         <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
                         <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection <span
-                                    class="label label-warning">NEW</span></a></li>
+                                    class="label label-warning">UPDATED</span></a></li>
                         <li><a class="nav-clickable" href="#s2__schema_highscore">Schema stat-highscore <span
-                                    class="label label-warning">NEW</span></a></li>
+                                    class="label label-danger">SOON</span></a></li>
                         <li><a>Schema stat-rpg <span
                                     class="label label-danger">SOON</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Mod Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_graph">Trend Analysis</a></li>
                         <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
                         <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__hof">Hall of Fame</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__mod_highscores">Highscores</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__recent_games">Recently Played Games</a></li>
-                        <li><a class="nav-clickable" href="#s2__search">Search</a></li>
+                        <li><a class="nav-clickable" href="#s2__search">Search <span
+                                    class="label label-success">NEW</span></a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
@@ -220,7 +217,7 @@ try {
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
                             class="steam-group-icon"></span> <span class="steam-group-label">Steam Group</span></a>
 
-                    <a href="https://www.changetip.com/tipme/jimmydorry" target="_blank" class="changetip-button"><span
+                    <a href="https://www.changetip.com/tipme/getdotastats" target="_blank" class="changetip-button"><span
                             class="changetip-icon"></span> <span class="changetip-label">Tip.me</span></a>
                 </div>
 
