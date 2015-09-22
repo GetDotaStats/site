@@ -459,116 +459,117 @@
 ////////////////////////////////////////////////////
 -->
 <div class="panel panel-default">
-<div class="panel-heading" role="tab" id="headingFive">
-    <h4 class="panel-title">
-        <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive"
-           aria-expanded="false" aria-controls="collapseFive">
-            Phase 3 - Client - End Game
-        </a>
-    </h4>
-</div>
-<div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-<div class="panel-body">
-<p>This is for catching all of the games that properly end. The main difference here is that the resulting data can be
-    broken down into rounds.</p>
-
-<p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_3.php || "payload" =
-        <em>JSONschema</em></code></p>
-
-<hr/>
-
-<div>
-    <div class="row">
-        <div class="col-sm-3"><strong>Key</strong></div>
-        <div class="col-sm-2"><strong>Type</strong></div>
-        <div class="col-sm-3"><strong>Example</strong></div>
-        <div class="col-sm-4"><strong>Notes</strong></div>
+    <div class="panel-heading" role="tab" id="headingFive">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive"
+               aria-expanded="false" aria-controls="collapseFive">
+                Phase 3 - Client - End Game
+            </a>
+        </h4>
     </div>
-    <span class="h4">&nbsp;</span>
+    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+        <div class="panel-body">
+            <p>This is for catching all of the games that properly end. The main difference here is that the resulting
+                data can be
+                broken down into rounds.</p>
 
-    <div class="row">
-        <div class="col-sm-3">authKey</div>
-        <div class="col-sm-2">string</div>
-        <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
-        <div class="col-sm-4">Obtained by pre-match API</div>
-    </div>
+            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_3.php || "payload" =
+                    <em>JSONschema</em></code></p>
 
-    <div class="row">
-        <div class="col-sm-3">matchID</div>
-        <div class="col-sm-2">string</div>
-        <div class="col-sm-3">"21347923432"</div>
-        <div class="col-sm-4">Obtained by pre-match API</div>
-    </div>
+            <hr/>
 
-    <div class="row">
-        <div class="col-sm-3">modIdentifier</div>
-        <div class="col-sm-2">string</div>
-        <div class="col-sm-7">"7adfki234jlk23"</div>
-    </div>
+            <div>
+                <div class="row">
+                    <div class="col-sm-3"><strong>Key</strong></div>
+                    <div class="col-sm-2"><strong>Type</strong></div>
+                    <div class="col-sm-3"><strong>Example</strong></div>
+                    <div class="col-sm-4"><strong>Notes</strong></div>
+                </div>
+                <span class="h4">&nbsp;</span>
 
-    <div class="row">
-        <div class="col-sm-3">gameDuration</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-7">3954</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-3">authKey</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+                    <div class="col-sm-4">Obtained by pre-match API</div>
+                </div>
 
-    <div class="row">
-        <div class="col-sm-3">gameFinished</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-3">1</div>
-        <div class="col-sm-4">Default value of 1 if not defined</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-3">matchID</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-3">"21347923432"</div>
+                    <div class="col-sm-4">Obtained by pre-match API</div>
+                </div>
 
-    <div class="row">
-        <div class="col-sm-3">schemaVersion</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-7">1</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-3">modIdentifier</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-7">"7adfki234jlk23"</div>
+                </div>
 
-    <!--players array-->
+                <div class="row">
+                    <div class="col-sm-3">gameDuration</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-7">3954</div>
+                </div>
 
-    <div class="row">
-        <div class="col-sm-3">rounds</div>
-        <div class="col-sm-2">array</div>
-        <div class="col-sm-7">&nbsp;</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-3">gameFinished</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-3">1</div>
+                    <div class="col-sm-4">Default value of 1 if not defined</div>
+                </div>
 
-    <div class="row">
-        <div class="col-sm-1">&nbsp;</div>
-        <div class="col-sm-2">players</div>
-        <div class="col-sm-2">array</div>
-        <div class="col-sm-7">&nbsp;</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-3">schemaVersion</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-7">1</div>
+                </div>
 
-    <span class="h4">&nbsp;</span>
+                <!--players array-->
 
-    <div class="row">
-        <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">steamID32</div>
-        <div class="col-sm-2">string</div>
-        <div class="col-sm-6">"2875155"</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-3">rounds</div>
+                    <div class="col-sm-2">array</div>
+                    <div class="col-sm-7">&nbsp;</div>
+                </div>
 
-    <div class="row">
-        <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">isWinner</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-6">1</div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-2">players</div>
+                    <div class="col-sm-2">array</div>
+                    <div class="col-sm-7">&nbsp;</div>
+                </div>
 
-    <div class="row">
-        <div class="col-sm-2">&nbsp;</div>
-        <div class="col-sm-2">connectionState</div>
-        <div class="col-sm-2">integer</div>
-        <div class="col-sm-6">2</div>
-    </div>
+                <span class="h4">&nbsp;</span>
 
-    <span class="h4">&nbsp;</span>
-</div>
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">steamID32</div>
+                    <div class="col-sm-2">string</div>
+                    <div class="col-sm-6">"2875155"</div>
+                </div>
 
-<hr/>
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">isWinner</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-6">1</div>
+                </div>
 
-<h3>Example Schema</h3>
+                <div class="row">
+                    <div class="col-sm-2">&nbsp;</div>
+                    <div class="col-sm-2">connectionState</div>
+                    <div class="col-sm-2">integer</div>
+                    <div class="col-sm-6">2</div>
+                </div>
+
+                <span class="h4">&nbsp;</span>
+            </div>
+
+            <hr/>
+
+            <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
@@ -626,8 +627,8 @@
     ]
 }
             </pre>
-</div>
-</div>
+        </div>
+    </div>
 </div>
 
 <!--
@@ -970,7 +971,7 @@ try {
                 : '';
 
             echo '<div class="row">
-                <div class="col-sm-2">' . $value['matchID'] . '</div>
+                <div class="col-sm-2"><a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">' . $value['matchID'] . '</a></div>
                 <div class="col-sm-2">' . $value['modID'] . '</div>
                 <div class="col-sm-4">
                     <div class="row">

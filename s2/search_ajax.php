@@ -224,7 +224,7 @@ try {
                 $formattedTable .= '<span class="h5">&nbsp;</span>';
 
                 $formattedTable .= '<div class="row">
-                    <a class="searchRow" href="#s2__match?id=' . $value['matchID'] . '">
+                    <a class="searchRow nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
                             <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
                             <div class="col-md-3">' . $value['modName'] . '</div>
                             <div class="col-md-1 text-center">' . $value['numPlayers'] . '</div>
@@ -264,7 +264,7 @@ try {
 
 
                     $formattedTable .= '<div class="row">
-                        <a class="searchRow" href="#s2__user?id=' . $value2['steamID32'] . '">
+                        <a class="searchRow nav-clickable" href="#s2__user?id=' . $value2['steamID32'] . '">
                                 <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
                                 <div class="col-md-3">' . $value2['playerName'] . '</div>
                                 <div class="col-md-3">' . $vanityURL . '</div>
