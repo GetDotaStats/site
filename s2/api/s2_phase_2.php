@@ -159,7 +159,7 @@ try {
                     array(
                         $steamID32,
                         $steamID64,
-                        $value['playerName']
+                        htmlentities($value['playerName'])
                     )
                 );
             }
