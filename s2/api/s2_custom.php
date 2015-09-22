@@ -285,7 +285,7 @@ try {
     $s2_response['result'] = 1;
     $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
 
-    $irc_message = new irc_message($webhook_gds_site_announce);
+    /*$irc_message = new irc_message($webhook_gds_site_announce);
 
     $message = array(
         array(
@@ -306,7 +306,7 @@ try {
     );
 
     $message = $irc_message->combine_message($message);
-    $irc_message->post_message($message, array('localDev' => $localDev));
+    $irc_message->post_message($message, array('localDev' => $localDev));*/
 
 } catch (Exception $e) {
     unset($s2_response);
