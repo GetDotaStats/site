@@ -11,7 +11,7 @@ try {
 
     echo '<h1>User and Match Search</h1>';
 
-    echo '<p>This form allows users to search for specific users or matches, given their ID or custom steam URL. Usernames must start with the search term.</p>';
+    echo '<p>This form allows users to search for specific users or matches, given their ID or custom steam URL. Usernames must start with the search term. Only the first 25 results are returned.</p>';
 
 
     echo '<form id="searchForm">';
@@ -23,13 +23,13 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
-    echo '<span id="AJAXResult" class="labelWarnings label label-danger"></span>';
+    echo '<span id="AJAXResult" class="labelWarnings label label-danger hidden"></span>';
 
     echo '<span class="h5">&nbsp;</span>';
 
-    echo '<span id="searchResult" class="labelWarnings label label-danger"></span>';
+    echo '<span id="searchResult" class="hidden"></span>';
 
-    echo '<span class="h5">&nbsp;</span>';
+    echo '<span id="searchResultSpacer" class="h5 hidden">&nbsp;</span>';
 
 
     echo '<script type="application/javascript">
@@ -41,10 +41,16 @@ try {
                             if(data){
                                 var response = JSON.parse(data);
                                 if(response && response.error){
-                                    $("#AJAXResult").html(response.error);
+                                    $("#searchResultSpacer").addClass("hidden");
+                                    $("#searchResult").addClass("hidden").html("");
+                                    $("#AJAXResult").html(response.error).removeClass("hidden");
+                                } else if(response && response.searchResults){
+                                    $("#AJAXResult").addClass("hidden");
+                                    $("#searchResultSpacer").removeClass("hidden");
+                                    $("#searchResult").removeClass("hidden").html(response.searchResults);
                                 }
                                 else{
-                                    $("#AJAXResult").html(data);
+                                    $("#AJAXResult").html(data).removeClass("hidden");
                                 }
                             }
                         }

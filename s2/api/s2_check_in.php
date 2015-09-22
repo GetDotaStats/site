@@ -59,7 +59,7 @@ try {
             FROM `mod_list`
             WHERE `mod_identifier` = ?
             LIMIT 0,1;',
-        'i',
+        's',
         $modIdentifier,
         15
     );
