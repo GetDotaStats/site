@@ -81,7 +81,7 @@ try {
             array(
                 $irc_message->colour_generator('bold'),
                 $irc_message->colour_generator('blue'),
-                'Rejectedschemas for:',
+                'Rejected schemas for:',
                 $irc_message->colour_generator(NULL),
                 $irc_message->colour_generator('bold'),
             ),

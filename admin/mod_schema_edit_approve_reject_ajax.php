@@ -70,9 +70,13 @@ try {
 
     if ($updateSQL) {
         $SQLresult = $schemaApproved == 1
-            ? 'Approved'
-            : 'Rejected';
+            ? 'Approved:'
+            : 'Rejected:';
         $json_response['result'] = "Success! Custom Game Schema #$schemaID now $SQLresult.";
+
+        $SQLresult .= $schemaApproved == 1
+            ? ''
+            : ' `' . $schemaRejectedReason . '`';
 
         $irc_message = new irc_message($webhook_gds_site_admin);
 
@@ -90,7 +94,7 @@ try {
             array(
                 $irc_message->colour_generator('bold'),
                 $irc_message->colour_generator('blue'),
-                $SQLresult . ':',
+                $SQLresult,
                 $irc_message->colour_generator(NULL),
                 $irc_message->colour_generator('bold'),
             ),
