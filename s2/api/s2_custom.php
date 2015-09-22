@@ -214,6 +214,12 @@ try {
             foreach ($schemaFieldsGameArrayResult as $key => $value) {
                 //Iterate over fields in round
                 foreach ($value as $key2 => $value2) {
+                    if ($value2 === true) {
+                        $value2 = 1;
+                    } else if ($value2 === false) {
+                        $value2 = 0;
+                    }
+
                     $sqlResultGame = $db->q(
                         'INSERT INTO `s2_match_custom`
                                 (`matchID`, `modID`, `schemaID`, `round`, `fieldOrder`, `fieldValue`)
@@ -245,6 +251,12 @@ try {
                 foreach ($value as $key2 => $value2) {
                     //Iterate over fields in player
                     foreach ($value2 as $key3 => $value3) {
+                        if ($value3 === true) {
+                            $value3 = 1;
+                        } else if ($value3 === false) {
+                            $value3 = 0;
+                        }
+
                         $sqlResultPlayer = $db->q(
                             'INSERT INTO `s2_match_players_custom`
                                     (`matchID`, `modID`, `schemaID`, `round`, `userID32`, `fieldOrder`, `fieldValue`)
