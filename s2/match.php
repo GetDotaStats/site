@@ -64,13 +64,16 @@ try {
 
     echo '<h2><a class="nav-clickable" href="#s2__mod?id=' . $matchDetails[0]['modID'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
 
-    $sg = !empty($matchDetails[0]['mod_steam_group'])
-        ? '<a href="http://steamcommunity.com/groups/' . $matchDetails[0]['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Steam Group</a>'
-        : 'Steam Group';
+    !empty($matchDetails[0]['mod_workshop_link'])
+        ? $links['steam_workshop'] = '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $matchDetails[0]['mod_workshop_link'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Workshop</a>'
+        : NULL;
+    !empty($matchDetails[0]['mod_steam_group'])
+        ? $links['steam_group'] = '<a href="http://steamcommunity.com/groups/' . $matchDetails[0]['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Steam Group</a>'
+        : NULL;
+    $links = !empty($links)
+        ? implode(' || ', $links)
+        : 'None';
 
-    $wg = !empty($matchDetails[0]['mod_workshop_link'])
-        ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $matchDetails[0]['mod_workshop_link'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Workshop</a>'
-        : 'Workshop';
 
     //MOD INFO
     echo '<div class="container">';
@@ -85,7 +88,7 @@ try {
     echo '<div id="mod_info" class="collapse col-sm-7">
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Links</strong></div>
-                    <div class="col-sm-9">' . $wg . ' || ' . $sg . '</div>
+                    <div class="col-sm-9">' . $links . '</div>
                 </div>
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Description</strong></div>
@@ -234,7 +237,7 @@ try {
 
             $tempArray = array();
 
-            foreach($customGameDetails as $key => $value){
+            foreach ($customGameDetails as $key => $value) {
                 $tempArray[$value['round']][$value['customValueDisplay']] = $value['fieldValue'];
             }
 
@@ -276,7 +279,7 @@ try {
 
             $tempArray = array();
 
-            foreach($customPlayerDetails as $key => $value){
+            foreach ($customPlayerDetails as $key => $value) {
                 $tempArray[$value['round']][$value['userID32']][$value['customValueDisplay']] = $value['fieldValue'];
             }
 
