@@ -53,7 +53,7 @@ require_once('../connections/parameters.php');
                     $messages = $messages[0];
 
                     echo '<pre>';
-                    echo '<h3>Recorded from ' . $messages['remote_ip'] . ':' . $messages['remote_port'] . ' <small>' . relative_time($messages['date_recorded']) . '</small></h3>';
+                    echo '<h3>Recorded from ' . $messages['remote_ip'] . ':' . $messages['remote_port'] . ' <small>' . relative_time_v3($messages['date_recorded']) . '</small></h3>';
 
                     $message = json_decode(utf8_encode($messages['message']), 1);
                     $new_array = array_map_recursive('htmlentities', $message);

@@ -4,7 +4,7 @@ require_once('../../functions.php');
 require_once('../../../global_functions.php');
 require_once('../../../connections/parameters.php');
 
-$db = new dbWrapper($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
+$db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
 
 if ($db) {
     //GOLDEN PROFILES GROUP

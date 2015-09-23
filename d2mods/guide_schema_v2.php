@@ -1005,7 +1005,7 @@ try {
                 ? $value['matchDuration']
                 : '??';
 
-            $relativeDateRaw = relative_time_v2($value['dateUpdated'], 'hour', true);
+            $relativeDateRaw = relative_time_v3($value['dateUpdated'], 'hour', true);
 
             $timeColour = $relativeDateRaw['number'] <= 2
                 ? ' hs_lb_recent_score'

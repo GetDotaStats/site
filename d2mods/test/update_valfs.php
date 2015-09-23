@@ -11,7 +11,7 @@ try {
     checkLogin_v2();
 
     if (!empty($_SESSION['user_id64']) && !empty($_SESSION['isAdmin'])) {
-        $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site);
 
         if ($db) {
             $valfs = $db->q("SELECT * FROM `steam_valfs`;");

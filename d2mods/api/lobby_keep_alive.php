@@ -52,8 +52,8 @@ try {
                 $lobbyStatus['token'] = $token;
                 $lobbyStatus['lobby_ttl'] = $lobbyDetails['lobby_ttl'];
                 $lobbyStatus['lobby_active'] = $lobbyDetails['lobby_active'];
-                $lobbyStatus['date_keep_alive'] = relative_time($dateKeepAlive);
-                $lobbyStatus['date_recorded'] = relative_time($lobbyDetails['date_recorded']);
+                $lobbyStatus['date_keep_alive'] = relative_time_v3($dateKeepAlive);
+                $lobbyStatus['date_recorded'] = relative_time_v3($lobbyDetails['date_recorded']);
             } else {
                 //SOMETHING FUNKY HAPPENED
                 $lobbyStatus['error'] = 'Lobby not updated! Either already updated or invalid fields.';

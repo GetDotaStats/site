@@ -89,12 +89,12 @@ try {
                 : 'Unknown';
 
             $matchDate = !empty($value['match_recorded'])
-                ? relative_time($value['match_recorded'])
+                ? relative_time_v3($value['match_recorded'])
                 : 'Unknown';
 
             echo '
                     <tr>
-                        <td><a class="nav-clickable" href="#d2mods__stats?id=' . $value['modFakeID'] . '">' . $modName . '</a></td>
+                        <td><a class="nav-clickable" href="#s2__mod?id=' . $value['modFakeID'] . '">' . $modName . '</a></td>
                         <td><a class="nav-clickable" href="#d2mods__match?id=' . $matchID . '">' . $matchID . '</a></td>
                         <td class="text-center">' . $connectionStatus . '</td>
                         <td class="text-right">' . $matchDuration . ' mins</td>
@@ -112,7 +112,7 @@ try {
 
     echo '<p>
             <div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Mod Directory</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
             </div>
         </p>';

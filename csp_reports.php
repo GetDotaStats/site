@@ -11,7 +11,7 @@ try {
         require_once('./global_functions.php');
         require_once('./connections/parameters.php');
 
-        $db = new dbWrapper($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
+        $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
         if ($db) {
             $headers = json_encode(getallheaders());
 

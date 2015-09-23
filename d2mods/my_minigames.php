@@ -58,7 +58,7 @@ try {
                                 <div class="well well-sm"><strong>modID:</strong> ' . $value['minigameID'] . '</div>
                                 <!--<div class="well well-sm"><strong>Description:</strong> ' . $minigameDescription . '</div>-->
                                 <div class="well well-sm"><strong>Steam Group:</strong> ' . $sg . ' </div >
-                                <div class="well well-sm"><strong>Date Added:</strong > ' . relative_time($value['date_recorded']) . ' </div >
+                                <div class="well well-sm"><strong>Date Added:</strong > ' . relative_time_v3($value['date_recorded']) . ' </div >
                             </div >
                         </div > ';
         }

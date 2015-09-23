@@ -184,7 +184,7 @@ try {
             : '<textarea class="formTextArea boxsizingBorder" name="highscore_description" rows="3">No description recorded.</textarea>';
 
         $dateRecorded = !empty($value['date_recorded'])
-            ? relative_time_v2($value['date_recorded'])
+            ? relative_time_v3($value['date_recorded'])
             : 'No Group';
 
         $mgObjective = !empty($value['highscoreObjective']) && $value['highscoreObjective'] == 'max'

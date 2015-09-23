@@ -71,7 +71,7 @@ try {
                     : NULL;
 
                 !empty($value['mod_id'])
-                    ? $temp['modInfo'] = 'http://getdotastats.com/#d2mods__stats?id=' . $value['mod_id']
+                    ? $temp['modInfo'] = 'http://getdotastats.com/#s2__mod?id=' . $value['mod_id']
                     : NULL;
 
                 !empty($value['user_name'])
@@ -83,7 +83,7 @@ try {
                     : NULL;
 
                 !empty($value['date_recorded'])
-                    ? $temp['modDateAdded'] = relative_time_v2($value['date_recorded'])
+                    ? $temp['modDateAdded'] = relative_time_v3($value['date_recorded'])
                     : NULL;
 
                 !empty($value['mod_description'])

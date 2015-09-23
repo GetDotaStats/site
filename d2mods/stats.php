@@ -95,7 +95,7 @@ try {
     echo '<h2>' . $modDetails[0]['mod_name'] . '</h2>';
 
     echo '<div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Mod Directory</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
             </div>';
 
@@ -124,7 +124,7 @@ try {
         : 'WS';
 
     $dataRange = !empty($modRange[0]['date_start'])
-        ? relative_time($modRange[0]['date_start']) . ' - ' . relative_time_v3($modRange[0]['date_end'])
+        ? relative_time_v3($modRange[0]['date_start']) . ' - ' . relative_time_v3($modRange[0]['date_end'])
         : 'No data';
 
     $developerName = !empty($modDetails[0]['user_name'])
@@ -1023,7 +1023,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Mod Directory</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
             </div>';
 

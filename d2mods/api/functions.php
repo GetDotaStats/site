@@ -15,8 +15,7 @@ if (!function_exists("getModDetails")) {
         }
 
         if (!$db) {
-            $db = new dbWrapper_v2($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
-            $db->q('SET NAMES utf8;');
+            $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
         }
 
         $modDetails = $memcache->get('api_mod_details' . $modID);

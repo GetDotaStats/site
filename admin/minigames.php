@@ -174,7 +174,7 @@ try {
             : 'No Group';
 
         $dateRecorded = !empty($value['date_recorded'])
-            ? relative_time_v2($value['date_recorded'])
+            ? relative_time_v3($value['date_recorded'])
             : 'No Group';
 
         $mgObjective = !empty($value['minigameObjective']) && $value['minigameObjective'] == 'max'

@@ -245,7 +245,7 @@ try {
             echo '</pre>';
             exit();*/
 
-            echo '<h2><a class="nav-clickable" href="#d2mods__stats?id=' . $matchDetails[0]['mod_id'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
+            echo '<h2><a class="nav-clickable" href="#s2__mod?id=' . $matchDetails[0]['mod_id'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
 
             $sg = !empty($matchDetails[0]['mod_steam_group'])
                 ? '<a href="http://steamcommunity.com/groups/' . $matchDetails[0]['mod_steam_group'] . '" target="_new">Steam Group</a>'
@@ -292,7 +292,7 @@ try {
 		                            <td class="bashful">&nbsp;</td>
 		                            <td class="text-center">' . $matchDetails[0]['match_num_players'] . '</td>
 		                            <td class="text-center">' . number_format($matchDetails[0]['match_duration'] / 60) . ' mins</td>
-		                            <td class="text-right">' . relative_time($matchDetails[0]['match_recorded']) . '</td>
+		                            <td class="text-right">' . relative_time_v3($matchDetails[0]['match_recorded']) . '</td>
 		                        </tr>
 		                    </table>
 		                </div>';
@@ -526,7 +526,7 @@ try {
 
     echo '<p>
             <div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Mod Directory</a>
                 <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
             </div>
         </p>';

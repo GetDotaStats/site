@@ -3,7 +3,7 @@ require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
 try {
-    $db = new dbWrapper($hostname_gds_feeds, $username_gds_feeds, $password_gds_feeds, $database_gds_feeds, true);
+    $db = new dbWrapper_v3($hostname_gds_feeds, $username_gds_feeds, $password_gds_feeds, $database_gds_feeds, true);
     if ($db) {
         $feeds = $db->q('SELECT `item_guid`, `item_title`, `item_link`, `date_recorded` FROM `mega_feed` ORDER BY `date_recorded` DESC LIMIT 0,50;');
 

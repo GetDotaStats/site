@@ -10,7 +10,6 @@ try {
         session_start();
     }
 
-    //$db = new dbWrapper_v2($hostname_sig, $username_sig, $password_sig, $database_sig);
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
@@ -123,7 +122,7 @@ try {
             'pageSize' => 6);
 
         echo '<div id="sig_views_lastweek" style="width: 800px;"></div>';
-        echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($production_range[0]['max_date']) . ' --> ' . relative_time($production_range[0]['min_date']) . '</h4></div>';
+        echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time_v3($production_range[0]['max_date']) . ' --> ' . relative_time_v3($production_range[0]['min_date']) . '</h4></div>';
         echo '<div class="panel panel-default" style="width: 800px;">
                 <div class="panel-heading">
                     <h4 class="panel-title text-center">
@@ -219,7 +218,7 @@ try {
             'pageSize' => 6);
 
         echo '<div id="sig_views_alltime_daily" style="overflow-x: scroll; width: 800px;"></div>';
-        echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time($production_range[0]['max_date']) . ' --> ' . relative_time($production_range[0]['min_date']) . '</h4></div>';
+        echo '<div style="width: 800px;"><h4 class="text-center">' . relative_time_v3($production_range[0]['max_date']) . ' --> ' . relative_time_v3($production_range[0]['min_date']) . '</h4></div>';
         echo '<div class="panel-heading" style="width: 800px;">
                     <h4 class="text-center">
                         <a class="btn btn-success collapsed" type="button" onclick="downloadCSV(\'sig_stats' . time() . '.csv\')">Download to CSV</a>

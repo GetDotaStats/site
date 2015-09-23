@@ -4,7 +4,7 @@ require_once('../../../connections/parameters.php');
 require_once('../../../global_functions.php');
 
 try {
-    $db = new dbWrapper($hostname_sig, $username_sig, $password_sig, $database_sig, true);
+    $db = new dbWrapper_v3($hostname_sig, $username_sig, $password_sig, $database_sig, true);
 
     ////////////////////////
     //GENERAL STATS

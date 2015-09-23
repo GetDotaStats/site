@@ -61,7 +61,7 @@ try {
                 ? ''
                 : " - " . $value['reportIP'];
 
-            echo relative_time($value['reportDate']) . $reportIP . "<br />";
+            echo relative_time_v3($value['reportDate']) . $reportIP . "<br />";
 
             echo '<pre>';
 
