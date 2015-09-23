@@ -70,6 +70,7 @@ try {
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
                 <div class="col-md-2"><span class="h4">Modder</span></div>
@@ -82,8 +83,9 @@ try {
             $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
                 ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
-            $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
-            $modNameLink = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">' . $modThumb . '</a> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a>';
+            $modThumb = '<img width="20" height="20" src="' . $modThumb . '" alt="Mod thumbnail" />';
+            $modThumb = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">' . $modThumb . '</a>';
+            $modNameLink = $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a>';
 
             $developerAvatar = !empty($value['user_avatar'])
                 ? $value['user_avatar']
@@ -91,15 +93,15 @@ try {
             $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" />';
             $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
 
-            $editLink = '<a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">EDIT</a>';
-
-            echo '<div class="row">
-                <div class="col-md-4">' . $modNameLink . '</div>
-                <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                <div class="col-md-2">' . $developerLink . '</div>
-                <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
-                <div class="col-md-1 text-center">' . $editLink . '</div>
-                <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
+            echo '<div class="row searchRow">
+                <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
+                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
+                    <div class="col-md-4">' . $modNameLink . '</div>
+                    <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
+                    <div class="col-md-2">' . $developerLink . '</div>
+                    <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
+                    <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
+                </a>
             </div>';
 
             echo '<span class="h5">&nbsp;</span>';
@@ -151,6 +153,7 @@ try {
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
                 <div class="col-md-2"><span class="h4">Modder</span></div>
@@ -163,8 +166,9 @@ try {
             $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
                 ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
-            $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
-            $modNameLink = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">' . $modThumb . '</a> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a>';
+            $modThumb = '<img width="20" height="20" src="' . $modThumb . '" alt="Mod thumbnail" />';
+            $modThumb = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">' . $modThumb . '</a>';
+            $modNameLink = $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a>';
 
             $developerAvatar = !empty($value['user_avatar'])
                 ? $value['user_avatar']
@@ -172,15 +176,15 @@ try {
             $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" />';
             $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
 
-            $editLink = '<a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">EDIT</a>';
-
-            echo '<div class="row">
-                <div class="col-md-4">' . $modNameLink . '</div>
-                <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                <div class="col-md-2">' . $developerLink . '</div>
-                <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
-                <div class="col-md-1 text-center">' . $editLink . '</div>
-                <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
+            echo '<div class="row searchRow">
+                <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
+                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
+                    <div class="col-md-4">' . $modNameLink . '</div>
+                    <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
+                    <div class="col-md-2">' . $developerLink . '</div>
+                    <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
+                    <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
+                </a>
             </div>';
 
             echo '<span class="h5">&nbsp;</span>';
@@ -230,6 +234,7 @@ try {
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
+                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
                 <div class="col-md-2"><span class="h4">Modder</span></div>
@@ -242,24 +247,25 @@ try {
             $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
                 ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
-            $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
-            $modNameLink = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">' . $modThumb . '</a> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a>';
+            $modThumb = '<img width="20" height="20" src="' . $modThumb . '" alt="Mod thumbnail" />';
+            $modThumb = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">' . $modThumb . '</a>';
+            $modNameLink = $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a>';
 
             $developerAvatar = !empty($value['user_avatar'])
                 ? $value['user_avatar']
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
-            $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" />';
+            $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" alt="Developer avatar" />';
             $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
 
-            $editLink = '<a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">EDIT</a>';
-
-            echo '<div class="row">
-                <div class="col-md-4">' . $modNameLink . '</div>
-                <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                <div class="col-md-2">' . $developerLink . '</div>
-                <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
-                <div class="col-md-1 text-center">' . $editLink . '</div>
-                <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
+            echo '<div class="row searchRow">
+                <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
+                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
+                    <div class="col-md-4">' . $modNameLink . '</div>
+                    <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
+                    <div class="col-md-2">' . $developerLink . '</div>
+                    <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
+                    <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
+                </a>
             </div>';
 
             echo '<span class="h5">&nbsp;</span>';
