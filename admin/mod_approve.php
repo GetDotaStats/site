@@ -81,7 +81,7 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
-        $modGames = '<a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . number_format($value['games_recorded']) . '</a>';
+        $modGames = '<a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . number_format($value['games_recorded']) . '</a>';
 
         echo '<div class="row">
                 <div class="col-md-1"><span class="h4">ID</span></div>

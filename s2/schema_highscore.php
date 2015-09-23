@@ -67,7 +67,7 @@
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"7689asdfjh1231"</div>
                         <div class="col-sm-4">
-                            <a class="nav-clickable" href="#d2mods__my_mods">Unique value assigned to your mod</a>
+                            <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
                         </div>
                     </div>
 
@@ -206,7 +206,7 @@
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"7689asdfjh1231"</div>
                         <div class="col-sm-4">
-                            <a class="nav-clickable" href="#d2mods__my_mods">Unique value assigned to your mod</a>
+                            <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
                         </div>
                     </div>
 
@@ -342,7 +342,7 @@
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"7689asdfjh1231"</div>
                         <div class="col-sm-4">
-                            <a class="nav-clickable" href="#d2mods__my_mods">Unique value assigned to your mod</a>
+                            <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
                         </div>
                     </div>
 
@@ -482,7 +482,7 @@ try {
                 ';
 
         foreach ($latestData as $key => $value) {
-            $relativeDateRaw = relative_time_v2($value['date_recorded'], 'hour', true);
+            $relativeDateRaw = relative_time_v3($value['date_recorded'], 'hour', true);
 
             $timeColour = $relativeDateRaw['number'] <= 2
                 ? ' hs_lb_recent_score'

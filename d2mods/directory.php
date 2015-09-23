@@ -244,7 +244,7 @@ try {
             }
 
             echo '<div class="row">
-                    <div class="col-sm-5"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                    <div class="col-sm-5"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
                     <div class="col-sm-1 text-right">' . number_format($value['games_last_week']) . '</div>
                     <div class="col-sm-1 text-right">' . number_format($value['games_all_time']) . '</div>
                     <div class="col-sm-1 text-right">' . $modSize . '</div>

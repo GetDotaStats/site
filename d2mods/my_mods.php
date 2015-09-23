@@ -64,11 +64,11 @@ try {
             echo '<div class="panel panel-default">
                             <div class="panel-heading"><h4>' . $value['mod_name'] . ' <small>' . $activeMod . '</small></h4></div>
                             <div class="panel-body">
-                                <div class="well well-sm"><strong>modID:</strong> <a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_identifier'] . '</a></div>
+                                <div class="well well-sm"><strong>modID:</strong> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_identifier'] . '</a></div>
                                 <div class="well well-sm"><strong>Games Recorded:</strong> ' . number_format($value['games_recorded']) . ' <small>[<a class="nav-clickable" href="#d2mods__recent_games?f=' . $value['mod_id'] . '&p=1">Recent Games</a>]</small></div>
                                 <div class="well well-sm"><strong>Description:</strong> ' . $value['mod_description'] . '</div>
                                 <div class="well well-sm"><strong>Links:</strong> ' . $wg . ' || ' . $sg . ' </div >
-                                <div class="well well-sm" ><strong > Date Added:</strong > ' . relative_time($value['date_recorded']) . ' </div >
+                                <div class="well well-sm" ><strong > Date Added:</strong > ' . relative_time_v3($value['date_recorded']) . ' </div >
                             </div >
                         </div > ';
         }

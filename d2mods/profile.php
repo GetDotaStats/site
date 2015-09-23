@@ -172,7 +172,7 @@ try {
 
                     foreach ($matchSummaryMods as $key => $value) {
                         echo '<div class="row">
-                            <div class="col-md-4"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                            <div class="col-md-4"><a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-4 text-right">' . number_format($value['total_games']) . '</div>
@@ -237,7 +237,7 @@ try {
 
                     foreach ($lobbySummaryMods as $key => $value) {
                         echo '<div class="row">
-                            <div class="col-md-4"><a class="nav-clickable" href="#d2mods__stats?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                            <div class="col-md-4"><a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
                             <div class="col-md-2 text-right">' . number_format($value['num_lobbies']) . '</div>
                             <div class="col-md-2 text-right">' . number_format($value['num_lobbies_started'] / $value['num_lobbies'] * 100, 1) . ' %</div>
                             <div class="col-md-2 text-right">' . relative_time_v3($value['most_recent_lobby'], 1, 'day') . '</div>

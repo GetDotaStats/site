@@ -64,14 +64,14 @@ try {
 
     echo '<div class="alert alert-info" role="alert"><p><strong>Note</strong>: The leaderboards are updated every 10minutes. New scores are highlighted for 2 hours.</p></div>';
 
-    echo '<h2><a class="nav-clickable" href="#d2mods__stats?id=' . $modID . '">' . $modHSmodName . '</a> <small>' . $modHSlbName . '</small></h2>';
+    echo '<h2><a class="nav-clickable" href="#s2__mod?id=' . $modID . '">' . $modHSmodName . '</a> <small>' . $modHSlbName . '</small></h2>';
 
     echo '<p>' . $modHSDescription . '</p>';
 
     echo '<span class="h4">&nbsp;</span>';
     echo '<div class="text-center">
                     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_highscores">Back to Highscores</a>
-                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__stats?id=' . $modID . '">Mod Details</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#s2__mod?id=' . $modID . '">Mod Details</a>
                </div>';
     echo '<span class="h4">&nbsp;</span>';
 
@@ -250,7 +250,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
     echo '<div class="text-center">
                     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_highscores">Back to Highscores</a>
-                    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__stats?id=' . $modID . '">Mod Details</a>
+                    <a class="nav-clickable btn btn-default btn-lg" href="#s2__mod?id=' . $modID . '">Mod Details</a>
            </div>';
     echo '<span class="h4">&nbsp;</span>';
 

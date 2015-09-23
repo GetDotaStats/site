@@ -46,7 +46,7 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Mod Directory</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__recent_games">Recent Games</a>
            </div>';
 

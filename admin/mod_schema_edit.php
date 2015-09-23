@@ -307,7 +307,7 @@ try {
         ? $CDN_image . '/images/mods/thumbs/' . $selectedSchemaIDLookup[0]['mod_id'] . '.png'
         : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
     $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
-    $modNameLink = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $selectedSchemaIDLookup[0]['mod_workshop_link'] . '">' . $modThumb . '</a> <a class="nav-clickable" href="#d2mods__stats?id=' . $selectedSchemaIDLookup[0]['mod_id'] . '">' . $selectedSchemaIDLookup[0]['mod_name'] . '</a>';
+    $modNameLink = '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $selectedSchemaIDLookup[0]['mod_workshop_link'] . '">' . $modThumb . '</a> <a class="nav-clickable" href="#s2__mod?id=' . $selectedSchemaIDLookup[0]['mod_id'] . '">' . $selectedSchemaIDLookup[0]['mod_name'] . '</a>';
 
     $ownerAvatar = !empty($selectedSchemaIDLookup[0]['owner_user_avatar'])
         ? $selectedSchemaIDLookup[0]['owner_user_avatar']

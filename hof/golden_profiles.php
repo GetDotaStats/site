@@ -102,7 +102,7 @@ try {
     echo '<br /><br />';
 
     echo '<div class="text-center">
-                <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Return to Home</a>
+                <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Return to Home</a>
             </div>';
 } catch (Exception $e) {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();

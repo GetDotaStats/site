@@ -203,7 +203,7 @@ require_once('../global_functions.php');
 
 <div class="text-center">
     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__lobby_list_old">Lobby List</a>
-    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__directory">Mod Directory</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#s2__directory">Mod Directory</a>
 </div>
 
 <span class="h4">&nbsp;</span>

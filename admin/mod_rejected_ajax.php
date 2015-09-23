@@ -65,7 +65,7 @@ try {
                 $irc_message->colour_generator('bold'),
             ),
             array($modName),
-            array(' || http://getdotastats.com/#d2mods__stats?id=' . $modID),
+            array(' || http://getdotastats.com/#s2__mod?id=' . $modID),
         );
 
         $message = $irc_message->combine_message($message);
