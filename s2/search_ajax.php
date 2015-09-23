@@ -59,11 +59,11 @@ try {
     //steam profile url check
     {
         if (stristr($searchTerm, 'steamcommunity.com/id/')) {
-            $searchTerm = cut_str($searchTerm, 'steamcommunity.com/id/');
+            $searchTerm = str_replace('/', '', cut_str($searchTerm, 'steamcommunity.com/id/'));
         }
 
         if (stristr($searchTerm, 'steamcommunity.com/profiles/')) {
-            $searchTerm = cut_str($searchTerm, 'steamcommunity.com/profiles/');
+            $searchTerm = str_replace('/', '', cut_str($searchTerm, 'steamcommunity.com/profiles/'));
         }
     }
 
@@ -116,14 +116,14 @@ try {
             1
         );
 
-        if(empty($vanityCheck) && !$localDev){
+        if (empty($vanityCheck) && !$localDev) {
             $steamWebAPI = new steam_webapi($api_key2);
 
             //Do webapi request
             $vanityAPIcheck = $steamWebAPI->ResolveVanityURL($searchTerm);
 
-            if(!empty($vanityAPIcheck)){
-                if($vanityAPIcheck['response']['success'] == 1 && !empty($vanityAPIcheck['response']['steamid'])){
+            if (!empty($vanityAPIcheck)) {
+                if ($vanityAPIcheck['response']['success'] == 1 && !empty($vanityAPIcheck['response']['steamid'])) {
                     $vanitySteamID64 = $vanityAPIcheck['response']['steamid'];
 
                     //Store vanity against ID if it exists in table
@@ -134,7 +134,7 @@ try {
                     );
 
                     //if added to table, do another check
-                    if($sqlResult){
+                    if ($sqlResult) {
                         $vanityCheck = $db->q(
                             "SELECT
                                     s2mpn.`steamID32`,
@@ -260,7 +260,7 @@ try {
                         ? '<a target="_blank" href="http://dotabuff.com/players/' . $value2['steamID32'] . '/"><span class="glyphicon glyphicon-new-window"></span> DB</a>'
                         : '';
 
-                    $externalLinks = implode('  ',$steamlinks);
+                    $externalLinks = implode('  ', $steamlinks);
 
 
                     $formattedTable .= '<div class="row">
