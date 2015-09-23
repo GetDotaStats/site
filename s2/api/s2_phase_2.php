@@ -154,7 +154,8 @@ try {
                                 (`steamID32`, `steamID64`, `playerName`)
                             VALUES (?, ?, ?)
                             ON DUPLICATE KEY UPDATE
-                                  `playerName` = VALUES(`playerName`);',
+                                  `playerName` = VALUES(`playerName`),
+                                  `date_recorded` = NULL;',
                     'sss',
                     array(
                         $steamID32,
