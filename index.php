@@ -79,6 +79,21 @@ try {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
                             class="label label-warning">NEW</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li class="dropdown-header">Mod Section</li>
+                        <li><a class="nav-clickable" href="#s2__directory">Directory <span
+                                    class="label label-success">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#s2__recent_games">Recent Games <span
+                                    class="label label-success">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
+                        <li><a class="nav-clickable" href="#s2__search">Search <span
+                                    class="label label-success">NEW</span></a></li>
+                        <?php if (!empty($_SESSION['user_id64'])) { ?>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">My Section</li>
+                            <li><a class="nav-clickable" href="#s2__my__mods">Mods</a></li>
+                            <li><a class="nav-clickable" href="#d2mods__my_mods_feedback">Feedback</a></li>
+                        <?php } ?>
+                        <li class="divider"></li>
                         <li class="dropdown-header">Developers</li>
                         <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
                         <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection <span
@@ -87,18 +102,6 @@ try {
                                     class="label label-danger">SOON</span></a></li>
                         <li><a>Schema stat-rpg <span
                                     class="label label-danger">SOON</span></a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Mod Section</li>
-                        <li><a class="nav-clickable" href="#d2mods__directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
-                        <li><a class="nav-clickable" href="#s2__search">Search <span
-                                    class="label label-success">NEW</span></a></li>
-                        <?php if (!empty($_SESSION['user_id64'])) { ?>
-                            <li class="divider"></li>
-                            <li class="dropdown-header">My Section</li>
-                            <li><a class="nav-clickable" href="#d2mods__my_games">My Recent Games</a></li>
-                            <li><a class="nav-clickable" href="#d2mods__my_mods">My Mods</a></li>
-                        <?php } ?>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -114,23 +117,9 @@ try {
                         <li class="dropdown-header">Browser Extensions</li>
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
-                        <li class="dropdown-header">Dead</li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_guide">Lobby Explorer Guide <span
-                                    class="label label-danger">DEAD</span></a></li>
-                        <li><a class="nav-clickable" href="#d2mods__lobby_list_old">Lobby List <span
-                                    class="label label-danger">DEAD</span></a></li>
-                        <?php if (!empty($_SESSION['user_id64'])) { ?>
-                            <li><a class="nav-clickable" href="#d2mods__my_mmr">My MMR <span
-                                        class="label label-danger">DEAD</span></a></li>
-                            <li><a class="nav-clickable" href="#d2mods__my_minigames">My Mini Games <span
-                                        class="label label-danger">DEAD</span></a></li>
-                        <?php } ?>
-                        <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#credits">Credits</a></li>
                         <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
-                        <li><a class="nav-clickable" href="#d2moddin/">D2Modd.in <span
-                                    class="label label-info">DEAD</span></a></li>
                         <li><a class="nav-clickable" href="#contact">Contact</a></li>
                     </ul>
                 </li>
@@ -146,15 +135,8 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema <span
                                         class="label label-danger">NEW</span></a></li>
                             <li class="divider"></li>
-                            <li class="dropdown-header">Users</li>
-                            <li><a class="nav-clickable" href="#admin__user_mmr">MMR List</a></li>
-                            <li><a class="nav-clickable" href="#admin__user_mmr_graphs">MMR Graphs</a></li>
-                            <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
-                            <li class="divider"></li>
-                            <li class="dropdown-header">Lobbies</li>
-                            <li><a class="nav-clickable" href="#admin__failed_lobbies">Failed Lobbies</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">CSP Reports</li>
                             <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">Last Week</a></li>

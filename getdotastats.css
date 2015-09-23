@@ -396,6 +396,11 @@ table td.bashful, table th.bashful {
     color: darkgreen;
 }
 
+.boldOrangeText {
+    font-weight: bold;
+    color: orange;
+}
+
 /* Start star system! */
 .rating {
     float: left;
