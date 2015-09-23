@@ -94,16 +94,20 @@ try {
                 $irc_message->colour_generator('bold'),
             ),
             array($modName),
-            array(
+        );
+
+        if($modRejected == 1){
+            $message[] = array(
                 $irc_message->colour_generator('bold'),
                 $irc_message->colour_generator('blue'),
                 'Reason:',
                 $irc_message->colour_generator(NULL),
                 $irc_message->colour_generator('bold'),
-            ),
-            array(substr($modRejectedReason, 0, 100)),
-            array(' || http://getdotastats.com/#d2mods__stats?id=' . $modID),
-        );
+            );
+            $message[] = array(substr($modRejectedReason, 0, 100));
+        }
+
+        $message[] = array(' || http://getdotastats.com/#s2__mod?id=' . $modID);
 
         $message = $irc_message->combine_message($message);
         $irc_message->post_message($message, array('localDev' => $localDev));
