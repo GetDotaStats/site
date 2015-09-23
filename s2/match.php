@@ -2,8 +2,6 @@
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
-$start = time();
-
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -63,6 +61,11 @@ try {
     }
 
     echo '<h2><a class="nav-clickable" href="#s2__mod?id=' . $matchDetails[0]['modID'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
+
+    //FEATURE REQUEST
+    echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
+        see on this page, please let us know by making a post per feature on this page\'s
+        <a target="_blank" href="https://github.com/GetDotaStats/site/issues/164">issue</a>.</div>';
 
     !empty($matchDetails[0]['mod_workshop_link'])
         ? $links['steam_workshop'] = '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $matchDetails[0]['mod_workshop_link'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Workshop</a>'

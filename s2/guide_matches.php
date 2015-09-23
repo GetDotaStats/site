@@ -5,7 +5,7 @@
 
 <div class="text-center">
     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a mod</a>
-    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">My mods</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__mods">My mods</a>
 </div>
 
 <span class="h4">&nbsp;</span>
@@ -38,7 +38,7 @@
         incorrect entry there will prevent users from playing the mod via the Lobby Explorer!
     </li>
     <li>Update the <code>addon_game_mode.lua</code> by replacing the placeholder modID with the
-        one you got from registration <a target="_blank" href="#d2mods__my_mods">on our site</a>.
+        one you got from registration <a target="_blank" href="#s2__my__mods">on our site</a>.
     </li>
     <li>Make sure that your mod sets an end game condition nicely. The stat-collection library listens for the
         "game_state" being changed to "postgame" which will generally happen when you invoke SetGameWinner().
@@ -140,7 +140,7 @@
 <h2>Detailed guide</h2>
 
 <p>To get more out of this module, you will also need to refer to the
-    <a href="#d2mods__guide_schema"
+    <a href="#s2__schema_matches"
        target="_blank">schema</a> to see which data is not automatically
     captured. If you see data that you can collect and add to the schema, get in contact with us and we will try and
     accommodate your changes into the official schema, or add custom fields for your mod. This manually added data can
@@ -169,7 +169,7 @@
 
 <p>It is important that you record the correct modID, otherwise your stats will not be recorded against your mod.
     Re-usage of modID between mods is not allowed, as it will invalidate both your stats and the original mod's
-    stats. You can get your modID from your <a class="nav-clickable" href="#d2mods__my_mods">mod
+    stats. You can get your modID from your <a class="nav-clickable" href="#s2__my__mods">mod
         listing</a>.</p>
 
 <pre class="pre-scrollable">
@@ -180,7 +180,7 @@
 
     if not Testing then --Only send stats when not testing
       statcollection.addStats({
-        modID = 'XXXXXXXXXXXXXXXXXXX' --GET THIS FROM http://getdotastats.com/#d2mods__my_mods
+        modID = 'XXXXXXXXXXXXXXXXXXX' --GET THIS FROM http://getdotastats.com/#s2__my__mods
       })
     end
 

@@ -11,6 +11,11 @@ try {
 
     echo '<h1>User and Match Search</h1>';
 
+    //FEATURE REQUEST
+    echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
+        see on this page, please let us know by making a post per feature on this page\'s
+        <a target="_blank" href="https://github.com/GetDotaStats/site/issues/164">issue</a>.</div>';
+
     echo '<p>This form allows users to search for specific users or matches, given their ID or custom steam URL. Usernames must start with the search term. Only the first 25 results are returned.</p>';
 
 
