@@ -34,15 +34,7 @@ try {
         5
     );
 
-    echo '<div class="page-header"><h2>My Mods <small>BETA</small></h2></div>';
-
-    echo '<span class="h4">&nbsp;</span>';
-
-    echo '<div class="text-center">
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#s2__schema_matches">About Stats</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods_feedback">My Feedback</a>
-        </div>';
+    echo '<div class="page-header"><h2>My Mods</h2></div>';
 
     echo '<span class="h4">&nbsp;</span>';
 
@@ -77,12 +69,15 @@ try {
         echo bootstrapMessage('Oh Snap', 'You don\'t have any mods added yet!', 'danger');
     }
 
+    echo '<hr />';
+
     echo '<span class="h4">&nbsp;</span>';
 
     echo '<div class="text-center">
+            <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__profile">My Profile</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#s2__schema_matches">About Stats</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods_feedback">My Feedback</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__mods_feedback">My Feedback</a>
         </div>';
 
     echo '<span class="h4">&nbsp;</span>';

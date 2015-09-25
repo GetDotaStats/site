@@ -83,7 +83,7 @@ try {
 
         echo '<div class="row">
                 <div class="col-md-2">' . $value['user_id64'] . '</div>
-                <div class="col-md-4"><a class="nav-clickable" href="#d2mods__profile?id=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $value['user_name'] . '</div>
+                <div class="col-md-4"><a class="nav-clickable" href="#s2__user?id=' . $value['user_id64'] . '"><span class="glyphicon glyphicon-search"></span></a> ' . $value['user_name'] . '</div>
                 <div class="col-md-1 text-center">' . number_format($value['user_games']) . '</div>
                 <div class="col-md-1 text-center">' . number_format($value['user_mmr_solo']) . '</div>
                 <div class="col-md-1 text-center">' . number_format($value['user_mmr_party']) . '</div>

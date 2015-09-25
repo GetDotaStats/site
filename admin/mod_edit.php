@@ -102,7 +102,7 @@ try {
 
         if (!empty($value['user_name'])) {
             $modDeveloper = !empty($value['steam_id64'])
-                ? '<a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>'
+                ? '<a class="nav-clickable" href="#s2__user?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>'
                 : $value['user_name'];
 
             $modDeveloperAvatar = !empty($value['user_avatar'])

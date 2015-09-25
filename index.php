@@ -90,6 +90,7 @@ try {
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
+                            <li><a class="nav-clickable" href="#s2__my__profile">Profile</a></li>
                             <li><a class="nav-clickable" href="#s2__my__mods">Mods</a></li>
                             <li><a class="nav-clickable" href="#d2mods__my_mods_feedback">Feedback</a></li>
                         <?php } ?>
@@ -218,10 +219,10 @@ try {
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
             Steam.
-            <small><a target="_blank" href="//github.com/GetDotaStats/GetDotaLobby/issues">Lobby Explorer Issues</a>
+            <small><a target="_blank" href="https://github.com/GetDotaStats/stat-collection/issues">stat-collection Issues</a>
             </small>
             ||
-            <small><a target="_blank" href="//github.com/GetDotaStats/site/issues">Site Issues</a></small>
+            <small><a target="_blank" href="https://github.com/GetDotaStats/site/issues">Site Issues</a></small>
         </p>
     </div>
 </div>

@@ -70,10 +70,9 @@ try {
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
-                <div class="col-md-2"><span class="h4">Modder</span></div>
+                <div class="col-md-3"><span class="h4">Modder</span></div>
                 <div class="col-md-2"><span class="h4">Auth</span></div>
             </div>';
 
@@ -91,15 +90,18 @@ try {
                 ? $value['user_avatar']
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
             $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" />';
-            $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
+            $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
+
+            $eyeGlyph = '<a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '"><span class="glyphicon glyphicon-eye-open"></span></a>';
 
             echo '<div class="row searchRow">
+                <div class="col-md-4">' . $eyeGlyph . ' ' . $modNameLink . '</div>
                 <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
-                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
-                    <div class="col-md-4">' . $modNameLink . '</div>
                     <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                    <div class="col-md-2">' . $developerLink . '</div>
-                    <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
+                </a>
+                <div class="col-md-3">' . $developerLink . '</div>
+                <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
+                    <div class="col-md-2"><span>' . $value['schemaAuth'] . '</span></div>
                     <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
                 </a>
             </div>';
@@ -153,10 +155,9 @@ try {
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
-                <div class="col-md-2"><span class="h4">Modder</span></div>
+                <div class="col-md-3"><span class="h4">Modder</span></div>
                 <div class="col-md-2"><span class="h4">Auth</span></div>
             </div>';
 
@@ -174,15 +175,18 @@ try {
                 ? $value['user_avatar']
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
             $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" />';
-            $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
+            $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
+
+            $eyeGlyph = '<a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '"><span class="glyphicon glyphicon-eye-open"></span></a>';
 
             echo '<div class="row searchRow">
+                <div class="col-md-4">' . $eyeGlyph . ' ' . $modNameLink . '</div>
                 <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
-                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
-                    <div class="col-md-4">' . $modNameLink . '</div>
                     <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                    <div class="col-md-2">' . $developerLink . '</div>
-                    <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
+                </a>
+                <div class="col-md-3">' . $developerLink . '</div>
+                <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
+                    <div class="col-md-2"><span>' . $value['schemaAuth'] . '</span></div>
                     <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
                 </a>
             </div>';
@@ -234,10 +238,9 @@ try {
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
-                <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-4"><span class="h4">Mod</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Ver.</span></div>
-                <div class="col-md-2"><span class="h4">Modder</span></div>
+                <div class="col-md-3"><span class="h4">Modder</span></div>
                 <div class="col-md-2"><span class="h4">Auth</span></div>
             </div>';
 
@@ -255,15 +258,18 @@ try {
                 ? $value['user_avatar']
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
             $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" alt="Developer avatar" />';
-            $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
+            $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $value['steam_id64'] . '">' . $value['user_name'] . '</a>';
+
+            $eyeGlyph = '<a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '"><span class="glyphicon glyphicon-eye-open"></span></a>';
 
             echo '<div class="row searchRow">
+                <div class="col-md-4">' . $eyeGlyph . ' ' . $modNameLink . '</div>
                 <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
-                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
-                    <div class="col-md-4">' . $modNameLink . '</div>
                     <div class="col-md-1 text-center">' . $value['schemaVersion'] . '</div>
-                    <div class="col-md-2">' . $developerLink . '</div>
-                    <div class="col-md-2"><span class="db_link">' . $value['schemaAuth'] . '</span></div>
+                </a>
+                <div class="col-md-3">' . $developerLink . '</div>
+                <a class="nav-clickable" href="#admin__mod_schema_edit?id=' . $value['schemaID'] . '">
+                    <div class="col-md-2"><span>' . $value['schemaAuth'] . '</span></div>
                     <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded'], 1, NULL, false, true, true) . '</div>
                 </a>
             </div>';

@@ -313,20 +313,20 @@ try {
         ? $selectedSchemaIDLookup[0]['owner_user_avatar']
         : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
     $ownerAvatar = '<img width="20" height="20" src="' . $ownerAvatar . '" />';
-    $ownerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $selectedSchemaIDLookup[0]['owner_userid64'] . '">' . $ownerAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $selectedSchemaIDLookup[0]['owner_userid64'] . '">' . $selectedSchemaIDLookup[0]['owner_user_name'] . '</a>';
+    $ownerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $selectedSchemaIDLookup[0]['owner_userid64'] . '">' . $ownerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $selectedSchemaIDLookup[0]['owner_userid64'] . '">' . $selectedSchemaIDLookup[0]['owner_user_name'] . '</a>';
 
     $submitterAvatar = !empty($selectedSchemaIDLookup[0]['submitter_user_avatar'])
         ? $selectedSchemaIDLookup[0]['submitter_user_avatar']
         : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
     $submitterAvatar = '<img width="20" height="20" src="' . $submitterAvatar . '" />';
-    $submitterLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $selectedSchemaIDLookup[0]['submitter_userid64'] . '">' . $submitterAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $selectedSchemaIDLookup[0]['submitter_userid64'] . '">' . $selectedSchemaIDLookup[0]['submitter_user_name'] . '</a>';
+    $submitterLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $selectedSchemaIDLookup[0]['submitter_userid64'] . '">' . $submitterAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $selectedSchemaIDLookup[0]['submitter_userid64'] . '">' . $selectedSchemaIDLookup[0]['submitter_user_name'] . '</a>';
 
     if (!empty($selectedSchemaIDLookup[0]['approver_userid64'])) {
         $approverAvatar = !empty($selectedSchemaIDLookup[0]['approver_user_avatar'])
             ? $selectedSchemaIDLookup[0]['approver_user_avatar']
             : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
         $approverAvatar = '<img width="20" height="20" src="' . $approverAvatar . '" />';
-        $approverLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $selectedSchemaIDLookup[0]['approver_userid64'] . '">' . $approverAvatar . '</a> <a class="nav-clickable" href="#d2mods__profile?id=' . $selectedSchemaIDLookup[0]['approver_userid64'] . '">' . $selectedSchemaIDLookup[0]['approver_user_name'] . '</a>';
+        $approverLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $selectedSchemaIDLookup[0]['approver_userid64'] . '">' . $approverAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $selectedSchemaIDLookup[0]['approver_userid64'] . '">' . $selectedSchemaIDLookup[0]['approver_user_name'] . '</a>';
     }
 
     echo '<div class="row">
