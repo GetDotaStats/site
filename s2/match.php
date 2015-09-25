@@ -139,7 +139,7 @@ try {
 
                     gu.`user_avatar`
                 FROM `s2_match_players` s2mp
-                JOIN `s2_match_players_name` s2mpn ON s2mp.`steamID32` = s2mpn.`steamID32`
+                LEFT JOIN `s2_match_players_name` s2mpn ON s2mp.`steamID32` = s2mpn.`steamID32`
                 LEFT JOIN `gds_users` gu ON s2mp.`steamID32` = gu.`user_id32`
                 WHERE s2mp.`matchID` = ?
                 ORDER BY s2mp.`roundID` ASC, s2mp.`steamID32` ASC;',
@@ -160,8 +160,8 @@ try {
                 echo '<div class="row"><div class="col-md-4 h4">Round #' . $value['roundID'] . '</div></div>';
                 echo '<div class="row">
                         <div class="col-md-4"><strong>Player</strong></div>
-                        <div class="col-md-2"><strong>Connection</strong></div>
-                        <div class="col-md-1"><strong>Winner</strong></div>
+                        <div class="col-md-1 text-center"><strong>Winner</strong></div>
+                        <div class="col-md-2 text-center"><strong>Connection</strong></div>
                     </div>';
 
 
@@ -173,12 +173,19 @@ try {
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
             $userAvatarLink = '<a target="_blank" href="https://steamcommunity.com/profiles/' . $value['steamID64'] . '"><img src="' . $userAvatar . '" width="14" /></a>';
 
-            $usernameLink = '<a class="nav-clickable" href="#s2__user?id=' . $value['steamID64'] . '">' . $value['playerName'] . '</a>';
+            $usernameLink = !empty($value['playerName'])
+                ? $value['playerName']
+                : '????';
+            $usernameLink = '<a class="nav-clickable" href="#s2__user?id=' . $value['steamID64'] . '">' . $usernameLink . '</a>';
+
+            $isWinner = $value['isWinner'] == 1
+                ? '<span class="glyphicon glyphicon-ok boldGreenText"></span>'
+                : '<span class="glyphicon glyphicon-remove boldRedText"></span>';
 
             echo '<div class="row">
                         <div class="col-md-4">' . $userAvatarLink . ' ' . $usernameLink . '</div>
-                        <div class="col-md-2">' . $value['connectionState'] . '</div>
-                        <div class="col-md-1">' . $value['isWinner'] . '</div>
+                        <div class="col-md-1 text-center">' . $isWinner . '</div>
+                        <div class="col-md-2 text-center">' . $value['connectionState'] . '</div>
                     </div>';
         }
     }
