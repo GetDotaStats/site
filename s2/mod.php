@@ -37,6 +37,8 @@ try {
 
                 gu.`user_name`,
 
+                guo.`user_email`,
+
                 (SELECT
                         COUNT(*)
                       FROM `s2_match` s2
@@ -52,6 +54,7 @@ try {
                 ) AS num_games_last_week
             FROM `mod_list` ml
             JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+            LEFT JOIN `gds_users_options` guo ON ml.`steam_id64` = guo.`user_id64`
             WHERE ml.`mod_id` = ?
             LIMIT 0,1;',
         'i',
@@ -106,6 +109,29 @@ try {
             $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $modDetails[0]['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $modDetails[0]['steam_id64'] . '">' . $modDetails[0]['user_name'] . '</a>';
         }
 
+        //Developer email
+        {
+            $developerEmail = '';
+            if (!empty($_SESSION['user_id64'])) {
+                //if admin, show developer email too
+                $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
+                if (!empty($adminCheck)) {
+                    $developerEmail = '<div class="row mod_info_panel">
+                            <div class="col-sm-3"><strong>Developer Email</strong></div>
+                            <div class="col-sm-9">';
+
+                    if (!empty($modDetails[0]['user_email'])) {
+                        $developerEmail .= $modDetails[0]['user_email'];
+                    } else {
+                        $developerEmail .= 'Developer has not given us it!';
+                    }
+
+                    $developerEmail .= '</div>
+                        </div>';
+                }
+            }
+        }
+
         //Mod maps
         $modMaps = !empty($modDetails[0]['mod_maps'])
             ? implode(", ", json_decode($modDetails[0]['mod_maps'], 1))
@@ -154,7 +180,7 @@ try {
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Developer</strong></div>
                     <div class="col-sm-9">' . $developerLink . '</div>
-                </div>
+                </div>' . $developerEmail . '
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Maps</strong></div>
                     <div class="col-sm-9">' . $modMaps . '</div>
@@ -178,7 +204,80 @@ try {
 
     echo '<hr />';
 
-    echo 'PLACEHOLDER';
+    //////////////////
+    //RECENT GAMES
+    //////////////////
+    {
+        try {
+            $recentGames = cached_query(
+                's2_mod_page_recent_games' . $modID,
+                'SELECT
+                      s2.`matchID`,
+                      s2.`matchAuthKey`,
+                      s2.`modID`,
+                      s2.`matchHostSteamID32`,
+                      s2.`matchPhaseID`,
+                      s2.`isDedicated`,
+                      s2.`matchMapName`,
+                      s2.`numPlayers`,
+                      s2.`numRounds`,
+                      s2.`matchDuration`,
+                      s2.`matchFinished`,
+                      s2.`schemaVersion`,
+                      s2.`dateUpdated`,
+                      s2.`dateRecorded`,
+
+                      ml.`mod_name`,
+                      ml.`mod_workshop_link`
+                    FROM `s2_match` s2
+                    JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
+                    WHERE s2.`modID` = ?
+                    ORDER BY s2.`dateRecorded` DESC
+                    LIMIT 0,15;',
+                'i',
+                $modID,
+                15
+            );
+
+            if (empty($recentGames)) {
+                throw new Exception('No games recently played!');
+            }
+
+            echo '<h3>Last 15 Games <small><a class="nav-clickable" href="#s2__recent_games">MORE</a></small></h3>';
+
+            echo '<div class="row">
+                    <div class="col-md-1 h4">&nbsp;</div>
+                    <div class="col-md-9">
+                        <div class="col-md-3 h4 text-center">Players</div>
+                        <div class="col-md-3 h4 text-center">Rounds</div>
+                        <div class="col-md-3 h4 text-center">Duration</div>
+                        <div class="col-md-3 h4 text-center">Phase</div>
+                    </div>
+                    <div class="col-md-2 h4 text-center">Recorded</div>
+                </div>';
+
+            foreach ($recentGames as $key => $value) {
+                echo '<div class="row searchRow">
+                    <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
+                        <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
+                    </a>
+                    <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
+                        <div class="col-md-9">
+                            <div class="col-md-3 text-center">' . $value['numPlayers'] . '</div>
+                            <div class="col-md-3 text-center">' . $value['numRounds'] . '</div>
+                            <div class="col-md-3 text-right">' . secs_to_clock($value['matchDuration']) . '</div>
+                            <div class="col-md-3 text-center">' . $value['matchPhaseID'] . '</div>
+                        </div>
+                        <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
+                    </a>
+                </div>';
+
+                echo '<span class="h5">&nbsp;</span>';
+            }
+        } catch (Exception $e) {
+            echo formatExceptionHandling($e);
+        }
+    }
 
     echo '<hr />';
 
