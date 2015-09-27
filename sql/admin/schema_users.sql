@@ -43,6 +43,15 @@ CREATE TABLE IF NOT EXISTS `gds_users_sessions` (
   `date_recorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `gds_users_options` (
+  `user_id32` bigint(20) NOT NULL,
+  `user_id64` bigint(20) NOT NULL,
+  `user_email` varchar(255) DEFAULT NULL,
+  `sub_dev_news` tinyint(1) NOT NULL DEFAULT '0',
+  `mmr_public` tinyint(1) NOT NULL DEFAULT '0',
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_recorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `chat_users`
  ADD PRIMARY KEY (`user_id32`);
@@ -58,3 +67,6 @@ ALTER TABLE `gds_users_options`
 
 ALTER TABLE `gds_users_sessions`
  ADD PRIMARY KEY (`user_id64`,`date_recorded`);
+
+ALTER TABLE `gds_users_options`
+ ADD PRIMARY KEY (`user_id64`), ADD UNIQUE KEY `user_email` (`user_email`), ADD KEY `user_id32` (`user_id32`), ADD KEY `mmr_public` (`mmr_public`), ADD KEY `date_updated` (`date_updated`), ADD KEY `date_recorded` (`date_recorded`), ADD KEY `sub_dev_news` (`sub_dev_news`);
