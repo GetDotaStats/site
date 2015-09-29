@@ -76,17 +76,13 @@ try {
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <!--<span class="label label-success">UPDATED</span>-->
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <span
-                            class="label label-warning">NEW</span><b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Custom Games <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Mod Section</li>
-                        <li><a class="nav-clickable" href="#s2__directory">Directory <span
-                                    class="label label-success">NEW</span></a></li>
-                        <li><a class="nav-clickable" href="#s2__recent_games">Recent Games <span
-                                    class="label label-success">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#s2__directory">Directory</a></li>
+                        <li><a class="nav-clickable" href="#s2__recent_games">Recent Games</a></li>
                         <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
-                        <li><a class="nav-clickable" href="#s2__search">Search <span
-                                    class="label label-success">NEW</span></a></li>
+                        <li><a class="nav-clickable" href="#s2__search">Search</a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
@@ -119,21 +115,22 @@ try {
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
-                        <li><a class="nav-clickable" href="#credits">Credits</a></li>
-                        <li><a class="nav-clickable" href="#game_servers">Game Servers</a></li>
-                        <li><a class="nav-clickable" href="#contact">Contact</a></li>
+                        <li><a class="nav-clickable" href="#site__who">Who are we?</a></li>
+                        <li><a class="nav-clickable" href="#site__game_servers">Game Servers</a></li>
+                        <li><a class="nav-clickable" href="#site__contact">Contact</a></li>
                     </ul>
                 </li>
                 <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span
-                                class="label label-danger">NEW</span> <b class="caret"></b></a>
+                                class="label label-warning">NEW</span> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Management</li>
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema <span
+                            <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs <span
                                         class="label label-danger">NEW</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
@@ -165,7 +162,7 @@ try {
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>
             <p class="nav navbar-text">
-                <a id="nav-refresh-holder" class="nav-refresh" href="#home" title="Refresh page"><span
+                <a id="nav-refresh-holder" class="nav-refresh" href="#site__home" title="Refresh page"><span
                         class="glyphicon glyphicon-refresh"></span></a>
             </p>
         </div>
@@ -177,7 +174,7 @@ try {
 
 <div class="container">
     <div class="text-center">
-        <a class="nav-clickable" href="#home"><img width="300px"
+        <a class="nav-clickable" href="#site__home"><img width="300px"
                                                    src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
                                                    alt="site logo"/></a>
 
