@@ -130,15 +130,14 @@ try {
                         foreach ($sqlResult as $key => $value) {
                             $tempArray = array();
 
-                            if(!empty($value['player_sid'])){
+                            if (!empty($value['player_sid'])) {
                                 $playerID = new SteamID($value['player_sid']);
 
                                 $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
                                 $tempArray['player_sid32'] = $playerID->getSteamID32();
                                 $tempArray['player_sid64'] = $playerID->getSteamID64();
-                            }
-                            else{
+                            } else {
                                 $playerDBStatus = false;
                                 $tempArray['player_sid32'] = 0;
                                 $tempArray['player_sid64'] = 0;
@@ -226,15 +225,14 @@ try {
                         foreach ($sqlResult as $key => $value) {
                             $tempArray = array();
 
-                            if(!empty($value['player_sid'])){
+                            if (!empty($value['player_sid'])) {
                                 $playerID = new SteamID($value['player_sid']);
 
                                 $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
                                 $tempArray['player_sid32'] = $playerID->getSteamID32();
                                 $tempArray['player_sid64'] = $playerID->getSteamID64();
-                            }
-                            else{
+                            } else {
                                 $playerDBStatus = false;
                                 $tempArray['player_sid32'] = 0;
                                 $tempArray['player_sid64'] = 0;
@@ -328,15 +326,14 @@ try {
                         foreach ($sqlResult as $key => $value) {
                             $tempArray = array();
 
-                            if(!empty($value['player_sid'])){
+                            if (!empty($value['player_sid'])) {
                                 $playerID = new SteamID($value['player_sid']);
 
                                 $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
                                 $tempArray['player_sid32'] = $playerID->getSteamID32();
                                 $tempArray['player_sid64'] = $playerID->getSteamID64();
-                            }
-                            else{
+                            } else {
                                 $playerDBStatus = false;
                                 $tempArray['player_sid32'] = 0;
                                 $tempArray['player_sid64'] = 0;
@@ -425,15 +422,14 @@ try {
                         foreach ($sqlResult as $key => $value) {
                             $tempArray = array();
 
-                            if(!empty($value['player_sid'])){
+                            if (!empty($value['player_sid'])) {
                                 $playerID = new SteamID($value['player_sid']);
 
                                 $playerDBStatus = updateUserDetails($playerID->getSteamID64(), $api_key1);
 
                                 $tempArray['player_sid32'] = $playerID->getSteamID32();
                                 $tempArray['player_sid64'] = $playerID->getSteamID64();
-                            }
-                            else{
+                            } else {
                                 $playerDBStatus = false;
                                 $tempArray['player_sid32'] = 0;
                                 $tempArray['player_sid64'] = 0;
@@ -504,13 +500,13 @@ try {
             $time_end1 = time();
             echo 'Total Running: ' . ($time_end1 - $time_start1) . " seconds<br /><br />";
             echo '<hr />';
-        } catch
-        (Exception $e) {
+        } catch (Exception $e) {
             echo 'Caught Exception (HOF) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
         }
     }
 
-    $memcache->close();
 } catch (Exception $e) {
     echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+} finally {
+    if (isset($memcache)) $memcache->close();
 }

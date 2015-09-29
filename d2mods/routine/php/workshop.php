@@ -27,7 +27,7 @@ try {
                     `mod_active`,
                     `date_recorded`
                 FROM `mod_list`
-                WHERE `mod_active` = 1
+                WHERE `mod_rejected` = 0
                 ORDER BY `date_recorded`;'
         );
 
@@ -138,7 +138,8 @@ try {
         }
     }
 
-    $memcache->close();
 } catch (Exception $e) {
     echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+} finally {
+    if (isset($memcache)) $memcache->close();
 }

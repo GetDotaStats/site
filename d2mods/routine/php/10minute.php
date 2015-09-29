@@ -384,8 +384,8 @@ try {
         }
     }
 
-
-    $memcache->close();
 } catch (Exception $e) {
     echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
