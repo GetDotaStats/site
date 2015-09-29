@@ -1,7 +1,7 @@
 <?php
 try {
-    require_once('./global_functions.php');
-    require_once('./connections/parameters.php');
+    require_once('../global_functions.php');
+    require_once('../connections/parameters.php');
 
     echo '<h2>News</h2>';
 
