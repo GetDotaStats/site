@@ -33,7 +33,6 @@ try {
     $matchID = $preGameAuthPayloadJSON['matchID'];
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $authKey = $preGameAuthPayloadJSON['authKey'];
-    $numRounds = count($preGameAuthPayloadJSON['rounds']);
 
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
@@ -115,18 +114,16 @@ try {
             : 1;
 
         $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `numRounds`, `matchDuration`, `matchFinished`)
-                VALUES (?, ?, ?, ?, ?)
+            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchDuration`, `matchFinished`)
+                VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                   `matchPhaseID` = VALUES(`matchPhaseID`),
-                  `numRounds` = VALUES(`numRounds`),
                   `matchDuration` = VALUES(`matchDuration`),
                   `matchFinished` = VALUES(`matchFinished`);',
-            'siiii',
+            'siii',
             array(
                 $matchID,
                 3,
-                $numRounds,
                 $preGameAuthPayloadJSON['gameDuration'],
                 $gameFinished
             )
