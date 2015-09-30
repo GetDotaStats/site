@@ -566,57 +566,80 @@
             <pre class="pre-scrollable">
 {
     "authKey": "asdfhkj324jklnfadssdafsd",
-    "matchID": "21347923432",
+    "matchID": 21347923432,
     "modIdentifier": "7adfki234jlk23",
     "gameDuration": 3954,
-    "gameFinished": 0,
     "schemaVersion": 1,
-    "rounds": [
-        [
-            {
-                "steamID32": "2875155",
-                "isWinner": 1,
-                "connectionState": 2
-            },
-            {
-                "steamID32": "2875156",
-                "isWinner": 0,
-                "connectionState": 2
-            },
-            {
-                "steamID32": "2875157",
-                "isWinner": 0,
-                "connectionState": 2
-            },
-            {
-                "steamID32": "2875158",
-                "isWinner": 1,
-                "connectionState": 2
-            }
-        ],
-        [
-            {
-                "steamID32": "2875155",
-                "isWinner": 1,
-                "connectionState": 2
-            },
-            {
-                "steamID32": "2875156",
-                "isWinner": 0,
-                "connectionState": 2
-            },
-            {
-                "steamID32": "2875157",
-                "isWinner": 0,
-                "connectionState": 2
-            },
-            {
-                "steamID32": "2875158",
-                "isWinner": 0,
-                "connectionState": 2
-            }
-        ]
-    ]
+    "rounds": {
+        "0": {
+            "players": [
+                {
+                    "steamID32": "2875155",
+                    "isWinner": 1,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "2875156",
+                    "isWinner": 0,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "2875157",
+                    "isWinner": 0,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "2875158",
+                    "isWinner": 1,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "0",
+                    "isWinner": 1,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "0",
+                    "isWinner": 0,
+                    "connectionState": 2
+                }
+            ]
+        },
+        "1": {
+            "players": [
+                {
+                    "steamID32": "2875155",
+                    "isWinner": 1,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "2875156",
+                    "isWinner": 0,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "2875157",
+                    "isWinner": 0,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "2875158",
+                    "isWinner": 0,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "0",
+                    "isWinner": 0,
+                    "connectionState": 2
+                },
+                {
+                    "steamID32": "0",
+                    "isWinner": 1,
+                    "connectionState": 2
+                }
+            ]
+        }
+    }
 }
             </pre>
         </div>
@@ -794,8 +817,8 @@
     "modIdentifier": "7adfki234jlk23",
     "schemaAuthKey": "K65S5J7HFD",
     "schemaVersion": 1,
-    "rounds": [
-        {
+    "rounds": {
+        "0": {
             "game": {
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
@@ -818,12 +841,22 @@
                 },
                 {
                     "steamID32": "2875158",
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "0",
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "0",
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
                 }
             ]
         },
-        {
+        "1": {
             "game": {
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
@@ -848,10 +881,20 @@
                     "steamID32": "2875158",
                     "customValue1": "XXXX",
                     "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "0",
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
+                },
+                {
+                    "steamID32": "0",
+                    "customValue1": "XXXX",
+                    "customValue2": "XXXX"
                 }
             ]
         }
-    ]
+    }
 }
             </pre>
 

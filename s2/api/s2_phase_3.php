@@ -140,11 +140,19 @@ try {
 
             foreach ($preGameAuthPayloadJSON['rounds'] as $key => $value) {
                 if (!empty($value['players'])) {
+                    $i = -1;
                     foreach ($value['players'] as $key2 => $value2) {
-                        $steamID_manipulator->setSteamID($value2['steamID32']);
+                        //Do steamID bot work around
+                        if(!empty($value2['steamID32']) && is_numeric($value2['steamID32'])){
+                            $steamID_manipulator->setSteamID($value2['steamID32']);
 
-                        $steamID32 = $steamID_manipulator->getSteamID32();
-                        $steamID64 = $steamID_manipulator->getSteamID64();
+                            $steamID32 = $steamID_manipulator->getSteamID32();
+                            $steamID64 = $steamID_manipulator->getSteamID64();
+                        } else{
+                            $steamID32 = $i;
+                            $steamID64 = $i;
+                            $i--;
+                        }
 
                         $db->q(
                             'INSERT INTO `s2_match_players`(`matchID`, `roundID`, `modID`, `steamID32`, `steamID64`, `connectionState`, `isWinner`)
@@ -164,6 +172,8 @@ try {
                             )
                         );
                     }
+                } else{
+                    throw new Exception("No player data for round #$key!");
                 }
             }
         }
