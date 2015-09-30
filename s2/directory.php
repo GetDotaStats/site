@@ -15,16 +15,16 @@ try {
 
     switch ($order_col) {
         case 1:
-            $order_clause = 'mw.`date_last_updated` ASC';
+            $order_clause = 'ml.`workshop_updated` ASC';
             break;
         case 2:
-            $order_clause = 'mw.`date_last_updated` DESC';
+            $order_clause = 'ml.`workshop_updated` DESC';
             break;
         case 3:
-            $order_clause = 'mw.`mod_size` ASC';
+            $order_clause = 'ml.`mod_size` ASC';
             break;
         case 4:
-            $order_clause = 'mw.`mod_size` DESC';
+            $order_clause = 'ml.`mod_size` DESC';
             break;
         case 5:
             $order_clause = 'games_last_week ASC';
@@ -45,60 +45,39 @@ try {
             $order_clause = 'ml.`date_recorded` DESC';
             break;
         default:
-            $order_clause = 'games_last_week DESC, mw.`date_last_updated` DESC';
+            $order_clause = 'games_last_week DESC, ml.`workshop_updated` DESC';
             break;
     }
 
     $modWorkshopList = cached_query(
-        's2_recently_updated_' . $order_col,
+        's2_directory_recently_updated' . $order_col,
         'SELECT
-              mw.`mod_identifier`,
-              mw.`mod_workshop_id`,
-              mw.`mod_size`,
-              mw.`mod_hcontent_file`,
-              mw.`mod_hcontent_preview`,
-              mw.`mod_thumbnail`,
-              mw.`mod_views`,
-              mw.`mod_subs`,
-              mw.`mod_favs`,
-              mw.`mod_subs_life`,
-              mw.`mod_favs_life`,
-              mw.`date_last_updated`,
-              mw.`date_recorded`,
-
               ml.`mod_id`,
+              ml.`mod_identifier`,
               ml.`mod_name`,
               ml.`mod_steam_group`,
               ml.`mod_workshop_link`,
+              ml.`mod_size`,
+              ml.`workshop_updated`,
               ml.`date_recorded` AS mod_date_added,
 
               (SELECT
-                    COUNT(*)
-                  FROM `s2_match` s2
-                  WHERE s2.`modID` = ml.`mod_id` AND s2.`dateRecorded` >= now() - INTERVAL 7 DAY
-                  GROUP BY s2.`modID`
+                    SUM(`gamesPlayed`)
+                  FROM `cache_mod_matches` cmm
+                  WHERE cmm.`modID` = ml.`mod_id` AND cmm.`gamePhase` = 3 AND cmm.`dateRecorded` >= now() - INTERVAL 7 DAY
               ) AS games_last_week,
               (SELECT
-                    COUNT(*)
-                  FROM `s2_match` s2
-                  WHERE s2.`modID` = ml.`mod_id`
-                  GROUP BY s2.`modID`
+                    SUM(`gamesPlayed`)
+                  FROM `cache_mod_matches` cmm
+                  WHERE cmm.`modID` = ml.`mod_id` AND cmm.`gamePhase` = 3
               ) AS games_all_time
 
-            FROM `mod_workshop` mw
-            JOIN (
-                SELECT
-                    `mod_identifier`,
-                    MAX(`date_recorded`) AS `most_recent_date`
-                FROM `mod_workshop`
-                GROUP BY `mod_identifier`
-            ) mw2 ON mw.`mod_identifier` = mw2.`mod_identifier` AND mw.`date_recorded`= mw2.`most_recent_date`
-            RIGHT JOIN `mod_list` ml ON mw.`mod_identifier` = ml.`mod_identifier`
+            FROM `mod_list` ml
             WHERE ml.`mod_active` = 1
             ORDER BY ' . $order_clause . ';',
         NULL,
         NULL,
-        120
+        5
     );
 
     echo '<h2>Mod Directory</h2>';
@@ -192,12 +171,8 @@ try {
                 ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
 
-            /*$modThumb = !empty($value['mod_thumbnail'])
-                ? $value['mod_thumbnail']
-                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';*/
-
-            if (!empty($value['date_last_updated'])) {
-                $modLastUpdate = relative_time_v3($value['date_last_updated'], 0, 'day', 1);
+            if (!empty($value['workshop_updated'])) {
+                $modLastUpdate = relative_time_v3($value['workshop_updated'], 0, 'day', 1);
                 $modLastUpdate = $modLastUpdate['number'] . ' <span class="db_link">days</span>';
             } else {
                 $modLastUpdate = '??';
@@ -231,7 +206,7 @@ try {
             ? filesize_human_readable($totalModSize, 1, 'GB', true)
             : '??';
 
-        $totalModSize = !empty($totalModSize)
+        $totalModSize = !empty($totalModSize) && is_array($totalModSize)
             ? $totalModSize['number'] . '<span class="db_link"> ' . $totalModSize['string'] . '</span>'
             : '??<span class="db_link"> GB</span>';
 

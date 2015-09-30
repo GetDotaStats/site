@@ -12,4 +12,8 @@
 //ADD ENTRY FOR NEW SCRIPT
 # EXAMPLES
 # m     h   dom  mon  dow   command
+####################
+#s2
+####################
 */10  * * * *   /home/www-getdotastats/s2/routine/scripts/10minute.sh > /home/www-getdotastats/s2/routine/log_10minute.html 2>&1
+@daily   /home/www-getdotastats/s2/routine/scripts/daily.sh > /home/www-getdotastats/s2/routine/log_daily.html 2>&1
