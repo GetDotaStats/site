@@ -179,6 +179,18 @@ try {
         }
     }
 
+    //UPDATE NUM OF ROUNDS
+    {
+        $db->q(
+            'UPDATE `s2_match` SET `numRounds` = (SELECT COUNT(*) FROM (SELECT `roundID` FROM `s2_match_players` WHERE `matchID` = ? GROUP BY `roundID`) t1) WHERE `matchID` = ?;',
+            'ss',
+            array(
+                $matchID,
+                $matchID,
+            )
+        );
+    }
+
     if (!empty($sqlResult)) {
         $s2_response['result'] = 1;
         $s2_response['schemaVersion'] = $currentSchemaVersionPhase3;
