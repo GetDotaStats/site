@@ -2,6 +2,14 @@
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
+require_once("./highcharts/src/Highchart.php");
+require_once("./highcharts/src/HighchartJsExpr.php");
+require_once("./highcharts/src/HighchartOption.php");
+require_once("./highcharts/src/HighchartOptionRenderer.php");
+
+use Ghunti\HighchartsPHP\Highchart;
+use Ghunti\HighchartsPHP\HighchartJsExpr;
+
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -22,36 +30,36 @@ try {
     $modDetails = cached_query(
         's2_mod_page_details' . $modID,
         'SELECT
-                ml.`mod_id`,
-                ml.`steam_id64`,
-                ml.`mod_identifier`,
-                ml.`mod_name`,
-                ml.`mod_description`,
-                ml.`mod_workshop_link`,
-                ml.`mod_steam_group`,
-                ml.`mod_active`,
-                ml.`mod_rejected`,
-                ml.`mod_rejected_reason`,
-                ml.`mod_maps`,
-                ml.`date_recorded`,
+              ml.`mod_id`,
+              ml.`steam_id64`,
+              ml.`mod_identifier`,
+              ml.`mod_name`,
+              ml.`mod_description`,
+              ml.`mod_workshop_link`,
+              ml.`mod_steam_group`,
+              ml.`mod_active`,
+              ml.`mod_rejected`,
+              ml.`mod_rejected_reason`,
+              ml.`mod_size`,
+              ml.`workshop_updated`,
+              ml.`mod_maps`,
+              ml.`date_recorded`,
 
-                gu.`user_name`,
+              gu.`user_name`,
 
-                guo.`user_email`,
+              guo.`user_email`,
+              
+              (SELECT
+                    SUM(`gamesPlayed`)
+                  FROM `cache_mod_matches` cmm
+                  WHERE cmm.`modID` = ml.`mod_id` AND cmm.`gamePhase` = 3 AND cmm.`dateRecorded` >= now() - INTERVAL 7 DAY
+              ) AS games_last_week,
+              (SELECT
+                    SUM(`gamesPlayed`)
+                  FROM `cache_mod_matches` cmm
+                  WHERE cmm.`modID` = ml.`mod_id` AND cmm.`gamePhase` = 3
+              ) AS games_all_time
 
-                (SELECT
-                        COUNT(*)
-                      FROM `s2_match` s2
-                      WHERE s2.`modID` = ml.`mod_id`
-                      LIMIT 0,1
-                ) AS num_games_total,
-
-                (SELECT
-                        COUNT(*)
-                      FROM `s2_match` s2
-                      WHERE s2.`modID` = ml.`mod_id` AND s2.`dateRecorded` >= now() - INTERVAL 7 DAY
-                      LIMIT 0,1
-                ) AS num_games_last_week
             FROM `mod_list` ml
             JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             LEFT JOIN `gds_users_options` guo ON ml.`steam_id64` = guo.`user_id64`
@@ -145,6 +153,17 @@ try {
         } else {
             $modStatus = '<span class="boldOrangeText">Pending Approval</span>';
         }
+
+        //Mod Size
+        {
+            $modSize = !empty($modDetails[0]['mod_size'])
+                ? filesize_human_readable($modDetails[0]['mod_size'], 0, 'MB', true)
+                : NULL;
+
+            $modSize = !empty($modSize)
+                ? $modSize['number'] . '<span class="db_link"> ' . $modSize['string'] . '</span>'
+                : '??<span class="db_link"> MB</span>';
+        }
     }
 
     echo '<h2>' . $modNameLink . '</h2>';
@@ -186,12 +205,20 @@ try {
                     <div class="col-sm-9">' . $modMaps . '</div>
                 </div>
                 <div class="row mod_info_panel">
+                    <div class="col-sm-3"><strong>Size</strong></div>
+                    <div class="col-sm-9">' . $modSize . '</div>
+                </div>
+                <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Total Games</strong></div>
-                    <div class="col-sm-9">' . number_format($modDetails[0]['num_games_total']) . '</div>
+                    <div class="col-sm-9">' . number_format($modDetails[0]['games_all_time']) . '</div>
                 </div>
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Games (Last Week)</strong></div>
-                    <div class="col-sm-9">' . number_format($modDetails[0]['num_games_last_week']) . '</div>
+                    <div class="col-sm-9">' . number_format($modDetails[0]['games_last_week']) . '</div>
+                </div>
+                <div class="row mod_info_panel">
+                    <div class="col-sm-3"><strong>Updated</strong></div>
+                    <div class="col-sm-9">' . relative_time_v3($modDetails[0]['workshop_updated']) . '</div>
                 </div>
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Added</strong></div>
@@ -201,6 +228,89 @@ try {
     echo '</div>';
 
     echo '<span class="h4">&nbsp;</span>';
+
+    echo '<hr />';
+
+    //////////////////
+    //GAMES OVER TIME (ALL)
+    //////////////////
+    {
+        try{
+            $gamesOverTime = cached_query(
+                's2_mod_page_games_over_time_all_' . $modID,
+                'SELECT
+                      cmm.`day`,
+                      cmm.`month`,
+                      cmm.`year`,
+                      cmm.`gamePhase`,
+                      SUM(cmm.`gamesPlayed`) AS gamesPlayed,
+                      MIN(cmm.`dateRecorded`) AS dateRecorded
+                    FROM `cache_mod_matches` cmm
+                    WHERE cmm.`modID` = ?
+                    GROUP BY 3,2,1,4;',
+                'i',
+                $modID,
+                1
+            );
+
+            if (empty($gamesOverTime)) {
+                throw new Exception('No games recorded!');
+            }
+
+            $bigArray = array();
+            foreach ($gamesOverTime as $key => $value) {
+                $year = $value['year'];
+                $month = $value['month'];
+                $day = $value['day'];
+
+                $gamesPlayedRaw = !empty($value['gamesPlayed']) && is_numeric($value['gamesPlayed'])
+                    ? intval($value['gamesPlayed'])
+                    : 0;
+
+                $bigArray[$value['gamePhase']][] = array(
+                    new HighchartJsExpr("Date.UTC($year, $month, $day)"),
+                    $gamesPlayedRaw,
+                );
+            }
+
+            {
+                $chart = new Highchart();
+
+                $chart->chart->renderTo = "games_per_phase_all";
+                $chart->chart->type = "spline";
+                $chart->chart->zoomType = "x";
+                $chart->title->text = "Number of Games per Phase over Time";
+                $chart->subtitle->text = new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'");
+                $chart->xAxis->type = "datetime";
+                $chart->yAxis->title->text = "Games";
+                $chart->yAxis->min = 0;
+                /*$chart->tooltip->formatter = new HighchartJsExpr(
+                    "function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.y +' games';
+                    }"
+                );*/
+                $chart->tooltip->crosshairs = true;
+                $chart->tooltip->shared = true;
+                $chart->credits->enabled = false;
+
+
+                $i = 0;
+                foreach ($bigArray as $key => $value) {
+                    $chart->series[$i]->name = 'Phase ' . $key;
+                    $chart->series[$i]->data = $value;
+
+                    $i++;
+                }
+            }
+
+            echo '<div id="games_per_phase_all"></div>';
+            echo $chart->render("chart1",NULL,true);
+
+        } catch (Exception $e) {
+            echo formatExceptionHandling($e);
+        }
+    }
 
     echo '<hr />';
 
@@ -231,7 +341,7 @@ try {
                       ml.`mod_workshop_link`
                     FROM `s2_match` s2
                     JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
-                    WHERE s2.`modID` = ?
+                    WHERE s2.`modID` = ? AND s2.`matchPhaseID` = 3
                     ORDER BY s2.`dateRecorded` DESC
                     LIMIT 0,15;',
                 'i',

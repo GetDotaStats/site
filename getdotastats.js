@@ -57,7 +57,7 @@ function loadPage(url, refresh) {
     //REFRESH 2 -- NO SPINNER NO SCROLL
 
     if (!url) {
-        url = '#site__home';
+        url = '#s2__directory';
     }
     else {
         //SET THE MENU

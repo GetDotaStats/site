@@ -88,7 +88,7 @@ try {
                 $matchID = $oldMessage['matchID'];
 
                 //Check if match already recorded
-
+                /*
                 $matchIDLookup = cached_query(
                     'tool_maid' . $matchID,
                     'SELECT
@@ -109,7 +109,7 @@ try {
                     );
 
                     //throw new Exception("<strong>$matchID</strong> already parsed!");
-                }
+                }*/
 
 
                 $modIdentifier = $oldMessage['modID'];

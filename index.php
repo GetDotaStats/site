@@ -80,9 +80,10 @@ try {
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Mod Section</li>
                         <li><a class="nav-clickable" href="#s2__directory">Directory</a></li>
-                        <li><a class="nav-clickable" href="#s2__recent_games">Recent Games</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
                         <li><a class="nav-clickable" href="#s2__search">Search</a></li>
+                        <li><a class="nav-clickable" href="#s2__recent_games">Recent Games</a></li>
+                        <li><a class="nav-clickable" href="#s2__mod_aggregate">Aggregate Analysis</a></li>
+                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
@@ -162,7 +163,7 @@ try {
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>
             <p class="nav navbar-text">
-                <a id="nav-refresh-holder" class="nav-refresh" href="#site__home" title="Refresh page"><span
+                <a id="nav-refresh-holder" class="nav-refresh" href="#s2__directory" title="Refresh page"><span
                         class="glyphicon glyphicon-refresh"></span></a>
             </p>
         </div>
@@ -174,7 +175,7 @@ try {
 
 <div class="container">
     <div class="text-center">
-        <a class="nav-clickable" href="#site__home"><img width="300px"
+        <a class="nav-clickable" href="#s2__directory"><img width="300px"
                                                    src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
                                                    alt="site logo"/></a>
 
@@ -225,7 +226,9 @@ try {
 </div>
 
 <script type="text/javascript" src="<?= $path_lib_jQuery2_full ?>"></script>
+<script type="text/javascript" src="<?= $path_lib_jQuery3_full ?>"></script>
 <script type="text/javascript" src="<?= $path_lib_bootstrap_full ?>"></script>
+<script type="text/javascript" src="<?= $path_lib_highcharts_full ?>"></script>
 <script type="text/javascript">var _gaq = [
         ['_setAccount', 'UA-45573043-1'],
         ['_trackPageview']

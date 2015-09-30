@@ -18,6 +18,10 @@ $path_lib_jQuery2 = '/bootstrap/js/';
 $path_lib_jQuery2_name = 'jquery-1-11-0.min.js?20';
 $path_lib_jQuery2_full = $CDN_generic . $path_lib_jQuery2 . $path_lib_jQuery2_name;
 
+$path_lib_jQuery3 = '/bootstrap/js/';
+$path_lib_jQuery3_name = 'jquery-2-1-3.min.js?1';
+$path_lib_jQuery3_full = $CDN_generic . $path_lib_jQuery3 . $path_lib_jQuery3_name;
+
 $path_lib_bootstrap = '/bootstrap/js/';
 $path_lib_bootstrap_name = 'bootstrap.min.js?20';
 $path_lib_bootstrap_full = $CDN_generic . $path_lib_bootstrap . $path_lib_bootstrap_name;
@@ -31,12 +35,12 @@ $path_lib_html5shivJS_name = 'html5shiv-3-7-0.js?20';
 $path_lib_html5shivJS_full = $CDN_generic . $path_lib_html5shivJS . $path_lib_html5shivJS_name;
 
 $path_lib_siteJS = '/';
-$path_lib_siteJS_name = 'getdotastats.js?36';
+$path_lib_siteJS_name = 'getdotastats.js?37';
 $path_lib_siteJS_full = $CDN_generic . $path_lib_siteJS . $path_lib_siteJS_name;
 //$path_lib_siteJS_full = '.' . $path_lib_siteJS . $path_lib_siteJS_name;
 
 $path_lib_highcharts = '/bootstrap/js/';
-$path_lib_highcharts_name = 'highcharts-4-1-4.js?20';
+$path_lib_highcharts_name = 'highcharts-4-1-8.min.js?1';
 $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_highcharts_name;
 
 //////////////////////
