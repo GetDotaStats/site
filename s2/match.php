@@ -104,18 +104,28 @@ try {
 
     //GAME SUMMARY
     echo '<div class="row">
-                <div class="col-md-6">&nbsp;</div>
-                <div class="col-md-6 mod_info_panel">
+                <div class="col-md-5">&nbsp;</div>
+                <div class="col-md-7 mod_info_panel">
                     <div class="row">
-                        <div class="col-md-2"><strong>Phase</strong></div>
-                        <div class="col-md-3"><strong>Players</strong></div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-4"><strong>Phase</strong></div>
+                                <div class="col-md-4"><strong>Players</strong></div>
+                                <div class="col-md-4"><strong>Rounds</strong></div>
+                            </div>
+                        </div>
                         <div class="col-md-3"><strong>Duration</strong></div>
                         <div class="col-md-4"><strong>Recorded</strong></div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2">' . $matchDetails[0]['matchPhaseID'] . '</div>
-                        <div class="col-md-3">' . $matchDetails[0]['numPlayers'] . '</div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-4 text-center">' . $matchDetails[0]['matchPhaseID'] . '</div>
+                                <div class="col-md-4 text-center">' . $matchDetails[0]['numPlayers'] . '</div>
+                                <div class="col-md-4 text-center">' . $matchDetails[0]['numRounds'] . '</div>
+                            </div>
+                        </div>
                         <div class="col-md-3">' . round($matchDetails[0]['matchDuration'] / 60) . ' mins</div>
                         <div class="col-md-4">' . relative_time_v3($matchDetails[0]['dateRecorded'], 1, NULL, false, true, false) . '</div>
                     </div>
