@@ -33,7 +33,6 @@ try {
                 s2m.`matchDuration`,
                 s2m.`matchFinished`,
                 s2m.`schemaVersion`,
-                s2m.`oldMatchID`,
                 s2m.`dateUpdated`,
                 s2m.`dateRecorded`,
 
