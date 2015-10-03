@@ -44,7 +44,7 @@ try {
     if ($insertSQL) {
         $json_response['result'] = 'Custom Game re-queued!';
 
-        $irc_message = new irc_message($webhook_gds_site_admin);
+        $irc_message = new irc_message($webhook_gds_site_normal);
 
         $message = array(
             array(

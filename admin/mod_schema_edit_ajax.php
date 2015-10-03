@@ -178,7 +178,7 @@ try {
     }
 
     if ($insertSQLschema) {
-        $irc_message = new irc_message($webhook_gds_site_admin);
+        $irc_message = new irc_message($webhook_gds_site_normal);
 
         $message = array(
             array(

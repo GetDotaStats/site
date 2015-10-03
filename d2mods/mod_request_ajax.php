@@ -80,7 +80,7 @@ try {
                             $modID = $db->last_index();
                             $json_response['result'] = 'Success! Found mod and added to DB for approval as #' . $modID;
 
-                            $irc_message = new irc_message($webhook_gds_site_admin);
+                            $irc_message = new irc_message($webhook_gds_site_normal);
 
                             $message = array(
                                 array(
