@@ -1285,3 +1285,80 @@ if (!function_exists('grabAndUpdateSteamUserDetails')) {
         return $mg_lb_user_details;
     }
 }
+
+if (!function_exists('makePieChart')) {
+    function makePieChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL)
+    {
+        require_once(__DIR__ . "/bootstrap/highcharts/Highchart.php");
+        require_once(__DIR__ . "/bootstrap/highcharts/HighchartJsExpr.php");
+        require_once(__DIR__ . "/bootstrap/highcharts/HighchartOption.php");
+        require_once(__DIR__ . "/bootstrap/highcharts/HighchartOptionRenderer.php");
+
+        $chart = new Highchart();
+
+        $chart->chart->renderTo = $div_container;
+        //$chart->chart->type = "pie";
+        $chart->chart->plotBackgroundColor = null;
+        $chart->chart->plotBorderWidth = null;
+        $chart->chart->plotShadow = false;
+        $chart->title->text = $chartTitle;
+        $chart->subtitle->text = $chartSubtitle;
+        $chart->tooltip->formatter = new HighchartJsExpr(
+            "function() {
+                return '<b>' + this.point.name + '</b>: ' + Math.round(this.percentage*10)/10 + ' %';
+            }"
+        );
+        $chart->chart->plotOptions->pie->allowPointSelect = 1;
+        $chart->chart->plotOptions->pie->cursor = 'pointer';
+        //$chart->chart->plotOptions->pie->dataLabels->enabled = true;
+        //$chart->chart->plotOptions->pie->showInLegend = 0;
+        $chart->credits->enabled = false;
+
+        $chart->series[0]->type = 'pie';
+        $chart->series[0]->name = 'test';
+        $chart->series[0]->data = $dataArray;
+
+        return $chart->render("chart1", NULL, true);
+    }
+}
+
+if (!function_exists('makeLineChart')) {
+    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL)
+    {
+        require_once(__DIR__ . "/bootstrap/highcharts/Highchart.php");
+        require_once(__DIR__ . "/bootstrap/highcharts/HighchartJsExpr.php");
+        require_once(__DIR__ . "/bootstrap/highcharts/HighchartOption.php");
+        require_once(__DIR__ . "/bootstrap/highcharts/HighchartOptionRenderer.php");
+
+        $chart = new Highchart();
+
+        $chart->chart->renderTo = $div_container;
+        $chart->chart->type = "spline";
+        $chart->chart->zoomType = "x";
+        $chart->title->text = $chartTitle;
+        $chart->subtitle->text = $chartSubtitle;
+        $chart->xAxis->type = "datetime";
+        $chart->yAxis->title->text = "Games";
+        $chart->yAxis->min = 0;
+        /*$chart->tooltip->formatter = new HighchartJsExpr(
+            "function() {
+                return '<b>'+ this.series.name +'</b><br/>'+
+                this.y +' games';
+            }"
+        );*/
+        $chart->tooltip->crosshairs = true;
+        $chart->tooltip->shared = true;
+        $chart->credits->enabled = false;
+        $chart->legend->maxHeight = 60;
+
+        $i = 0;
+        foreach ($dataArray as $key => $value) {
+            $chart->series[$i]->name = $key;
+            $chart->series[$i]->data = $value;
+
+            $i++;
+        }
+
+        return $chart->render("chart1", NULL, true);
+    }
+}

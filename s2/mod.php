@@ -2,13 +2,10 @@
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
-require_once("./highcharts/src/Highchart.php");
-require_once("./highcharts/src/HighchartJsExpr.php");
-require_once("./highcharts/src/HighchartOption.php");
-require_once("./highcharts/src/HighchartOptionRenderer.php");
-
-use Ghunti\HighchartsPHP\Highchart;
-use Ghunti\HighchartsPHP\HighchartJsExpr;
+require_once('../bootstrap/highcharts/Highchart.php');
+require_once('../bootstrap/highcharts/HighchartJsExpr.php');
+require_once('../bootstrap/highcharts/HighchartOption.php');
+require_once('../bootstrap/highcharts/HighchartOptionRenderer.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -235,7 +232,11 @@ try {
     //GAMES OVER TIME (ALL)
     //////////////////
     {
-        try{
+        try {
+            echo '<h3>Games</h3>';
+
+            echo '<p>Breakdown of games per day. Calculated every 10minutes.</p>';
+
             $gamesOverTime = cached_query(
                 's2_mod_page_games_over_time_all_' . $modID,
                 'SELECT
@@ -260,52 +261,124 @@ try {
             $bigArray = array();
             foreach ($gamesOverTime as $key => $value) {
                 $year = $value['year'];
-                $month = $value['month'];
+                $month = $value['month'] >= 1
+                    ? $value['month'] - 1
+                    : $value['month'];
                 $day = $value['day'];
 
                 $gamesPlayedRaw = !empty($value['gamesPlayed']) && is_numeric($value['gamesPlayed'])
                     ? intval($value['gamesPlayed'])
                     : 0;
 
-                $bigArray[$value['gamePhase']][] = array(
+                $bigArray['Phase ' . $value['gamePhase']][] = array(
                     new HighchartJsExpr("Date.UTC($year, $month, $day)"),
                     $gamesPlayedRaw,
                 );
             }
 
-            {
-                $chart = new Highchart();
-
-                $chart->chart->renderTo = "games_per_phase_all";
-                $chart->chart->type = "spline";
-                $chart->chart->zoomType = "x";
-                $chart->title->text = "Number of Games per Phase over Time";
-                $chart->subtitle->text = new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'");
-                $chart->xAxis->type = "datetime";
-                $chart->yAxis->title->text = "Games";
-                $chart->yAxis->min = 0;
-                /*$chart->tooltip->formatter = new HighchartJsExpr(
-                    "function() {
-                        return '<b>'+ this.series.name +'</b><br/>'+
-                        this.y +' games';
-                    }"
-                );*/
-                $chart->tooltip->crosshairs = true;
-                $chart->tooltip->shared = true;
-                $chart->credits->enabled = false;
-
-
-                $i = 0;
-                foreach ($bigArray as $key => $value) {
-                    $chart->series[$i]->name = 'Phase ' . $key;
-                    $chart->series[$i]->data = $value;
-
-                    $i++;
-                }
-            }
+            $lineChart = makeLineChart(
+                $bigArray,
+                'games_per_phase_all',
+                'Number of Games per Phase over Time',
+                new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'")
+            );
 
             echo '<div id="games_per_phase_all"></div>';
-            echo $chart->render("chart1",NULL,true);
+            echo $lineChart;
+
+        } catch (Exception $e) {
+            echo formatExceptionHandling($e);
+        }
+    }
+
+    echo '<hr />';
+
+    //////////////////
+    //FLAGS
+    //////////////////
+    {
+        try {
+            echo '<h3>Flags</h3>';
+
+            echo '<p>Breakdown of flags for all games played in the last week. Calculated hourly.</p>';
+
+            $flags = cached_query(
+                's2_mod_page_flags' . $modID,
+                'SELECT
+                      ccf.`modID`,
+                      ccf.`flagName`,
+                      ccf.`flagValue`,
+                      ccf.`numGames`
+                    FROM `cache_custom_flags` ccf
+                    WHERE ccf.`modID` = ?
+                    ORDER BY ccf.`modID`, ccf.`flagName`, ccf.`flagValue`;',
+                's',
+                $modID,
+                1
+            );
+
+            if (empty($flags)) throw new Exception('No flags recorded for this mod!');
+
+            $bigArray = array();
+            $lastModID = -1;
+            foreach ($flags as $key => $value) {
+                $flagValue = is_numeric($value['flagValue'])
+                    ? intval($value['flagValue'])
+                    : $value['flagValue'];
+                $numGames = !empty($value['numGames']) && is_numeric($value['numGames'])
+                    ? intval($value['numGames'])
+                    : 0;
+
+                $bigArray[$value['flagName']][] = array(
+                    $value['flagValue'],
+                    $numGames,
+                );
+            }
+
+            $flagChartDivs = '';
+            $numFlags = count($bigArray);
+            $columnWidth = $numFlags > 1
+                ? 6
+                : 12;
+            $i = 1;
+            foreach ($bigArray as $key => $value) {
+                $numGames = 0;
+                $valueTest = array();
+                foreach ($value as $key2 => $value2) {
+                    $numGames += $value2[1];
+                    $valueTest[$value2[0]] = $value2;
+                }
+
+                ksort($valueTest);
+                $o = 0;
+                $valueFinal = array();
+                foreach ($valueTest as $key2 => $value2) {
+                    $valueFinal[$o] = $value2;
+                    $o++;
+                }
+
+                $pieChart = makePieChart(
+                    $valueFinal,
+                    'container_flag_' . $key,
+                    "Flag `{$key}`",
+                    "{$numGames} matches had this flag"
+                );
+
+                if ($i == 1) {
+                    $flagChartDivs = '<div class="row">';
+                } else if ($i % 2 != 0) {
+                    $flagChartDivs .= '</div><div class="row">';
+                }
+                $i++;
+
+                $flagChartDivs .= "<div class='col-md-{$columnWidth}'><div id='container_flag_{$key}'></div>$pieChart</div>";
+            }
+
+            if ($numFlags % 2 != 0) {
+                $flagChartDivs .= '</div>';
+            }
+
+            echo $flagChartDivs;
 
         } catch (Exception $e) {
             echo formatExceptionHandling($e);

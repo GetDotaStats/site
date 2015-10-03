@@ -2,13 +2,10 @@
 require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 
-require_once("./highcharts/src/Highchart.php");
-require_once("./highcharts/src/HighchartJsExpr.php");
-require_once("./highcharts/src/HighchartOption.php");
-require_once("./highcharts/src/HighchartOptionRenderer.php");
-
-use Ghunti\HighchartsPHP\Highchart;
-use Ghunti\HighchartsPHP\HighchartJsExpr;
+require_once('../bootstrap/highcharts/Highchart.php');
+require_once('../bootstrap/highcharts/HighchartJsExpr.php');
+require_once('../bootstrap/highcharts/HighchartOption.php');
+require_once('../bootstrap/highcharts/HighchartOptionRenderer.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -60,7 +57,9 @@ try {
             $bigArray = array();
             foreach ($gamesOverTime as $key => $value) {
                 $year = $value['year'];
-                $month = $value['month'];
+                $month = $value['month'] >= 1
+                    ? $value['month'] - 1
+                    : $value['month'];
                 $day = $value['day'];
 
                 $gamesPlayedRaw = !empty($value['gamesPlayed']) && is_numeric($value['gamesPlayed'])
@@ -73,38 +72,15 @@ try {
                 );
             }
 
-            {
-                $chart = new Highchart();
-
-                $chart->chart->renderTo = "games_per_phase_all";
-                $chart->chart->type = "spline";
-                $chart->chart->zoomType = "x";
-                $chart->title->text = "Number of Games per Mod over Time";
-                $chart->subtitle->text = new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'");
-                $chart->xAxis->type = "datetime";
-                $chart->yAxis->title->text = "Games";
-                $chart->yAxis->min = 0;
-                /*$chart->tooltip->formatter = new HighchartJsExpr(
-                    "function() {
-                        return '<b>'+ this.series.name +'</b><br/>'+
-                        this.y +' games';
-                    }"
-                );*/
-                $chart->tooltip->crosshairs = true;
-                $chart->tooltip->shared = true;
-                $chart->credits->enabled = false;
-
-                $i = 0;
-                foreach ($bigArray as $key => $value) {
-                    $chart->series[$i]->name = $key;
-                    $chart->series[$i]->data = $value;
-
-                    $i++;
-                }
-            }
+            $lineGraph = makeLineChart(
+                $bigArray,
+                'games_per_phase_all',
+                'Number of Games per Mod over Time',
+                new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'")
+            );
 
             echo '<div id="games_per_phase_all"></div>';
-            echo $chart->render("chart1",NULL,true);
+            echo $lineGraph;
 
         } catch (Exception $e) {
             echo formatExceptionHandling($e);
