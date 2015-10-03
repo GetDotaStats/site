@@ -25,6 +25,7 @@
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
+
 <!--
 ////////////////////////////////////////////////////
 //Phase 1 - Client - Before Loaders
@@ -151,6 +152,7 @@
     </div>
 </div>
 
+
 <!--
 ////////////////////////////////////////////////////
 //Client Check-In - Request
@@ -259,6 +261,7 @@
         </div>
     </div>
 </div>
+
 
 <!--
 ////////////////////////////////////////////////////
@@ -444,6 +447,7 @@
         </div>
     </div>
 </div>
+
 
 <!--
 ////////////////////////////////////////////////////
@@ -676,6 +680,7 @@
     </div>
 </div>
 
+
 <!--
 ////////////////////////////////////////////////////
 //Client - CUSTOM
@@ -902,7 +907,6 @@
     </div>
 </div>
 
-
 <!--
 ////////////////////////////////////////////////////
 //Server - CUSTOM
@@ -932,6 +936,214 @@
         </div>
     </div>
 </div>
+
+
+<!--
+////////////////////////////////////////////////////
+//Client - Timelapse
+////////////////////////////////////////////////////
+-->
+
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingNine">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine"
+               aria-expanded="false" aria-controls="collapseNine">
+                Client - Timelapse Data
+            </a>
+        </h4>
+    </div>
+    <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+        <div class="panel-body">
+        <p>If your mod wishes to capture time sensitive data (such as item or skill build progression), the developer will
+            need to contact an admin and have their schema entered and approved in the system. Each implementation is unique and
+            requires careful planning for current and future needs.</p>
+
+        <p><strong>Endpoint:</strong> <code>POST T.B.D. || "payload" =
+                <em>JSONschema</em></code></p>
+
+        <hr/>
+
+        <div>
+            <div class="row">
+                <div class="col-sm-3"><strong>Key</strong></div>
+                <div class="col-sm-2"><strong>Type</strong></div>
+                <div class="col-sm-3"><strong>Example</strong></div>
+                <div class="col-sm-4"><strong>Notes</strong></div>
+            </div>
+            <span class="h4">&nbsp;</span>
+
+            <div class="row">
+                <div class="col-sm-3">authKey</div>
+                <div class="col-sm-2">string</div>
+                <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+                <div class="col-sm-4">Obtained by pre-match API</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">matchID</div>
+                <div class="col-sm-2">string</div>
+                <div class="col-sm-3">"21347923432"</div>
+                <div class="col-sm-4">Obtained by pre-match API</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">modIdentifier</div>
+                <div class="col-sm-2">string</div>
+                <div class="col-sm-7">"7adfki234jlk23"</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">schemaAuthKey</div>
+                <div class="col-sm-2">string</div>
+                <div class="col-sm-3">"jh345235ljhfads"</div>
+                <div class="col-sm-4">Obtained by schema obtaining approval</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">schemaVersion</div>
+                <div class="col-sm-2">integer</div>
+                <div class="col-sm-7">1</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">timelapses</div>
+                <div class="col-sm-2">array</div>
+                <div class="col-sm-7">&nbsp;</div>
+            </div>
+
+            <!--timelapse array-->
+
+            <div class="row">
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm-2">customTimeLapse1</div>
+                <div class="col-sm-2">array</div>
+                <div class="col-sm-6">&nbsp;</div>
+            </div>
+
+                <!--timelapse data array-->
+
+            <div class="row">
+                <div class="col-sm-2">&nbsp;</div>
+                <div class="col-sm-2">steamID32</div>
+                <div class="col-sm-2">string</div>
+                <div class="col-sm-6">"2875155"</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">&nbsp;</div>
+                <div class="col-sm-2">gameTime</div>
+                <div class="col-sm-2">integer</div>
+                <div class="col-sm-6">1234</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">&nbsp;</div>
+                <div class="col-sm-2">customValue</div>
+                <div class="col-sm-2">???</div>
+                <div class="col-sm-6">YYYY</div>
+            </div>
+
+            <span class="h4">&nbsp;</span>
+        </div>
+
+        <hr/>
+
+        <h3>Example Schema</h3>
+
+            <pre class="pre-scrollable">
+{
+    "authKey": "asdfhkj324jklnfadssdafsd",
+    "matchID": "21347923432",
+    "modIdentifier": "7adfki234jlk23",
+    "schemaAuthKey": "K65S5J7HFD",
+    "schemaVersion": 1,
+    "timelapses": {
+        "customTimeLapse1": {
+            "0": {
+                    "steamID32": "2875155",
+                    "gameTime": 1234,
+                    "customValue": "brown_boots"
+            },
+            "1": {
+                    "steamID32": "2875155",
+                    "gameTime": 1240,
+                    "customValue": "mask_of_madness"
+            },
+            "2": {
+                    "steamID32": "2875156",
+                    "gameTime": 1245,
+                    "customValue": "brown_boots"
+            },
+            "3": {
+                    "steamID32": "2875155",
+                    "gameTime": 1250,
+                    "customValue": "divine_rapier_plus"
+            }
+        },
+        "customTimeLapse2": {
+            "0": {
+                    "steamID32": "2875155",
+                    "gameTime": 1234,
+                    "customValue": "ability_1_level_1"
+            },
+            "1": {
+                    "steamID32": "2875155",
+                    "gameTime": 1240,
+                    "customValue": "ability_3_level_1"
+            },
+            "2": {
+                    "steamID32": "2875156",
+                    "gameTime": 1245,
+                    "customValue": "ability_1_level_1"
+            },
+            "3": {
+                    "steamID32": "2875155",
+                    "gameTime": 1250,
+                    "customValue": "ability_1_level_2"
+            }
+        }
+    }
+}
+            </pre>
+
+        </div>
+    </div>
+</div>
+
+<!--
+////////////////////////////////////////////////////
+//Server - Timelapse
+////////////////////////////////////////////////////
+-->
+
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTen">
+        <h4 class="panel-title">
+            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen"
+               aria-expanded="false" aria-controls="collapseTen">
+                Server - Timelapse Data
+            </a>
+        </h4>
+    </div>
+    <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+        <div class="panel-body">
+            <p>This is the response from the server after receiving the communication from the client for Timelapse Data.
+                The result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
+                accompanying textual error, for debugging purposes.</p>
+
+            <pre class="pre-scrollable">
+{
+    "result": 0,
+    "error": "Bad JSON"
+}
+            </pre>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 </div>
