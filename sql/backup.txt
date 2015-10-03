@@ -1,0 +1,8 @@
+//Dumping a DB excluding some tables
+mysqldump -u root -p gds_site --ignore-table=gds_site.sigs_access_log --ignore-table=gds_site.reports_csp > gds_2015-10-03.sql
+
+//Dumping a specific table
+mysqldump -u root -p gds_site node_listener | gzip > node-listener_`date +\%Y-\%m-\%d`.sql.gz
+
+//Dumping specific tables
+mysqldump -u root -p gds_site t1, t2, t3 | gzip > tables_`date +\%Y-\%m-\%d`.sql.gz

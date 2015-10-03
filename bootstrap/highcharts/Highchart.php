@@ -9,11 +9,6 @@
 * @author Gonçalo Queirós <mail@goncaloqueiros.net>
 */
 
-namespace Ghunti\HighchartsPHP;
-
-use Ghunti\HighchartsPHP\HighchartOption;
-use Ghunti\HighchartsPHP\HighchartOptionRenderer;
-
 class Highchart implements \ArrayAccess
 {
     //The chart type.

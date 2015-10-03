@@ -9,8 +9,6 @@
 * @author Gonçalo Queirós <mail@goncaloqueiros.net>
 */
 
-namespace Ghunti\HighchartsPHP;
-
 class HighchartOption implements \ArrayAccess
 {
     /**

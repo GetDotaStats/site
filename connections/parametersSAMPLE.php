@@ -87,3 +87,14 @@ $api_key7 = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 $api_key8 = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; 
 
 $api_key_dbe = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+
+//Webhooks
+$webhook_gds_site_test = 'http://n.tkte.ch/XXXXXXXXXXXXXXXXXXXX';
+$webhook_gds_site_normal = 'http://n.tkte.ch/XXXXXXXXXXXXXXXXXXXX';
+$webhook_gds_site_admin = 'http://n.tkte.ch/XXXXXXXXXXXXXXXXXXXX';
+$webhook_gds_site_announce = 'http://n.tkte.ch/XXXXXXXXXXXXXXXXXXXX';
+
+//Common Variables
+$localDev = true;
+$CDNgeneric = '//static.getdotastats.com';
+$imageCDN = '//dota2.photography';

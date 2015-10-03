@@ -9,10 +9,6 @@
 * @author Gonçalo Queirós <mail@goncaloqueiros.net>
 */
 
-namespace Ghunti\HighchartsPHP;
-
-use Ghunti\HighchartsPHP\HighchartJsExpr;
-
 class HighchartOptionRenderer
 {
     /**
