@@ -93,7 +93,7 @@ try {
                   ) AND
                   `schemaID` IN (
                     SELECT
-                        `schemaID`
+                        MAX(`schemaID`) AS schemaID
                       FROM `s2_mod_custom_schema`
                       WHERE
                         `modID` = ? AND
