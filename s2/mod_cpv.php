@@ -32,9 +32,9 @@ try {
     //////////////////
     {
         try {
-            echo '<h3>Custom Game Values</h3>';
+            echo '<h3>Custom Player Values</h3>';
 
-            echo '<p>Breakdown of custom game values for all games played in the last week. Calculated hourly.</p>';
+            echo '<p>Breakdown of custom player values for all games played in the last week. Calculated hourly.</p>';
 
             $schemaIDtoUse = $db->q(
                 'SELECT
@@ -51,34 +51,34 @@ try {
                 $schemaIDtoUse = $schemaIDtoUse[0]['schemaID'];
             }
 
-            $customGameValues = cached_query(
-                's2_mod_page_custom_game_values' . $modID,
+            $customPlayerValues = cached_query(
+                's2_mod_page_custom_player_values' . $modID,
                 'SELECT
-                      ccgv.`modID`,
-                      ccgv.`fieldOrder`,
-                      ccgv.`fieldValue`,
-                      ccgv.`numGames`,
+                      ccpv.`modID`,
+                      ccpv.`fieldOrder`,
+                      ccpv.`fieldValue`,
+                      ccpv.`numGames`,
                       s2mcsf.`customValueDisplay`
-                    FROM `cache_custom_game_values` ccgv
+                    FROM `cache_custom_player_values` ccpv
                     JOIN (
                       SELECT
                           `fieldOrder`,
                           `customValueDisplay`
                         FROM `s2_mod_custom_schema_fields`
-                        WHERE `fieldType` = 1 AND `schemaID` = ?
-                    ) s2mcsf ON s2mcsf.`fieldOrder` = ccgv.`fieldOrder`
-                    WHERE ccgv.`modID` = ?
-                    ORDER BY ccgv.`modID`, ccgv.`fieldOrder`, ccgv.`fieldValue`;',
+                        WHERE `fieldType` = 2 AND `schemaID` = ?
+                    ) s2mcsf ON s2mcsf.`fieldOrder` = ccpv.`fieldOrder`
+                    WHERE ccpv.`modID` = ?
+                    ORDER BY ccpv.`modID`, ccpv.`fieldOrder`, ccpv.`fieldValue`;',
                 'is',
                 array($schemaIDtoUse, $modID),
                 1
             );
 
-            if (empty($customGameValues)) throw new Exception('No custom game values recorded for this mod!');
+            if (empty($customPlayerValues)) throw new Exception('No custom player values recorded for this mod!');
 
             $bigArray = array();
             $lastModID = -1;
-            foreach ($customGameValues as $key => $value) {
+            foreach ($customPlayerValues as $key => $value) {
                 $numGames = !empty($value['numGames']) && is_numeric($value['numGames'])
                     ? intval($value['numGames'])
                     : 0;
@@ -113,7 +113,7 @@ try {
 
                 $pieChart = makePieChart(
                     $valueFinal,
-                    'container_custom_game_value_' . $key,
+                    'container_custom_player_value_' . $key,
                     "Flag `{$key}`",
                     "{$numGames} matches had this flag"
                 );
@@ -125,7 +125,7 @@ try {
                 }
                 $i++;
 
-                $customGameValueChartDivs .= "<div class='col-md-{$columnWidth}'><div id='container_custom_game_value_{$key}'></div>$pieChart</div>";
+                $customGameValueChartDivs .= "<div class='col-md-{$columnWidth}'><div id='container_custom_player_value_{$key}'></div>$pieChart</div>";
             }
 
             if ($numCustomGameValues % 2 != 0) {
