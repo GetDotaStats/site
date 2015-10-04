@@ -211,8 +211,7 @@ if (!function_exists('modPageHeader')) {
         $result .= '<hr />';
 
         $result .= "<div class='row'>
-                        <div class='col-sm-4 text-center'>&nbsp;</div>
-                        <div class='col-sm-8 text-right'>
+                        <div class='col-sm-12 text-right'>
                             <a class='nav-clickable btn btn-info' href='#s2__mod?id={$modID}'>Num Games</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_f?id={$modID}'>Flags</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cgv?id={$modID}'>Game Values</a>
