@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>OP Custom Player Values</h3>';
 
-            echo '<p>Breakdown of custom player values for all games played in the last week. Calculated hourly.</p>';
+            echo '<p>Breakdown of top 20 custom player value combos, per player value, sorted by winrate for all games played in the last week. Calculated hourly.</p>';
 
             $schemaIDtoUse = $db->q(
                 'SELECT
@@ -79,7 +79,8 @@ try {
                           (ccpv.`numWins` / ccpv.`numGames`) AS winrate
                         FROM `cache_custom_player_values` ccpv
                         WHERE ccpv.`modID` = ? AND ccpv.`fieldOrder` = ?
-                        ORDER BY winrate DESC;',
+                        ORDER BY winrate DESC
+                        LIMIT 0,20;',
                     'ii',
                     array($modID, $fieldID),
                     1
