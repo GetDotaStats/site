@@ -134,7 +134,7 @@ try {
                         s2mc.`modID`,
                         s2mc.`fieldOrder`,
                         s2mc.`fieldValue`,
-                        COUNT(*) AS numPlayers,
+                        COUNT(*) AS numGames,
                         SUM(`isWinner`) AS numWins
                     FROM `cache_custom_player_values_temp1` s2mc
                     GROUP BY s2mc.`modID`, s2mc.`fieldOrder`, s2mc.`fieldValue`;'
