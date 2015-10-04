@@ -112,12 +112,16 @@ try {
                         s2mpc.`modID`,
                         s2mpc.`fieldOrder`,
                         s2mpc.`fieldValue`,
-                        s2mp.`isWinner`
+                        (
+                          SELECT
+                              s2mp.`isWinner`
+                            FROM `s2_match_players` s2mp
+                            WHERE
+                              s2mp.`matchID` = s2mpc.`matchID` AND
+                              s2mp.`roundID` = s2mpc.`round` AND
+                              s2mp.`steamID32` = s2mpc.`userID32`
+                        ) AS isWinner
                     FROM `s2_match_players_custom` s2mpc
-                    JOIN `s2_match_players` s2mp ON
-                      s2mpc.`matchID` = s2mp.`matchID` AND
-                      s2mpc.`round` = s2mp.`roundID` AND
-                      s2mpc.`userID32` = s2mp.`steamID32`
                     WHERE s2mpc.`matchID` IN (
                       SELECT
                         `matchID`
