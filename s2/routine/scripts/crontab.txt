@@ -13,3 +13,4 @@
 # EXAMPLES
 # m     h   dom  mon  dow   command
 */10  * * * *   /home/www-getdotastats/s2/routine/scripts/10minute.sh > /home/www-getdotastats/s2/routine/log_10minute.html 2>&1
+@hourly   /home/www-getdotastats/s2/routine/scripts/hourly.sh > /home/www-getdotastats/s2/routine/log_hourly.html 2>&1
