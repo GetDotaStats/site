@@ -4,8 +4,6 @@ require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
 try {
-    throw new Exception('Stats down to fix DB integrity.');
-
     $s2_response = array();
 
     if (!isset($_POST['payload']) || empty($_POST['payload'])) {
@@ -279,7 +277,7 @@ try {
                                 $matchID,
                                 $modID,
                                 $schemaID,
-                                $key,
+                                ($key + 1),
                                 $key2,
                                 $key3,
                                 $value3
