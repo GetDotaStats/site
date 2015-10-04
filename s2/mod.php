@@ -322,9 +322,6 @@ try {
             $bigArray = array();
             $lastModID = -1;
             foreach ($flags as $key => $value) {
-                $flagValue = is_numeric($value['flagValue'])
-                    ? intval($value['flagValue'])
-                    : $value['flagValue'];
                 $numGames = !empty($value['numGames']) && is_numeric($value['numGames'])
                     ? intval($value['numGames'])
                     : 0;
@@ -379,6 +376,120 @@ try {
             }
 
             echo $flagChartDivs;
+
+        } catch (Exception $e) {
+            echo formatExceptionHandling($e);
+        }
+    }
+
+    echo '<hr />';
+
+    //////////////////
+    //CustomGameValues
+    //////////////////
+    {
+        try {
+            echo '<h3>Custom Game Values</h3>';
+
+            echo '<p>Breakdown of custom game values for all games played in the last week. Calculated hourly.</p>';
+
+            $schemaIDtoUse = $db->q(
+                'SELECT
+                        MAX(`schemaID`) as schemaID
+                    FROM `s2_mod_custom_schema`
+                    WHERE `modID` = ? AND `schemaApproved` = 1;',
+                'i',
+                $modID
+            );
+
+            if (empty($schemaIDtoUse)) {
+                throw new Exception('No approved schema to use!');
+            } else {
+                $schemaIDtoUse = $schemaIDtoUse[0]['schemaID'];
+            }
+
+            $customGameValues = cached_query(
+                's2_mod_page_custom_game_values' . $modID,
+                'SELECT
+                      ccgv.`modID`,
+                      ccgv.`fieldOrder`,
+                      ccgv.`fieldValue`,
+                      ccgv.`numGames`,
+                      s2mcsf.`customValueDisplay`
+                    FROM `cache_custom_game_values` ccgv
+                    JOIN (
+                      SELECT
+                          `fieldOrder`,
+                          `customValueDisplay`
+                        FROM `s2_mod_custom_schema_fields`
+                        WHERE `fieldType` = 1 AND `schemaID` = ?
+                    ) s2mcsf ON s2mcsf.`fieldOrder` = ccgv.`fieldOrder`
+                    WHERE ccgv.`modID` = ?
+                    ORDER BY ccgv.`modID`, ccgv.`fieldOrder`, ccgv.`fieldValue`;',
+                'is',
+                array($schemaIDtoUse, $modID),
+                1
+            );
+
+            if (empty($customGameValues)) throw new Exception('No CustomGameValues recorded for this mod!');
+
+            $bigArray = array();
+            $lastModID = -1;
+            foreach ($customGameValues as $key => $value) {
+                $numGames = !empty($value['numGames']) && is_numeric($value['numGames'])
+                    ? intval($value['numGames'])
+                    : 0;
+
+                $bigArray[$value['customValueDisplay']][] = array(
+                    $value['fieldValue'],
+                    $numGames,
+                );
+            }
+
+            $customGameValueChartDivs = '';
+            $numCustomGameValues = count($bigArray);
+            $columnWidth = $numCustomGameValues > 1
+                ? 6
+                : 12;
+            $i = 1;
+            foreach ($bigArray as $key => $value) {
+                $numGames = 0;
+                $valueTest = array();
+                foreach ($value as $key2 => $value2) {
+                    $numGames += $value2[1];
+                    $valueTest[$value2[0]] = $value2;
+                }
+
+                ksort($valueTest);
+                $o = 0;
+                $valueFinal = array();
+                foreach ($valueTest as $key2 => $value2) {
+                    $valueFinal[$o] = $value2;
+                    $o++;
+                }
+
+                $pieChart = makePieChart(
+                    $valueFinal,
+                    'container_custom_game_value_' . $key,
+                    "Flag `{$key}`",
+                    "{$numGames} matches had this flag"
+                );
+
+                if ($i == 1) {
+                    $customGameValueChartDivs = '<div class="row">';
+                } else if ($i % 2 != 0) {
+                    $customGameValueChartDivs .= '</div><div class="row">';
+                }
+                $i++;
+
+                $customGameValueChartDivs .= "<div class='col-md-{$columnWidth}'><div id='container_custom_game_value_{$key}'></div>$pieChart</div>";
+            }
+
+            if ($numCustomGameValues % 2 != 0) {
+                $customGameValueChartDivs .= '</div>';
+            }
+
+            echo $customGameValueChartDivs;
 
         } catch (Exception $e) {
             echo formatExceptionHandling($e);
