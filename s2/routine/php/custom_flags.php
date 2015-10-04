@@ -11,7 +11,7 @@ try {
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
     $activeMods = cached_query(
-        's2_cron_flags_active_mods',
+        's2_cron_active_mods',
         'SELECT
               ml.`mod_id`,
               ml.`mod_identifier`,

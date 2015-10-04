@@ -31,11 +31,11 @@ try {
     if (empty($activeMods)) throw new Exception('No active mods!');
 
     $time_start1 = $time_start2 = time();
-    echo '<h2>Custom Game Values</h2>';
+    echo '<h2>Custom Player Values</h2>';
 
-    $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp2`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp2`;');
 
-    $totalMatchesUsed = $totalCustomGameValuesUsed = $totalCustomGameValueCombos = 0;
+    $totalMatchesUsed = $totalCustomPlayerValuesUsed = $totalCustomPlayerValueCombos = 0;
 
     foreach ($activeMods as $key => $value) {
         $modID = $value['mod_id'];
@@ -44,44 +44,47 @@ try {
         $time_start1 = time();
         echo "<h3>$modName</h3>";
 
-        $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp0`;');
-        $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp1`;');
+        $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp0`;');
+        $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp1`;');
 
-        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values` (
+        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values` (
             `modID` bigint(255) NOT NULL,
             `fieldOrder` tinyint(1) NOT NULL,
             `fieldValue` varchar(100) NOT NULL,
             `numGames` bigint(255) NOT NULL,
+            `numWins` bigint(255) NOT NULL,
             PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp0` (
+        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values_temp0` (
             `modID` bigint(255) NOT NULL,
             `matchID` bigint(255) NOT NULL,
             PRIMARY KEY (`modID`, `matchID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp1` (
+        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values_temp1` (
             `modID` int(255) NOT NULL,
             `fieldOrder` varchar(100) NOT NULL,
             `fieldValue` varchar(100) NOT NULL,
+            `isWinner` tinyint(1) NOT NULL,
             KEY (`modID`, `fieldOrder`, `fieldValue`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp2` (
+        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values_temp2` (
             `modID` bigint(255) NOT NULL,
             `fieldOrder` varchar(100) NOT NULL,
             `fieldValue` varchar(100) NOT NULL,
             `numGames` bigint(255) NOT NULL,
+            `numWins` bigint(255) NOT NULL,
             PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $matchesUsed = $db->q(
-            'INSERT INTO `cache_custom_game_values_temp0`
+            'INSERT INTO `cache_custom_player_values_temp0`
                 SELECT
                   DISTINCT `modID`,
                   `matchID`
-                FROM `s2_match_custom`
+                FROM `s2_match_players_custom`
                 WHERE
                   `matchID` IN (
                     SELECT
@@ -103,31 +106,37 @@ try {
             array($modID, $modID)
         );
 
-        $customGameValuesUsed = $db->q(
-            'INSERT INTO `cache_custom_game_values_temp1`
+        $customPlayerValuesUsed = $db->q(
+            'INSERT INTO `cache_custom_player_values_temp1`
                 SELECT
-                        s2mc.`modID`,
-                        s2mc.`fieldOrder`,
-                        s2mc.`fieldValue`
-                    FROM `s2_match_custom` s2mc
-                    WHERE s2mc.`matchID` IN (
+                        s2mpc.`modID`,
+                        s2mpc.`fieldOrder`,
+                        s2mpc.`fieldValue`,
+                        s2mp.`isWinner`
+                    FROM `s2_match_players_custom` s2mpc
+                    JOIN `s2_match_players` s2mp ON
+                      s2mpc.`matchID` = s2mp.`matchID` AND
+                      s2mpc.`round` = s2mp.`roundID` AND
+                      s2mpc.`userID32` = s2mp.`steamID32`
+                    WHERE s2mpc.`matchID` IN (
                       SELECT
                         `matchID`
-                      FROM `cache_custom_game_values_temp0`
+                      FROM `cache_custom_player_values_temp0`
                       WHERE `modID` = ?
                     );',
             's',
             $modID
         );
 
-        $customGameValueCombos = $db->q(
-            'INSERT INTO `cache_custom_game_values_temp2`
+        $customPlayerValueCombos = $db->q(
+            'INSERT INTO `cache_custom_player_values_temp2`
                 SELECT
                         s2mc.`modID`,
                         s2mc.`fieldOrder`,
                         s2mc.`fieldValue`,
-                        COUNT(*) AS numGames
-                    FROM `cache_custom_game_values_temp1` s2mc
+                        COUNT(*) AS numPlayers,
+                        SUM(`isWinner`) AS numWins
+                    FROM `cache_custom_player_values_temp1` s2mc
                     GROUP BY s2mc.`modID`, s2mc.`fieldOrder`, s2mc.`fieldValue`;'
         );
 
@@ -137,15 +146,15 @@ try {
             ? $matchesUsed
             : 0;
 
-        $totalCustomGameValuesUsed += $customGameValuesUsed = is_numeric($customGameValuesUsed)
-            ? $customGameValuesUsed
+        $totalCustomPlayerValuesUsed += $customPlayerValuesUsed = is_numeric($customPlayerValuesUsed)
+            ? $customPlayerValuesUsed
             : 0;
 
-        $totalCustomGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
-            ? $customGameValueCombos
+        $totalCustomPlayerValueCombos += $customPlayerValueCombos = is_numeric($customPlayerValueCombos)
+            ? $customPlayerValueCombos
             : 0;
 
-        echo "<strong>Results:</strong> Game Values: $customGameValuesUsed || Game Value Combos: $customGameValueCombos || Matches: $matchesUsed<br />";
+        echo "<strong>Results:</strong> Player Values: $customPlayerValuesUsed || Player Value Combos: $customPlayerValueCombos || Matches: $matchesUsed<br />";
 
         echo '<strong>Run Time:</strong> ' . ($time_end1 - $time_start1) . " seconds";
 
@@ -155,21 +164,22 @@ try {
     $time_start1 = time();
     echo "<h3>Final Insert</h3>";
 
-    $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp0`;');
-    $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp1`;');
-    $db->q('TRUNCATE `cache_custom_game_values`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp0`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp1`;');
+    $db->q('TRUNCATE `cache_custom_player_values`;');
 
     $flagCombinations = $db->q(
-        'INSERT INTO `cache_custom_game_values`
+        'INSERT INTO `cache_custom_player_values`
             SELECT
               `modID`,
               `fieldOrder`,
               `fieldValue`,
-              `numGames`
-            FROM `cache_custom_game_values_temp2`;'
+              `numGames`,
+              `numWins`
+            FROM `cache_custom_player_values_temp2`;'
     );
 
-    $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp2`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp2`;');
 
     $time_end1 = time();
     echo '<strong>Run Time:</strong> ' . ($time_end1 - $time_start1) . " seconds";
@@ -191,7 +201,7 @@ try {
             ),
             array(
                 $irc_message->colour_generator('green'),
-                '[CUSTOM GAME VALUES]',
+                '[CUSTOM PLAYER VALUES]',
                 $irc_message->colour_generator(NULL),
             ),
             array(
@@ -201,8 +211,8 @@ try {
                 $irc_message->colour_generator(NULL),
                 $irc_message->colour_generator('bold'),
             ),
-            array($totalCustomGameValuesUsed . ' game values ||'),
-            array($totalCustomGameValueCombos . ' game value combos ||'),
+            array($totalCustomPlayerValuesUsed . ' Player values ||'),
+            array($totalCustomPlayerValueCombos . ' Player value combos ||'),
             array($totalMatchesUsed . ' matches ||'),
             array('http://getdotastats.com/s2/routine/log_hourly.html?' . time())
         );
