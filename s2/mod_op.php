@@ -98,6 +98,8 @@ try {
                         </div>';
 
                 foreach ($customPlayerValues as $key2 => $value2) {
+                    if(empty($value2['fieldValue'])) continue;
+
                     $fieldValue = $value2['fieldValue'];
                     $winrate = number_format($value2['winrate'] * 100, 1);
                     $numWins = number_format($value2['numWins']);
