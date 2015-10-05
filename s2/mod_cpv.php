@@ -79,7 +79,7 @@ try {
             $bigArray = array();
             $lastModID = -1;
             foreach ($customPlayerValues as $key => $value) {
-                if(empty($value['fieldValue'])) continue;
+                if($value['fieldValue'] == '-1') continue;
 
                 $numGames = !empty($value['numGames']) && is_numeric($value['numGames'])
                     ? intval($value['numGames'])

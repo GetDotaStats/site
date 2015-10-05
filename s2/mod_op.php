@@ -98,7 +98,7 @@ try {
                         </div>';
 
                 foreach ($customPlayerValues as $key2 => $value2) {
-                    if(empty($value2['fieldValue'])) continue;
+                    if($value2['fieldValue'] == '-1') continue;
 
                     $fieldValue = $value2['fieldValue'];
                     $winrate = number_format($value2['winrate'] * 100, 1);
