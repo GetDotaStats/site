@@ -1362,3 +1362,83 @@ if (!function_exists('makeLineChart')) {
         return $chart->render("chart1", NULL, true);
     }
 }
+
+if (!class_exists('basicStatsForArrays')) {
+    class basicStatsForArrays
+    {
+        private $numericArray = array();
+
+        public function __construct($numericArray = array())
+        {
+            if (!empty($numericArray)) {
+                $this->setNumericArray($numericArray);
+            }
+        }
+
+        public function setNumericArray($numericArray)
+        {
+            if (empty($numericArray)) {
+                throw new Exception('Empty numeric array!');
+            } else if (!is_array($numericArray)) {
+                throw new Exception('Invalid numeric array!');
+            } else {
+                $this->numericArray = $numericArray;
+            }
+        }
+
+        public function Quartile($Quartile)
+        {
+            $pos = (count($this->numericArray) - 1) * $Quartile;
+
+            $base = floor($pos);
+            $rest = $pos - $base;
+
+            if (isset($this->numericArray[$base + 1])) {
+                return $this->numericArray[$base] + $rest * ($this->numericArray[$base + 1] - $this->numericArray[$base]);
+            } else {
+                return $this->numericArray[$base];
+            }
+        }
+
+        public function Quartile_25()
+        {
+            return $this->Quartile(0.25);
+        }
+
+        public function Quartile_50()
+        {
+            return $this->Quartile(0.5);
+        }
+
+        public function Quartile_75()
+        {
+            return $this->Quartile(0.75);
+        }
+
+        public function Median()
+        {
+            return $this->Quartile_50();
+        }
+
+        public function Average()
+        {
+            return array_sum($this->numericArray) / count($this->numericArray);
+        }
+
+        public function StdDev()
+        {
+            if (count($this->numericArray) < 2) {
+                return false;
+            }
+
+            $avg = $this->Average();
+
+            $sum = 0;
+            foreach ($this->numericArray as $value) {
+                $sum += pow($value - $avg, 2);
+            }
+
+            return sqrt((1 / (count($this->numericArray) - 1)) * $sum);
+        }
+    }
+}
