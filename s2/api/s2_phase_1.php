@@ -34,10 +34,6 @@ try {
         throw new Exception('Payload missing fields!');
     }
 
-    $preGameAuthPayloadJSON['isDedicated'] = !isset($preGameAuthPayloadJSON['isDedicated']) || empty($preGameAuthPayloadJSON['isDedicated'])
-        ? 0
-        : 1;
-
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
@@ -59,7 +55,6 @@ try {
                 `mod_active`,
                 `mod_rejected`,
                 `mod_rejected_reason`,
-                `mod_maps`,
                 `mod_max_players`,
                 `mod_options_enabled`,
                 `mod_options`,
@@ -81,16 +76,14 @@ try {
     //MATCH DETAILS
     {
         $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `isDedicated`, `matchMapName`, `numPlayers`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL);',
-            'sisiisii',
+            'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `numPlayers`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
+                VALUES (?, ?, ?, ?, ?, ?, NULL, NULL);',
+            'sisiii',
             array(
                 $authKey,
                 $modID,
                 $preGameAuthPayloadJSON['hostSteamID32'],
                 1,
-                $preGameAuthPayloadJSON['isDedicated'],
-                $preGameAuthPayloadJSON['mapName'],
                 $preGameAuthPayloadJSON['numPlayers'],
                 $preGameAuthPayloadJSON['schemaVersion']
             )
