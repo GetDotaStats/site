@@ -94,7 +94,7 @@ try {
                             <div class="col-md-3"><strong>Value</strong></div>
                             <div class="col-md-1"><strong>Winrate</strong></div>
                             <div class="col-md-1"><strong>Wins</strong></div>
-                            <div class="col-md-1"><strong>Games</strong></div>
+                            <div class="col-md-1"><strong>Players</strong></div>
                         </div>';
 
                 foreach ($customPlayerValues as $key2 => $value2) {

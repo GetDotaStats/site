@@ -115,7 +115,7 @@ try {
                     $valueFinal,
                     'container_custom_game_value_' . $key,
                     "Flag `{$key}`",
-                    "{$numGames} matches had this flag"
+                    "{$numGames} matches had this value"
                 );
 
                 if ($i == 1) {
