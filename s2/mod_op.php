@@ -91,7 +91,7 @@ try {
                 if (empty($customPlayerValues)) throw new Exception('No custom player values recorded for this mod!');
 
                 echo '<div class="row">
-                            <div class="col-md-2"><strong>Value</strong></div>
+                            <div class="col-md-3"><strong>Value</strong></div>
                             <div class="col-md-1"><strong>Winrate</strong></div>
                             <div class="col-md-1"><strong>Wins</strong></div>
                             <div class="col-md-1"><strong>Games</strong></div>
@@ -106,7 +106,7 @@ try {
                     $numGames = number_format($value2['numGames']);
 
                     echo "<div class='row'>
-                            <div class='col-md-2'>{$fieldValue}</div>
+                            <div class='col-md-3'>{$fieldValue}</div>
                             <div class='col-md-1 text-right'>{$winrate}%</div>
                             <div class='col-md-1 text-right'>{$numWins}</div>
                             <div class='col-md-1 text-right'>{$numGames}</div>

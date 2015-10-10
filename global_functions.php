@@ -1386,6 +1386,26 @@ if (!class_exists('basicStatsForArrays')) {
             }
         }
 
+        public function Count()
+        {
+            return count($this->numericArray);
+        }
+
+        public function Min()
+        {
+            return min($this->numericArray);
+        }
+
+        public function Max()
+        {
+            return max($this->numericArray);
+        }
+
+        public function Sum()
+        {
+            return array_sum($this->numericArray);
+        }
+
         public function Quartile($Quartile)
         {
             $pos = (count($this->numericArray) - 1) * $Quartile;
@@ -1422,7 +1442,7 @@ if (!class_exists('basicStatsForArrays')) {
 
         public function Average()
         {
-            return array_sum($this->numericArray) / count($this->numericArray);
+            return $this->Sum() / $this->Count();
         }
 
         public function StdDev()
