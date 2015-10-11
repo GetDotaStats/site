@@ -77,7 +77,10 @@ try {
 
     echo '<p>This is a list of all of your mods.</p>';
 
-    if (!empty($modWorkshopList)) {
+    try {
+        if (empty($modWorkshopList)) {
+            throw new Exception('You don\'t have any mods added yet!');
+        }
 
         echo '<div class="row">
                     <div class="col-sm-1 text-center"><strong>Status</strong></div>
@@ -147,11 +150,10 @@ try {
             echo '<span class="h4">&nbsp;</span>';
         }
 
-    } else {
-        echo bootstrapMessage('Oh Snap', 'You don\'t have any mods added yet!', 'danger');
+        echo '<hr />';
+    } catch (Exception $e) {
+        echo formatExceptionHandling($e);
     }
-
-    echo '<hr />';
 
     echo '<span class="h4">&nbsp;</span>';
 
