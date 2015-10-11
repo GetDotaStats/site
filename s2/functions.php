@@ -213,6 +213,7 @@ if (!function_exists('modPageHeader')) {
         $result .= "<div class='row'>
                         <div class='col-sm-12 text-right'>
                             <a class='nav-clickable btn btn-info' href='#s2__mod?id={$modID}'>Num Games</a>
+                            <a class='nav-clickable btn btn-info' href='#s2__mod_ws?id={$modID}'>Workshop</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_f?id={$modID}'>Flags</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cgv?id={$modID}'>Game Values</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cpv?id={$modID}'>Player Values</a>

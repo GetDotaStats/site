@@ -1323,7 +1323,8 @@ if (!function_exists('makePieChart')) {
 }
 
 if (!function_exists('makeLineChart')) {
-    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL)
+    //$seriesOptions -- Add series name as key, and all options in array attached to it will be applied to series in chart
+    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL, $seriesOptions = array('Series2' => array('title' => 'Test', 'yAxis' => 1, 'opposite' => true)))
     {
         require_once(__DIR__ . "/bootstrap/highcharts/Highchart.php");
         require_once(__DIR__ . "/bootstrap/highcharts/HighchartJsExpr.php");
@@ -1338,8 +1339,8 @@ if (!function_exists('makeLineChart')) {
         $chart->title->text = $chartTitle;
         $chart->subtitle->text = $chartSubtitle;
         $chart->xAxis->type = "datetime";
-        $chart->yAxis->title->text = "Games";
-        $chart->yAxis->min = 0;
+        $chart->yAxis[0]->title->text = "Games";
+        $chart->yAxis[0]->min = 0;
         /*$chart->tooltip->formatter = new HighchartJsExpr(
             "function() {
                 return '<b>'+ this.series.name +'</b><br/>'+
@@ -1355,6 +1356,20 @@ if (!function_exists('makeLineChart')) {
         foreach ($dataArray as $key => $value) {
             $chart->series[$i]->name = $key;
             $chart->series[$i]->data = $value;
+
+            if (isset($seriesOptions[$key])) {
+                if (isset($seriesOptions[$key]['yAxis'])) {
+                    $chart->series[$i]->yAxis = $seriesOptions[$key]['yAxis'];
+
+                    $chart->yAxis[$seriesOptions[$key]['yAxis']]->title->text = $seriesOptions[$key]['title'];
+                    if(isset($seriesOptions[$key]['opposite'])) {
+                        $chart->yAxis[$seriesOptions[$key]['yAxis']]->opposite = $seriesOptions[$key]['opposite'];
+                    }
+                    if(isset($seriesOptions[$key]['min'])) {
+                        $chart->yAxis[$seriesOptions[$key]['yAxis']]->min = $seriesOptions[$key]['min'];
+                    }
+                }
+            }
 
             $i++;
         }
