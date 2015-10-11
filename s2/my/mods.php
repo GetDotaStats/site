@@ -18,51 +18,133 @@ try {
 
     $userID64 = $_SESSION['user_id64'];
 
-    $modList = cached_query(
+    $modWorkshopList = cached_query(
         's2_my_mods_' . $userID64,
         'SELECT
-                ml.*,
-                gu.`user_name`,
-                gu.`user_avatar`,
-                (SELECT COUNT(*) FROM `s2_match` WHERE `modID` = ml.`mod_id`) as games_recorded
+              ml.`mod_id`,
+              ml.`steam_id64` AS developer_id64,
+              ml.`mod_identifier`,
+              ml.`mod_name`,
+              ml.`mod_steam_group`,
+              ml.`mod_workshop_link`,
+              ml.`mod_active`,
+              ml.`mod_rejected`,
+              ml.`mod_rejected_reason`,
+              ml.`mod_size`,
+              ml.`workshop_updated`,
+              ml.`date_recorded` AS mod_date_added,
+
+              (SELECT
+                    SUM(`gamesPlayed`)
+                  FROM `cache_mod_matches` cmm
+                  WHERE cmm.`modID` = ml.`mod_id` AND cmm.`gamePhase` = 3 AND cmm.`dateRecorded` >= now() - INTERVAL 7 DAY
+              ) AS games_last_week,
+              (SELECT
+                    SUM(`gamesPlayed`)
+                  FROM `cache_mod_matches` cmm
+                  WHERE cmm.`modID` = ml.`mod_id` AND cmm.`gamePhase` = 3
+              ) AS games_all_time,
+
+              s2mcs.`schemaID`,
+              s2mcs.`schemaAuth`,
+              s2mcs.`schemaVersion`
+
             FROM `mod_list` ml
-            LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
-            WHERE ml.`steam_id64` = ?
-            ORDER BY ml.date_recorded DESC;',
+            LEFT JOIN (
+                SELECT
+                    s2mcs2.`schemaID`,
+                    s2mcs2.`modID`,
+                    s2mcs2.`schemaAuth`,
+                    s2mcs2.`schemaVersion`
+                  FROM `s2_mod_custom_schema` s2mcs2
+                  WHERE
+                    s2mcs2.`schemaID` IN (
+                        SELECT
+                                MAX(s2mcs3.`schemaID`)
+                            FROM `s2_mod_custom_schema` s2mcs3
+                            WHERE
+                                s2mcs3.`schemaApproved` = 1
+                            GROUP BY s2mcs3.`modID`
+                    )
+            ) as s2mcs ON s2mcs.`modID` = ml.`mod_id`
+            WHERE ml.`steam_id64` = ?;',
         's',
-        $userID64,
+        array($userID64),
         5
     );
 
     echo '<div class="page-header"><h2>My Mods</h2></div>';
 
-    echo '<span class="h4">&nbsp;</span>';
+    echo '<p>This is a list of all of your mods.</p>';
 
-    if (!empty($modList)) {
-        foreach ($modList as $key => $value) {
-            $sg = !empty($value['mod_steam_group'])
-                ? '<a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new">SG</a>'
-                : 'SG';
+    if (!empty($modWorkshopList)) {
 
-            $wg = !empty($value['mod_workshop_link'])
-                ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new">WS</a>'
-                : 'WG';
+        echo '<div class="row">
+                    <div class="col-sm-1 text-center"><strong>Status</strong></div>
+                    <div class="col-sm-4 text-center"><strong>Mod</strong></div>
+                    <div class="col-sm-3 text-center"><strong>modID</strong></div>
+                    <div class="col-sm-2 text-center"><strong>schemaID</strong></div>
 
-            $activeMod = $value['mod_active'] == 1
-                ? 'Approved'
-                : 'Waiting approval';
+                    <div class="col-sm-1 text-center"><strong>Week</strong></div>
+                    <div class="col-sm-1 text-center"><strong>All</strong></div>
+                </div>';
 
-            //<div class="well well-sm" style="white-space: normal;word-break: break-all;"><strong>Encryption Key:</strong> ' . $value['mod_public_key'] . '</div>
-            echo '<div class="panel panel-default">
-                            <div class="panel-heading"><h4>' . $value['mod_name'] . ' <small>' . $activeMod . '</small></h4></div>
-                            <div class="panel-body">
-                                <div class="well well-sm"><strong>modID:</strong> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_identifier'] . '</a></div>
-                                <div class="well well-sm"><strong>Games Recorded:</strong> ' . number_format($value['games_recorded']) . '</div>
-                                <div class="well well-sm"><strong>Description:</strong> ' . $value['mod_description'] . '</div>
-                                <div class="well well-sm"><strong>Links:</strong> ' . $wg . ' || ' . $sg . ' </div >
-                                <div class="well well-sm"><strong>Date Added:</strong> ' . relative_time_v3($value['date_recorded']) . ' </div >
-                            </div >
-                        </div > ';
+        echo '<span class="h3">&nbsp;</span>';
+
+
+        foreach ($modWorkshopList as $key => $value) {
+            $workshopLink = !empty($value['mod_workshop_link'])
+                ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">WS</a>'
+                : '<span class="db_link">WS</span>';
+
+            $steamGroupLink = !empty($value['mod_steam_group'])
+                ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '">SG</a>'
+                : '<span class="db_link">SG</span>';
+
+            $modStatus = $value['mod_rejected'] == 1
+                ? 3
+                : ($value['mod_active'] == 1
+                    ? 2
+                    : 1);
+
+            switch ($modStatus) {
+                case 1:
+                    $modStatus = '<span class="glyphicon glyphicon-ok boldOrangeText" title="Mod awaiting approval"></span>';
+                    break;
+                case 2:
+                    $modStatus = '<span class="glyphicon glyphicon-ok boldGreenText" title="Mod Approved"></span>';
+                    break;
+                case 3:
+                    $modStatus = '<span class="glyphicon glyphicon-remove boldRedText" title="Mod rejected: ' . $value['mod_rejected_reason'] . '"></span>';
+                    break;
+                default:
+                    $modStatus = '<span class="glyphicon glyphicon-ok boldOrangeText" title="Mod awaiting approval"></span>';
+                    break;
+            }
+
+            $modLinks = $workshopLink . ' || ' . $steamGroupLink;
+
+            $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
+                ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
+                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
+
+            $ModIdentifier = "<div><span class='db_link'>{$value['mod_identifier']}</span></div>";
+
+            $schemaDetails = !empty($value['schemaAuth'])
+                ? "<div>v{$value['schemaVersion']} <span class='db_link'>{$value['schemaAuth']}</span></div>"
+                : 'N/A';
+
+
+            echo '<div class="row">
+                    <div class="col-sm-1 text-center">' . $modStatus . '</div>
+                    <div class="col-sm-4"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                    <div class="col-sm-3">' . $ModIdentifier . '</div>
+                    <div class="col-sm-2">' . $schemaDetails . '</div>
+                    <div class="col-sm-1 text-right">' . number_format($value['games_last_week']) . '</div>
+                    <div class="col-sm-1 text-right">' . number_format($value['games_all_time']) . '</div>
+                </div>';
+
+            echo '<span class="h4">&nbsp;</span>';
         }
 
     } else {
@@ -75,7 +157,7 @@ try {
 
     echo '<div class="text-center">
             <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__profile">My Profile</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a new mod</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__mod_request">Add a new mod</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#s2__schema_matches">About Stats</a>
             <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__mods_feedback">My Feedback</a>
         </div>';

@@ -4,7 +4,7 @@
 <span class="h4">&nbsp;</span>
 
 <div class="text-center">
-    <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__mod_request">Add a mod</a>
+    <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__mod_request">Add a mod</a>
     <a class="nav-clickable btn btn-default btn-lg" href="#d2mods__my_mods">My mods</a>
 </div>
 
@@ -33,7 +33,7 @@
             target="_blank">GetDotaStats/stat-collection</a>, making
         sure to merge your <code>addon_game_mode.lua</code> with ours.
     </li>
-    <li>Register your mod <a target="_blank" href="#d2mods__mod_request">on our site</a>. Take the time to read the
+    <li>Register your mod <a target="_blank" href="#s2__my__mod_request">on our site</a>. Take the time to read the
         description of all the fields, as they can only be changed by site staff. The map field is important, as an
         incorrect entry there will prevent users from playing the mod via the Lobby Explorer!
     </li>

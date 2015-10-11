@@ -158,7 +158,7 @@ try {
             } else {
                 $image = empty($_SESSION['user_avatar'])
                     ? $_SESSION['user_id32']
-                    : '<a class="nav-clickable" href="#d2mods__profile?id=' . $_SESSION['user_id64'] . '"><img width="20px" src="' . $_SESSION['user_avatar'] . '" /></a> ';
+                    : '<a class="nav-clickable" href="#s2__user?id=' . $_SESSION['user_id64'] . '"><img width="20px" src="' . $_SESSION['user_avatar'] . '" /></a> ';
 
                 echo '<p class="nav navbar-text">' . $image . ' <a href="./auth/?logout">Logout</a></p>';
             } ?>

@@ -1091,7 +1091,7 @@ if (!class_exists('SteamID')) {
         public function setSteamID($steam_id)
         {
             if (empty($steam_id) || !is_numeric($steam_id)) {
-                throw new RuntimeException('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
+                throw new Exception('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
             } elseif (strlen($steam_id) === 17) {
                 $this->steamID64 = $steam_id;
                 $this->steamID32 = $this->convert64to32($steam_id);
@@ -1105,7 +1105,7 @@ if (!class_exists('SteamID')) {
                 $this->steamID32 = $this->convertIDto32($steam_id);
                 $this->steamID = $steam_id;
             } else {
-                throw new RuntimeException('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
+                throw new Exception('Invalid data provided; data is not a valid steamID or steamID32 or steamID64');
             }
         }
 
