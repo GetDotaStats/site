@@ -440,7 +440,7 @@ try {
 
         //Check if the run-time increased majorly
         if ($totalRunTime > ($oldServiceReport['execution_time'] * 1.1)) {
-            throw new Exception("Major increase (>10%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
+            throw new Exception("Major increase (>50%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
         }
 
         //Check if the performance_index1 increased majorly
@@ -488,10 +488,6 @@ try {
             );
 
             $message = $irc_message->combine_message($message);
-            $irc_message->post_message($message, array('localDev' => $localDev));
-
-            //Send it again to the normal webhook
-            $irc_message->set_webhook($webhook_gds_site_normal);
             $irc_message->post_message($message, array('localDev' => $localDev));
         }
     }
