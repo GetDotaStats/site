@@ -161,40 +161,94 @@ try {
     echo '<hr />';
 
     $time_end2 = time();
+    $totalRunTime = $time_end2 - $time_start2;
     echo '<strong>Total Run Time:</strong> ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
 
-    //WEBHOOK
-    {
-        $irc_message = new irc_message($webhook_gds_site_admin);
+    try {
+        $serviceName = 's2_cron_custom_flags';
 
-        $message = array(
-            array(
-                $irc_message->colour_generator('red'),
-                '[CRON]',
-                $irc_message->colour_generator(NULL),
-            ),
-            array(
-                $irc_message->colour_generator('green'),
-                '[FLAGS]',
-                $irc_message->colour_generator(NULL),
-            ),
-            array(
-                $irc_message->colour_generator('bold'),
-                $irc_message->colour_generator('blue'),
-                'Processed:',
-                $irc_message->colour_generator(NULL),
-                $irc_message->colour_generator('bold'),
-            ),
-            array($totalFlagsUsed . ' flags ||'),
-            array($totalFlagCombos . ' combos ||'),
-            array($totalMatchesUsed . ' matches ||'),
-            array('http://getdotastats.com/s2/routine/log_hourly.html?' . time())
+        $oldServiceReport = cached_query(
+            $serviceName . '_old_service_report',
+            'SELECT
+                    `instance_id`,
+                    `service_name`,
+                    `execution_time`,
+                    `performance_index1`,
+                    `performance_index2`,
+                    `performance_index3`,
+                    `date_recorded`
+                FROM `cron_services`
+                WHERE `service_name` = ?
+                ORDER BY `date_recorded` DESC
+                LIMIT 0,1;',
+            's',
+            array($serviceName),
+            1
         );
 
-        $message = $irc_message->combine_message($message);
-        $irc_message->post_message($message, array('localDev' => $localDev));
-    }
+        service_report($serviceName, $totalRunTime, $totalFlagsUsed, $totalFlagCombos, $totalMatchesUsed);
 
+        if (empty($oldServiceReport)) throw new Exception('No old service report data!');
+
+        $oldServiceReport = $oldServiceReport[0];
+
+        //Check if the run-time increased majorly
+        if ($totalRunTime > ($oldServiceReport['execution_time'] * 1.1)) {
+            throw new Exception("Major increase (>10%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
+        }
+
+        //Check if the performance_index1 increased majorly
+        if($totalFlagsUsed > ($oldServiceReport['performance_index1'] * 1.05)){
+            throw new Exception("Major increase (>5%) in performance index #1! {$oldServiceReport['performance_index1']} flags to {$totalFlagsUsed} flags");
+        }
+
+        //Check if the performance_index2 increased majorly
+        if($totalFlagCombos > ($oldServiceReport['performance_index2'] * 1.05)){
+            throw new Exception("Major increase (>5%) in performance index #2! {$oldServiceReport['performance_index2']} flag combos to {$totalFlagCombos} flag combos");
+        }
+
+        //Check if the performance_index3 increased majorly
+        if($totalMatchesUsed > ($oldServiceReport['performance_index3'] * 1.05)){
+            throw new Exception("Major increase (>5%) in performance index #3! {$oldServiceReport['performance_index3']} matches to {$totalMatchesUsed} matches");
+        }
+
+    } catch (Exception $e) {
+        echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+
+        //WEBHOOK
+        {
+            $irc_message = new irc_message($webhook_gds_site_admin);
+
+            $message = array(
+                array(
+                    $irc_message->colour_generator('red'),
+                    '[CRON]',
+                    $irc_message->colour_generator(NULL),
+                ),
+                array(
+                    $irc_message->colour_generator('green'),
+                    '[FLAGS]',
+                    $irc_message->colour_generator(NULL),
+                ),
+                array(
+                    $irc_message->colour_generator('bold'),
+                    $irc_message->colour_generator('blue'),
+                    'Error:',
+                    $irc_message->colour_generator(NULL),
+                    $irc_message->colour_generator('bold'),
+                ),
+                array($e->getMessage() . ' ||'),
+                array('http://getdotastats.com/s2/routine/log_hourly.html?' . time())
+            );
+
+            $message = $irc_message->combine_message($message);
+            $irc_message->post_message($message, array('localDev' => $localDev));
+
+            //Send it again to the normal webhook
+            $irc_message->set_webhook($webhook_gds_site_normal);
+            $irc_message->post_message($message, array('localDev' => $localDev));
+        }
+    }
 } catch (Exception $e) {
     echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 } finally {

@@ -283,7 +283,15 @@ if (!class_exists('irc_message')) {
 
         public function __construct($webhook_gds_site)
         {
-            $this->webhook_url = $webhook_gds_site;
+            $this->set_webhook($webhook_gds_site);
+        }
+
+        public function set_webhook($webhook){
+            if(!empty($webhook)){
+                $this->webhook_url = $webhook;
+            } else{
+                throw new Exception('Empty webhook!');
+            }
         }
 
         public function post_message($message, $options = array('localDev' => false, 'useExceptions' => false, 'timeoutConnect' => 5, 'timeoutExecute' => 10,))
@@ -1362,10 +1370,10 @@ if (!function_exists('makeLineChart')) {
                     $chart->series[$i]->yAxis = $seriesOptions[$key]['yAxis'];
 
                     $chart->yAxis[$seriesOptions[$key]['yAxis']]->title->text = $seriesOptions[$key]['title'];
-                    if(isset($seriesOptions[$key]['opposite'])) {
+                    if (isset($seriesOptions[$key]['opposite'])) {
                         $chart->yAxis[$seriesOptions[$key]['yAxis']]->opposite = $seriesOptions[$key]['opposite'];
                     }
-                    if(isset($seriesOptions[$key]['min'])) {
+                    if (isset($seriesOptions[$key]['min'])) {
                         $chart->yAxis[$seriesOptions[$key]['yAxis']]->min = $seriesOptions[$key]['min'];
                     }
                 }
@@ -1474,6 +1482,31 @@ if (!class_exists('basicStatsForArrays')) {
             }
 
             return sqrt((1 / (count($this->numericArray) - 1)) * $sum);
+        }
+    }
+}
+
+if (!function_exists('service_report')) {
+    function service_report($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL)
+    {
+        global $db;
+
+        $sqlResult = $db->q('INSERT INTO `cron_services`
+            (
+                `service_name`,
+                `execution_time`,
+                `performance_index1`,
+                `performance_index2`,
+                `performance_index3`
+            ) VALUES (?, ?, ?, ?, ?);',
+            'siiii',
+            array($serviceName, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
+        );
+
+        if ($sqlResult) {
+            return true;
+        } else {
+            throw new Exception('Service report not lodged!');
         }
     }
 }
