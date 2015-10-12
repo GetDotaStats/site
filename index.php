@@ -124,15 +124,16 @@ try {
                 <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span
-                                class="label label-warning">NEW</span> <b class="caret"></b></a>
+                                class="label label-danger">NEW</span> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Management</li>
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs <span
-                                        class="label label-danger">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs</a></li>
+                            <li><a class="nav-clickable" href="#admin__service_stats">Service Stats <span
+                                        class="label label-warning">NEW</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
