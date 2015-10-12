@@ -439,7 +439,7 @@ try {
         $oldServiceReport = $oldServiceReport[0];
 
         //Check if the run-time increased majorly
-        if ($totalRunTime > ($oldServiceReport['execution_time'] * 1.1)) {
+        if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 1.5))) {
             throw new Exception("Major increase (>50%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
         }
 
