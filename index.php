@@ -87,19 +87,21 @@ try {
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
-                            <li><a class="nav-clickable" href="#s2__my__profile">Profile</a></li>
+                            <li><a class="nav-clickable" href="#s2__user?id=<?= $_SESSION['user_id64'] ?>">Public
+                                    Profile</a></li>
+                            <li><a class="nav-clickable" href="#s2__my__profile">Private Profile</a></li>
                             <li><a class="nav-clickable" href="#s2__my__mods">Mods</a></li>
-                            <li><a class="nav-clickable" href="#d2mods__my_mods_feedback">Feedback</a></li>
+                            <li><a class="nav-clickable" href="#s2__my__mods_feedback">Feedback</a></li>
                         <?php } ?>
                         <li class="divider"></li>
                         <li class="dropdown-header">Developers</li>
-                        <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
-                        <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection <span
-                                    class="label label-warning">UPDATED</span></a></li>
+                        <li><a class="nav-clickable" href="#s2__guide_stat_collection">Implementing Stats</a></li>
+                        <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection</a></li>
                         <li><a class="nav-clickable" href="#s2__schema_highscore">Schema stat-highscore <span
                                     class="label label-danger">SOON</span></a></li>
                         <li><a>Schema stat-rpg <span
                                     class="label label-danger">SOON</span></a></li>
+                        <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -177,8 +179,8 @@ try {
 <div class="container">
     <div class="text-center">
         <a class="nav-clickable" href="#s2__directory"><img width="300px"
-                                                   src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
-                                                   alt="site logo"/></a>
+                                                            src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
+                                                            alt="site logo"/></a>
 
         <div id="loading">
             <img id="loading_spinner1" src="<?= $CDN_generic ?>/images/spinner_v2.gif" alt="loading"/>
@@ -199,7 +201,8 @@ try {
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
                             class="steam-group-icon"></span> <span class="steam-group-label">Steam Group</span></a>
 
-                    <a href="https://www.changetip.com/tipme/getdotastats" target="_blank" class="changetip-button"><span
+                    <a href="https://www.changetip.com/tipme/getdotastats" target="_blank"
+                       class="changetip-button"><span
                             class="changetip-icon"></span> <span class="changetip-label">Tip.me</span></a>
                 </div>
 
@@ -218,7 +221,8 @@ try {
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
             Steam.
-            <small><a target="_blank" href="https://github.com/GetDotaStats/stat-collection/issues">stat-collection Issues</a>
+            <small><a target="_blank" href="https://github.com/GetDotaStats/stat-collection/issues">stat-collection
+                    Issues</a>
             </small>
             ||
             <small><a target="_blank" href="https://github.com/GetDotaStats/site/issues">Site Issues</a></small>
