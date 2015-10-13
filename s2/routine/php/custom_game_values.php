@@ -215,12 +215,12 @@ try {
 
         //Check if the performance_index1 increased majorly
         if ($totalCustomGameValuesUsed > ($oldServiceReport['performance_index1'] * 1.05)) {
-            throw new Exception("Major increase (>5%) in performance index #1! {$oldServiceReport['performance_index1']} game values to {$totalFlagsUsed} game values");
+            throw new Exception("Major increase (>5%) in performance index #1! {$oldServiceReport['performance_index1']} game values to {$totalCustomGameValuesUsed} game values");
         }
 
         //Check if the performance_index2 increased majorly
         if ($totalCustomGameValueCombos > ($oldServiceReport['performance_index2'] * 1.05)) {
-            throw new Exception("Major increase (>5%) in performance index #2! {$oldServiceReport['performance_index2']} game value combos to {$totalFlagCombos} game value combos");
+            throw new Exception("Major increase (>5%) in performance index #2! {$oldServiceReport['performance_index2']} game value combos to {$totalCustomGameValueCombos} game value combos");
         }
 
         //Check if the performance_index3 increased majorly
