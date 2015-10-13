@@ -225,8 +225,11 @@ try {
                 $count = $statsLibrary->Count();
                 $lpad_length = strlen(floor($max));
 
+                $firstGroupMaxCategories = 50;
+                $secondGroupMaxCategories = 20;
+
                 //If the amount of values does not warrant splitting, skip it and do it normally
-                if (($max <= 30) || ($quart75 < 20)) {
+                if (($max <= ($firstGroupMaxCategories + 10)) || ($quart75 < $firstGroupMaxCategories)) {
                     continue;
                 }
 
@@ -244,9 +247,6 @@ try {
                 //echo "Median: {$median}<br />";
                 echo "Quartile_75: {$quart75}<br />";
                 //echo "StdDev: {$stdev}<br />";
-
-                $firstGroupMaxCategories = 20;
-                $secondGroupMaxCategories = 10;
 
                 $firstGroupBy = floor($quart75 / $firstGroupMaxCategories);
                 $firstGroupLimit = ($firstGroupBy * $firstGroupMaxCategories);
