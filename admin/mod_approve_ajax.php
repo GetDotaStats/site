@@ -22,7 +22,6 @@ try {
     if (
         empty($_POST['modID']) ||
         empty($_POST['modName']) ||
-        empty($_POST['modMaps']) || $_POST['modMaps'] == 'One map per line' ||
         empty($_POST['modDescription']) ||
         empty($_POST['m_submit']) || ($_POST['m_submit'] != 'Approve' && $_POST['m_submit'] != 'Reject')
 
@@ -40,7 +39,6 @@ try {
     $modGroup = !empty($_POST['modGroup'])
         ? htmlentities($_POST['modGroup'])
         : NULL;
-    $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['modMaps']))));
     $modRejected = $_POST['m_submit'] == 'Approve'
         ? 0
         : 1;
@@ -58,12 +56,11 @@ try {
             `mod_name` = ?,
             `mod_description` = ?,
             `mod_steam_group` = ?,
-            `mod_maps` = ?,
             `mod_rejected` = ?,
             `mod_rejected_reason` = ?
           WHERE `mod_id` = ?;',
-        'issssiss',
-        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modRejected, $modRejectedReason, $modID
+        'isssiss',
+        $modActive, $modName, $modDescription, $modGroup, $modRejected, $modRejectedReason, $modID
     );
 
     if ($insertSQL) {

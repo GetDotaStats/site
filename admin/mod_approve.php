@@ -27,12 +27,11 @@ try {
         'SELECT
                 ml.*,
                 gu.`user_name`,
-                gu.`user_avatar`,
-                (SELECT COUNT(*) FROM `mod_match_overview` WHERE `mod_id` = ml.`mod_identifier`) as games_recorded
+                gu.`user_avatar`
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` <> 1 AND ml.`mod_rejected` <> 1
-            ORDER BY games_recorded DESC, ml.date_recorded DESC;'
+            ORDER BY ml.date_recorded DESC;'
     );
 
     if (empty($modList)) {
@@ -50,17 +49,13 @@ try {
             ? '<input class="formTextArea boxsizingBorder" name="modGroup" type="text" maxlength="70" value="' . $value['mod_steam_group'] . '">'
             : '<input class="formTextArea boxsizingBorder" name="modGroup" type="text" maxlength="70" placeholder="http://steamcommunity.com/groups/XXXXX">';
 
-        $modGroupLink = !empty($value['mod_steam_group'])
-            ? '</div><div class="col-md-2"><span class="h4">SG</span> <a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>'
-            : '';
+        $workshopLink = !empty($value['mod_workshop_link'])
+            ? '<a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">WS</a>'
+            : '<span>WS</span>';
 
-        $modWorkshopLink = !empty($value['mod_workshop_link'])
-            ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>'
-            : '<span class="glyphicon glyphicon-new-window"></span>';
-
-        $modMaps = !empty($value['mod_maps']) && $value['mod_maps'] != 'One map per line!'
-            ? '<textarea class="formTextArea boxsizingBorder" name="modMaps" rows="2" required>' . implode("\n", json_decode($value['mod_maps'], 1)) . '</textarea>'
-            : '<textarea class="formTextArea boxsizingBorder" name="modMaps" rows="2" placeholder="One map per line!" required></textarea>';
+        $steamGroupLink = !empty($value['mod_steam_group'])
+            ? '<a target="_blank" href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '">SG</a>'
+            : '<span>SG</span>';
 
         $modDescription = !empty($value['mod_description'])
             ? '<textarea class="formTextArea boxsizingBorder" name="modDescription" rows="3" required>' . $value['mod_description'] . '</textarea>'
@@ -81,15 +76,13 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
-        $modGames = '<a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . number_format($value['games_recorded']) . '</a>';
-
-        echo '<div class="row">
+         echo '<div class="row">
                 <div class="col-md-1"><span class="h4">ID</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The identifier for this custom game"></span></div>
                 <div class="col-md-6">' . $modIDfield . '</div>
 
-                <div class="col-md-1"><span class="h4">Games</span></div>
-                <div class="col-md-3">' . $modGames . '</div>
+                <div class="col-md-1"><span class="h4">Links</span></div>
+                <div class="col-md-3">' . $workshopLink . ' || ' . $steamGroupLink . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
@@ -106,19 +99,10 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">Maps</span></div>
-                <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The maps in this custom game"></span></div>
-                <div class="col-md-6">' . $modMaps . '</div>
-                <div class="col-md-4">' . $modDeveloperAvatar . ' ' . $modDeveloper . '</div>
-            </div>';
-
-        echo '<span class="h5">&nbsp;</span>';
-
-        echo '<div class="row">
                 <div class="col-md-1"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The steam group for this custom game, if applicable"></span></div>
                 <div class="col-md-6">' . $modGroup . '</div>
-                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink . '</div>
+                <div class="col-md-4">' . $modDeveloperAvatar . ' ' . $modDeveloper . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
