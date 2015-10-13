@@ -71,7 +71,7 @@ try {
         }
     } else {
         echo bootstrapMessage('Oh Snap', 'Not logged in!');
-        echo '<a href="../">Go back to main site</a>';
+        echo '<a href="../../">Go back to main site</a>';
     }
 } catch (Exception $e) {
     $eMsg = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
