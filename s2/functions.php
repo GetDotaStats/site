@@ -143,6 +143,11 @@ if (!function_exists('modPageHeader')) {
                     ? $modSize['number'] . '<span class="db_link"> ' . $modSize['string'] . '</span>'
                     : '??<span class="db_link"> MB</span>';
             }
+
+            //Last workshop update
+            $workshopUpdateDate = !empty($modDetails[0]['workshop_updated'])
+                ? relative_time_v3($modDetails[0]['workshop_updated'])
+                : 'No workshop data available yet!';
         }
 
         $result .= '<h2>' . $modNameLink . '</h2>';
@@ -197,7 +202,7 @@ if (!function_exists('modPageHeader')) {
                         </div>
                         <div class="row mod_info_panel">
                             <div class="col-sm-3"><strong>Updated</strong></div>
-                            <div class="col-sm-9">' . relative_time_v3($modDetails[0]['workshop_updated']) . '</div>
+                            <div class="col-sm-9">' . $workshopUpdateDate . '</div>
                         </div>
                         <div class="row mod_info_panel">
                             <div class="col-sm-3"><strong>Added</strong></div>
