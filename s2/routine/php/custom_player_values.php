@@ -174,6 +174,7 @@ try {
                 $fieldName = $value2['customValueDisplay'];
 
                 $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp3`;');
+                $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp4`;');
 
                 $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values_temp3` (
                         `modID` int(255) NOT NULL,
@@ -225,7 +226,7 @@ try {
                 $count = $statsLibrary->Count();
                 $lpad_length = strlen(floor($max));
 
-                $firstGroupMaxCategories = 50;
+                $firstGroupMaxCategories = 30;
                 $secondGroupMaxCategories = 20;
 
                 //If the amount of values does not warrant splitting, skip it and do it normally
@@ -254,8 +255,8 @@ try {
                 $secondGroupBy = floor(($max - $firstGroupLimit) / $secondGroupMaxCategories);
 
                 echo '<br />';
-                echo "Values [0 - {$firstGroupLimit}] Groups of: {$firstGroupBy}<br />";
-                echo "Values [{$firstGroupLimit}+] Groups of: {$secondGroupBy}<br />";
+                echo "Values [0 - {$firstGroupLimit}] in {$firstGroupMaxCategories} groups with value of {$firstGroupBy}<br />";
+                echo "Values [{$firstGroupLimit}+] in {$secondGroupMaxCategories} groups with value of {$secondGroupBy}<br />";
                 echo '<br />';
 
 
@@ -264,8 +265,6 @@ try {
                     'ii',
                     array($modID, $value2['fieldOrder'])
                 );
-
-                $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp4`;');
 
                 $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values_temp4` (
                         `valueGroupingLower` int(100) NOT NULL,
@@ -306,8 +305,6 @@ try {
                             GROUP BY valueGroupingLower;"
                 );
 
-                $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp3`;');
-
                 $customPlayerValueCombos = $db->q(
                     "INSERT INTO `cache_custom_player_values_temp2`
                         SELECT
@@ -320,6 +317,7 @@ try {
                             GROUP BY modID2, fieldOrder2, fieldValue2;"
                 );
 
+                $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp3`;');
                 $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp4`;');
 
                 $totalCustomPlayerValueCombos += $customPlayerValueCombos = is_numeric($customPlayerValueCombos)
@@ -386,6 +384,8 @@ try {
 
     $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp0`;');
     $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp1`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp3`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp4`;');
     $db->q('TRUNCATE `cache_custom_player_values`;');
 
     $flagCombinations = $db->q(

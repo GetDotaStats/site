@@ -63,17 +63,24 @@ try {
 
         $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp1` (
             `modID` int(255) NOT NULL,
-            `fieldOrder` varchar(100) NOT NULL,
+            `fieldOrder` tinyint(1) NOT NULL,
             `fieldValue` varchar(100) NOT NULL,
             KEY (`modID`, `fieldOrder`, `fieldValue`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp2` (
             `modID` bigint(255) NOT NULL,
-            `fieldOrder` varchar(100) NOT NULL,
+            `fieldOrder` tinyint(1) NOT NULL,
             `fieldValue` varchar(100) NOT NULL,
             `numGames` bigint(255) NOT NULL,
             PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+        $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp3` (
+            `modID` int(255) NOT NULL,
+            `fieldOrder` tinyint(1) NOT NULL,
+            `fieldValue` varchar(100) NOT NULL,
+            KEY (`modID`, `fieldOrder`, `fieldValue`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $matchesUsed = $db->q(
@@ -89,7 +96,7 @@ try {
                       FROM `s2_match`
                       WHERE
                         `modID` = ? AND
-                        `dateRecorded` >= NOW() - INTERVAL 7 DAY
+                        `dateRecorded` >= NOW() - INTERVAL 30 DAY
                   ) AND
                   `schemaID` IN (
                     SELECT
@@ -106,11 +113,11 @@ try {
         $customGameValuesUsed = $db->q(
             'INSERT INTO `cache_custom_game_values_temp1`
                 SELECT
-                        s2mc.`modID`,
-                        s2mc.`fieldOrder`,
-                        s2mc.`fieldValue`
-                    FROM `s2_match_custom` s2mc
-                    WHERE s2mc.`matchID` IN (
+                        s2mpc.`modID`,
+                        s2mpc.`fieldOrder`,
+                        s2mpc.`fieldValue`
+                    FROM `s2_match_custom` s2mpc
+                    WHERE s2mpc.`matchID` IN (
                       SELECT
                         `matchID`
                       FROM `cache_custom_game_values_temp0`
@@ -120,16 +127,214 @@ try {
             $modID
         );
 
-        $customGameValueCombos = $db->q(
-            'INSERT INTO `cache_custom_game_values_temp2`
-                SELECT
-                        s2mc.`modID`,
-                        s2mc.`fieldOrder`,
-                        s2mc.`fieldValue`,
-                        COUNT(*) AS numGames
-                    FROM `cache_custom_game_values_temp1` s2mc
-                    GROUP BY s2mc.`modID`, s2mc.`fieldOrder`, s2mc.`fieldValue`;'
+        //IF NUMBER OF UNIQUE VALUES IS GREATER THAN 20
+        //SELECT THE DATA SET FOR THE FIELD
+        //FIND: 3rd QUARTILE, RANGE
+        //IF 3rd QUARTILE IS LARGER THAN 10
+        //MAKE 10 GROUPINGS STARTING FROM 0 TO 3rd QUARTILE
+        //THROW REST OF DATA INTO 5 EQUAL GROUPS
+
+        //FIND OUT WHICH FIELDS HAVE THE NUMERIC FLAG
+        $schemaFields = $db->q(
+            'SELECT
+                  s2mcsf.`schemaID`,
+                  s2mcsf.`fieldOrder`,
+                  s2mcsf.`customValueDisplay`
+                FROM `s2_mod_custom_schema` s2mcs
+                JOIN `s2_mod_custom_schema_fields` s2mcsf
+                  ON s2mcs.`schemaID` = s2mcsf.`schemaID`
+                WHERE
+                  s2mcs.`modID` = ? AND
+                  s2mcs.`schemaApproved` = 1 AND
+                  s2mcsf.`isGroupable` = 1 AND
+                  s2mcsf.`fieldType` = 1;',
+            'i',
+            $modID
         );
+
+        if (!empty($schemaFields)) {
+            echo "<h4>Groupable Values</h4>";
+            //ITERATE THROUGH EACH FIELD
+            foreach ($schemaFields as $key2 => $value2) {
+                $schemaID = $value2['schemaID'];
+                $fieldID = $value2['fieldOrder'];
+                $fieldName = $value2['customValueDisplay'];
+
+                $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp3`;');
+                $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp4`;');
+
+                $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp3` (
+                        `modID` int(255) NOT NULL,
+                        `fieldOrder` tinyint(1) NOT NULL,
+                        `fieldValue` varchar(100) NOT NULL,
+                        KEY (`modID`, `fieldOrder`, `fieldValue`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+                $db->q(
+                    'INSERT INTO `cache_custom_game_values_temp3`
+                        SELECT
+                                `modID`,
+                                `fieldOrder`,
+                                `fieldValue`
+                            FROM `cache_custom_game_values_temp1`
+                            WHERE
+                              `modID` = ? AND
+                              `fieldOrder` = ?;',
+                    'ii',
+                    array($modID, $value2['fieldOrder'])
+                );
+
+                $playData = $db->q(
+                    'SELECT
+                            `modID`,
+                            `fieldOrder`,
+                            `fieldValue`
+                        FROM `cache_custom_game_values_temp3`'
+                );
+
+                //If not data for this groupable field, skip it and do it normally
+                if (empty($playData)) {
+                    continue;
+                }
+
+                $bigArray = array();
+                foreach ($playData as $key3 => $value3) {
+                    $bigArray[] = $value3['fieldValue'];
+                }
+
+                $statsLibrary = new basicStatsForArrays($bigArray);
+
+                $quart75 = $statsLibrary->Quartile_75();
+                $max = $statsLibrary->Max();
+                $min = $statsLibrary->Min();
+                $count = $statsLibrary->Count();
+                $lpad_length = strlen(floor($max));
+
+                $firstGroupMaxCategories = 30;
+                $secondGroupMaxCategories = 20;
+
+                //If the amount of values does not warrant splitting, skip it and do it normally
+                if (($max <= ($firstGroupMaxCategories + 10)) || ($quart75 < $firstGroupMaxCategories)) {
+                    continue;
+                }
+
+                //$sum = $statsLibrary->Sum();
+                //$average = $statsLibrary->Average();
+                //$median = $statsLibrary->Median();
+                //$stdev = $statsLibrary->StdDev();
+
+                echo "<h4>{$fieldName}</h4>";
+                echo "Count: {$count}<br />";
+                //echo "Sum: {$sum}<br />";
+                echo "Range: {$min} - {$max}<br />";
+                echo "LPAD: {$lpad_length}<br />";
+                //echo "Average: {$average}<br />";
+                //echo "Median: {$median}<br />";
+                echo "Quartile_75: {$quart75}<br />";
+                //echo "StdDev: {$stdev}<br />";
+
+                $firstGroupBy = floor($quart75 / $firstGroupMaxCategories);
+                $firstGroupLimit = ($firstGroupBy * $firstGroupMaxCategories);
+
+                $secondGroupBy = floor(($max - $firstGroupLimit) / $secondGroupMaxCategories);
+
+                echo '<br />';
+                echo "Values [0 - {$firstGroupLimit}] in {$firstGroupMaxCategories} groups with value of {$firstGroupBy}<br />";
+                echo "Values [{$firstGroupLimit}+] in {$secondGroupMaxCategories} groups with value of {$secondGroupBy}<br />";
+                echo '<br />';
+
+
+                $db->q(
+                    'DELETE FROM `cache_custom_game_values_temp1` WHERE `modID` = ? AND `fieldOrder` = ?;',
+                    'ii',
+                    array($modID, $value2['fieldOrder'])
+                );
+
+                $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp4` (
+                        `valueGroupingLower` int(100) NOT NULL,
+                        `valueGroupingUpper` int(100) NOT NULL,
+                        `numGames` int(100) NOT NULL,
+                        PRIMARY KEY (`valueGroupingLower`, `numGames`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+                $db->q(
+                    "INSERT INTO `cache_custom_game_values_temp4`
+                        SELECT
+                                (FLOOR(`fieldValue` / {$firstGroupBy}) * {$firstGroupBy}) AS valueGroupingLower,
+                                ((FLOOR(`fieldValue` / {$firstGroupBy}) + 1) * {$firstGroupBy}) AS valueGroupingUpper,
+                                COUNT(*) AS numGames
+                            FROM `cache_custom_game_values_temp3`
+                            WHERE `fieldValue` < ?
+                            GROUP BY valueGroupingLower;",
+                    'i',
+                    array($firstGroupLimit)
+                );
+
+                $db->q(
+                    'DELETE FROM `cache_custom_game_values_temp3` WHERE `fieldValue` < ?;',
+                    'i',
+                    array($firstGroupLimit)
+                );
+
+                $db->q(
+                    "INSERT INTO `cache_custom_game_values_temp4`
+                        SELECT
+                                ((FLOOR((`fieldValue` - {$firstGroupLimit}) / {$secondGroupBy}) * {$secondGroupBy}) + {$firstGroupLimit}) AS valueGroupingLower,
+                                (((FLOOR((`fieldValue` - {$firstGroupLimit}) / {$secondGroupBy}) + 1) * {$secondGroupBy}) + {$firstGroupLimit}) AS valueGroupingUpper,
+                                COUNT(*) AS numGames
+                            FROM `cache_custom_game_values_temp3`
+                            GROUP BY valueGroupingLower;"
+                );
+
+                $customGameValueCombos = $db->q(
+                    "INSERT INTO `cache_custom_game_values_temp2`
+                        SELECT
+                                {$modID} AS modID2,
+                                {$fieldID} AS fieldOrder2,
+                                CONCAT(LPAD(`valueGroupingLower`,{$lpad_length},'0'), ' - ', LPAD(`valueGroupingUpper`,{$lpad_length},'0')) AS fieldValue2,
+                                SUM(`numGames`) AS numGames
+                            FROM `cache_custom_game_values_temp4`
+                            GROUP BY modID2, fieldOrder2, fieldValue2;"
+                );
+
+                $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp3`;');
+                $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp4`;');
+
+                $totalCustomGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
+                    ? $customGameValueCombos
+                    : 0;
+            }
+
+            $customGameValueCombos = $db->q(
+                'INSERT INTO `cache_custom_game_values_temp2`
+                    SELECT
+                            s2mc.`modID`,
+                            s2mc.`fieldOrder`,
+                            s2mc.`fieldValue`,
+                            COUNT(*) AS numGames
+                        FROM `cache_custom_game_values_temp1` s2mc
+                        GROUP BY s2mc.`modID`, s2mc.`fieldOrder`, s2mc.`fieldValue`;'
+            );
+
+            if (!empty($customGameValueCombos)) {
+                $totalCustomGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
+                    ? $customGameValueCombos
+                    : 0;
+            }
+        } else {
+            $customGameValueCombos = $db->q(
+                'INSERT INTO `cache_custom_game_values_temp2`
+                    SELECT
+                            s2mc.`modID`,
+                            s2mc.`fieldOrder`,
+                            s2mc.`fieldValue`,
+                            COUNT(*) AS numGames
+                        FROM `cache_custom_game_values_temp1` s2mc
+                        GROUP BY s2mc.`modID`, s2mc.`fieldOrder`, s2mc.`fieldValue`;'
+            );
+        }
+
+        ///////////////////////////////////////
 
         $time_end1 = time();
 
@@ -157,6 +362,8 @@ try {
 
     $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp0`;');
     $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp1`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp3`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp4`;');
     $db->q('TRUNCATE `cache_custom_game_values`;');
 
     $flagCombinations = $db->q(
@@ -181,7 +388,7 @@ try {
     echo '<strong>Total Run Time:</strong> ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
 
     try {
-        $serviceName = 's2_cron_cgv';
+        $serviceName = 's2_cron_cpv';
 
         $oldServiceReport = cached_query(
             $serviceName . '_old_service_report',
@@ -209,8 +416,8 @@ try {
         $oldServiceReport = $oldServiceReport[0];
 
         //Check if the run-time increased majorly
-        if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 2))) {
-            throw new Exception("Major increase (>100%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
+        if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 1.5))) {
+            throw new Exception("Major increase (>50%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
         }
 
         //Check if the performance_index1 increased majorly
@@ -243,7 +450,7 @@ try {
                 ),
                 array(
                     $irc_message->colour_generator('green'),
-                    '[CGV]',
+                    '[CPV]',
                     $irc_message->colour_generator(NULL),
                 ),
                 array(
@@ -261,6 +468,7 @@ try {
             $irc_message->post_message($message, array('localDev' => $localDev));
         }
     }
+
 } catch (Exception $e) {
     echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 } finally {
