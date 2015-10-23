@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>Games</h3>';
 
-            echo '<p>Breakdown of games per day. Calculated every 10minutes.</p>';
+            echo '<p>Breakdown of games per day over the last month. Calculated every 10minutes.</p>';
 
             $gamesOverTime = cached_query(
                 's2_mod_page_games_over_time_all_' . $modID,
@@ -46,7 +46,7 @@ try {
                       SUM(cmm.`gamesPlayed`) AS gamesPlayed,
                       MIN(cmm.`dateRecorded`) AS dateRecorded
                     FROM `cache_mod_matches` cmm
-                    WHERE cmm.`modID` = ?
+                    WHERE cmm.`modID` = ? AND cmm.`dateRecorded` >= NOW() - INTERVAL 1 MONTH
                     GROUP BY 3,2,1,4;',
                 'i',
                 $modID,
