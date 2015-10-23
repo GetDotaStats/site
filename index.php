@@ -136,6 +136,8 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs</a></li>
                             <li><a class="nav-clickable" href="#admin__service_stats">Service Stats <span
                                         class="label label-warning">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_version">Mod Versions <span
+                                        class="label label-warning">NEW</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
