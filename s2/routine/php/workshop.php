@@ -47,7 +47,7 @@ try {
                     $fields = array(
                         'itemcount' => '1',
                         'publishedfileids[0]' => $workshopID,
-                        'key' => $api_key1,
+                        'key' => $api_key6,
                         'format' => 'json',
                     );
 
@@ -62,7 +62,7 @@ try {
 
                     $tempArray = array();
 
-                    if ($modWorkshopDetails['response']['result'] == 1 && $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1) {
+                    if ($modWorkshopDetails['response']['result'] == 1 && ($modWorkshopDetails['response']['resultcount'] >= 1 || $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1)) {
                         try {
                             if (!empty($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'])) {
                                 curl_download($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'], '../../../images/mods/thumbs/', $value['mod_id'] . '.png');
@@ -149,6 +149,8 @@ try {
                     } else {
                         $workshopCronCounts['failure'] += 1;
                         echo "<strong>[FAILURE] NO DATA for:</strong> $workshopID!<br />";
+                        echo $modWorkshopDetails;
+                        echo '<hr />';
                     }
                 }
             } catch (Exception $e) {
