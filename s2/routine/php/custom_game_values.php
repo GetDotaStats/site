@@ -96,7 +96,7 @@ try {
                       FROM `s2_match`
                       WHERE
                         `modID` = ? AND
-                        `dateRecorded` >= NOW() - INTERVAL 30 DAY
+                        `dateRecorded` >= NOW() - INTERVAL 7 DAY
                   ) AND
                   `schemaID` IN (
                     SELECT
