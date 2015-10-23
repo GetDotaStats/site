@@ -127,7 +127,7 @@ try {
 
             $modLinks = $workshopLink . ' || ' . $steamGroupLink;
 
-            $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
+            $modThumb = is_file('../../images/mods/thumbs/' . $value['mod_id'] . '.png')
                 ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
 
