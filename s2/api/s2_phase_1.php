@@ -134,6 +134,7 @@ try {
         $s2_response['modIdentifier'] = $modIdentifier;
         $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
 
+        /*
         $irc_message = new irc_message($webhook_gds_site_announce);
 
         $message = array(
@@ -161,7 +162,7 @@ try {
         );
 
         $message = $irc_message->combine_message($message);
-        $irc_message->post_message($message, array('localDev' => $localDev));
+        $irc_message->post_message($message, array('localDev' => $localDev));*/
     } else {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
