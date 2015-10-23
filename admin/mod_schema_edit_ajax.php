@@ -113,6 +113,10 @@ try {
                 throw new Exception("Invalid or missing isGroupable for custom Game Value $i!");
             }
 
+            if (!isset($_POST['cgv_graph' . $i]) || !is_numeric($_POST['cgv_graph' . $i])) {
+                throw new Exception("Invalid or missing isGraph for custom Game Value $i!");
+            }
+
             $insertSQL = $db->q(
                 'INSERT INTO `s2_mod_custom_schema_fields`
                       (
@@ -122,22 +126,25 @@ try {
                         `customValueDisplay`,
                         `customValueName`,
                         `customValueObjective`,
-                        `isGroupable`
+                        `isGroupable`,
+                        `noGraph`
                       )
-                    VALUES (?, ?, 1, ?, ?, ?, ?)
+                    VALUES (?, ?, 1, ?, ?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE
                         `customValueDisplay` = VALUES(`customValueDisplay`),
                         `customValueName` = VALUES(`customValueName`),
                         `customValueObjective` = VALUES(`customValueObjective`),
-                        `isGroupable` = VALUES(`isGroupable`);',
-                'iissii',
+                        `isGroupable` = VALUES(`isGroupable`),
+                        `noGraph` = VALUES(`noGraph`);',
+                'iissiii',
                 array(
                     $schemaIDNew,
                     $i,
                     htmlentities($_POST['cgv_display' . $i]),
                     htmlentities($_POST['cgv_name' . $i]),
                     $_POST['cgv_objective' . $i],
-                    $_POST['cgv_isgroupable' . $i]
+                    $_POST['cgv_isgroupable' . $i],
+                    $_POST['cgv_graph' . $i]
                 )
             );
 
@@ -157,6 +164,10 @@ try {
                 throw new Exception("Invalid or missing isGroupable for custom Player Value $i!");
             }
 
+            if (!isset($_POST['cpv_graph' . $i]) || !is_numeric($_POST['cpv_graph' . $i])) {
+                throw new Exception("Invalid or missing isGraph for custom Player Value $i!");
+            }
+
             $insertSQL = $db->q(
                 'INSERT INTO `s2_mod_custom_schema_fields`
                       (
@@ -166,22 +177,25 @@ try {
                         `customValueDisplay`,
                         `customValueName`,
                         `customValueObjective`,
-                        `isGroupable`
+                        `isGroupable`,
+                        `noGraph`
                       )
-                    VALUES (?, ?, 2, ?, ?, ?, ?)
+                    VALUES (?, ?, 2, ?, ?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE
                         `customValueDisplay` = VALUES(`customValueDisplay`),
                         `customValueName` = VALUES(`customValueName`),
                         `customValueObjective` = VALUES(`customValueObjective`),
-                        `isGroupable` = VALUES(`isGroupable`);',
-                'iissii',
+                        `isGroupable` = VALUES(`isGroupable`),
+                        `noGraph` = VALUES(`noGraph`);',
+                'iissiii',
                 array(
                     $schemaIDNew,
                     $i,
                     htmlentities($_POST['cpv_display' . $i]),
                     htmlentities($_POST['cpv_name' . $i]),
                     $_POST['cpv_objective' . $i],
-                    $_POST['cpv_isgroupable' . $i]
+                    $_POST['cpv_isgroupable' . $i],
+                    $_POST['cpv_graph' . $i]
                 )
             );
 

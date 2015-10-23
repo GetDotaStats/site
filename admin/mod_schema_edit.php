@@ -80,6 +80,7 @@ try {
                     s2mcsf.`fieldOrder`,
                     s2mcsf.`customValueObjective`,
                     s2mcsf.`isGroupable`,
+                    s2mcsf.`noGraph`,
                     s2mcsf.`customValueDisplay`,
                     s2mcsf.`customValueName`
                 FROM `s2_mod_custom_schema_fields` s2mcsf
@@ -96,6 +97,7 @@ try {
                     s2mcsf.`fieldOrder`,
                     s2mcsf.`customValueObjective`,
                     s2mcsf.`isGroupable`,
+                    s2mcsf.`noGraph`,
                     s2mcsf.`customValueDisplay`,
                     s2mcsf.`customValueName`
                 FROM `s2_mod_custom_schema_fields` s2mcsf
@@ -626,11 +628,16 @@ try {
                         <input type="radio" name="cgv_objective" value="3" checked>Info
                     </div>
 
-                    <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
                     <div class="col-md-2">
                         <input type="radio" name="cgv_isgroupable" value="1">Yes<br />
                         <input type="radio" name="cgv_isgroupable" value="0" checked>No
+                    </div>
+
+                    <div class="col-md-1">Graph<br /><span class="glyphicon glyphicon-question-sign" title="Select `no` if there is going to be too many unique values"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_graph" value="0" checked>Yes<br />
+                        <input type="radio" name="cgv_graph" value="1">No
                     </div>
                 </div>';
     }
@@ -658,11 +665,16 @@ try {
                         <input type="radio" name="cpv_objective" value="3" checked>Info
                     </div>
 
-                    <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
                     <div class="col-md-2">
                         <input type="radio" name="cpv_isgroupable" value="1">Yes<br />
                         <input type="radio" name="cpv_isgroupable" value="0" checked>No
+                    </div>
+
+                    <div class="col-md-1">Graph<br /><span class="glyphicon glyphicon-question-sign" title="Select `no` if there is going to be too many unique values"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_graph" value="0" checked>Yes<br />
+                        <input type="radio" name="cpv_graph" value="1">No
                     </div>
                 </div>';
     }
@@ -691,6 +703,7 @@ try {
             $modCustomName = $selectedSchemaGameFields[$i - 1]['customValueName'];
             $modCustomObjective = $selectedSchemaGameFields[$i - 1]['customValueObjective'];
             $isGroupable = $selectedSchemaGameFields[$i - 1]['isGroupable'];
+            $isGraph = $selectedSchemaGameFields[$i - 1]['noGraph'];
 
             $modCustomDisplay_value = ' value="' . $modCustomDisplay . '"';
             $modCustomDisplay_class = ' formBackgroundGreen';
@@ -703,6 +716,7 @@ try {
             $modCustomName_class = '';
             $modCustomObjective = NULL;
             $isGroupable = NULL;
+            $isGraph = NULL;
         }
 
         echo '<div class="row">
@@ -724,11 +738,16 @@ try {
                         <input type="radio" name="cgv_objective' . $i . '" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
                     </div>
 
-                    <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
                     <div class="col-md-2">
                         <input type="radio" name="cgv_isgroupable' . $i . '" value="1"' . ((!empty($isGroupable) && $isGroupable == 1) ? ' checked' : '') . '>Yes<br />
                         <input type="radio" name="cgv_isgroupable' . $i . '" value="0"' . (empty($isGroupable) ? ' checked' : '') . '>No
+                    </div>
+
+                    <div class="col-md-1">Graph<br /><span class="glyphicon glyphicon-question-sign" title="Select `no` if there is going to be too many unique values"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_graph' . $i . '" value="0"' . (empty($isGraph) ? ' checked' : '') . '>Yes<br />
+                        <input type="radio" name="cgv_graph' . $i . '" value="1"' . ((!empty($isGraph) && $isGraph == 1) ? ' checked' : '') . '>No
                     </div>
                 </div>';
 
@@ -777,8 +796,13 @@ try {
                         <input type="radio" value="3" checked disabled>Info
                     </div>
 
-                    <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Groupable</div>
+                    <div class="col-md-2">
+                        <input type="radio" value="1" disabled>Yes<br />
+                        <input type="radio" value="0" checked disabled>No
+                    </div>
+
+                    <div class="col-md-1">Graph</div>
                     <div class="col-md-2">
                         <input type="radio" value="1" disabled>Yes<br />
                         <input type="radio" value="0" checked disabled>No
@@ -797,6 +821,7 @@ try {
             $modCustomName = $selectedSchemaPlayerFields[$i - 1]['customValueName'];
             $modCustomObjective = $selectedSchemaPlayerFields[$i - 1]['customValueObjective'];
             $isGroupable = $selectedSchemaPlayerFields[$i - 1]['isGroupable'];
+            $isGraph = $selectedSchemaPlayerFields[$i - 1]['noGraph'];
 
             $modCustomDisplay_value = ' value="' . $modCustomDisplay . '"';
             $modCustomDisplay_class = ' formBackgroundGreen';
@@ -809,6 +834,7 @@ try {
             $modCustomName_class = '';
             $modCustomObjective = NULL;
             $isGroupable = NULL;
+            $isGraph = NULL;
         }
 
         echo '<div class="row">
@@ -830,11 +856,16 @@ try {
                         <input type="radio" name="cpv_objective' . $i . '" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
                     </div>
 
-                    <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
                     <div class="col-md-2">
                         <input type="radio" name="cpv_isgroupable' . $i . '" value="1"' . ((!empty($isGroupable) && $isGroupable == 1) ? ' checked' : '') . '>Yes<br />
                         <input type="radio" name="cpv_isgroupable' . $i . '" value="0"' . (empty($isGroupable) ? ' checked' : '') . '>No
+                    </div>
+
+                    <div class="col-md-1">Graph<br /><span class="glyphicon glyphicon-question-sign" title="Select `no` if there is going to be too many unique values"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_graph' . $i . '" value="0"' . (empty($isGraph) ? ' checked' : '') . '>Yes<br />
+                        <input type="radio" name="cpv_graph' . $i . '" value="1"' . ((!empty($isGraph) && $isGraph == 1) ? ' checked' : '') . '>No
                     </div>
                 </div>';
 

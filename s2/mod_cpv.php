@@ -65,7 +65,7 @@ try {
                           `fieldOrder`,
                           `customValueDisplay`
                         FROM `s2_mod_custom_schema_fields`
-                        WHERE `fieldType` = 2 AND `schemaID` = ? AND `isBar` = 0
+                        WHERE `fieldType` = 2 AND `schemaID` = ? AND `noGraph` = 0
                     ) s2mcsf ON s2mcsf.`fieldOrder` = ccpv.`fieldOrder`
                     WHERE ccpv.`modID` = ?
                     ORDER BY ccpv.`modID`, ccpv.`fieldOrder`, ccpv.`fieldValue`;',
