@@ -30,11 +30,13 @@ try {
         'SELECT
                 ml.*,
                 gu.`user_name`,
-                gu.`user_avatar`
+                gu.`user_avatar`,
+
+                (SELECT COUNT(*) FROM `cache_mod_matches` cmm WHERE cmm.`modID` = ml.`mod_id` AND cmm.`dateRecorded` >= NOW() - INTERVAL 7 DAY) AS `games_last_week`
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` <> 1 AND ml.`mod_rejected` = 1
-            ORDER BY ml.date_recorded DESC;'
+            ORDER BY `games_last_week` DESC, ml.date_recorded DESC;'
     );
 
     if (empty($modList)) {
@@ -81,6 +83,15 @@ try {
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
+
+        echo '<div class="row">
+                <div class="col-sm-2">&nbsp;</div>
+                <div class="col-sm-2"><strong>Games (LW):</strong></div>
+                <div class="col-sm-8">' . number_format($value['games_last_week']) . '</div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
 
         echo '<div class="row">
                 <div class="col-sm-2">&nbsp;</div>

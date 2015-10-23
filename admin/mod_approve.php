@@ -23,15 +23,21 @@ try {
     echo '<p>This form allows admins to edit and approve custom games submitted to the site.</p>';
     echo '<hr />';
 
-    $modList = $db->q(
+    $modList = cached_query(
+        'admin_mod_approve_mod_list',
         'SELECT
                 ml.*,
                 gu.`user_name`,
-                gu.`user_avatar`
+                gu.`user_avatar`,
+
+                (SELECT COUNT(*) FROM `cache_mod_matches` cmm WHERE cmm.`modID` = ml.`mod_id` AND cmm.`dateRecorded` >= NOW() - INTERVAL 7 DAY) AS `games_last_week`
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` <> 1 AND ml.`mod_rejected` <> 1
-            ORDER BY ml.date_recorded DESC;'
+            ORDER BY `games_last_week` DESC, ml.date_recorded DESC;',
+        NULL,
+        NULL,
+        15
     );
 
     if (empty($modList)) {
@@ -41,9 +47,7 @@ try {
     foreach ($modList as $key => $value) {
         echo '<form id="modApprove' . $key . '">';
 
-        $modIDfield = !empty($value['mod_identifier'])
-            ? '<input class="formTextArea boxsizingBorder" type="text" value="' . $value['mod_identifier'] . '" disabled>'
-            : '<input class="formTextArea boxsizingBorder" type="text" value="UNKNOWN" disabled>';
+        $modIDlink = "<a class='nav-clickable' href='#s2__mod?id={$value['mod_id']}'>{$value['mod_identifier']}</a>";
 
         $modGroup = !empty($value['mod_steam_group'])
             ? '<input class="formTextArea boxsizingBorder" name="modGroup" type="text" maxlength="70" value="' . $value['mod_steam_group'] . '">'
@@ -76,10 +80,13 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
-         echo '<div class="row">
+        echo '<input type="hidden" value="' . $value['mod_identifier'] . '">';
+
+        echo '<div class="row">
                 <div class="col-md-1"><span class="h4">ID</span></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The identifier for this custom game"></span></div>
-                <div class="col-md-6">' . $modIDfield . '</div>
+                <div class="col-md-4">' . $modIDlink . '</div>
+                <div class="col-md-2"><strong>Games (LW):</strong> ' . number_format($value['games_last_week']) . '</div>
 
                 <div class="col-md-1"><span class="h4">Links</span></div>
                 <div class="col-md-3">' . $workshopLink . ' || ' . $steamGroupLink . '</div>
