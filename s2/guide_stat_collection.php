@@ -217,7 +217,11 @@ if (!isset($_SESSION)) {
 
 <dl>
     <dt>It's not working!</dt>
-    <dd>Look in your console log, and do a search for lines starting with "Stat Collection:"</dd>
+    <dd>
+        <ul>
+            <li>Look in your console log, and do a search for lines starting with "Stat Collection:"</li>
+        </ul>
+    </dd>
 
     <dt>My Mod Stats (Stage 2) stopped working!</dt>
     <dd>
@@ -240,6 +244,15 @@ if (!isset($_SESSION)) {
         <ul>
             <li>Have a look in your console log for an error.</li>
             <li>Check your win conditions. We hook SetGameWinner(), so make sure you don't use MakeTeamLose().</li>
+        </ul>
+    </dd>
+
+    <dt>I am in despair! Help me!</dt>
+    <dd>
+        <ul>
+            <li>Contact us via one of our numerous channels of contact. You can find the <a class="nav-clickable"
+                                                                                            href="#site__contact">official
+                    list here</a></li>
         </ul>
     </dd>
 </dl>
