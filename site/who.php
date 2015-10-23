@@ -46,6 +46,15 @@ try {
         ),
         array(
             'roles' => array(
+                'Head of Sustainability and Innovation',
+                'Principal Design Architect',
+                'Resident Games Design Expert',
+                'Resident Memester',
+            ),
+            'users' => array('76561198046984233'), //Noya
+        ),
+        array(
+            'roles' => array(
                 'Head of Research and Technology Development',
                 'Resident Games Design Expert',
                 'Resident Memester',
