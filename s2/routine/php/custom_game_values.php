@@ -388,7 +388,7 @@ try {
     echo '<strong>Total Run Time:</strong> ' . ($time_end2 - $time_start2) . " seconds<br /><br />";
 
     try {
-        $serviceName = 's2_cron_cpv';
+        $serviceName = 's2_cron_cgv';
 
         $oldServiceReport = cached_query(
             $serviceName . '_old_service_report',
@@ -450,7 +450,7 @@ try {
                 ),
                 array(
                     $irc_message->colour_generator('green'),
-                    '[CPV]',
+                    '[CGV]',
                     $irc_message->colour_generator(NULL),
                 ),
                 array(
