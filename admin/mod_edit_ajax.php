@@ -22,12 +22,9 @@ try {
     if (
         empty($_POST['modID']) ||
         empty($_POST['modName']) ||
-        empty($_POST['modMaps']) || $_POST['modMaps'] == 'One map per line' ||
         empty($_POST['modDescription']) ||
         empty($_POST['modWorkshop']) ||
-        !isset($_POST['modActive']) || !is_numeric($_POST['modActive']) ||
-        !isset($_POST['modMaxPlayers']) || !is_numeric($_POST['modMaxPlayers']) ||
-        !isset($_POST['modOptionsActive']) || !is_numeric($_POST['modOptionsActive'])
+        !isset($_POST['modActive']) || !is_numeric($_POST['modActive'])
     ) {
         throw new Exception('Missing or invalid required parameter(s)!');
     }
@@ -38,22 +35,8 @@ try {
     $modGroup = !empty($_POST['modGroup'])
         ? htmlentities($_POST['modGroup'])
         : NULL;
-    $modMaps = json_encode(array_map('trim', explode("\n", htmlentities($_POST['modMaps']))));
     $modWorkshop = htmlentities($_POST['modWorkshop']);
-    $modMaxPlayers = htmlentities($_POST['modMaxPlayers']);
-    $modOptions = !empty($_POST['modOptions'])
-        ? $_POST['modOptions']
-        : NULL;
     $modActive = $_POST['modActive'];
-    $modOptionsActive = $_POST['modOptionsActive'];
-
-    if(!empty($modOptions) && empty(json_decode($modOptions))){
-        throw new Exception('Bad JSON given in `Options`!');
-    }
-
-    if($modOptionsActive == '1' && empty($modOptions)){
-        throw new Exception('Can\'t activate options without `Options` field populated!');
-    }
 
     $insertSQL = $db->q(
         'UPDATE `mod_list`
@@ -62,14 +45,10 @@ try {
             `mod_name` = ?,
             `mod_description` = ?,
             `mod_steam_group` = ?,
-            `mod_maps` = ?,
-            `mod_max_players` = ?,
-            `mod_workshop_link` = ?,
-            `mod_options` = ?,
-            `mod_options_enabled` = ?
+            `mod_workshop_link` = ?
           WHERE `mod_id` = ?;',
-        'issssissis',
-        $modActive, $modName, $modDescription, $modGroup, $modMaps, $modMaxPlayers, $modWorkshop, $modOptions, $modOptionsActive, $modID
+        'issssi',
+        $modActive, $modName, $modDescription, $modGroup, $modWorkshop, $modID
     );
 
     if ($insertSQL) {
