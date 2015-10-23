@@ -119,8 +119,12 @@ try {
         if (!empty($_POST['cgv_display' . $i]) && !empty($_POST['cgv_name' . $i])) {
             //Custom Game Values check and insert
 
-            if (empty($_POST['cgv_objective' . $i])) {
-                throw new Exception("Missing objective for custom Game Value $i!");
+            if (empty($_POST['cgv_objective' . $i]) || !is_numeric($_POST['cgv_objective' . $i])) {
+                throw new Exception("Invalid or missing objective for custom Game Value $i!");
+            }
+
+            if (!isset($_POST['cgv_isgroupable' . $i]) || !is_numeric($_POST['cgv_isgroupable' . $i])) {
+                throw new Exception("Invalid or missing isGroupable for custom Game Value $i!");
             }
 
             $insertSQL = $db->q(
@@ -131,16 +135,18 @@ try {
                         `fieldType`,
                         `customValueDisplay`,
                         `customValueName`,
-                        `customValueObjective`
+                        `customValueObjective`,
+                        `isGroupable`
                       )
-                    VALUES (?, ?, 1, ?, ?, ?);',
-                'iissi',
+                    VALUES (?, ?, 1, ?, ?, ?, ?);',
+                'iissii',
                 array(
                     $schemaID,
                     $i,
                     htmlentities($_POST['cgv_display' . $i]),
                     htmlentities($_POST['cgv_name' . $i]),
-                    htmlentities($_POST['cgv_objective' . $i])
+                    $_POST['cgv_objective' . $i],
+                    $_POST['cgv_isgroupable' . $i]
                 )
             );
 
@@ -154,8 +160,12 @@ try {
         if (!empty($_POST['cpv_display' . $i]) && !empty($_POST['cpv_name' . $i])) {
             //Custom Player Values check and insert
 
-            if (empty($_POST['cpv_objective' . $i])) {
-                throw new Exception("Missing objective for custom Player Value $i!");
+            if (empty($_POST['cpv_objective' . $i]) || !is_numeric($_POST['cpv_objective' . $i])) {
+                throw new Exception("Invalid or missing objective for custom Player Value $i!");
+            }
+
+            if (!isset($_POST['cpv_isgroupable' . $i]) || !is_numeric($_POST['cpv_isgroupable' . $i])) {
+                throw new Exception("Invalid or missing isGroupable for custom Player Value $i!");
             }
 
             $insertSQL = $db->q(
@@ -166,16 +176,18 @@ try {
                         `fieldType`,
                         `customValueDisplay`,
                         `customValueName`,
-                        `customValueObjective`
+                        `customValueObjective`,
+                        `isGroupable`
                       )
-                    VALUES (?, ?, 2, ?, ?, ?);',
-                'iissi',
+                    VALUES (?, ?, 2, ?, ?, ?, ?);',
+                'iissii',
                 array(
                     $schemaID,
                     $i,
                     htmlentities($_POST['cpv_display' . $i]),
                     htmlentities($_POST['cpv_name' . $i]),
-                    htmlentities($_POST['cpv_objective' . $i])
+                    $_POST['cpv_objective' . $i],
+                    $_POST['cpv_isgroupable' . $i]
                 )
             );
 

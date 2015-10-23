@@ -79,6 +79,7 @@ try {
             'SELECT
                     s2mcsf.`fieldOrder`,
                     s2mcsf.`customValueObjective`,
+                    s2mcsf.`isGroupable`,
                     s2mcsf.`customValueDisplay`,
                     s2mcsf.`customValueName`
                 FROM `s2_mod_custom_schema_fields` s2mcsf
@@ -94,6 +95,7 @@ try {
             'SELECT
                     s2mcsf.`fieldOrder`,
                     s2mcsf.`customValueObjective`,
+                    s2mcsf.`isGroupable`,
                     s2mcsf.`customValueDisplay`,
                     s2mcsf.`customValueName`
                 FROM `s2_mod_custom_schema_fields` s2mcsf
@@ -623,6 +625,13 @@ try {
                         <input type="radio" name="cgv_objective" value="2">Maximise<br />
                         <input type="radio" name="cgv_objective" value="3" checked>Info
                     </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_isgroupable" value="1">Yes<br />
+                        <input type="radio" name="cgv_isgroupable" value="0" checked>No
+                    </div>
                 </div>';
     }
     echo '</div>';
@@ -647,6 +656,13 @@ try {
                         <input type="radio" name="cpv_objective" value="1">Minimise<br />
                         <input type="radio" name="cpv_objective" value="2">Maximise<br />
                         <input type="radio" name="cpv_objective" value="3" checked>Info
+                    </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_isgroupable" value="1">Yes<br />
+                        <input type="radio" name="cpv_isgroupable" value="0" checked>No
                     </div>
                 </div>';
     }
@@ -674,6 +690,7 @@ try {
             $modCustomDisplay = $selectedSchemaGameFields[$i - 1]['customValueDisplay'];
             $modCustomName = $selectedSchemaGameFields[$i - 1]['customValueName'];
             $modCustomObjective = $selectedSchemaGameFields[$i - 1]['customValueObjective'];
+            $isGroupable = $selectedSchemaGameFields[$i - 1]['isGroupable'];
 
             $modCustomDisplay_value = ' value="' . $modCustomDisplay . '"';
             $modCustomDisplay_class = ' formBackgroundGreen';
@@ -685,6 +702,7 @@ try {
             $modCustomName_value = '';
             $modCustomName_class = '';
             $modCustomObjective = NULL;
+            $isGroupable = NULL;
         }
 
         echo '<div class="row">
@@ -704,6 +722,13 @@ try {
                         <input type="radio" name="cgv_objective' . $i . '" value="1"' . ((!empty($modCustomObjective) && $modCustomObjective == 1) ? ' checked' : '') . '>Minimise<br />
                         <input type="radio" name="cgv_objective' . $i . '" value="2"' . ((!empty($modCustomObjective) && $modCustomObjective == 2) ? ' checked' : '') . '>Maximise<br />
                         <input type="radio" name="cgv_objective' . $i . '" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
+                    </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_isgroupable' . $i . '" value="1"' . ((!empty($isGroupable) && $isGroupable == 1) ? ' checked' : '') . '>Yes<br />
+                        <input type="radio" name="cgv_isgroupable' . $i . '" value="0"' . (empty($isGroupable) ? ' checked' : '') . '>No
                     </div>
                 </div>';
 
@@ -731,6 +756,38 @@ try {
 
     echo '<span class="h5">&nbsp;</span>';
 
+    //SteamID32 default
+    {
+        echo '<div class="row">
+                    <div class="col-md-1"><span class="h4">#0</span></div>
+                    <div class="col-md-1">Display</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder formBackgroundGreen" type="text" value="User ID" disabled></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Name</div>
+                    <div class="col-md-6"><input class="formTextArea boxsizingBorder formBackgroundGreen" type="text" value="steamID32" disabled></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Objective</div>
+                    <div class="col-md-2">
+                        <input type="radio" value="1" disabled>Minimise<br />
+                        <input type="radio" value="2" disabled>Maximise<br />
+                        <input type="radio" value="3" checked disabled>Info
+                    </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable</div>
+                    <div class="col-md-2">
+                        <input type="radio" value="1" disabled>Yes<br />
+                        <input type="radio" value="0" checked disabled>No
+                    </div>
+                </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
+    }
+
     $modSchemaEditPlayerFields = !empty($selectedSchemaPlayerFields) && count($selectedSchemaPlayerFields)
         ? count($selectedSchemaPlayerFields)
         : 1;
@@ -739,6 +796,7 @@ try {
             $modCustomDisplay = $selectedSchemaPlayerFields[$i - 1]['customValueDisplay'];
             $modCustomName = $selectedSchemaPlayerFields[$i - 1]['customValueName'];
             $modCustomObjective = $selectedSchemaPlayerFields[$i - 1]['customValueObjective'];
+            $isGroupable = $selectedSchemaPlayerFields[$i - 1]['isGroupable'];
 
             $modCustomDisplay_value = ' value="' . $modCustomDisplay . '"';
             $modCustomDisplay_class = ' formBackgroundGreen';
@@ -750,6 +808,7 @@ try {
             $modCustomName_value = '';
             $modCustomName_class = '';
             $modCustomObjective = NULL;
+            $isGroupable = NULL;
         }
 
         echo '<div class="row">
@@ -769,6 +828,13 @@ try {
                         <input type="radio" name="cpv_objective' . $i . '" value="1"' . ((!empty($modCustomObjective) && $modCustomObjective == 1) ? ' checked' : '') . '>Minimise<br />
                         <input type="radio" name="cpv_objective' . $i . '" value="2"' . ((!empty($modCustomObjective) && $modCustomObjective == 2) ? ' checked' : '') . '>Maximise<br />
                         <input type="radio" name="cpv_objective' . $i . '" value="3"' . ((empty($modCustomObjective) || $modCustomObjective == 3) ? ' checked' : '') . '>Info
+                    </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_isgroupable' . $i . '" value="1"' . ((!empty($isGroupable) && $isGroupable == 1) ? ' checked' : '') . '>Yes<br />
+                        <input type="radio" name="cpv_isgroupable' . $i . '" value="0"' . (empty($isGroupable) ? ' checked' : '') . '>No
                     </div>
                 </div>';
 

@@ -57,6 +57,13 @@ try {
                         <input type="radio" name="cgv_objective" value="2">Maximise<br />
                         <input type="radio" name="cgv_objective" value="3" checked>Info
                     </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cgv_isgroupable" value="1">Yes<br />
+                        <input type="radio" name="cgv_isgroupable" value="0" checked>No
+                    </div>
                 </div>';
         echo '<span class="h5">&nbsp;</span>';
     }
@@ -82,6 +89,13 @@ try {
                         <input type="radio" name="cpv_objective" value="1">Minimise<br />
                         <input type="radio" name="cpv_objective" value="2">Maximise<br />
                         <input type="radio" name="cpv_objective" value="3" checked>Info
+                    </div>
+
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-2">
+                        <input type="radio" name="cpv_isgroupable" value="1">Yes<br />
+                        <input type="radio" name="cpv_isgroupable" value="0" checked>No
                     </div>
                 </div>';
     }
