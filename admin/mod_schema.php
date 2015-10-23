@@ -228,13 +228,14 @@ try {
             LEFT JOIN `gds_users` gdsu
                 ON ml.`steam_id64` = gdsu.`user_id64`
             WHERE s2mcs.`schemaRejected` = 1
-            ORDER BY s2mcs.`dateRecorded` DESC;',
+            ORDER BY s2mcs.`dateRecorded` DESC
+            LIMIT 0,10;',
         NULL,
         NULL,
         5
     );
 
-    echo '<h2>Rejected Mod Schemas</h2>';
+    echo '<h2>Rejected Mod Schemas <small>Last 10</small></h2>';
 
     if (!empty($modCustomSchemaList)) {
         echo '<div class="row">
