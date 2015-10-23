@@ -87,6 +87,48 @@ try {
                 </div>
             </div>';
 
+    $clientDetailsPanel = '';
+    if (!empty($_SESSION['user_id64'])) {
+        //if admin, show modIdentifier too
+        $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
+        if (!empty($adminCheck)) {
+            $clientDetails = cached_query(
+                's2_client_details' . $matchID,
+                'SELECT
+                      `matchID`,
+                      `modID`,
+                      `steamID32`,
+                      `steamID64`,
+                      `clientIP`,
+                      `isHost`,
+                      `dateRecorded`
+                    FROM `s2_match_client_details`
+                    WHERE `matchID` = ?;',
+                's',
+                $matchID,
+                5
+            );
+
+            if (!empty($clientDetails)) {
+                $clientArray = array();
+                foreach ($clientDetails as $key => $value) {
+                    $clientIPvalue = $value['clientIP'];
+                    $clientIPvalue .= $value['isHost'] == 1
+                        ? ' (HOST)'
+                        : '';
+
+                    $clientArray[] = $clientIPvalue;
+                }
+
+                $clientDetailsPanel = implode('<br />', $clientArray);
+                $clientDetailsPanel = "<div class='row mod_info_panel'>
+                        <div class='col-sm-3'><strong>Client IPs</strong></div>
+                        <div class='col-sm-9'>{$clientDetailsPanel}</div>
+                    </div>";
+            }
+        }
+    }
+
     echo '<div id="mod_info" class="collapse col-sm-7">
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Links</strong></div>
@@ -95,7 +137,7 @@ try {
                 <div class="row mod_info_panel">
                     <div class="col-sm-3"><strong>Description</strong></div>
                     <div class="col-sm-9">' . $matchDetails[0]['mod_description'] . '</div>
-                </div>
+                </div>' . $clientDetailsPanel . '
            </div>';
     echo '</div>';
 
