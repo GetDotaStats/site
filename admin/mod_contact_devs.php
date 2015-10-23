@@ -186,6 +186,92 @@ try {
 
     echo '<hr />';
 
+    echo '<hr />';
+
+    /////////////////////////////
+    // UNAPPROVED MODS
+    /////////////////////////////
+    try {
+        echo '<h3>Unapproved Mods</h3>';
+
+        $contactList = cached_query(
+            'admin_contact_devs_inactive',
+            'SELECT
+                    ml.`mod_id`,
+                    ml.`steam_id64`,
+                    ml.`mod_identifier`,
+                    ml.`mod_name`,
+                    ml.`mod_description`,
+                    ml.`mod_workshop_link`,
+                    ml.`mod_steam_group`,
+
+                    guo.`user_email`,
+                    guo.`sub_dev_news`,
+                    guo.`date_updated` AS date_email_updated,
+
+                    gu.`user_name`,
+                    gu.`user_avatar`
+                FROM `mod_list` ml
+                JOIN `gds_users_options` guo ON ml.`steam_id64` = guo.`user_id64`
+                LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+                WHERE ml.`mod_active` = 0
+                ORDER BY ml.`mod_id` DESC;'
+        );
+
+        if (empty($contactList)) throw new Exception('No contact details available for unapproved mods!');
+
+        echo '<div class="row">
+                <div class="col-md-3"><strong>Mod</strong></div>
+                <div class="col-md-4"><strong>Developer</strong></div>
+                <div class="col-md-3"><strong>Email</strong></div>
+                <div class="col-md-2"><strong>Updated</strong></div>
+            </div>';
+
+        echo '<span class="h4">&nbsp;</span>';
+
+        $combinedEmails = array();
+        foreach ($contactList as $key => $value) {
+            $combinedEmails[] = $value['user_email'];
+
+            $user_name_raw = !empty($value['user_name'])
+                ? $value['user_name']
+                : '???';
+            $user_id_raw = $value['steam_id64'];
+            $user_name = "<a class='nav-clickable' href='#s2__user?id={$user_id_raw}'>{$user_name_raw}</a>";
+
+            $user_avatar_raw = !empty($value['user_avatar'])
+                ? $value['user_avatar']
+                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
+            $user_avatar = "<img src='{$user_avatar_raw}' alt='user steamcommunity avatar' width='16' height='16' />";
+            $user_avatar = "<a target='_blank' href='https://steamcommunity.com/profiles/{$user_id_raw}'>{$user_avatar}</a>";
+
+            $developer = $user_avatar . ' ' . $user_name;
+
+            $modName = $value['mod_name'];
+            $userEmail = $value['user_email'];
+            $dateEmailUpdated = relative_time_v3($value['date_email_updated']);
+
+            echo "<div class='row'>
+                <div class='col-md-3'>{$modName}</div>
+                <div class='col-md-4'>{$developer}</div>
+                <div class='col-md-3'>{$userEmail}</div>
+                <div class='col-md-2 text-right'>{$dateEmailUpdated}</div>
+            </div>";
+
+            echo '<span class="h5">&nbsp;</span>';
+        }
+
+        $combinedEmails = implode('; ', $combinedEmails);
+
+        echo "<div class='row'>
+                <div class='col-md-12'><textarea class='formTextArea boxsizingBorder' rows='3'>$combinedEmails</textarea></div>
+            </div>";
+
+        echo '<span class="h4">&nbsp;</span>';
+    } catch (Exception $e) {
+        echo formatExceptionHandling($e);
+    }
+
     echo '<span class="h4">&nbsp;</span>';
 
 } catch (Exception $e) {
