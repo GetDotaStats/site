@@ -54,7 +54,7 @@ try {
                       ml.`mod_workshop_link`
                     FROM `s2_match` s2
                     JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
-                    WHERE s2.`modID` = ? AND s2.`matchPhaseID` = 3
+                    WHERE s2.`modID` = ?
                     ORDER BY s2.`dateRecorded` DESC
                     LIMIT 0,15;',
                 'i',
