@@ -82,11 +82,12 @@ try {
 
     echo '<h2>Mod Directory</h2>';
 
+    echo '<p>Download all of the mods below by <a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=537809143">subscribing to our collection <span class="glyphicon glyphicon-new-window"></span></a>.</p>';
+
     //FEATURE REQUEST
     echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
         see on this page, please let us know by making a post per feature on this page\'s
         <a target="_blank" href="https://github.com/GetDotaStats/site/issues/165">issue</a>.</div>';
-
 
     echo '<span class="h4">&nbsp;</span>';
 
