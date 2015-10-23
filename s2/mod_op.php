@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>OP Custom Player Values</h3>';
 
-            echo '<p>Breakdown of top 20 custom player value combos, per player value, sorted by winrate for all games played in the last week. Calculated hourly.</p>';
+            echo '<p>Breakdown of top 30 custom player value combos, per player value, sorted by winrate for all games played in the last week. Calculated hourly.</p>';
 
             $schemaIDtoUse = $db->q(
                 'SELECT
@@ -79,8 +79,8 @@ try {
                           (ccpv.`numWins` / ccpv.`numGames`) AS winrate
                         FROM `cache_custom_player_values` ccpv
                         WHERE ccpv.`modID` = ? AND ccpv.`fieldOrder` = ?
-                        ORDER BY winrate DESC
-                        LIMIT 0,20;',
+                        ORDER BY winrate DESC, ccpv.`numGames` DESC
+                        LIMIT 0,30;',
                     'ii',
                     array($modID, $fieldID),
                     1
@@ -91,7 +91,7 @@ try {
                 if (empty($customPlayerValues)) throw new Exception('No custom player values recorded for this mod!');
 
                 echo '<div class="row">
-                            <div class="col-md-3"><strong>Value</strong></div>
+                            <div class="col-md-9"><strong>Value</strong></div>
                             <div class="col-md-1"><strong>Winrate</strong></div>
                             <div class="col-md-1"><strong>Wins</strong></div>
                             <div class="col-md-1"><strong>Players</strong></div>
@@ -106,7 +106,7 @@ try {
                     $numGames = number_format($value2['numGames']);
 
                     echo "<div class='row'>
-                            <div class='col-md-3'>{$fieldValue}</div>
+                            <div class='col-md-9'><div>{$fieldValue}</div></div>
                             <div class='col-md-1 text-right'>{$winrate}%</div>
                             <div class='col-md-1 text-right'>{$numWins}</div>
                             <div class='col-md-1 text-right'>{$numGames}</div>
