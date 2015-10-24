@@ -32,7 +32,7 @@ try {
                 gu.`user_name`,
                 gu.`user_avatar`,
 
-                (SELECT COUNT(*) FROM `cache_mod_matches` cmm WHERE cmm.`modID` = ml.`mod_id` AND cmm.`dateRecorded` >= NOW() - INTERVAL 7 DAY) AS `games_last_week`
+                (SELECT SUM(`gamesPlayed`) FROM `cache_mod_matches` WHERE `modID` = ml.`mod_id` AND `gamePhase` = 3 AND `dateRecorded` >= NOW() - INTERVAL 7 DAY) AS `games_last_week`
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` <> 1 AND ml.`mod_rejected` = 1

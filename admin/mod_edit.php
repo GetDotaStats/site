@@ -28,11 +28,12 @@ try {
                 ml.*,
                 gu.`user_name`,
                 gu.`user_avatar`,
-                (SELECT COUNT(*) FROM `s2_match` WHERE `modID` = ml.`mod_identifier`) as games_recorded
+
+                (SELECT SUM(`gamesPlayed`) FROM `cache_mod_matches` WHERE `modID` = ml.`mod_id` AND `gamePhase` = 3 AND `dateRecorded` >= NOW() - INTERVAL 7 DAY) AS `games_last_week`
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` = 1
-            ORDER BY games_recorded ASC, ml.date_recorded DESC;'
+            ORDER BY games_recorded ASC, ml.`date_recorded` DESC;'
     );
 
     if (empty($modList)) {
@@ -55,7 +56,7 @@ try {
             : '<input class="formTextArea boxsizingBorder" name="modWorkshop" type="text" maxlength="70" placeholder="XXXXX">';
 
         $modGroupLink = !empty($value['mod_steam_group'])
-            ? '</div><div class="col-md-2"><span class="h4">SG</span> <a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>'
+            ? '</div><div class="col-md-2"><strong>SG</strong> <a href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>'
             : '';
 
         $modWorkshopLink = !empty($value['mod_workshop_link'])
@@ -85,32 +86,32 @@ try {
             $modDeveloperAvatar = '<img width="20" height="20" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg"/>';
         }
 
-        $modGames = '<a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . number_format($value['games_recorded']) . '</a>';
+        $modGames = '<a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . number_format($value['games_last_week']) . '</a>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">Name</span></div>
+                <div class="col-md-1"><strong>Name</strong></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The name of the custom game"></span></div>
                 <div class="col-md-6"><input class="formTextArea boxsizingBorder" name="modName" type="text" maxlength="70" value="' . $value['mod_name'] . '" required></div>
 
-                <div class="col-md-1"><span class="h4">Games</span></div>
+                <div class="col-md-1"><strong>Games</strong></div>
                 <div class="col-md-3">' . $modGames . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">ID</span></div>
+                <div class="col-md-1"><strong>ID</strong></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The identifier for this custom game"></span></div>
                 <div class="col-md-6">' . $modID . '</div>
 
-                <div class="col-md-1"><span class="h4">Added</span></div>
+                <div class="col-md-1"><strong>Added</strong></div>
                 <div class="col-md-3">' . relative_time_v3($value['date_recorded']) . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">WS.ID</span></div>
+                <div class="col-md-1"><strong>WS.ID</strong></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The workshop ID for this custom game"></span></div>
                 <div class="col-md-6">' . $modWorkshop . '</div>
                 <div class="col-md-4">' . $modDeveloperAvatar . ' ' . $modDeveloper . '</div>
@@ -119,16 +120,16 @@ try {
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">Group</span></div>
+                <div class="col-md-1"><strong>Group</strong></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The steam group for this custom game, if applicable"></span></div>
                 <div class="col-md-6">' . $modGroup . '</div>
-                <div class="col-md-2"><span class="h4">WS</span> ' . $modWorkshopLink . $modGroupLink . '</div>
+                <div class="col-md-2"><strong>WS</strong> ' . $modWorkshopLink . $modGroupLink . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';
 
         echo '<div class="row">
-                <div class="col-md-1"><span class="h4">Desc.</span></div>
+                <div class="col-md-1"><strong>Desc.</strong></div>
                 <div class="col-md-1 text-center"><span class="glyphicon glyphicon-question-sign" title="The description for this custom game"></span></div>
                 <div class="col-md-10">' . $modDescription . '</div>
             </div>';
@@ -138,7 +139,7 @@ try {
         echo '<div class="row">
                 <div class="col-md-2">&nbsp;</div>
 
-                <div class="col-md-1"><span class="h4">Active</span></div>
+                <div class="col-md-1"><strong>Active</strong></div>
                 <div class="col-md-1">' . $modActive . '</div>
             </div>';
 
