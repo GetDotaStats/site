@@ -12,6 +12,25 @@ if (!isset($_SESSION)) {
 }
 
 try {
+    $filterTimeSpan = !empty($_GET['t']) && is_numeric($_GET['t'])
+        ? $_GET['t']
+        : -1;
+
+    switch ($filterTimeSpan) {
+        case 1:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 30 DAY ';
+            break;
+        case 2:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 60 DAY ';
+            break;
+        case 3:
+            $filterTimeSpanSQL = '';
+            break;
+        default:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 30 DAY ';
+            break;
+    }
+
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
@@ -20,18 +39,24 @@ try {
 
     echo '<h2>Aggregate Mod Analysis</h2>';
 
-    echo '<p>Just a simple line chart for now.</p>';
-
     //FEATURE REQUEST
     echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
         see on this page, please let us know by making a post per feature on this page\'s
         <a target="_blank" href="https://github.com/GetDotaStats/site/issues/174">issue</a>.</div>';
 
+    echo '<p>An overview of the total games played per mod per day over the selected timespan. By default only the last 30days are shown.</p>';
+
+    echo '<div class="text-center">
+                <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod_aggregate?t=1">Last 30 Days</a>
+                <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod_aggregate?t=2">Last 60 Days</a>
+                <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod_aggregate?t=3">All Time</a>
+           </div>';
+
     //////////////////
     //GAMES OVER TIME (ALL)
     //////////////////
     {
-        try{
+        try {
             $gamesOverTime = cached_query(
                 's2_mod_aggregate_page',
                 'SELECT
@@ -43,7 +68,7 @@ try {
                       MIN(cmm.`dateRecorded`) AS dateRecorded
                     FROM `cache_mod_matches` cmm
                     JOIN `mod_list` ml ON cmm.`modID` = ml.`mod_id`
-                    WHERE cmm.`gamePhase` = 3
+                    WHERE cmm.`gamePhase` = 3 ' . $filterTimeSpanSQL . '
                     GROUP BY 3,2,1,4;',
                 NULL,
                 NULL,
