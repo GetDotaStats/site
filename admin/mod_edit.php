@@ -33,7 +33,7 @@ try {
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` = 1
-            ORDER BY games_recorded ASC, ml.`date_recorded` DESC;'
+            ORDER BY `games_last_week` ASC, ml.`date_recorded` DESC;'
     );
 
     if (empty($modList)) {
