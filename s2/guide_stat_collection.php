@@ -23,7 +23,7 @@ if (!isset($_SESSION)) {
         by going straight to the <a class="nav-clickable" href="#s2__my__mod_request">registration form</a>.
     </li>
     <li>Go back to your list of mods by navigating to `<em>Custom Games -> Mods (My Section)</em>`, or
-        by going straight to the <a class="nav-clickable" href="##s2__my__mods">My Mods page</a>. You should now see a
+        by going straight to the <a class="nav-clickable" href="#s2__my__mods">My Mods page</a>. You should now see a
         new entry there, that matches the mod your just registered.
     </li>
     <li>Take note of your modID key of 32characters. If you lose this string, refer back to this page.</li>
