@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>Custom Game Values</h3>';
 
-            echo '<p>Breakdown of custom game values for all games played in the last week. Calculated hourly.</p>';
+            echo '<p>Breakdown of custom game values for all games played in the last week. Calculated hourly. Game values are arbitrary values that the mod assigns for the entire game or round.</p>';
 
             $schemaIDtoUse = $db->q(
                 'SELECT
@@ -114,7 +114,7 @@ try {
                 $pieChart = makePieChart(
                     $valueFinal,
                     'container_custom_game_value_' . $key,
-                    "Flag `{$key}`",
+                    "{$key}",
                     "{$numGames} matches had this value"
                 );
 

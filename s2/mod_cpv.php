@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>Custom Player Values</h3>';
 
-            echo '<p>Breakdown of custom player values for all games played in the last week. Calculated hourly.</p>';
+            echo '<p>Breakdown of custom player values for all games played in the last week. Calculated hourly. Player values are arbitrary values that the mod assigns per user at the end of the game or round.</p>';
 
             $schemaIDtoUse = $db->q(
                 'SELECT
@@ -79,7 +79,7 @@ try {
             $bigArray = array();
             $lastModID = -1;
             foreach ($customPlayerValues as $key => $value) {
-                if($value['fieldValue'] == '-1') continue;
+                if ($value['fieldValue'] == '-1') continue;
 
                 $numGames = !empty($value['numGames']) && is_numeric($value['numGames'])
                     ? intval($value['numGames'])
@@ -116,7 +116,7 @@ try {
                 $pieChart = makePieChart(
                     $valueFinal,
                     'container_custom_player_value_' . $key,
-                    "Flag `{$key}`",
+                    "{$key}",
                     "{$numGames} players had this value"
                 );
 
