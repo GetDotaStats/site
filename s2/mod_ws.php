@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>Workshop Stats</h3>';
 
-            echo '<p>Breakdown of workshop stats per day. Scraped every day.</p>';
+            echo '<p>Breakdown of workshop stats per day. Scraped twice a day, depending on availability of Steam webAPI.</p>';
 
             $modDetails = cached_query(
                 's2_mod_ws_mod_details' . $modID,

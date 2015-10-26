@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>Flags</h3>';
 
-            echo '<p>Breakdown of flags for all games played in the last week. Calculated hourly. Flags are arbitrary values that a mod assigns before the game starts.</p>';
+            echo '<p>Breakdown of flags for all games played in the last week. Calculated twice a day. Flags are arbitrary values that a mod assigns before the game starts.</p>';
 
             $flags = cached_query(
                 's2_mod_page_flags' . $modID,

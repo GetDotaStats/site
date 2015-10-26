@@ -34,7 +34,7 @@ try {
         try {
             echo '<h3>OP Custom Player Values</h3>';
 
-            echo '<p>Breakdown of top 30 custom player value combos, per player value, sorted by winrate for all games played in the last week. Calculated hourly.</p>';
+            echo '<p>Breakdown of top 30 custom player value combos, per player value, sorted by winrate for all games played in the last week. Calculated twice a day.</p>';
 
             $schemaIDtoUse = $db->q(
                 'SELECT
@@ -45,7 +45,7 @@ try {
                 $modID
             );
 
-            if (empty($schemaIDtoUse)) {
+            if (empty($schemaIDtoUse) || empty($schemaIDtoUse[0]['schemaID'])) {
                 throw new Exception('No approved schema to use!');
             } else {
                 $schemaIDtoUse = $schemaIDtoUse[0]['schemaID'];
@@ -98,7 +98,7 @@ try {
                         </div>';
 
                 foreach ($customPlayerValues as $key2 => $value2) {
-                    if($value2['fieldValue'] == '-1') continue;
+                    if ($value2['fieldValue'] == '-1') continue;
 
                     $fieldValue = $value2['fieldValue'];
                     $winrate = number_format($value2['winrate'] * 100, 1);
