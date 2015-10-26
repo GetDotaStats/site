@@ -26,6 +26,7 @@ try {
     }
 
     $modID = htmlentities($_POST['modID']);
+    $modName = htmlentities($_POST['mod_name']);
     $modActive = 0;
     $modRejected = 0;
     $modRejectedReason = NULL;

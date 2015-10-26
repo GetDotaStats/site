@@ -48,9 +48,11 @@ try {
             ? '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span></a>'
             : '<span class="glyphicon glyphicon-new-window"></span>';
 
-        $modName = !empty($value['mod_name'])
-            ? '<strong>' . $value['mod_name'] . '</strong>'
-            : '<strong>' . 'No mod name provided' . '</strong>';
+        $modNameRaw = !empty($value['mod_name'])
+            ? $value['mod_name']
+            : 'No mod name provided';
+
+        $modName = '<strong>' . $modNameRaw . '</strong>';
 
         $modDescription = !empty($value['mod_description'])
             ? $value['mod_description']
@@ -125,6 +127,7 @@ try {
             </div>';
 
         echo '<input type="hidden" name="modID" value="' . $value['mod_id'] . '">';
+        echo '<input type="hidden" name="mod_name" value="' . $modNameRaw . '">';
 
         echo '</form>';
 
