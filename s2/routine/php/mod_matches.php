@@ -16,6 +16,19 @@ try {
 
     $db->q('CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp0`
         SELECT `matchID`, `modID`, `matchPhaseID`, `dateRecorded` FROM `s2_match` LIMIT 0, 100;');
+
+    $db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp1` (
+        `day` int(2) NOT NULL DEFAULT '0',
+        `month` int(2) NOT NULL DEFAULT '0',
+        `year` int(4) NOT NULL DEFAULT '0',
+        `modID` int(255) NOT NULL,
+        `gamePhase` tinyint(1) NOT NULL,
+        `gamesPlayed` bigint(255) NOT NULL,
+        `dateRecorded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`modID`, `gamePhase`, `year`,`month`,`day`),
+        KEY (`dateRecorded`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
     $db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches` (
         `day` int(2) NOT NULL DEFAULT '0',
         `month` int(2) NOT NULL DEFAULT '0',
@@ -29,14 +42,18 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
     $db->q('TRUNCATE `cache_mod_matches_temp0`;');
+    $db->q('TRUNCATE `cache_mod_matches_temp1`;');
 
     $numMatchesProcessed = $db->q('INSERT INTO `cache_mod_matches_temp0`
-    SELECT `matchID`, `modID`, `matchPhaseID`, `dateRecorded` FROM `s2_match`
-    WHERE `dateRecorded` >= (SELECT DATE_FORMAT( IF( MAX(`dateRecorded`) >0, MAX(`dateRecorded`), (SELECT MIN(`dateRecorded`) FROM `s2_match` ) ), "%Y-%m-%d 00:00:00") - INTERVAL 1 DAY FROM `cache_mod_matches`)
-    LIMIT 0,50000;');
+        SELECT
+          `matchID`, `modID`, `matchPhaseID`, `dateRecorded`
+        FROM `s2_match`
+        WHERE `dateRecorded` >= (SELECT DATE_FORMAT( IF( MAX(`dateRecorded`) >0, MAX(`dateRecorded`), (SELECT MIN(`dateRecorded`) FROM `s2_match` ) ), "%Y-%m-%d 00:00:00") - INTERVAL 1 DAY FROM `cache_mod_matches`)
+        ORDER BY `dateRecorded` DESC
+        LIMIT 0,50000;'
+    );
 
-    $db->q(
-        'INSERT INTO `cache_mod_matches`
+    $db->q('INSERT INTO `cache_mod_matches_temp1`
             SELECT
                 DAY(`dateRecorded`) as `day`,
                 MONTH(`dateRecorded`) as `month`,
@@ -51,9 +68,18 @@ try {
         ON DUPLICATE KEY UPDATE
             `gamesPlayed` = VALUES(`gamesPlayed`);');
 
-    $db->q('DROP TABLE `cache_mod_matches_temp0`;');
+    $db->q(
+        'INSERT INTO `cache_mod_matches`
+            SELECT
+                *
+            FROM `cache_mod_matches_temp1`
+            ON DUPLICATE KEY UPDATE
+              `gamesPlayed` = VALUES(`gamesPlayed`);');
 
-    $last30_rows = $db->q('SELECT * FROM `cache_mod_matches` ORDER BY `dateRecorded` DESC, `modID`, `gamePhase` LIMIT 0,30;');
+    $last_rows = $db->q('SELECT * FROM `cache_mod_matches_temp1` ORDER BY `dateRecorded` DESC, `modID`, `gamePhase`;');
+
+    $db->q('DROP TABLE `cache_mod_matches_temp0`;');
+    $db->q('DROP TABLE `cache_mod_matches_temp1`;');
 
     echo '<table border="1" cellspacing="1">';
     echo '<tr>
@@ -62,7 +88,7 @@ try {
         <th>Games</th>
         <th>Date</th>
     </tr>';
-    foreach ($last30_rows as $key => $value) {
+    foreach ($last_rows as $key => $value) {
         echo '<tr>
             <td>' . $value['modID'] . '</td>
             <td>' . $value['gamePhase'] . '</td>

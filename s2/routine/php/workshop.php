@@ -199,7 +199,7 @@ try {
                     $irc_message->colour_generator('bold'),
                 ),
                 array($workshopCronCounts['unknown']),
-                array('|| http://getdotastats.com/s2/routine/log_daily.html?' . time())
+                array('|| http://getdotastats.com/s2/routine/log_hourly.html?' . time())
             );
 
             $message = $irc_message->combine_message($message);
