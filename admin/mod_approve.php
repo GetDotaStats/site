@@ -23,8 +23,7 @@ try {
     echo '<p>This form allows admins to edit and approve custom games submitted to the site.</p>';
     echo '<hr />';
 
-    $modList = cached_query(
-        'admin_mod_approve_mod_list',
+    $modList = $db->q(
         'SELECT
                 ml.*,
                 gu.`user_name`,
@@ -34,10 +33,7 @@ try {
             FROM `mod_list` ml
             LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
             WHERE ml.`mod_active` <> 1 AND ml.`mod_rejected` <> 1
-            ORDER BY `games_last_week` DESC, ml.date_recorded DESC;',
-        NULL,
-        NULL,
-        15
+            ORDER BY `games_last_week` DESC, ml.date_recorded DESC;'
     );
 
     if (empty($modList)) {
