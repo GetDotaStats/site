@@ -360,9 +360,7 @@ try {
                         $i++;
                     }
 
-                    if ($i % 3 <> 0 && $i > 1) {
-                        $customStats .= '</div>';
-                    }
+                    $customStats .= '</div>';
 
                     echo $customStats;
 
