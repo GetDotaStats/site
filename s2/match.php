@@ -1,6 +1,7 @@
 <?php
-require_once('../global_functions.php');
 require_once('../connections/parameters.php');
+require_once('../global_functions.php');
+require_once('./functions.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -62,40 +63,11 @@ try {
     $hostUserID32 = $matchDetails[0]['matchHostSteamID32'];
     $numRounds = $matchDetails[0]['numRounds'];
     $numPlayers = $matchDetails[0]['numPlayers'];
+    $modID = $matchDetails[0]['modID'];
 
-    echo '<h2><a class="nav-clickable" href="#s2__mod?id=' . $matchDetails[0]['modID'] . '">' . $matchDetails[0]['mod_name'] . '</a> <small>' . $matchID . '</small></h2>';
-
-    !empty($matchDetails[0]['mod_workshop_link'])
-        ? $links['steam_workshop'] = '<a href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $matchDetails[0]['mod_workshop_link'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Workshop</a>'
-        : NULL;
-    !empty($matchDetails[0]['mod_steam_group'])
-        ? $links['steam_group'] = '<a href="http://steamcommunity.com/groups/' . $matchDetails[0]['mod_steam_group'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Steam Group</a>'
-        : NULL;
-    $links = !empty($links)
-        ? implode(' || ', $links)
-        : 'None';
-
-
-    //MOD INFO
-    echo '<div class="container">';
-    echo '<div class="col-sm-7">
-                <div class="row mod_info_panel">
-                    <div class="col-sm-12 text-center">
-                        <button class="btn btn-sm" data-toggle="collapse" data-target="#mod_info">Mod Info</button>
-                    </div>
-                </div>
-            </div>';
-    echo '<div id="mod_info" class="collapse col-sm-7">
-                <div class="row mod_info_panel">
-                    <div class="col-sm-3"><strong>Links</strong></div>
-                    <div class="col-sm-9">' . $links . '</div>
-                </div>
-                <div class="row mod_info_panel">
-                    <div class="col-sm-3"><strong>Description</strong></div>
-                    <div class="col-sm-9">' . $matchDetails[0]['mod_description'] . '</div>
-                </div>
-           </div>';
-    echo '</div>';
+    if (!empty($modID)) {
+        echo modPageHeader($modID, $CDN_image);
+    }
 
     echo '<span class="h4">&nbsp;</span>';
 
@@ -173,67 +145,71 @@ try {
 
     //CUSTOM FIELDS GAME
     {
-        $customGameDetails = cached_query(
-            's2_custom_game_match_details' . $matchID,
-            'SELECT
-                    s2mc.`matchID`,
-                    s2mc.`modID`,
-                    s2mc.`schemaID`,
-                    s2mc.`round`,
-                    s2mc.`fieldOrder`,
-                    s2mc.`fieldValue`,
+        if (!empty($matchSummary)) {
+            $customGameDetails = cached_query(
+                's2_custom_game_match_details' . $matchID,
+                'SELECT
+                        s2mc.`matchID`,
+                        s2mc.`modID`,
+                        s2mc.`schemaID`,
+                        s2mc.`round`,
+                        s2mc.`fieldOrder`,
+                        s2mc.`fieldValue`,
 
-                    s2mcsf.`customValueDisplay`
-                FROM `s2_match_custom` s2mc
-                JOIN `s2_mod_custom_schema_fields` s2mcsf ON s2mc.`schemaID` = s2mcsf.`schemaID` AND s2mc.`fieldOrder` = s2mcsf.`fieldOrder` AND s2mcsf.`fieldType` = 1
-                WHERE s2mc.`matchID` = ?
-                ORDER BY s2mc.`round` ASC, s2mc.`fieldOrder` ASC;',
-            's',
-            $matchID,
-            5
-        );
+                        s2mcsf.`customValueDisplay`
+                    FROM `s2_match_custom` s2mc
+                    JOIN `s2_mod_custom_schema_fields` s2mcsf ON s2mc.`schemaID` = s2mcsf.`schemaID` AND s2mc.`fieldOrder` = s2mcsf.`fieldOrder` AND s2mcsf.`fieldType` = 1
+                    WHERE s2mc.`matchID` = ?
+                    ORDER BY s2mc.`round` ASC, s2mc.`fieldOrder` ASC;',
+                's',
+                $matchID,
+                5
+            );
 
-        if (!empty($customGameDetails)) {
-            foreach ($customGameDetails as $key => $value) {
-                $matchSummary[$value['round']]['cgv'][$value['customValueDisplay']] = $value['fieldValue'];
+            if (!empty($customGameDetails)) {
+                foreach ($customGameDetails as $key => $value) {
+                    $matchSummary[$value['round']]['cgv'][$value['customValueDisplay']] = $value['fieldValue'];
+                }
             }
         }
     }
 
     //CUSTOM FIELDS PLAYER
     {
-        $customPlayerDetails = cached_query(
-            's2_custom_player_match_details' . $matchID,
-            'SELECT
-                    s2mpc.`matchID`,
-                    s2mpc.`modID`,
-                    s2mpc.`schemaID`,
-                    s2mpc.`round`,
-                    s2mpc.`userID32`,
-                    s2mpc.`fieldOrder`,
-                    s2mpc.`fieldValue`,
+        if (!empty($matchSummary)) {
+            $customPlayerDetails = cached_query(
+                's2_custom_player_match_details' . $matchID,
+                'SELECT
+                        s2mpc.`matchID`,
+                        s2mpc.`modID`,
+                        s2mpc.`schemaID`,
+                        s2mpc.`round`,
+                        s2mpc.`userID32`,
+                        s2mpc.`fieldOrder`,
+                        s2mpc.`fieldValue`,
 
-                    s2mcsf.`customValueDisplay`
-                FROM `s2_match_players_custom` s2mpc
-                JOIN `s2_mod_custom_schema_fields` s2mcsf ON s2mpc.`schemaID` = s2mcsf.`schemaID` AND s2mpc.`fieldOrder` = s2mcsf.`fieldOrder` AND s2mcsf.`fieldType` = 2
-                WHERE s2mpc.`matchID` = ?
-                ORDER BY s2mpc.`round` ASC, s2mpc.`fieldOrder` ASC;',
-            's',
-            $matchID,
-            5
-        );
+                        s2mcsf.`customValueDisplay`
+                    FROM `s2_match_players_custom` s2mpc
+                    JOIN `s2_mod_custom_schema_fields` s2mcsf ON s2mpc.`schemaID` = s2mcsf.`schemaID` AND s2mpc.`fieldOrder` = s2mcsf.`fieldOrder` AND s2mcsf.`fieldType` = 2
+                    WHERE s2mpc.`matchID` = ?
+                    ORDER BY s2mpc.`round` ASC, s2mpc.`fieldOrder` ASC;',
+                's',
+                $matchID,
+                5
+            );
 
-        if (!empty($customPlayerDetails)) {
-            foreach ($customPlayerDetails as $key => $value) {
-                if (!isset($matchSummary[$value['round']]['players'][$value['userID32']])) throw new Exception('No basic stats for user ' . $value['userID32'] . ' in round #' . $value['round'] . '!');
-                $matchSummary[$value['round']]['players'][$value['userID32']]['cpv'][$value['customValueDisplay']] = $value['fieldValue'];
+            if (!empty($customPlayerDetails)) {
+                foreach ($customPlayerDetails as $key => $value) {
+                    if (!isset($matchSummary[$value['round']]['players'][$value['userID32']])) throw new Exception('No basic stats for user ' . $value['userID32'] . ' in round #' . $value['round'] . '!');
+                    $matchSummary[$value['round']]['players'][$value['userID32']]['cpv'][$value['customValueDisplay']] = $value['fieldValue'];
+                }
             }
         }
     }
 
     //Client IPs
     {
-        if (!empty($_SESSION['user_id64'])) {
+        if (!empty($matchSummary) && !empty($_SESSION['user_id64'])) {
             //if admin, show clientIPs too
             $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
             if (!empty($adminCheck)) {
