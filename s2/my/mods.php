@@ -134,7 +134,7 @@ try {
             $ModIdentifier = "<div><span class='db_link'>{$value['mod_identifier']}</span></div>";
 
             $schemaDetails = !empty($value['schemaAuth'])
-                ? "<div>v{$value['schemaVersion']} <span class='db_link'>{$value['schemaAuth']}</span></div>"
+                ? "<a class='nav-clickable' href='#s2__mod_schema?id={$value['schemaID']}'><div>v{$value['schemaVersion']} <span class='db_link'>{$value['schemaAuth']}</span></div></a>"
                 : 'N/A';
 
 
