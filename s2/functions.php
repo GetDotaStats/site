@@ -152,11 +152,6 @@ if (!function_exists('modPageHeader')) {
 
         $result .= '<h2>' . $modNameLink . '</h2>';
 
-        //FEATURE REQUEST
-        $result .= '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
-                see on this page, please let us know by making a post per feature on this page\'s
-                <a target="_blank" href="https://github.com/GetDotaStats/site/issues/162">issue</a>.</div>';
-
         //MOD INFO
         $result .= '<div class="container">';
         $result .= '<div class="col-sm-7">
@@ -211,9 +206,7 @@ if (!function_exists('modPageHeader')) {
                    </div>';
         $result .= '</div>';
 
-        $result .= '<span class="h4">&nbsp;</span>';
-
-        $result .= '<hr />';
+        $result .= '<br />';
 
         $result .= "<div class='row'>
                         <div class='col-sm-12 text-right'>
@@ -222,8 +215,8 @@ if (!function_exists('modPageHeader')) {
                             <a class='nav-clickable btn btn-info' href='#s2__mod_f?id={$modID}'>Flags</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cgv?id={$modID}'>Game Values</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cpv?id={$modID}'>Player Values</a>
-                            <a class='nav-clickable btn btn-info' href='#s2__mod_op?id={$modID}'>OP Combos</a>
-                            <a class='nav-clickable btn btn-info' href='#s2__mod_rg?id={$modID}'>Recent Games</a>
+                            <a class='nav-clickable btn btn-info' href='#s2__mod_wr?id={$modID}'>Winrates</a>
+                            <a class='nav-clickable btn btn-info' href='#s2__recent_games?m={$modID}'>Recent Games</a>
                         </div>
                     </div>";
 

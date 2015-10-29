@@ -13,27 +13,116 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+    $SQLstatementWhere = '';
+    $SQLdeclaration = '';
+    $SQLvalues = array();
+
     $filterPhase = !empty($_GET['p']) && is_numeric($_GET['p'])
         ? $_GET['p']
         : -1;
 
     switch ($filterPhase) {
         case 1:
-            $filterPhaseSQL = ' AND s2.`matchPhaseID` = 1';
+            $SQLstatementWhere .= ' AND s2.`matchPhaseID` = ?';
+            $SQLdeclaration .= 'i';
+            $SQLvalues[] = 1;
             break;
         case 2:
-            $filterPhaseSQL = ' AND s2.`matchPhaseID` = 2';
+            $SQLstatementWhere .= ' AND s2.`matchPhaseID` = ?';
+            $SQLdeclaration .= 'i';
+            $SQLvalues[] = 2;
             break;
         case 3:
-            $filterPhaseSQL = ' AND s2.`matchPhaseID` = 3';
-            break;
-        default:
-            $filterPhaseSQL = '';
+            $SQLstatementWhere .= ' AND s2.`matchPhaseID` = ?';
+            $SQLdeclaration .= 'i';
+            $SQLvalues[] = 3;
             break;
     }
 
+    $filterModID = !empty($_GET['m']) && is_numeric($_GET['m'])
+        ? $_GET['m']
+        : NULL;
+
+    if (!empty($filterModID)) {
+        $SQLstatementWhere .= ' AND s2.`modID` = ?';
+        $SQLdeclaration .= 'i';
+        $SQLvalues[] = $_GET['m'];
+    }
+
+    echo '<h3>Recently Played Games</h3>';
+
+    echo '<p>A list of the last 30 games that have been played. Ordered by when the game details were last updated.</p>';
+
+    //SELECT JUMP MENU FOR MOD FILTERING
+    {
+        $modList = cached_query(
+            's2_recent_games_mod_list',
+            'SELECT
+                  ml.`mod_id`,
+                  ml.`mod_name`
+                FROM `mod_list` ml
+                WHERE ml.`mod_active` = 1
+                ORDER BY ml.`mod_name`;',
+            NULL,
+            NULL,
+            5
+        );
+
+        echo '<form id="modSearch">';
+        echo '<div class="row">
+                    <div class="col-md-2"><strong>Mod Filter</strong></div>
+                    <div class="col-md-5">
+                        <select id="modSearch_id" class="formTextArea boxsizingBorder" onChange="jumpMenuMod(this)" required>
+                            <option value="-">-</option>';
+
+        if (!empty($modList)) {
+            foreach ($modList as $key => $value) {
+                echo '<option' . (($value['mod_id'] == $filterModID) ? ' selected' : '') . ' value="' . $value['mod_id'] . '">' . $value['mod_name'] . '</option>';
+            }
+        }
+
+        echo '          </select>
+                    </div>
+                </div>';
+        echo '</form>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<form id="phaseSearch">';
+        echo '<div class="row">
+                    <div class="col-md-2"><strong>Phase Filter</strong></div>
+                    <div class="col-md-3">
+                        <select id="modSearch_id" class="formTextArea boxsizingBorder" onChange="jumpMenuPhase(this)" required>
+                            <option value="-">-</option>
+                            <option' . (($filterPhase == 1) ? ' selected' : '') . ' value="1">Players Loaded</option>
+                            <option' . (($filterPhase == 2) ? ' selected' : '') . ' value="2">Game Started</option>
+                            <option' . (($filterPhase == 3) ? ' selected' : '') . ' value="3">Game Ended</option>
+                        </select>
+                    </div>
+                </div>';
+        echo '</form>';
+
+        echo '<span class="h5">&nbsp;</span>';
+
+        echo '<script type="application/javascript">
+                function jumpMenuMod(selObj) {
+                    var op = selObj.options[selObj.selectedIndex];
+                    if(op.value != "-"){
+                        loadPage("#s2__recent_games?m=" + op.value' . ($filterPhase != -1 ? ' + "&p=' . $filterPhase . '"' : '') . ', 1);
+                    }
+                }
+
+                function jumpMenuPhase(selObj) {
+                    var op = selObj.options[selObj.selectedIndex];
+                    if(op.value != "-"){
+                        loadPage("#s2__recent_games?p=" + op.value' . (!empty($filterModID) ? ' + "&m=' . $filterModID . '"' : '') . ', 1);
+                    }
+                }
+            </script>';
+    }
+
     $recentGames = cached_query(
-        's2_recent_games_p' . $filterPhase,
+        's2_recent_games_p' . $filterPhase . '_m' . $filterModID,
         'SELECT
               s2.`matchID`,
               s2.`matchAuthKey`,
@@ -54,11 +143,11 @@ try {
               ml.`mod_workshop_link`
             FROM `s2_match` s2
             JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
-            WHERE ml.`mod_active` = 1' . $filterPhaseSQL . '
-            ORDER BY s2.`dateRecorded` DESC
+            WHERE ml.`mod_active` = 1' . $SQLstatementWhere . '
+            ORDER BY s2.`dateUpdated` DESC
             LIMIT 0,30;',
-        NULL,
-        NULL,
+        $SQLdeclaration,
+        $SQLvalues,
         15
     );
 
@@ -66,38 +155,23 @@ try {
         throw new Exception('No games recently played!');
     }
 
-    echo '<h3>Recently Played Games</h3>';
-
-    //FEATURE REQUEST
-    echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
-        see on this page, please let us know by making a post per feature on this page\'s
-        <a target="_blank" href="https://github.com/GetDotaStats/site/issues/163">issue</a>.</div>';
-
-    echo '<p>Last 30 games played.</p>';
-
     echo '<div class="row">
-                <div class="col-md-1 h4">&nbsp;</div>
-                <div class="col-md-3 h4">Mod</div>
+                <div class="col-md-4"><strong>Mod</strong></div>
                 <div class="col-md-6">
-                    <div class="col-md-3 h4 text-center">Players</div>
-                    <div class="col-md-3 h4 text-center">Rounds</div>
-                    <div class="col-md-3 h4 text-center">Duration</div>
-                    <div class="col-md-3 h4 text-center">Phase</div>
+                    <div class="col-md-3 text-center"><strong>Players</strong></div>
+                    <div class="col-md-3 text-center"><strong>Rounds</strong></div>
+                    <div class="col-md-3 text-center"><strong>Duration</strong></div>
+                    <div class="col-md-3 text-center"><strong>Phase</strong></div>
                 </div>
-                <div class="col-md-2 h4 text-center">Recorded</div>
+                <div class="col-md-2 text-center"><strong>Updated</strong></div>
             </div>';
 
-    foreach ($recentGames as $key => $value) {
-        $modName = strlen($value['mod_name']) > 19
-            ? substr($value['mod_name'], 0, 19)
-            : $value['mod_name'];
+    echo '<span class="h4">&nbsp;</span>';
 
+    foreach ($recentGames as $key => $value) {
         echo '<div class="row searchRow">
-                <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
-                    <div class="col-md-1"><span class="glyphicon glyphicon-eye-open"></span></div>
-                </a>
                 <a class="nav-clickable" href="#s2__mod?id=' . $value['modID'] . '">
-                    <div class="col-md-3"><span class="glyphicon glyphicon-eye-open"></span> ' . $modName . '</div>
+                    <div class="col-md-4"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</div>
                 </a>
                 <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
                     <div class="col-md-6">
@@ -106,7 +180,7 @@ try {
                         <div class="col-md-3 text-right">' . secs_to_clock($value['matchDuration']) . '</div>
                         <div class="col-md-3 text-center">' . $value['matchPhaseID'] . '</div>
                     </div>
-                    <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
+                    <div class="col-md-2 text-right">' . relative_time_v3($value['dateUpdated']) . '</div>
                 </a>
             </div>';
 
