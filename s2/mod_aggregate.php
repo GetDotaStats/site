@@ -39,12 +39,19 @@ try {
 
     echo '<h2>Aggregate Mod Analysis</h2>';
 
-    //FEATURE REQUEST
-    echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
-        see on this page, please let us know by making a post per feature on this page\'s
-        <a target="_blank" href="https://github.com/GetDotaStats/site/issues/174">issue</a>.</div>';
+    echo '<p>An overview of the total games played per mod per day over the selected timespan. By default only the last 30days are shown.';
 
-    echo '<p>An overview of the total games played per mod per day over the selected timespan. By default only the last 30days are shown.</p>';
+    try {
+        $serviceReporting = new serviceReporting($db);
+        $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_matches');
+        $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
+        $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
+
+        echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
+    } catch (Exception $e) {
+        echo '</p>';
+        echo formatExceptionHandling($e);
+    }
 
     echo '<div class="text-center">
                 <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod_aggregate?t=1">Last 30 Days</a>

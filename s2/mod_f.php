@@ -42,7 +42,7 @@ try {
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
-                echo " This data was last updated {$lastCronUpdateRunTime}, taking {$lastCronUpdateExecutionTime} to generate.</p>";
+                echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
             } catch (Exception $e) {
                 echo '</p>';
                 echo formatExceptionHandling($e);

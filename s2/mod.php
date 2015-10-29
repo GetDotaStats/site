@@ -34,7 +34,19 @@ try {
         try {
             echo '<h3>Games</h3>';
 
-            echo '<p>Breakdown of games per day over the last month. Calculated every 10minutes.</p>';
+            echo '<p>Breakdown of games per day over the last month. Calculated every 10minutes.';
+
+            try {
+                $serviceReporting = new serviceReporting($db);
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_matches');
+                $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
+                $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
+
+                echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
+            } catch (Exception $e) {
+                echo '</p>';
+                echo formatExceptionHandling($e);
+            }
 
             $gamesOverTime = cached_query(
                 's2_mod_page_games_over_time_all_' . $modID,
