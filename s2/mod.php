@@ -79,7 +79,8 @@ try {
                 $bigArray,
                 'games_per_phase_all',
                 'Number of Games per Phase over Time',
-                new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'")
+                new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'"),
+                array('title' => 'Games', 'min' => 0)
             );
 
             echo '<div id="games_per_phase_all"></div>';

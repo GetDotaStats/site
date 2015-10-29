@@ -141,10 +141,10 @@ try {
                 'workshop_stats_all',
                 'Workshop Subs / Views / Favs',
                 new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'"),
+                array('title' => 'Subscriptions', 'min' => 0),
                 array(
-                    'Subscriptions' => array('title' => 'Subscriptions', 'yAxis' => 0),
-                    'Views' => array('title' => 'Views', 'yAxis' => 1, 'opposite' => true),
-                    'Favourites' => array('title' => 'Favourites', 'yAxis' => 2, 'opposite' => true),
+                    'Views' => array('title' => 'Views', 'yAxis' => 1, 'min' => 0, 'opposite' => true),
+                    'Favourites' => array('title' => 'Favourites', 'yAxis' => 2, 'min' => 0, 'opposite' => true),
                 )
             );
 

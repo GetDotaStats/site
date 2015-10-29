@@ -1334,7 +1334,7 @@ if (!function_exists('makePieChart')) {
 
 if (!function_exists('makeLineChart')) {
     //$seriesOptions -- Add series name as key, and all options in array attached to it will be applied to series in chart
-    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL, $seriesOptions = array('Series2' => array('title' => 'Test', 'yAxis' => 1, 'opposite' => true)))
+    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL, $series1Options = array('title' => 'Games', 'min' => 0), $seriesNOptions = array('Series2' => array('title' => 'Test', 'yAxis' => 1, 'opposite' => true)))
     {
         require_once(__DIR__ . "/bootstrap/highcharts/Highchart.php");
         require_once(__DIR__ . "/bootstrap/highcharts/HighchartJsExpr.php");
@@ -1349,8 +1349,12 @@ if (!function_exists('makeLineChart')) {
         $chart->title->text = $chartTitle;
         $chart->subtitle->text = $chartSubtitle;
         $chart->xAxis->type = "datetime";
-        $chart->yAxis[0]->title->text = "Games";
-        $chart->yAxis[0]->min = 0;
+        $chart->yAxis[0]->title->text = $series1Options['title']
+            ? $series1Options['title']
+            : 'Games';
+        $chart->yAxis[0]->min = isset($series1Options['min'])
+            ? $series1Options['min']
+            : 0;
         /*$chart->tooltip->formatter = new HighchartJsExpr(
             "function() {
                 return '<b>'+ this.series.name +'</b><br/>'+
@@ -1367,16 +1371,16 @@ if (!function_exists('makeLineChart')) {
             $chart->series[$i]->name = $key;
             $chart->series[$i]->data = $value;
 
-            if (isset($seriesOptions[$key])) {
-                if (isset($seriesOptions[$key]['yAxis'])) {
-                    $chart->series[$i]->yAxis = $seriesOptions[$key]['yAxis'];
+            if (isset($seriesNOptions[$key])) {
+                if (isset($seriesNOptions[$key]['yAxis'])) {
+                    $chart->series[$i]->yAxis = $seriesNOptions[$key]['yAxis'];
 
-                    $chart->yAxis[$seriesOptions[$key]['yAxis']]->title->text = $seriesOptions[$key]['title'];
-                    if (isset($seriesOptions[$key]['opposite'])) {
-                        $chart->yAxis[$seriesOptions[$key]['yAxis']]->opposite = $seriesOptions[$key]['opposite'];
+                    $chart->yAxis[$seriesNOptions[$key]['yAxis']]->title->text = $seriesNOptions[$key]['title'];
+                    if (isset($seriesNOptions[$key]['opposite'])) {
+                        $chart->yAxis[$seriesNOptions[$key]['yAxis']]->opposite = $seriesNOptions[$key]['opposite'];
                     }
-                    if (isset($seriesOptions[$key]['min'])) {
-                        $chart->yAxis[$seriesOptions[$key]['yAxis']]->min = $seriesOptions[$key]['min'];
+                    if (isset($seriesNOptions[$key]['min'])) {
+                        $chart->yAxis[$seriesNOptions[$key]['yAxis']]->min = $seriesNOptions[$key]['min'];
                     }
                 }
             }
