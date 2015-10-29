@@ -99,7 +99,7 @@ function loadPage(url, refresh) {
                     if (parseInt(msg) != 0) {
                         $('#main_content').html(msg);
                     }
-                }, 500);
+                }, 200);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#main_content').html('Failed to load page. Try again later.');
@@ -136,7 +136,7 @@ function loadPage(url, refresh) {
                                     }
                                 }
                             });
-                        }, 500);
+                        }, 200);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         $('#loading').hide({
