@@ -24,16 +24,12 @@ try {
     $userDetails = cached_query(
         's2_user_page_check' . $userID32,
         'SELECT
-                s2mpn.`steamID32`,
-                s2mpn.`steamID64`,
-                s2mpn.`playerName`,
-                s2mpn.`playerVanity`,
-                s2mpn.`dateUpdated`,
-
-                gu.`user_avatar`
-            FROM `s2_match_players_name` s2mpn
-            LEFT JOIN `gds_users` gu ON s2mpn.`steamID32` = gu.`user_id32`
-            WHERE s2mpn.`steamID32` = ?
+                `user_id64`,
+                `user_id32`,
+                `user_name`,
+                `user_avatar`
+            FROM `gds_users`
+            WHERE `user_id32` = ?
             LIMIT 0,1;',
         's',
         array($userID32),
@@ -41,7 +37,8 @@ try {
     );
 
     if (empty($userDetails)) {
-        throw new Exception('Invalid userID! Not recorded in database.');
+        $webAPI = new steam_webapi($api_key1);
+        $userDetails = grabAndUpdateSteamUserDetails($userID32);
     }
 
     //TIDY VARIABLES
@@ -51,26 +48,23 @@ try {
             ? $userDetails[0]['user_avatar']
             : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
         $userThumb = '<img width="24" height="24" src="' . $userThumb . '" alt="User thumbnail" />';
-        $userThumb = '<a target="_blank" href="https://steamcommunity.com/profiles/' . $userDetails[0]['steamID64'] . '">' . $userThumb . '</a>';
+        $userThumb = '<a target="_blank" href="https://steamcommunity.com/profiles/' . $userDetails[0]['user_id64'] . '">' . $userThumb . '</a>';
 
         //User Name
-        $userName = !empty($userDetails)
-            ? $userDetails[0]['playerName']
+        $userName = !empty($userDetails) && !empty($userDetails[0]['user_name'])
+            ? $userDetails[0]['user_name']
             : '????';
-        $userName = '<a class="nav-clickable" href="#s2__user?id=' . $userDetails[0]['steamID32'] . '">' . $userName . '</a>';
+        $userName = '<a class="nav-clickable" href="#s2__user?id=' . $userDetails[0]['user_id32'] . '">' . $userName . '</a>';
 
         //User combo
         $userCombo = $userThumb . ' ' . $userName;
 
         //User external links
-        $links['steam_profile'] = '<a href="https://steamcommunity.com/profiles/' . $userDetails[0]['steamID64'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Steam Profile</a>';
-        $links['dotabuff_profile'] = '<a href="http://dotabuff.com/players/' . $userDetails[0]['steamID32'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Dotabuff</a>';
+        $links['steam_profile'] = '<a href="https://steamcommunity.com/profiles/' . $userDetails[0]['user_id64'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Steam Profile</a>';
+        $links['dotabuff_profile'] = '<a href="http://dotabuff.com/players/' . $userDetails[0]['user_id32'] . '" target="_new"><span class="glyphicon glyphicon-new-window"></span> Dotabuff</a>';
         $links = !empty($links)
             ? implode(' || ', $links)
             : 'None';
-
-        //User last game
-        $lastGame = relative_time_v3($userDetails[0]['dateUpdated']);
 
         //User flags
         {
@@ -100,12 +94,7 @@ try {
         }
     }
 
-    echo '<h2>' . $userCombo . ' <small>' . $userDetails[0]['steamID32'] . '</small></h2>';
-
-    //FEATURE REQUEST
-    echo '<div class="alert alert-danger"><strong>Help Wanted!</strong> We are re-designing every page. If there are features you would like to
-        see on this page, please let us know by making a post per feature on this page\'s
-        <a target="_blank" href="https://github.com/GetDotaStats/site/issues/166">issue</a>.</div>';
+    echo '<h2>' . $userCombo . '</h2>';
 
     //PLAYER INFO
     echo '<div class="container">';
@@ -124,17 +113,13 @@ try {
                 </div>
                 <div class="row mod_info_panel">
                     <div class="col-sm-2"><strong>steamID32</strong></div>
-                    <div class="col-sm-4"><div>' . $userDetails[0]['steamID32'] . '</div></div>
+                    <div class="col-sm-4"><div>' . $userDetails[0]['user_id32'] . '</div></div>
                     <div class="col-sm-2"><strong>steamID64</strong></div>
-                    <div class="col-sm-4"><div>' . $userDetails[0]['steamID64'] . '</div></div>
+                    <div class="col-sm-4"><div>' . $userDetails[0]['user_id64'] . '</div></div>
                 </div>
                 <div class="row mod_info_panel">
                     <div class="col-sm-2"><strong>Groups</strong></div>
                     <div class="col-sm-10"><div>' . $userFlags . '</div></div>
-                </div>
-                <div class="row mod_info_panel">
-                    <div class="col-sm-2"><strong>Last Game</strong></div>
-                    <div class="col-sm-10"><div>' . $lastGame . '</div></div>
                 </div>
            </div>';
     echo '</div>';
@@ -143,52 +128,54 @@ try {
 
     echo '<hr />';
 
-    try {
+    ///////////////////////////////////
+    // RECENT GAMES
+    ///////////////////////////////////
+    {
         echo '<h3>Recent Games</h3>';
+        echo '<p>The last 25 games this user has played for mods we track.</p>';
 
-        $userRecentGames = cached_query(
-            's2_user_page_recent_games' . $userID32,
-            'SELECT
-                    DISTINCT s2mp.`matchID`,
-                    s2mp.`modID`,
-                    s2mp.`steamID32`,
-                    s2mp.`steamID64`,
+        try {
+            $userRecentGames = cached_query(
+                's2_user_page_recent_games' . $userID32,
+                'SELECT
+                        DISTINCT s2mp.`matchID`,
+                        s2mp.`modID`,
+                        s2mp.`steamID32`,
+                        s2mp.`steamID64`,
 
-                    ml.`mod_name`,
+                        ml.`mod_name`,
 
-                    s2m.`matchHostSteamID32`,
-                    s2m.`matchPhaseID`,
-                    s2m.`matchMapName`,
-                    s2m.`numPlayers`,
-                    s2m.`numRounds`,
-                    s2m.`matchDuration`,
-                    s2m.`dateRecorded`
-                FROM `s2_match_players` s2mp
-                JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
-                LEFT JOIN `s2_match` s2m ON s2mp.`matchID` = s2m.`matchID`
-                WHERE `steamID32` = ?
-                ORDER BY s2mp.`matchID` DESC
-                LIMIT 0,25;',
-            's',
-            $userID32,
-            15
-        );
+                        s2m.`matchHostSteamID32`,
+                        s2m.`matchPhaseID`,
+                        s2m.`numPlayers`,
+                        s2m.`numRounds`,
+                        s2m.`matchDuration`,
+                        s2m.`dateRecorded`
+                    FROM `s2_match_players` s2mp
+                    JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
+                    LEFT JOIN `s2_match` s2m ON s2mp.`matchID` = s2m.`matchID`
+                    WHERE `steamID32` = ?
+                    ORDER BY s2mp.`matchID` DESC
+                    LIMIT 0,25;',
+                's',
+                $userID32,
+                15
+            );
 
-        if (!empty($userRecentGames)) {
+            if (empty($userRecentGames)) throw new Exception('User has games recorded against mods we track!');
+
+
             echo '<div class="row">
-                        <div class="col-md-3 h4"><strong>Mod</strong></div>
-                        <div class="col-md-7">
-                            <div class="col-md-9">
-                                <div class="col-md-3 h4 text-center"><strong>Players</strong></div>
-                                <div class="col-md-3 h4 text-center"><strong>Rounds</strong></div>
-                                <div class="col-md-3 h4 text-center"><strong>Phase</strong></div>
-                                <div class="col-md-3 h4 text-center"><strong>Host</strong></div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="col-md-12 h4 text-center"><strong>Duration</strong></div>
-                            </div>
+                        <div class="col-md-4"><strong>Mod</strong></div>
+                        <div class="col-md-6">
+                            <div class="col-md-2 text-center"><strong>Players</strong></div>
+                            <div class="col-md-2 text-center"><strong>Rounds</strong></div>
+                            <div class="col-md-2 text-center"><strong>Phase</strong></div>
+                            <div class="col-md-2 text-center"><strong>Host</strong></div>
+                            <div class="col-md-4 text-center"><strong>Duration</strong></div>
                         </div>
-                        <div class="col-md-2 h4 text-center"><strong>Recorded</strong></div>
+                        <div class="col-md-2 text-center"><strong>Recorded</strong></div>
                     </div>';
 
             foreach ($userRecentGames as $key => $value) {
@@ -198,32 +185,68 @@ try {
 
                 echo '<div class="row searchRow">
                         <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
-                            <div class="col-md-3"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</div>
-                            <div class="col-md-7">
-                                <div class="col-md-9">
-                                    <div class="col-md-3 text-center">' . $value['numPlayers'] . '</div>
-                                    <div class="col-md-3 text-center">' . $value['numRounds'] . '</div>
-                                    <div class="col-md-3 text-center">' . $value['matchPhaseID'] . '</div>
-                                    <div class="col-md-3 text-center">' . $isHost . '</div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="col-md-12 text-center">' . secs_to_clock($value['matchDuration']) . '</div>
-                                </div>
+                            <div class="col-md-4"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</div>
+                            <div class="col-md-6">
+                                <div class="col-md-2 text-center">' . $value['numPlayers'] . '</div>
+                                <div class="col-md-2 text-center">' . $value['numRounds'] . '</div>
+                                <div class="col-md-2 text-center">' . $value['matchPhaseID'] . '</div>
+                                <div class="col-md-2 text-center">' . $isHost . '</div>
+                                <div class="col-md-4 text-center">' . secs_to_clock($value['matchDuration']) . '</div>
                             </div>
                             <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
                         </a>
                     </div>';
             }
+
+            echo '<hr />';
+
+            echo '<h3>Total Games</h3>';
+            echo '<p>The aggregate view of games played per mod.</p>';
+
+            $userModAggregate = cached_query(
+                's2_user_page_aggregate_games' . $userID32,
+                'SELECT
+                        s2mp.`modID`,
+                        COUNT(DISTINCT `matchID`) AS `total_games`,
+                        ml.`mod_name`
+                    FROM `s2_match_players` s2mp
+                    LEFT JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
+                    WHERE s2mp.`steamID32` = ? AND ml.`mod_active` = 1
+                    GROUP BY s2mp.`modID`
+                    ORDER BY `total_games` DESC;',
+                's',
+                $userID32,
+                15
+            );
+
+            if (empty($userModAggregate)) throw new Exception('User has games recorded against mods we track!');
+
+
+            echo '<div class="row">
+                        <div class="col-md-6">
+                            <div class="row searchRow">
+                                <div class="col-md-9"><strong>Mod</strong></div>
+                                <div class="col-md-3 text-center"><strong>Games</strong></div>
+                            </div>
+                        </div>
+                    </div>';
+
+            foreach ($userModAggregate as $key => $value) {
+                echo '<div class="row">
+                        <div class="col-md-6">
+                            <div class="row searchRow">
+                                <div class="col-md-9"><a class="nav-clickable" href="#s2__mod?id=' . $value['modID'] . '"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</a></div>
+                                <div class="col-md-3 text-right">' . number_format($value['total_games']) . '</div>
+                            </div>
+                        </div>
+                    </div>';
+            }
+
+            echo '<hr />';
+        } catch (Exception $e) {
+            echo formatExceptionHandling($e);
         }
-
-
-    } catch (Exception $e) {
-        echo formatExceptionHandling($e);
     }
-
-
-    echo '<hr />';
-
 
     echo '<span class="h4">&nbsp;</span>';
 
