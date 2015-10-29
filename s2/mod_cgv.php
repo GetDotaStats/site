@@ -34,7 +34,19 @@ try {
         try {
             echo '<h3>Custom Game Values</h3>';
 
-            echo '<p>Breakdown of custom game values for all games played in the last week. Calculated twice a day. Game values are arbitrary values that the mod assigns for the entire game or round.</p>';
+            echo '<p>Breakdown of custom game values for all games played in the last week. Calculated twice a day. Game values are arbitrary values that the mod assigns for the entire game or round.';
+
+            try {
+                $serviceReporting = new serviceReporting($db);
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cgv');
+                $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
+                $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
+
+                echo " This data was last updated {$lastCronUpdateRunTime}, taking {$lastCronUpdateExecutionTime} to generate.</p>";
+            } catch (Exception $e) {
+                echo '</p>';
+                echo formatExceptionHandling($e);
+            }
 
             $schemaIDtoUse = $db->q(
                 'SELECT

@@ -28,13 +28,25 @@ try {
     echo modPageHeader($modID, $CDN_image);
 
     //////////////////
-    //OP Combos
+    //Winrate cpv
     //////////////////
     {
         try {
-            echo '<h3>OP Custom Player Values</h3>';
+            echo '<h3>Winrates for Player Values</h3>';
 
-            echo '<p>Breakdown of top 30 custom player value combos, per player value, sorted by winrate for all games played in the last week. Calculated twice a day.</p>';
+            echo '<p>Breakdown of top 30 custom player values, sorted by winrate for all games played in the last week. Calculated twice a day.';
+
+            try {
+                $serviceReporting = new serviceReporting($db);
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cpv');
+                $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
+                $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
+
+                echo " This data was last updated {$lastCronUpdateRunTime}, taking {$lastCronUpdateExecutionTime} to generate.</p>";
+            } catch (Exception $e) {
+                echo '</p>';
+                echo formatExceptionHandling($e);
+            }
 
             $schemaIDtoUse = $db->q(
                 'SELECT

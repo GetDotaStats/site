@@ -286,10 +286,11 @@ if (!class_exists('irc_message')) {
             $this->set_webhook($webhook_gds_site);
         }
 
-        public function set_webhook($webhook){
-            if(!empty($webhook)){
+        public function set_webhook($webhook)
+        {
+            if (!empty($webhook)) {
                 $this->webhook_url = $webhook;
-            } else{
+            } else {
                 throw new Exception('Empty webhook!');
             }
         }
@@ -1248,7 +1249,8 @@ if (!function_exists('updateUserDetails')) {
 if (!function_exists('grabAndUpdateSteamUserDetails')) {
     function grabAndUpdateSteamUserDetails($steamID32)
     {
-        global $db, $memcache, $webAPI;
+        global $db, $memcache, $webAPI, $localDev;
+        if ($localDev) throw new Exception('We working locally!');
         if (!isset($db)) throw new Exception('No DB defined!');
         if (!isset($memcache)) throw new Exception('No memcache defined!');
         if (!isset($webAPI)) throw new Exception('webAPI not defined!');
@@ -1507,6 +1509,96 @@ if (!function_exists('service_report')) {
             return true;
         } else {
             throw new Exception('Service report not lodged!');
+        }
+    }
+}
+
+if (!class_exists('serviceReporting')) {
+    class serviceReporting
+    {
+        private $db = null;
+        private $lastServiceLog = null;
+
+        public function __construct($db)
+        {
+            if (empty($db)) {
+                throw new Exception('No DB connection provided!');
+            }
+
+            $this->db = $db;
+        }
+
+        public function log($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL)
+        {
+            $sqlResult = $this->db->q(
+                'INSERT INTO `cron_services`
+                    (
+                        `service_name`,
+                        `execution_time`,
+                        `performance_index1`,
+                        `performance_index2`,
+                        `performance_index3`
+                    ) VALUES (?, ?, ?, ?, ?);',
+                'siiii',
+                array($serviceName, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
+            );
+
+            if ($sqlResult) {
+                return true;
+            }
+
+            throw new Exception('Service report not lodged!');
+        }
+
+        //Grabs a service log entry
+        public function getServiceLog($serviceName)
+        {
+            $sqlResult = $this->db->q(
+                'SELECT
+                    `instance_id`,
+                    `service_name`,
+                    `execution_time`,
+                    `performance_index1`,
+                    `performance_index2`,
+                    `performance_index3`,
+                    `date_recorded`
+                  FROM `cron_services`
+                  WHERE `service_name` = ?
+                  ORDER BY `date_recorded` DESC
+                  LIMIT 0,1;',
+                's',
+                array($serviceName)
+            );
+
+            if (!empty($sqlResult)) {
+                $sqlResult = $sqlResult[0];
+
+                $this->lastServiceLog = $sqlResult;
+
+                return $this->lastServiceLog;
+            }
+
+            throw new Exception('No service log found!');
+        }
+
+        //Grabs run-time from last Service Log that was obtained
+        public function getServiceLogRunTime($decimals = 1, $output = NULL, $returnArray = false, $returnFormattedNumber = true, $returnCompactString = false)
+        {
+            if (!empty($this->lastServiceLog)) {
+                return relative_time_v3($this->lastServiceLog['date_recorded'], $decimals, $output, $returnArray, $returnFormattedNumber, $returnCompactString);
+            }
+
+            throw new Exception('No service log loaded! Run getServiceLog() first!');
+        }
+
+        //Grabs execution-time from last Service Log that was obtained
+        public function getServiceLogExecutionTime()
+        {
+            if (!empty($this->lastServiceLog)) {
+                return secs_to_h($this->lastServiceLog['execution_time']);
+            }
+
+            throw new Exception('No service log loaded! Run getServiceLog() first!');
         }
     }
 }

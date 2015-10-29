@@ -34,7 +34,19 @@ try {
         try {
             echo '<h3>Workshop Stats</h3>';
 
-            echo '<p>Breakdown of workshop stats per day. Scraped twice a day, depending on availability of Steam webAPI.</p>';
+            echo '<p>Breakdown of workshop stats per day. Scraped twice a day, depending on availability of Steam webAPI.';
+
+            try {
+                $serviceReporting = new serviceReporting($db);
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_workshop_scrape');
+                $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
+                $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
+
+                echo " This data was last updated {$lastCronUpdateRunTime}, taking {$lastCronUpdateExecutionTime} to generate.</p>";
+            } catch (Exception $e) {
+                echo '</p>';
+                echo formatExceptionHandling($e);
+            }
 
             $modDetails = cached_query(
                 's2_mod_ws_mod_details' . $modID,

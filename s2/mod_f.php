@@ -34,7 +34,19 @@ try {
         try {
             echo '<h3>Flags</h3>';
 
-            echo '<p>Breakdown of flags for all games played in the last week. Calculated twice a day. Flags are arbitrary values that a mod assigns before the game starts.</p>';
+            echo '<p>Breakdown of flags for all games played in the last week. Calculated twice a day. Flags are arbitrary values that a mod assigns before the game starts.';
+
+            try {
+                $serviceReporting = new serviceReporting($db);
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_custom_flags');
+                $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
+                $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
+
+                echo " This data was last updated {$lastCronUpdateRunTime}, taking {$lastCronUpdateExecutionTime} to generate.</p>";
+            } catch (Exception $e) {
+                echo '</p>';
+                echo formatExceptionHandling($e);
+            }
 
             $flags = cached_query(
                 's2_mod_page_flags' . $modID,
