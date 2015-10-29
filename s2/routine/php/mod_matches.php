@@ -48,9 +48,7 @@ try {
         SELECT
           `matchID`, `modID`, `matchPhaseID`, `dateRecorded`
         FROM `s2_match`
-        WHERE `dateRecorded` >= (SELECT DATE_FORMAT( IF( MAX(`dateRecorded`) >0, MAX(`dateRecorded`), (SELECT MIN(`dateRecorded`) FROM `s2_match` ) ), "%Y-%m-%d 00:00:00") - INTERVAL 1 DAY FROM `cache_mod_matches`)
-        ORDER BY `dateRecorded` DESC
-        LIMIT 0,50000;'
+        WHERE `dateRecorded` >= (SELECT DATE_FORMAT( IF( MAX(`dateRecorded`) >0, MAX(`dateRecorded`), (SELECT MIN(`dateRecorded`) FROM `s2_match` ) ), "%Y-%m-%d 00:00:00") - INTERVAL 1 DAY FROM `cache_mod_matches`);'
     );
 
     $db->q('INSERT INTO `cache_mod_matches_temp1`
