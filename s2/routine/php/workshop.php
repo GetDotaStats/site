@@ -57,7 +57,7 @@ try {
                     }
                     rtrim($fields_string, '&');
 
-                    $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 30);
+                    $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 10, 10);
                     $modWorkshopDetails = json_decode($modWorkshopDetails, true);
 
                     $tempArray = array();
@@ -161,54 +161,87 @@ try {
             }
         }
 
-        {
-            $irc_message = new irc_message($webhook_gds_site_admin);
-
-            $message = array(
-                array(
-                    $irc_message->colour_generator('red'),
-                    '[CRON]',
-                    $irc_message->colour_generator(NULL),
-                ),
-                array(
-                    $irc_message->colour_generator('green'),
-                    '[WORKSHOP]',
-                    $irc_message->colour_generator(NULL),
-                ),
-                array(
-                    $irc_message->colour_generator('bold'),
-                    $irc_message->colour_generator('blue'),
-                    'SUCCESS:',
-                    $irc_message->colour_generator(NULL),
-                    $irc_message->colour_generator('bold'),
-                ),
-                array($workshopCronCounts['success'] . ' ||'),
-                array(
-                    $irc_message->colour_generator('bold'),
-                    $irc_message->colour_generator('blue'),
-                    'FAILURE:',
-                    $irc_message->colour_generator(NULL),
-                    $irc_message->colour_generator('bold'),
-                ),
-                array($workshopCronCounts['failure'] . ' ||'),
-                array(
-                    $irc_message->colour_generator('bold'),
-                    $irc_message->colour_generator('blue'),
-                    'UNKNOWN:',
-                    $irc_message->colour_generator(NULL),
-                    $irc_message->colour_generator('bold'),
-                ),
-                array($workshopCronCounts['unknown']),
-                array('|| http://getdotastats.com/s2/routine/log_hourly.html?' . time())
-            );
-
-            $message = $irc_message->combine_message($message);
-            $irc_message->post_message($message, array('localDev' => $localDev));
-        }
-
         $time_end1 = time();
+        $totalRunTime = $time_end1 - $time_start1;
         echo 'Total Running: ' . ($time_end1 - $time_start1) . " seconds<br /><br />";
         echo '<hr />';
+
+        try {
+            $serviceName = 's2_cron_workshop_scrape';
+
+            $oldServiceReport = cached_query(
+                $serviceName . '_old_service_report',
+                'SELECT
+                        `instance_id`,
+                        `service_name`,
+                        `execution_time`,
+                        `performance_index1`,
+                        `performance_index2`,
+                        `performance_index3`,
+                        `date_recorded`
+                    FROM `cron_services`
+                    WHERE `service_name` = ?
+                    ORDER BY `date_recorded` DESC
+                    LIMIT 0,1;',
+                's',
+                array($serviceName),
+                1
+            );
+
+            service_report($serviceName, $totalRunTime, $workshopCronCounts['success'], $workshopCronCounts['failure'], $workshopCronCounts['unknown']);
+
+            if (empty($oldServiceReport)) throw new Exception('No old service report data!');
+
+            $oldServiceReport = $oldServiceReport[0];
+
+            //Check if the run-time increased majorly
+            if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 1.5))) {
+                throw new Exception("Major increase (>50%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
+            }
+
+            //Check if the performance_index2 increased majorly
+            if($workshopCronCounts['failure'] > $oldServiceReport['performance_index2']){
+                throw new Exception("Increase in performance index #2! {$oldServiceReport['performance_index2']} failed scrapes to {$workshopCronCounts['failure']} failed scrapes");
+            }
+
+            //Check if the performance_index3 increased majorly
+            if($workshopCronCounts['unknown'] > $oldServiceReport['performance_index3']){
+                throw new Exception("Increase in performance index #3! {$oldServiceReport['performance_index3']} failed scrapes to {$workshopCronCounts['unknown']} failed scrapes");
+            }
+
+        } catch (Exception $e) {
+            echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+
+            //WEBHOOK
+            {
+                $irc_message = new irc_message($webhook_gds_site_admin);
+
+                $message = array(
+                    array(
+                        $irc_message->colour_generator('red'),
+                        '[CRON]',
+                        $irc_message->colour_generator(NULL),
+                    ),
+                    array(
+                        $irc_message->colour_generator('green'),
+                        '[WORKSHOP]',
+                        $irc_message->colour_generator(NULL),
+                    ),
+                    array(
+                        $irc_message->colour_generator('bold'),
+                        $irc_message->colour_generator('blue'),
+                        'Error:',
+                        $irc_message->colour_generator(NULL),
+                        $irc_message->colour_generator('bold'),
+                    ),
+                    array($e->getMessage() . ' ||'),
+                    array('http://getdotastats.com/s2/routine/log_hourly.html?' . time())
+                );
+
+                $message = $irc_message->combine_message($message);
+                $irc_message->post_message($message, array('localDev' => $localDev));
+            }
+        }
     }
 
 } catch (Exception $e) {
