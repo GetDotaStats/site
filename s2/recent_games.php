@@ -1,6 +1,7 @@
 <?php
-require_once('../global_functions.php');
 require_once('../connections/parameters.php');
+require_once('../global_functions.php');
+require_once('./functions.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -13,7 +14,7 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    $SQLstatementWhere = '';
+    $SQLstatementWhere = array();
     $SQLdeclaration = '';
     $SQLvalues = array();
 
@@ -23,17 +24,17 @@ try {
 
     switch ($filterPhase) {
         case 1:
-            $SQLstatementWhere .= ' AND s2.`matchPhaseID` = ?';
+            $SQLstatementWhere[] = 's2.`matchPhaseID` = ?';
             $SQLdeclaration .= 'i';
             $SQLvalues[] = 1;
             break;
         case 2:
-            $SQLstatementWhere .= ' AND s2.`matchPhaseID` = ?';
+            $SQLstatementWhere[] = 's2.`matchPhaseID` = ?';
             $SQLdeclaration .= 'i';
             $SQLvalues[] = 2;
             break;
         case 3:
-            $SQLstatementWhere .= ' AND s2.`matchPhaseID` = ?';
+            $SQLstatementWhere[] = 's2.`matchPhaseID` = ?';
             $SQLdeclaration .= 'i';
             $SQLvalues[] = 3;
             break;
@@ -44,9 +45,39 @@ try {
         : NULL;
 
     if (!empty($filterModID)) {
-        $SQLstatementWhere .= ' AND s2.`modID` = ?';
+        $modIDLookup = cached_query(
+            's2_recent_games_modlookup' . $filterModID,
+            'SELECT
+                  ml.`mod_id`
+                FROM `mod_list` ml
+                WHERE ml.`mod_id` = ?
+                LIMIT 0,1;',
+            'i',
+            array($filterModID),
+            5
+        );
+
+        if (!empty($modIDLookup)) {
+            $modID = $filterModID;
+        } else {
+            $modID = NULL;
+        }
+    } else {
+        $modID = NULL;
+    }
+
+    if (!empty($modID)) {
+        $SQLstatementWhere[] = 's2.`modID` = ?';
         $SQLdeclaration .= 'i';
-        $SQLvalues[] = $_GET['m'];
+        $SQLvalues[] = $modID;
+
+        echo modPageHeader($modID, $CDN_image);
+    }
+
+    if (!empty($SQLstatementWhere)) {
+        $SQLstatementWhere = 'WHERE ' . implode(' AND ', $SQLstatementWhere);
+    } else {
+        $SQLstatementWhere = '';
     }
 
     echo '<h3>Recently Played Games</h3>';
@@ -109,6 +140,8 @@ try {
                     var op = selObj.options[selObj.selectedIndex];
                     if(op.value != "-"){
                         loadPage("#s2__recent_games?m=" + op.value' . ($filterPhase != -1 ? ' + "&p=' . $filterPhase . '"' : '') . ', 1);
+                    } else{
+                        loadPage("#s2__recent_games"' . ($filterPhase != -1 ? ' + "?p=' . $filterPhase . '"' : '') . ', 1);
                     }
                 }
 
@@ -116,6 +149,8 @@ try {
                     var op = selObj.options[selObj.selectedIndex];
                     if(op.value != "-"){
                         loadPage("#s2__recent_games?p=" + op.value' . (!empty($filterModID) ? ' + "&m=' . $filterModID . '"' : '') . ', 1);
+                    } else{
+                        loadPage("#s2__recent_games"' . (!empty($filterModID) ? ' + "?m=' . $filterModID . '"' : '') . ', 1);
                     }
                 }
             </script>';
@@ -142,8 +177,8 @@ try {
               ml.`mod_name`,
               ml.`mod_workshop_link`
             FROM `s2_match` s2
-            JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
-            WHERE ml.`mod_active` = 1' . $SQLstatementWhere . '
+            LEFT JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
+            ' . $SQLstatementWhere . '
             ORDER BY s2.`dateUpdated` DESC
             LIMIT 0,30;',
         $SQLdeclaration,
