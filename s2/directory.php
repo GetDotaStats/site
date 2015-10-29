@@ -96,24 +96,27 @@ try {
 
         echo '<div class="row">
                     <div class="col-sm-5">&nbsp;</div>
-                    <div class="col-sm-2 text-center"><strong>Games</strong></div>
+                    <div class="col-sm-3 text-center"><strong>Games</strong></div>
                 </div>';
 
         echo '<div class="row">
                     <div class="col-sm-5 text-center"><strong>Mod</strong></div>
-                    <div class="col-sm-1 text-center"><strong>Week</strong><br />
-                        <a class="nav-clickable" href="#s2__directory?o=6">' . $glpyh_down . '</a>
-                        <a class="nav-clickable" href="#s2__directory?o=5">' . $glpyh_up . '</a>
+                    <div class="col-sm-4 text-center">
+                        <div class="row">
+                            <div class="col-sm-4 text-center"><strong>Week</strong><br />
+                                <a class="nav-clickable" href="#s2__directory?o=6">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__directory?o=5">' . $glpyh_up . '</a>
+                            </div>
+                            <div class="col-sm-4 text-center"><strong>All</strong><br />
+                                <a class="nav-clickable" href="#s2__directory?o=8">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__directory?o=7">' . $glpyh_up . '</a>
+                            </div>
+                            <div class="col-sm-4 text-center"><strong>Size</strong><br />
+                                <a class="nav-clickable" href="#s2__directory?o=4">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__directory?o=3">' . $glpyh_up . '</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-1 text-center"><strong>All</strong><br />
-                        <a class="nav-clickable" href="#s2__directory?o=8">' . $glpyh_down . '</a>
-                        <a class="nav-clickable" href="#s2__directory?o=7">' . $glpyh_up . '</a>
-                    </div>
-                    <div class="col-sm-1 text-center"><strong>Size</strong><br />
-                        <a class="nav-clickable" href="#s2__directory?o=4">' . $glpyh_down . '</a>
-                        <a class="nav-clickable" href="#s2__directory?o=3">' . $glpyh_up . '</a>
-                    </div>
-                    <div class="col-sm-1 text-center"><strong>Links</strong></div>
                     <div class="col-sm-3 text-center">
                         <div class="row">
                             <div class="col-sm-6 text-center">
@@ -143,14 +146,6 @@ try {
                 ? $value['games_all_time']
                 : 0;
 
-            $workshopLink = !empty($value['mod_workshop_link'])
-                ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'] . '">WS</a>'
-                : '<span class="db_link">WS</span>';
-
-            $steamGroupLink = !empty($value['mod_steam_group'])
-                ? '<a target="_blank" class="db_link" href="http://steamcommunity.com/groups/' . $value['mod_steam_group'] . '">SG</a>'
-                : '<span class="db_link">SG</span>';
-
             $modSize = !empty($value['mod_size'])
                 ? filesize_human_readable($value['mod_size'], 0, 'MB', true)
                 : NULL;
@@ -159,11 +154,12 @@ try {
                 ? $modSize['number'] . '<span class="db_link"> ' . $modSize['string'] . '</span>'
                 : '??<span class="db_link"> MB</span>';
 
-            $modLinks = $workshopLink . ' || ' . $steamGroupLink;
-
+            $workshopLink = 'http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'];
             $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
                 ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
                 : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
+            $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
+            $modThumb = '<a target="_blank" href="' . $workshopLink . '">' . $modThumb . '</a>';
 
             if (!empty($value['workshop_updated'])) {
                 $modLastUpdate = relative_time_v3($value['workshop_updated'], 0, 'day', 1);
@@ -180,11 +176,14 @@ try {
             }
 
             echo '<div class="row">
-                    <div class="col-sm-5"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
-                    <div class="col-sm-1 text-right">' . number_format($value['games_last_week']) . '</div>
-                    <div class="col-sm-1 text-right">' . number_format($value['games_all_time']) . '</div>
-                    <div class="col-sm-1 text-right">' . $modSize . '</div>
-                    <div class="col-sm-1 text-center">' . $modLinks . '</div>
+                    <div class="col-sm-5">' . $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                    <div class="col-sm-4 text-center">
+                        <div class="row">
+                            <div class="col-sm-4 text-right">' . number_format($value['games_last_week']) . '</div>
+                            <div class="col-sm-4 text-right">' . number_format($value['games_all_time']) . '</div>
+                            <div class="col-sm-4 text-right">' . $modSize . '</div>
+                        </div>
+                    </div>
                     <div class="col-sm-3 text-center">
                         <div class="row">
                             <div class="col-sm-6 text-right">' . $modLastUpdate . '</div>
