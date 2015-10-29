@@ -77,52 +77,57 @@ try {
             if (empty($schemaIDtoUse)) throw new Exception('No schema fields to use!');
 
             foreach ($customFields as $key => $value) {
-                $fieldID = $value['fieldOrder'];
-                $fieldName = $value['customValueDisplay'];
+                try {
+                    $fieldID = $value['fieldOrder'];
+                    $fieldName = $value['customValueDisplay'];
 
-                $customPlayerValues = cached_query(
-                    's2_mod_page_op_combos_values' . $modID . '_' . $fieldID,
-                    'SELECT
-                          ccpv.`modID`,
-                          ccpv.`fieldOrder`,
-                          ccpv.`fieldValue`,
-                          ccpv.`numGames`,
-                          ccpv.`numWins`,
-                          (ccpv.`numWins` / ccpv.`numGames`) AS winrate
-                        FROM `cache_custom_player_values` ccpv
-                        WHERE ccpv.`modID` = ? AND ccpv.`fieldOrder` = ?
-                        ORDER BY winrate DESC, ccpv.`numGames` DESC
-                        LIMIT 0,30;',
-                    'ii',
-                    array($modID, $fieldID),
-                    1
-                );
+                    $customPlayerValues = cached_query(
+                        's2_mod_page_op_combos_values' . $modID . '_' . $fieldID,
+                        'SELECT
+                              ccpv.`modID`,
+                              ccpv.`fieldOrder`,
+                              ccpv.`fieldValue`,
+                              ccpv.`numGames`,
+                              ccpv.`numWins`,
+                              (ccpv.`numWins` / ccpv.`numGames`) AS winrate
+                            FROM `cache_custom_player_values` ccpv
+                            WHERE ccpv.`modID` = ? AND ccpv.`fieldOrder` = ?
+                            ORDER BY winrate DESC, ccpv.`numGames` DESC
+                            LIMIT 0,30;',
+                        'ii',
+                        array($modID, $fieldID),
+                        1
+                    );
 
-                echo "<h3>$fieldName</h3>";
+                    echo "<h3>$fieldName</h3>";
 
-                if (empty($customPlayerValues)) throw new Exception('No custom player values recorded for this mod!');
+                    if (empty($customPlayerValues)) throw new Exception('No custom player values recorded for this mod!');
 
-                echo '<div class="row">
+                    echo '<div class="row">
                             <div class="col-md-9"><strong>Value</strong></div>
                             <div class="col-md-1"><strong>Winrate</strong></div>
                             <div class="col-md-1"><strong>Wins</strong></div>
                             <div class="col-md-1"><strong>Players</strong></div>
                         </div>';
 
-                foreach ($customPlayerValues as $key2 => $value2) {
-                    if ($value2['fieldValue'] == '-1') continue;
+                    foreach ($customPlayerValues as $key2 => $value2) {
+                        if ($value2['fieldValue'] == '-1') continue;
 
-                    $fieldValue = $value2['fieldValue'];
-                    $winrate = number_format($value2['winrate'] * 100, 1);
-                    $numWins = number_format($value2['numWins']);
-                    $numGames = number_format($value2['numGames']);
+                        $fieldValue = $value2['fieldValue'];
+                        $winrate = number_format($value2['winrate'] * 100, 1);
+                        $numWins = number_format($value2['numWins']);
+                        $numGames = number_format($value2['numGames']);
 
-                    echo "<div class='row'>
+                        echo "<div class='row'>
                             <div class='col-md-9'><div>{$fieldValue}</div></div>
                             <div class='col-md-1 text-right'>{$winrate}%</div>
                             <div class='col-md-1 text-right'>{$numWins}</div>
                             <div class='col-md-1 text-right'>{$numGames}</div>
                         </div>";
+                    }
+
+                } catch (Exception $e) {
+                    echo formatExceptionHandling($e);
                 }
             }
         } catch (Exception $e) {
