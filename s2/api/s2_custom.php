@@ -55,10 +55,6 @@ try {
                 `mod_active`,
                 `mod_rejected`,
                 `mod_rejected_reason`,
-                `mod_maps`,
-                `mod_max_players`,
-                `mod_options_enabled`,
-                `mod_options`,
                 `date_recorded`
             FROM `mod_list`
             WHERE `mod_identifier` = ?
