@@ -83,13 +83,13 @@ try {
                         <li><a class="nav-clickable" href="#s2__search">Search</a></li>
                         <li><a class="nav-clickable" href="#s2__recent_games">Recent Games</a></li>
                         <li><a class="nav-clickable" href="#s2__mod_aggregate">Aggregate Analysis</a></li>
-                        <li><a class="nav-clickable" href="#d2mods__feedback">Feedback</a></li>
                         <?php if (!empty($_SESSION['user_id64'])) { ?>
                             <li class="divider"></li>
                             <li class="dropdown-header">My Section</li>
                             <li><a class="nav-clickable" href="#s2__user?id=<?= $_SESSION['user_id64'] ?>">Public
                                     Profile</a></li>
                             <li><a class="nav-clickable" href="#s2__my__profile">Private Profile</a></li>
+                            <li><a class="nav-clickable" href="#s2__my__give_feedback">Give Feedback</a></li>
                             <li><a class="nav-clickable" href="#s2__my__mods">Mods</a></li>
                             <li><a class="nav-clickable" href="#s2__my__mods_feedback">Feedback</a></li>
                         <?php } ?>
