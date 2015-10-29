@@ -46,8 +46,8 @@ try {
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com *.changetip.com 'unsafe-eval' 'unsafe-inline' data:;
-          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com data: ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net  *.google-analytics.com *.steamusercontent.com;
-          font-src 'self' static.getdotastats.com getdotastats.com;
+          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net *.google-analytics.com *.steamusercontent.com steamcdn-a.akamaihd.net data:;
+          font-src 'self' static.getdotastats.com getdotastats.com data:;
           frame-src chatwing.com *.youtube.com *.mibbit.com *.changetip.com;
           object-src 'none';
           media-src 'none';
@@ -73,6 +73,11 @@ try {
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div id="navBarCustom" class="navbar-collapse collapse">
+            <span class="nav navbar-nav">
+                <a class="nav-clickable" href="#s2__directory">
+                    <img width="194px" src="<?= $imageCDN ?>/images/getdotastats_logo_v3.png" alt="site logo"/>
+                </a>
+            </span>
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <!--<span class="label label-success">UPDATED</span>-->
@@ -180,10 +185,6 @@ try {
 
 <div class="container">
     <div class="text-center">
-        <a class="nav-clickable" href="#s2__directory"><img width="300px"
-                                                            src="<?= $CDN_generic ?>/images/getdotastats_logo_v3.png"
-                                                            alt="site logo"/></a>
-
         <div id="loading">
             <img id="loading_spinner1" src="<?= $CDN_generic ?>/images/spinner_v2.gif" alt="loading"/>
         </div>
