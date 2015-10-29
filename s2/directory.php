@@ -82,19 +82,7 @@ try {
 
     echo '<h2>Mod Directory</h2>';
 
-    echo '<p>Download all of the mods below by <a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=537809143">subscribing to our collection <span class="glyphicon glyphicon-new-window"></span></a>.';
-
-    try {
-        $serviceReporting = new serviceReporting($db);
-        $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_matches');
-        $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
-        $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
-
-        echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
-    } catch (Exception $e) {
-        echo '</p>';
-        echo formatExceptionHandling($e);
-    }
+    echo '<p>Download all of the mods below by <a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=537809143">subscribing to our collection <span class="glyphicon glyphicon-new-window"></span></a>.</p>';
 
     if (!empty($modWorkshopList)) {
         $totalModSize = 0;
