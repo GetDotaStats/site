@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $currentSchemaVersionCustom) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $requiredSchemaVersionCustom) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -288,7 +288,7 @@ try {
 
 
     $s2_response['result'] = 1;
-    $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
+    $s2_response['schemaVersion'] = $responseSchemaVersionCustom;
 
     /*$irc_message = new irc_message($webhook_gds_site_announce);
 
@@ -317,7 +317,7 @@ try {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
-    $s2_response['schemaVersion'] = $currentSchemaVersionCustom;
+    $s2_response['schemaVersion'] = $responseSchemaVersionCustom;
 } finally {
     if (isset($memcache)) $memcache->close();
     if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');

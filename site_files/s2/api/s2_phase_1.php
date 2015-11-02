@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $currentSchemaVersionPhase1) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $requiredSchemaVersionPhase1) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -26,12 +26,23 @@ try {
     for ($i = 0; $i < 10; $i++)
         $authKey .= $characters[rand(0, 35)];
 
-    if (
-        !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
-        !isset($preGameAuthPayloadJSON['hostSteamID32']) || empty($preGameAuthPayloadJSON['hostSteamID32']) ||
-        !isset($preGameAuthPayloadJSON['numPlayers']) || empty($preGameAuthPayloadJSON['numPlayers']) || !is_numeric($preGameAuthPayloadJSON['numPlayers'])
-    ) {
-        throw new Exception('Payload missing fields!');
+    if ($preGameAuthPayloadJSON['schemaVersion'] < 3) {
+        //V1 & V2 required numPlayers
+        if (
+            !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
+            !isset($preGameAuthPayloadJSON['hostSteamID32']) || empty($preGameAuthPayloadJSON['hostSteamID32']) ||
+            !isset($preGameAuthPayloadJSON['numPlayers']) || empty($preGameAuthPayloadJSON['numPlayers']) || !is_numeric($preGameAuthPayloadJSON['numPlayers'])
+        ) {
+            throw new Exception('Payload missing fields!');
+        }
+    } else {
+        //V3 removed numPlayers
+        if (
+            !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
+            !isset($preGameAuthPayloadJSON['hostSteamID32']) || empty($preGameAuthPayloadJSON['hostSteamID32'])
+        ) {
+            throw new Exception('Payload missing fields!');
+        }
     }
 
     $memcache = new Memcache;
@@ -72,19 +83,36 @@ try {
 
     //MATCH DETAILS
     {
-        $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `numPlayers`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
-                VALUES (?, ?, ?, ?, ?, ?, NULL, NULL);',
-            'sisiii',
-            array(
-                $authKey,
-                $modID,
-                $preGameAuthPayloadJSON['hostSteamID32'],
-                1,
-                $preGameAuthPayloadJSON['numPlayers'],
-                $preGameAuthPayloadJSON['schemaVersion']
-            )
-        );
+        if ($preGameAuthPayloadJSON['schemaVersion'] < 3) {
+            //V1 & V2 required numPlayers
+            $sqlResult = $db->q(
+                'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `numPlayers`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
+                    VALUES (?, ?, ?, ?, ?, ?, NULL, NULL);',
+                'sisiii',
+                array(
+                    $authKey,
+                    $modID,
+                    $preGameAuthPayloadJSON['hostSteamID32'],
+                    1,
+                    $preGameAuthPayloadJSON['numPlayers'],
+                    $preGameAuthPayloadJSON['schemaVersion']
+                )
+            );
+        } else {
+            //V3 removed numPlayers
+            $sqlResult = $db->q(
+                'INSERT INTO `s2_match`(`matchAuthKey`, `modID`, `matchHostSteamID32`, `matchPhaseID`, `schemaVersion`, `dateUpdated`, `dateRecorded`)
+                    VALUES (?, ?, ?, ?, ?, NULL, NULL);',
+                'sisii',
+                array(
+                    $authKey,
+                    $modID,
+                    $preGameAuthPayloadJSON['hostSteamID32'],
+                    1,
+                    $preGameAuthPayloadJSON['schemaVersion']
+                )
+            );
+        }
     }
 
     $matchID = $db->last_index();
@@ -129,7 +157,7 @@ try {
         $s2_response['matchID'] = $matchID;
         $s2_response['modID'] = $modID;
         $s2_response['modIdentifier'] = $modIdentifier;
-        $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
+        $s2_response['schemaVersion'] = $responseSchemaVersionPhase1;
 
         /*
         $irc_message = new irc_message($webhook_gds_site_announce);
@@ -164,14 +192,14 @@ try {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
         $s2_response['error'] = 'Unknown error!';
-        $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
+        $s2_response['schemaVersion'] = $responseSchemaVersionPhase1;
     }
 
 } catch (Exception $e) {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
-    $s2_response['schemaVersion'] = $currentSchemaVersionPhase1;
+    $s2_response['schemaVersion'] = $responseSchemaVersionPhase1;
 } finally {
     if (isset($memcache)) $memcache->close();
     if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');

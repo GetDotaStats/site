@@ -17,7 +17,7 @@ try {
         throw new Exception('Payload not JSON!');
     }
 
-    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $currentSchemaVersionHighscore) { //CHECK THAT SCHEMA VERSION IS CURRENT
+    if (!isset($preGameAuthPayloadJSON['schemaVersion']) || empty($preGameAuthPayloadJSON['schemaVersion']) || $preGameAuthPayloadJSON['schemaVersion'] < $requiredSchemaVersionHighscore) { //CHECK THAT SCHEMA VERSION IS CURRENT
         throw new Exception('Schema version out of date!');
     }
 
@@ -343,19 +343,19 @@ try {
 
     if (!empty($sqlResult)) {
         $s2_response['result'] = 1;
-        $s2_response['schemaVersion'] = $currentSchemaVersionHighscore;
+        $s2_response['schemaVersion'] = $responseSchemaVersionHighscore;
     } else {
         //SOMETHING FUNKY HAPPENED
         $s2_response['result'] = 0;
         $s2_response['error'] = 'Unknown error!';
-        $s2_response['schemaVersion'] = $currentSchemaVersionHighscore;
+        $s2_response['schemaVersion'] = $responseSchemaVersionHighscore;
     }
 
 } catch (Exception $e) {
     unset($s2_response);
     $s2_response['result'] = 0;
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
-    $s2_response['schemaVersion'] = $currentSchemaVersionHighscore;
+    $s2_response['schemaVersion'] = $responseSchemaVersionHighscore;
 } finally {
     if (isset($memcache)) $memcache->close();
     if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');
