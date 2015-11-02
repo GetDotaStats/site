@@ -1,6 +1,5 @@
 .idea
-connections/parameters.php
-sig/images/generated/
-replays
+parameters.php
+site_files/sig/images/generated/
 testing
-s2/highcharts/
+site_files/s2/highcharts/
