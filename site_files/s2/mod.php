@@ -87,6 +87,8 @@ try {
                 );
             }
 
+            ksort($bigArray);
+
             $lineChart = makeLineChart(
                 $bigArray,
                 'games_per_phase_all',
