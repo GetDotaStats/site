@@ -116,13 +116,13 @@ if (!class_exists("dbWrapper_v3")) {
                             array_slice($x, 2));
                         $args_ref = array();
                         foreach ($args as $k => &$arg) {
-                            $args_ref[$k] = & $arg;
+                            $args_ref[$k] = &$arg;
                         }
                     } else {
                         $args_ref = array();
                         $args_ref[] = func_get_arg(1);
                         foreach ($x[2] as $k => &$arg) {
-                            $args_ref[] = & $arg;
+                            $args_ref[] = &$arg;
                         }
                     }
 
@@ -143,7 +143,7 @@ if (!class_exists("dbWrapper_v3")) {
                 $params = array();
                 $meta = $query->result_metadata();
                 while ($field = $meta->fetch_field()) {
-                    $params[] = & $row[$field->name];
+                    $params[] = &$row[$field->name];
                 }
                 call_user_func_array(array($query, 'bind_result'), $params);
 
@@ -1604,5 +1604,14 @@ if (!class_exists('serviceReporting')) {
 
             throw new Exception('No service log loaded! Run getServiceLog() first!');
         }
+    }
+}
+
+if (!function_exists('adminWrapText')) {
+    function adminWrapText($text)
+    {
+        if(empty($text)) throw new Exception('No text to wrap!');
+        $text = '<span class="boldRedText">'.$text.'</span> <span class="glyphicon glyphicon-magnet" title="ADMIN viewable only"></span>';
+        return $text;
     }
 }

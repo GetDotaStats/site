@@ -68,7 +68,7 @@ if (!function_exists('modPageHeader')) {
                     //if admin, show modIdentifier too
                     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
                     if (!empty($adminCheck)) {
-                        $modIDname = '<small>' . $modDetails[0]['mod_identifier'] . '</small>';
+                        $modIDname = '<small>' . adminWrapText($modDetails[0]['mod_identifier']) . '</small>';
                     }
                 }
                 $modNameLink = $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $modDetails[0]['mod_id'] . '">' . $modDetails[0]['mod_name'] . $modNameLink . '</a> ' . $modIDname;
@@ -104,7 +104,7 @@ if (!function_exists('modPageHeader')) {
                     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
                     if (!empty($adminCheck)) {
                         $developerEmail = '<div class="row mod_info_panel">
-                                <div class="col-sm-3"><strong>Developer Email</strong></div>
+                                <div class="col-sm-3"><strong>' . adminWrapText('Developer Email') . '</strong></div>
                                 <div class="col-sm-9">';
 
                         if (!empty($modDetails[0]['user_email'])) {
