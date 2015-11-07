@@ -204,6 +204,8 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     foreach ($recentGames as $key => $value) {
+        $matchPhase = matchPhaseToGlyhpicon($value['matchPhaseID']);
+
         echo '<div class="row searchRow">
                 <a class="nav-clickable" href="#s2__mod?id=' . $value['modID'] . '">
                     <div class="col-md-4"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</div>
@@ -213,7 +215,7 @@ try {
                         <div class="col-md-3 text-center">' . $value['numPlayers'] . '</div>
                         <div class="col-md-3 text-center">' . $value['numRounds'] . '</div>
                         <div class="col-md-3 text-right">' . secs_to_clock($value['matchDuration']) . '</div>
-                        <div class="col-md-3 text-center">' . $value['matchPhaseID'] . '</div>
+                        <div class="col-md-3 text-center">' . $matchPhase . '</div>
                     </div>
                     <div class="col-md-2 text-right">' . relative_time_v3($value['dateUpdated']) . '</div>
                 </a>

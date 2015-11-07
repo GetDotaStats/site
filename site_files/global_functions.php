@@ -1615,3 +1615,28 @@ if (!function_exists('adminWrapText')) {
         return $text;
     }
 }
+
+if (!function_exists('matchPhaseToGlyhpicon')) {
+    function matchPhaseToGlyhpicon($phase)
+    {
+        if(empty($phase)) throw new Exception('No phase to convert!');
+
+        switch($phase){
+            case 1:
+                $phaseGlyphicon = '<span class="glyphicon glyphicon-time boldRedText" title="Players loaded"></span>';
+                break;
+            case 2:
+                $phaseGlyphicon = '<span class="glyphicon glyphicon-time boldOrangeText" title="Game started"></span>';
+                break;
+            case 3:
+                $phaseGlyphicon = '<span class="glyphicon glyphicon-time boldGreenText" title="Game ended"></span>';
+                break;
+            default:
+                $phaseGlyphicon = '<span class="glyphicon glyphicon-time" title="Players loaded"></span>';
+                break;
+        }
+
+        return $phaseGlyphicon;
+    }
+}
+

@@ -81,7 +81,22 @@ try {
                     ? intval($value['gamesPlayed'])
                     : 0;
 
-                $bigArray['Phase ' . $value['gamePhase']][] = array(
+                switch($value['gamePhase']){
+                    case 1:
+                        $phase = '1 - Players loaded';
+                        break;
+                    case 2:
+                        $phase = '2 - Game started';
+                        break;
+                    case 3:
+                        $phase = '3 - Game ended';
+                        break;
+                    default:
+                        $phase = '1 - Players loaded';
+                        break;
+                }
+
+                $bigArray[$phase][] = array(
                     new HighchartJsExpr("Date.UTC($year, $month, $day)"),
                     $gamesPlayedRaw,
                 );

@@ -28,8 +28,6 @@ try {
                 s2m.`matchHostSteamID32`,
                 s2m.`matchPhaseID`,
                 s2m.`isDedicated`,
-                s2m.`matchMapName`,
-                s2m.`numPlayers`,
                 s2m.`numRounds`,
                 s2m.`matchDuration`,
                 s2m.`matchFinished`,
@@ -61,9 +59,11 @@ try {
     }
 
     $hostUserID32 = $matchDetails[0]['matchHostSteamID32'];
-    $numRounds = $matchDetails[0]['numRounds'];
-    $numPlayers = $matchDetails[0]['numPlayers'];
+    $numRounds = !empty($matchDetails[0]['numRounds']) && is_numeric($matchDetails[0]['numRounds'])
+        ? $matchDetails[0]['numRounds']
+        : 1;
     $modID = $matchDetails[0]['modID'];
+    $matchPhase = matchPhaseToGlyhpicon($matchDetails[0]['matchPhaseID']);
 
     if (!empty($modID)) {
         echo modPageHeader($modID, $CDN_image);
@@ -73,28 +73,18 @@ try {
 
     //GAME SUMMARY
     echo '<div class="row">
-                <div class="col-md-5">&nbsp;</div>
-                <div class="col-md-7 mod_info_panel">
+                <div class="col-md-6">&nbsp;</div>
+                <div class="col-md-6 mod_info_panel">
                     <div class="row">
-                        <div class="col-md-5">
-                            <div class="row">
-                                <div class="col-md-4"><strong>Phase</strong></div>
-                                <div class="col-md-4"><strong>Players</strong></div>
-                                <div class="col-md-4"><strong>Rounds</strong></div>
-                            </div>
-                        </div>
+                        <div class="col-md-2 text-center"><strong>Phase</strong></div>
+                        <div class="col-md-3 text-center"><strong>Rounds</strong></div>
                         <div class="col-md-3"><strong>Duration</strong></div>
                         <div class="col-md-4"><strong>Recorded</strong></div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-5">
-                            <div class="row">
-                                <div class="col-md-4 text-center">' . $matchDetails[0]['matchPhaseID'] . '</div>
-                                <div class="col-md-4 text-center">' . $matchDetails[0]['numPlayers'] . '</div>
-                                <div class="col-md-4 text-center">' . $matchDetails[0]['numRounds'] . '</div>
-                            </div>
-                        </div>
+                        <div class="col-md-2 text-center">' . $matchPhase . '</div>
+                        <div class="col-md-3 text-center">' . $numRounds . '</div>
                         <div class="col-md-3">' . round($matchDetails[0]['matchDuration'] / 60) . ' mins</div>
                         <div class="col-md-4">' . relative_time_v3($matchDetails[0]['dateRecorded'], 1, NULL, false, true, false) . '</div>
                     </div>
