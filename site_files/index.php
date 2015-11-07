@@ -75,7 +75,7 @@ try {
         <div id="navBarCustom" class="navbar-collapse collapse">
             <span class="nav navbar-nav">
                 <a class="nav-clickable" href="#s2__directory">
-                    <img width="194px" src="<?= $imageCDN ?>/images/getdotastats_logo_v3.png" alt="site logo"/>
+                    <img height="51px" width="194px" src="<?= $imageCDN ?>/images/getdotastats_logo_v3.png" alt="site logo"/>
                 </a>
             </span>
             <ul class="nav navbar-nav">
