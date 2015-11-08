@@ -7,7 +7,7 @@ if (!function_exists('modPageHeader')) {
         $result = '';
 
         $modDetails = cached_query(
-            's2_mod_page_details' . $modID,
+            's2_mod_header_mod_details' . $modID,
             'SELECT
                   ml.`mod_id`,
                   ml.`steam_id64`,
@@ -25,6 +25,7 @@ if (!function_exists('modPageHeader')) {
                   ml.`date_recorded`,
 
                   gu.`user_name`,
+                  gu.`user_avatar`,
 
                   guo.`user_email`,
 
@@ -89,8 +90,8 @@ if (!function_exists('modPageHeader')) {
 
             //Developer name and avatar
             {
-                $developerAvatar = !empty($value['user_avatar'])
-                    ? $value['user_avatar']
+                $developerAvatar = !empty($modDetails[0]['user_avatar'])
+                    ? $modDetails[0]['user_avatar']
                     : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
                 $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" alt="Developer avatar" />';
                 $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $modDetails[0]['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $modDetails[0]['steam_id64'] . '">' . $modDetails[0]['user_name'] . '</a>';
