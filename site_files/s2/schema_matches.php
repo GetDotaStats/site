@@ -89,7 +89,7 @@
                 <div class="row">
                     <div class="col-sm-3">numPlayers</div>
                     <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">4</div>
+                    <div class="col-sm-7">4 <strong>(Deprecated in v3)</strong></div>
                 </div>
 
                 <div class="row">

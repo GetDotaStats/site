@@ -148,10 +148,13 @@ try {
 
                         s2m.`matchHostSteamID32`,
                         s2m.`matchPhaseID`,
-                        s2m.`numPlayers`,
                         s2m.`numRounds`,
                         s2m.`matchDuration`,
-                        s2m.`dateRecorded`
+                        s2m.`dateRecorded`,
+
+                        (SELECT `flagValue` FROM `s2_match_flags` WHERE `matchID` = s2m.`matchID` AND `flagName` = "numPlayers" LIMIT 0,1) AS `numPlayers`,
+                        s2m.`numPlayers` AS `numPlayers2`
+
                     FROM `s2_match_players` s2mp
                     JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
                     LEFT JOIN `s2_match` s2m ON s2mp.`matchID` = s2m.`matchID`
@@ -164,7 +167,6 @@ try {
             );
 
             if (empty($userRecentGames)) throw new Exception('User has games recorded against mods we track!');
-
 
             echo '<div class="row">
                         <div class="col-md-4"><strong>Mod</strong></div>
@@ -179,19 +181,33 @@ try {
                     </div>';
 
             foreach ($userRecentGames as $key => $value) {
+                $matchPhase = matchPhaseToGlyhpicon($value['matchPhaseID']);
+
                 $isHost = $value['matchHostSteamID32'] == $userID32
                     ? '<span class="glyphicon glyphicon-ok boldGreenText"></span>'
                     : '<span class="glyphicon glyphicon-remove boldRedText"></span>';
+
+                $numPlayers = !empty($value['numPlayers']) && is_numeric($value['numPlayers'])
+                    ? $value['numPlayers']
+                    : '?';
+
+                if($numPlayers == '?' && !empty($value['numPlayers2']) && is_numeric($value['numPlayers2'])){
+                    $numPlayers = $value['numPlayers2'];
+                }
+
+                $matchDuration = !empty($value['matchDuration']) && is_numeric($value['matchDuration'])
+                    ? secs_to_clock($value['matchDuration'])
+                    : '??:??';
 
                 echo '<div class="row searchRow">
                         <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
                             <div class="col-md-4"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</div>
                             <div class="col-md-6">
-                                <div class="col-md-2 text-center">' . $value['numPlayers'] . '</div>
+                                <div class="col-md-2 text-center">' . $numPlayers . '</div>
                                 <div class="col-md-2 text-center">' . $value['numRounds'] . '</div>
-                                <div class="col-md-2 text-center">' . $value['matchPhaseID'] . '</div>
+                                <div class="col-md-2 text-center">' . $matchPhase . '</div>
                                 <div class="col-md-2 text-center">' . $isHost . '</div>
-                                <div class="col-md-4 text-center">' . secs_to_clock($value['matchDuration']) . '</div>
+                                <div class="col-md-4 text-center">' . $matchDuration . '</div>
                             </div>
                             <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
                         </a>

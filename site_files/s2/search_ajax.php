@@ -28,10 +28,12 @@ try {
                 'search_match_check' . $searchTerm,
                 'SELECT
                         s2.`matchID`,
-                        s2.`numPlayers`,
                         s2.`numRounds`,
                         s2.`matchDuration`,
                         s2.`dateRecorded`,
+
+                        (SELECT `flagValue` FROM `s2_match_flags` WHERE `matchID` = s2.`matchID` AND `flagName` = "numPlayers" LIMIT 0,1) AS `numPlayers`,
+                        s2.`numPlayers` AS `numPlayers2`,
 
                         ml.`mod_name`
                     FROM `s2_match` s2
@@ -44,12 +46,24 @@ try {
             );
 
             if (!empty($matchCheck)) {
+                $numPlayers = !empty($matchCheck[0]['numPlayers']) && is_numeric($matchCheck[0]['numPlayers'])
+                    ? $matchCheck[0]['numPlayers']
+                    : '?';
+
+                if($numPlayers == '?' && !empty($matchCheck[0]['numPlayers2']) && is_numeric($matchCheck[0]['numPlayers2'])){
+                    $numPlayers = $matchCheck[0]['numPlayers2'];
+                }
+
+                $matchDuration = !empty($matchCheck[0]['matchDuration']) && is_numeric($matchCheck[0]['matchDuration'])
+                    ? secs_to_clock($matchCheck[0]['matchDuration'])
+                    : '??:??';
+
                 $resultsArray['Matches'] = array(
                     'matchID' => $matchCheck[0]['matchID'],
                     'modName' => $matchCheck[0]['mod_name'],
-                    'numPlayers' => $matchCheck[0]['numPlayers'],
+                    'numPlayers' => $numPlayers,
                     'numRounds' => $matchCheck[0]['numRounds'],
-                    'matchDuration' => $matchCheck[0]['matchDuration'],
+                    'matchDuration' => $matchDuration,
                     'dateRecorded' => $matchCheck[0]['dateRecorded'],
                 );
             }
@@ -229,7 +243,7 @@ try {
                             <div class="col-md-3">' . $value['modName'] . '</div>
                             <div class="col-md-1 text-center">' . $value['numPlayers'] . '</div>
                             <div class="col-md-1 text-center">' . $value['numRounds'] . '</div>
-                            <div class="col-md-1 text-center">' . secs_to_clock($value['matchDuration']) . '</div>
+                            <div class="col-md-1 text-center">' . $value['matchDuration'] . '</div>
                             <div class="col-md-2">&nbsp;</div>
                             <div class="col-md-3 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
                     </a>

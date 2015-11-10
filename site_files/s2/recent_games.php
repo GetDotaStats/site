@@ -166,13 +166,15 @@ try {
               s2.`matchPhaseID`,
               s2.`isDedicated`,
               s2.`matchMapName`,
-              s2.`numPlayers`,
               s2.`numRounds`,
               s2.`matchDuration`,
               s2.`matchFinished`,
               s2.`schemaVersion`,
               s2.`dateUpdated`,
               s2.`dateRecorded`,
+
+              (SELECT `flagValue` FROM `s2_match_flags` WHERE `matchID` = s2.`matchID` AND `flagName` = "numPlayers" LIMIT 0,1) AS `numPlayers`,
+              s2.`numPlayers` AS `numPlayers2`,
 
               ml.`mod_name`,
               ml.`mod_workshop_link`
@@ -206,15 +208,27 @@ try {
     foreach ($recentGames as $key => $value) {
         $matchPhase = matchPhaseToGlyhpicon($value['matchPhaseID']);
 
+        $numPlayers = !empty($value['numPlayers']) && is_numeric($value['numPlayers'])
+            ? $value['numPlayers']
+            : '?';
+
+        if($numPlayers == '?' && !empty($value['numPlayers2']) && is_numeric($value['numPlayers2'])){
+            $numPlayers = $value['numPlayers2'];
+        }
+
+        $matchDuration = !empty($value['matchDuration']) && is_numeric($value['matchDuration'])
+            ? secs_to_clock($value['matchDuration'])
+            : '??:??';
+
         echo '<div class="row searchRow">
                 <a class="nav-clickable" href="#s2__mod?id=' . $value['modID'] . '">
                     <div class="col-md-4"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</div>
                 </a>
                 <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
                     <div class="col-md-6">
-                        <div class="col-md-3 text-center">' . $value['numPlayers'] . '</div>
+                        <div class="col-md-3 text-center">' . $numPlayers . '</div>
                         <div class="col-md-3 text-center">' . $value['numRounds'] . '</div>
-                        <div class="col-md-3 text-right">' . secs_to_clock($value['matchDuration']) . '</div>
+                        <div class="col-md-3 text-right">' . $matchDuration . '</div>
                         <div class="col-md-3 text-center">' . $matchPhase . '</div>
                     </div>
                     <div class="col-md-2 text-right">' . relative_time_v3($value['dateUpdated']) . '</div>
