@@ -116,13 +116,13 @@ if (!class_exists("dbWrapper_v3")) {
                             array_slice($x, 2));
                         $args_ref = array();
                         foreach ($args as $k => &$arg) {
-                            $args_ref[$k] = &$arg;
+                            $args_ref[$k] = & $arg;
                         }
                     } else {
                         $args_ref = array();
                         $args_ref[] = func_get_arg(1);
                         foreach ($x[2] as $k => &$arg) {
-                            $args_ref[] = &$arg;
+                            $args_ref[] = & $arg;
                         }
                     }
 
@@ -143,7 +143,7 @@ if (!class_exists("dbWrapper_v3")) {
                 $params = array();
                 $meta = $query->result_metadata();
                 while ($field = $meta->fetch_field()) {
-                    $params[] = &$row[$field->name];
+                    $params[] = & $row[$field->name];
                 }
                 call_user_func_array(array($query, 'bind_result'), $params);
 
@@ -1493,20 +1493,25 @@ if (!class_exists('basicStatsForArrays')) {
 }
 
 if (!function_exists('service_report')) {
-    function service_report($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL)
+    function service_report($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL, $isSub = FALSE)
     {
         global $db;
+
+        $isSub = !empty($isSub)
+            ? 1
+            : 0;
 
         $sqlResult = $db->q('INSERT INTO `cron_services`
             (
                 `service_name`,
+                `is_sub`,
                 `execution_time`,
                 `performance_index1`,
                 `performance_index2`,
                 `performance_index3`
-            ) VALUES (?, ?, ?, ?, ?);',
-            'siiii',
-            array($serviceName, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
+            ) VALUES (?, ?, ?, ?, ?, ?);',
+            'siiiii',
+            array($serviceName, $isSub, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
         );
 
         if ($sqlResult) {
@@ -1610,8 +1615,8 @@ if (!class_exists('serviceReporting')) {
 if (!function_exists('adminWrapText')) {
     function adminWrapText($text)
     {
-        if(empty($text)) throw new Exception('No text to wrap!');
-        $text = '<span class="boldRedText">'.$text.'</span> <span class="glyphicon glyphicon-magnet" title="ADMIN viewable only"></span>';
+        if (empty($text)) throw new Exception('No text to wrap!');
+        $text = '<span class="boldRedText">' . $text . '</span> <span class="glyphicon glyphicon-magnet" title="ADMIN viewable only"></span>';
         return $text;
     }
 }
@@ -1619,9 +1624,9 @@ if (!function_exists('adminWrapText')) {
 if (!function_exists('matchPhaseToGlyhpicon')) {
     function matchPhaseToGlyhpicon($phase)
     {
-        if(empty($phase)) throw new Exception('No phase to convert!');
+        if (empty($phase)) throw new Exception('No phase to convert!');
 
-        switch($phase){
+        switch ($phase) {
             case 1:
                 $phaseGlyphicon = '<span class="glyphicon glyphicon-time boldRedText" title="Players loaded"></span>';
                 break;
