@@ -153,7 +153,9 @@ try {
                         s2m.`dateRecorded`,
 
                         (SELECT `flagValue` FROM `s2_match_flags` WHERE `matchID` = s2m.`matchID` AND `flagName` = "numPlayers" LIMIT 0,1) AS `numPlayers`,
-                        s2m.`numPlayers` AS `numPlayers2`
+                        s2m.`numPlayers` AS `numPlayers2`,
+
+                        (SELECT `isWinner` FROM `s2_match_players` WHERE `matchID` = s2m.`matchID` AND `steamID32` = s2mp.`steamID32` LIMIT 0,1) AS `isWinner`
 
                     FROM `s2_match_players` s2mp
                     JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
@@ -175,7 +177,8 @@ try {
                             <div class="col-md-2 text-center"><strong>Rounds</strong></div>
                             <div class="col-md-2 text-center"><strong>Phase</strong></div>
                             <div class="col-md-2 text-center"><strong>Host</strong></div>
-                            <div class="col-md-4 text-center"><strong>Duration</strong></div>
+                            <div class="col-md-2 text-center"><strong>Win</strong></div>
+                            <div class="col-md-2 text-center"><strong>Duration</strong></div>
                         </div>
                         <div class="col-md-2 text-center"><strong>Recorded</strong></div>
                     </div>';
@@ -184,6 +187,10 @@ try {
                 $matchPhase = matchPhaseToGlyhpicon($value['matchPhaseID']);
 
                 $isHost = $value['matchHostSteamID32'] == $userID32
+                    ? '<span class="glyphicon glyphicon-ok boldGreenText"></span>'
+                    : '<span class="glyphicon glyphicon-remove boldRedText"></span>';
+
+                $isWinner = !empty($value['isWinner'])
                     ? '<span class="glyphicon glyphicon-ok boldGreenText"></span>'
                     : '<span class="glyphicon glyphicon-remove boldRedText"></span>';
 
@@ -207,7 +214,8 @@ try {
                                 <div class="col-md-2 text-center">' . $value['numRounds'] . '</div>
                                 <div class="col-md-2 text-center">' . $matchPhase . '</div>
                                 <div class="col-md-2 text-center">' . $isHost . '</div>
-                                <div class="col-md-4 text-center">' . $matchDuration . '</div>
+                                <div class="col-md-2 text-center">' . $isWinner . '</div>
+                                <div class="col-md-2 text-center">' . $matchDuration . '</div>
                             </div>
                             <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
                         </a>
