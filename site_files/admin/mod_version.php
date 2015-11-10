@@ -32,7 +32,8 @@ try {
             'SELECT
                   ml.`mod_id`,
                   ml.`mod_name`,
-                  (SELECT `schemaVersion` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match` WHERE `modID` = ml.`mod_id` LIMIT 0,1) LIMIT 0,1) AS `libraryVersion`
+                  (SELECT `schemaVersion` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match` WHERE `modID` = ml.`mod_id` LIMIT 0,1) LIMIT 0,1) AS `libraryVersion`,
+                  (SELECT `dateRecorded` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match` WHERE `modID` = ml.`mod_id` LIMIT 0,1) LIMIT 0,1) AS `dateRecorded`
                 FROM `mod_list` ml
                 WHERE ml.`mod_active` = 1
                 ORDER BY `libraryVersion` DESC, ml.`mod_name` ASC;',
@@ -46,6 +47,7 @@ try {
         echo "<div class='row'>
                     <div class='col-md-4'><strong>Mod</strong></div>
                     <div class='col-md-1 text-center'><strong>Ver.</strong></div>
+                    <div class='col-md-2 text-center'><strong>Last Match</strong></div>
                 </div>";
 
         echo '<span class="h5">&nbsp;</span>';
@@ -53,13 +55,27 @@ try {
         foreach ($modVersions as $key => $value) {
             $modID = $value['mod_id'];
             $modName = $value['mod_name'];
-            $libraryVersion = $value['libraryVersion'];
+
+            $libraryVersion = !empty($value['libraryVersion'])
+                ? $value['libraryVersion']
+                : '?';
+
+            if (!empty($value['dateRecorded'])) {
+                $lastMatch = relative_time_v3($value['dateRecorded'], 1, 'day', true);
+
+                $lastMatch = $lastMatch['number'] > 2
+                    ? "<span class='boldRedText'>{$lastMatch['number']} days ago</span>"
+                    : $lastMatch['number'] . ' days ago';
+            } else {
+                $lastMatch = '????';
+            }
 
             $modName = "<a class='nav-clickable' href='#s2__mod?id={$modID}'>{$modName}</a>";
 
             echo "<div class='row'>
                     <div class='col-md-4'>{$modName}</div>
                     <div class='col-md-1 text-center'>{$libraryVersion}</div>
+                    <div class='col-md-2 text-right'>{$lastMatch}</div>
                 </div>";
         }
     } catch (Exception $e) {
