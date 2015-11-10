@@ -38,7 +38,7 @@ try {
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cgv');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cmgv');
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 

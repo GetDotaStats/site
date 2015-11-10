@@ -38,7 +38,7 @@ try {
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_custom_flags');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cmf');
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
