@@ -78,9 +78,7 @@ try {
                 `modID`,
                 `matchHostSteamID32`,
                 `matchPhaseID`,
-                `numPlayers`,
                 `numRounds`,
-                `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
                 `dateRecorded`
@@ -107,21 +105,37 @@ try {
             ? 0
             : 1;
 
-        $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchDuration`, `matchFinished`)
-                VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE
-                  `matchPhaseID` = VALUES(`matchPhaseID`),
-                  `matchDuration` = VALUES(`matchDuration`),
-                  `matchFinished` = VALUES(`matchFinished`);',
-            'siii',
-            array(
-                $matchID,
-                3,
-                $preGameAuthPayloadJSON['gameDuration'],
-                $gameFinished
-            )
-        );
+        if ($preGameAuthPayloadJSON['schemaVersion'] <= 3) {
+            $sqlResult = $db->q(
+                'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchDuration`, `matchFinished`)
+                    VALUES (?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                      `matchPhaseID` = VALUES(`matchPhaseID`),
+                      `matchDuration` = VALUES(`matchDuration`),
+                      `matchFinished` = VALUES(`matchFinished`);',
+                'siii',
+                array(
+                    $matchID,
+                    3,
+                    $preGameAuthPayloadJSON['gameDuration'],
+                    $gameFinished
+                )
+            );
+        } else {
+            $sqlResult = $db->q(
+                'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchFinished`)
+                    VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                      `matchPhaseID` = VALUES(`matchPhaseID`),
+                      `matchFinished` = VALUES(`matchFinished`);',
+                'sii',
+                array(
+                    $matchID,
+                    3,
+                    $gameFinished
+                )
+            );
+        }
     }
 
     //PLAYERS DETAILS
@@ -134,12 +148,12 @@ try {
                     $i = -1;
                     foreach ($value['players'] as $key2 => $value2) {
                         //Do steamID bot work around
-                        if(!empty($value2['steamID32']) && is_numeric($value2['steamID32'])){
+                        if (!empty($value2['steamID32']) && is_numeric($value2['steamID32'])) {
                             $steamID_manipulator->setSteamID($value2['steamID32']);
 
                             $steamID32 = $steamID_manipulator->getSteamID32();
                             $steamID64 = $steamID_manipulator->getSteamID64();
-                        } else{
+                        } else {
                             $steamID32 = $i;
                             $steamID64 = $i;
                             $i--;
@@ -163,7 +177,7 @@ try {
                             )
                         );
                     }
-                } else{
+                } else {
                     throw new Exception("No player data for round #$key!");
                 }
             }

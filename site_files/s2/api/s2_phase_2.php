@@ -30,7 +30,6 @@ try {
         throw new Exception('Payload missing fields!');
     }
 
-    $numPlayers = count($preGameAuthPayloadJSON['players']);
     $matchID = $preGameAuthPayloadJSON['matchID'];
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $authKey = $preGameAuthPayloadJSON['authKey'];
@@ -79,9 +78,7 @@ try {
                 `modID`,
                 `matchHostSteamID32`,
                 `matchPhaseID`,
-                `numPlayers`,
                 `numRounds`,
-                `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
                 `dateRecorded`

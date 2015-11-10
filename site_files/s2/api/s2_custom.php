@@ -82,9 +82,7 @@ try {
                 `matchPhaseID`,
                 `isDedicated`,
                 `matchMapName`,
-                `numPlayers`,
                 `numRounds`,
-                `matchDuration`,
                 `schemaVersion`,
                 `dateUpdated`,
                 `dateRecorded`
