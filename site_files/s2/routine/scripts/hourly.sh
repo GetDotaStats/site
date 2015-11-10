@@ -4,10 +4,12 @@ echo "Run at: $(date -u)<br />"
 echo "-------------------<br />"
 ./workshop.php
 echo "-------------------<br />"
-./custom_flags.php
+./custom_match_gatherer.php
 echo "-------------------<br />"
-./custom_game_values.php
+./custom_match_flags.php
 echo "-------------------<br />"
-./custom_player_values.php
+./custom_match_game_values.php
+echo "-------------------<br />"
+./custom_match_player_values.php
 echo "-------------------<br />"
 echo "Ended at: $(date -u)"
