@@ -18,16 +18,14 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
-    checkLogin_v2();
-    if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
-
-    $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
-    if (empty($adminCheck)) throw new Exception('Not an admin!');
-
     ////////////////////////////////////
     //Execution time of Services
     ////////////////////////////////////
     try {
+        echo '<h2>Service Stats</h2>';
+        echo '<p>A lot of the data displayed on this site can take a long time to compute. This
+            page shows how long many of the cron-jobs/services this site relies on, took to
+            execute. If data starts getting stale, you may see the cause in the below graphs.</p>';
 
         //////////////////////////////
         //MAIN SERVICES
