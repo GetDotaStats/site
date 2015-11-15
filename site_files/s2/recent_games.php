@@ -80,9 +80,37 @@ try {
         $SQLstatementWhere = '';
     }
 
+    $filterPageRecordsPer = 20; //SET NUMBER OF MATCHES PER PAGE
+
+    $filterPageLookup = cached_query(
+        's2_rg_filter_page_lookup_p' . $filterPhase . '_m' . $filterModID,
+        'SELECT
+                COUNT(*) AS num_matches
+            FROM `s2_match` s2
+            ' . $SQLstatementWhere . '
+                LIMIT 0,1;',
+        $SQLdeclaration,
+        $SQLvalues,
+        15
+    );
+
+    $filterPageMaxRecords = !empty($filterPageLookup[0]['num_matches'])
+        ? $filterPageLookup[0]['num_matches']
+        : 0;
+    $filterPageMaxPages = !empty($filterPageMaxRecords)
+        ? ceil($filterPageMaxRecords / $filterPageRecordsPer)
+        : 1;
+
+    $filterPage = !empty($_GET['n']) && is_numeric($_GET['n']) && $_GET['n'] <= $filterPageMaxPages
+        ? $_GET['n']
+        : 1;
+
+    $filterRecord = ($filterPage - 1) * $filterPageRecordsPer;
+    $SQLlimit = 'LIMIT ' . $filterRecord . ', ' . $filterPageRecordsPer . ';';
+
     echo '<h3>Recently Played Games</h3>';
 
-    echo '<p>A list of the last 30 games that have been played. Ordered by when the game details were last updated.</p>';
+    echo '<p>A list of the most recent matches that have been played. Ordered by when the match details were last updated.</p>';
 
     //SELECT JUMP MENU FOR MOD FILTERING
     {
@@ -133,7 +161,19 @@ try {
                 </div>';
         echo '</form>';
 
-        echo '<span class="h5">&nbsp;</span>';
+        $URLexistingParameters = '?';
+        $URLexistingParameters .= $filterPhase != -1
+            ? 'p=' . $filterPhase . '&'
+            : '';
+        $URLexistingParameters .= !empty($filterModID)
+            ? 'm=' . $filterModID . '&'
+            : '';
+
+        echo '<hr />';
+
+        echo makePagination($filterPage, $filterPageMaxPages, '#s2__recent_games' . $URLexistingParameters, 'n');
+
+        echo '<hr />';
 
         echo '<script type="application/javascript">
                 function jumpMenuMod(selObj) {
@@ -156,8 +196,13 @@ try {
             </script>';
     }
 
+    $prettyFilterPage = number_format($filterPage);
+    $prettyFilterPageMaxPages = number_format($filterPageMaxPages);
+
+    echo "<p><strong>Showing results for page</strong> {$prettyFilterPage} of {$prettyFilterPageMaxPages}</p>";
+
     $recentGames = cached_query(
-        's2_recent_games_p' . $filterPhase . '_m' . $filterModID,
+        's2_recent_games_p' . $filterPhase . '_m' . $filterModID . '_n' . $filterPage,
         'SELECT
               s2.`matchID`,
               s2.`matchAuthKey`,
@@ -181,8 +226,8 @@ try {
             FROM `s2_match` s2
             LEFT JOIN `mod_list` ml ON s2.`modID` = ml.`mod_id`
             ' . $SQLstatementWhere . '
-            ORDER BY s2.`dateUpdated` DESC
-            LIMIT 0,30;',
+            ORDER BY s2.`dateUpdated` DESC ' .
+        $SQLlimit,
         $SQLdeclaration,
         $SQLvalues,
         15
@@ -212,7 +257,7 @@ try {
             ? $value['numPlayers']
             : '?';
 
-        if($numPlayers == '?' && !empty($value['numPlayers2']) && is_numeric($value['numPlayers2'])){
+        if ($numPlayers == '?' && !empty($value['numPlayers2']) && is_numeric($value['numPlayers2'])) {
             $numPlayers = $value['numPlayers2'];
         }
 
@@ -240,6 +285,9 @@ try {
 
     echo '<hr />';
 
+    echo makePagination($filterPage, $filterPageMaxPages, '#s2__recent_games' . $URLexistingParameters, 'n');
+
+    echo '<hr />';
 
     echo '<span class="h4">&nbsp;</span>';
 
@@ -250,7 +298,7 @@ try {
 
     echo '<span class="h4">&nbsp;</span>';
 } catch (Exception $e) {
-    echo formatExceptionHandling($e);
+    echo formatExceptionHandling($e, true);
 } finally {
     if (isset($memcache)) $memcache->close();
 }
