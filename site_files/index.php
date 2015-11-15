@@ -110,7 +110,8 @@ try {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <span
+                            class="label label-danger">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Signatures</li>
                         <li><a class="nav-clickable" href="#sig__generator">Generator</a></li>
@@ -123,6 +124,8 @@ try {
                         <li><a class="nav-clickable" href="#dbe/">Dotabuff Extended</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
+                        <li><a class="nav-clickable" href="#site__service_stats">Service Stats <span
+                                    class="label label-danger">NEW</span></a></li>
                         <li><a class="nav-clickable" href="#site__who">Who are we?</a></li>
                         <li><a class="nav-clickable" href="#site__game_servers">Game Servers</a></li>
                         <li><a class="nav-clickable" href="#site__contact">Contact</a></li>
@@ -130,19 +133,15 @@ try {
                 </li>
                 <?php if (!empty($adminCheck)) { ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span
-                                class="label label-danger">NEW</span> <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Management</li>
                             <li><a class="nav-clickable" href="#admin__mod_approve">Mod Approve</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs</a></li>
-                            <li><a class="nav-clickable" href="#admin__service_stats">Service Stats <span
-                                        class="label label-warning">NEW</span></a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_version">Mod Versions <span
-                                        class="label label-warning">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_version">Mod Versions</a></li>
+                            <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
