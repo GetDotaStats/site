@@ -33,7 +33,7 @@ try {
                   ml.`mod_id`,
                   ml.`mod_name`,
                   (SELECT `schemaVersion` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match` WHERE `modID` = ml.`mod_id` LIMIT 0,1) LIMIT 0,1) AS `libraryVersion`,
-                  (SELECT `dateRecorded` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match` WHERE `modID` = ml.`mod_id` LIMIT 0,1) LIMIT 0,1) AS `dateRecorded`
+                  (SELECT `dateRecorded` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match` WHERE `modID` = ml.`mod_id` AND `matchPhaseID` = 3 LIMIT 0,1) LIMIT 0,1) AS `dateRecorded`
                 FROM `mod_list` ml
                 WHERE ml.`mod_active` = 1
                 ORDER BY `libraryVersion` DESC, ml.`mod_name` ASC;',
