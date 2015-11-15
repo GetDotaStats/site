@@ -641,35 +641,43 @@ if (!function_exists("simple_cached_query")) {
 }
 
 if (!function_exists("cached_query")) {
-    function cached_query($memcached_name, $sqlQuery, $declarationString = NULL, $parameterArray = NULL, $cache_time_secs = 15)
+    function cached_query($memcached_name, $sqlQuery, $declarationString = NULL, $parameterArray = NULL, $cache_time_secs = 15, $db_specific = NULL, $memcache_specific = NULL)
     {
-        global $memcache, $db;
-
-        if ($memcache) {
-            $variable = $memcache->get($memcached_name);
-            if (!$variable) {
-                if ($sqlQuery) {
-                    if (!empty($declarationString) && !empty($parameterArray)) {
-                        $variable = $db->q(
-                            $sqlQuery,
-                            $declarationString,
-                            $parameterArray
-                        );
-                    } else {
-                        $variable = $db->q(
-                            $sqlQuery
-                        );
-                    }
-
-                    $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
-                } else {
-                    throw new Exception('No DB provided!!!');
-                }
-            }
-            return $variable;
+        if (!empty($db_specific)) {
+            $db = $db_specific;
         } else {
-            throw new Exception('No memcached provided!!!');
+            global $db;
         }
+
+        if (!empty($memcache_specific)) {
+            $memcache = $memcache_specific;
+        } else {
+            global $memcache;
+        }
+
+        if (empty($memcache) || empty($db)) throw new Exception('No DB or memcache connection specified!');
+
+        $variable = $memcache->get($memcached_name);
+        if (!$variable) {
+            if ($sqlQuery) {
+                if (!empty($declarationString) && !empty($parameterArray)) {
+                    $variable = $db->q(
+                        $sqlQuery,
+                        $declarationString,
+                        $parameterArray
+                    );
+                } else {
+                    $variable = $db->q(
+                        $sqlQuery
+                    );
+                }
+
+                $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
+            } else {
+                throw new Exception('No DB provided!!!');
+            }
+        }
+        return $variable;
     }
 }
 
@@ -1361,7 +1369,32 @@ if (!function_exists('makeLineChart')) {
                 this.y +' games';
             }"
         );*/
-        $chart->tooltip->crosshairs = true;
+        $chart->tooltip->formatter = new HighchartJsExpr(
+            "function() {
+                var order = [], i, j, temp = [],
+                    points = this.points;
+
+                for(i=0; i<points.length; i++)
+                {
+                    j=0;
+                    if( order.length )
+                    {
+                        while( points[order[j]] && points[order[j]].y > points[i].y )
+                            j++;
+                    }
+                    temp = order.splice(0, j);
+                    temp.push(i);
+                    order = temp.concat(order);
+                }
+                console.log(order);
+                temp = '';
+                $(order).each(function(i,j){
+                    temp += '<b>' + points[j].series.name + ': ' + points[j].y + '</b><br/>';
+                });
+                return temp;
+            }"
+        );
+        $chart->tooltip->crosshairs = array(true, true);
         $chart->tooltip->shared = true;
         $chart->credits->enabled = false;
         $chart->legend->maxHeight = 60;
@@ -1492,36 +1525,6 @@ if (!class_exists('basicStatsForArrays')) {
     }
 }
 
-if (!function_exists('service_report')) {
-    function service_report($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL, $isSub = FALSE)
-    {
-        global $db;
-
-        $isSub = !empty($isSub)
-            ? 1
-            : 0;
-
-        $sqlResult = $db->q('INSERT INTO `cron_services`
-            (
-                `service_name`,
-                `is_sub`,
-                `execution_time`,
-                `performance_index1`,
-                `performance_index2`,
-                `performance_index3`
-            ) VALUES (?, ?, ?, ?, ?, ?);',
-            'siiiii',
-            array($serviceName, $isSub, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
-        );
-
-        if ($sqlResult) {
-            return true;
-        } else {
-            throw new Exception('Service report not lodged!');
-        }
-    }
-}
-
 if (!class_exists('serviceReporting')) {
     class serviceReporting
     {
@@ -1537,19 +1540,24 @@ if (!class_exists('serviceReporting')) {
             $this->db = $db;
         }
 
-        public function log($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL)
+        //log service stats
+        public function log($serviceName, $runTime, $performanceIndex1, $performanceIndex2 = NULL, $performanceIndex3 = NULL, $isSub = FALSE)
         {
-            $sqlResult = $this->db->q(
-                'INSERT INTO `cron_services`
-                    (
-                        `service_name`,
-                        `execution_time`,
-                        `performance_index1`,
-                        `performance_index2`,
-                        `performance_index3`
-                    ) VALUES (?, ?, ?, ?, ?);',
-                'siiii',
-                array($serviceName, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
+            $isSub = !empty($isSub)
+                ? 1
+                : 0;
+
+            $sqlResult = $this->db->q('INSERT INTO `cron_services`
+            (
+                `service_name`,
+                `is_sub`,
+                `execution_time`,
+                `performance_index1`,
+                `performance_index2`,
+                `performance_index3`
+            ) VALUES (?, ?, ?, ?, ?, ?);',
+                'siiiii',
+                array($serviceName, $isSub, $runTime, $performanceIndex1, $performanceIndex2, $performanceIndex3)
             );
 
             if ($sqlResult) {
@@ -1557,6 +1565,147 @@ if (!class_exists('serviceReporting')) {
             }
 
             throw new Exception('Service report not lodged!');
+        }
+
+        public function logAndCompareOld(
+            $serviceName,
+            $runTime = array('value' => NULL, 'min' => 20, 'growth' => 0.5),
+            $performanceIndex1 = array('value' => NULL, 'min' => 0, 'growth' => 0.1, 'unit' => 'games'),
+            $performanceIndex2 = array('value' => NULL, 'min' => 0, 'growth' => 0.1, 'unit' => 'games'),
+            $performanceIndex3 = array('value' => NULL, 'min' => 0, 'growth' => 0.1, 'unit' => 'games'),
+            $isSub = FALSE,
+            $subName = NULL
+        )
+        {
+            if (!isset($runTime['value'])) throw new Exception('Missing runTime value!');
+            if (!isset($performanceIndex1['value'])) throw new Exception('Missing performanceIndex1 value!');
+            if (!empty($performanceIndex2) && !isset($performanceIndex2['value'])) throw new Exception('PerformanceIndex2 array defined, but missing value!');
+            if (!empty($performanceIndex3) && !isset($performanceIndex3['value'])) throw new Exception('PerformanceIndex3 array defined, but missing value!');
+
+            if (!isset($performanceIndex2['value'])) $performanceIndex2['value'] = NULL;
+            if (!isset($performanceIndex3['value'])) $performanceIndex3['value'] = NULL;
+
+            //GRAB old report data
+            $oldServiceReport = cached_query(
+                $serviceName . '_old_service_report',
+                'SELECT
+                        `instance_id`,
+                        `service_name`,
+                        `execution_time`,
+                        `performance_index1`,
+                        `performance_index2`,
+                        `performance_index3`,
+                        `date_recorded`
+                    FROM `cron_services`
+                    WHERE `service_name` = ?
+                    ORDER BY `date_recorded` DESC
+                    LIMIT 0,1;',
+                's',
+                array($serviceName),
+                1,
+                $this->db
+            );
+
+            //LOG new report data
+            $this->log($serviceName, $runTime['value'], $performanceIndex1['value'], $performanceIndex2['value'], $performanceIndex3['value'], $isSub);
+
+            if (empty($oldServiceReport)) throw new Exception("First time running cron `{$serviceName}`! It may be new!");
+            $oldServiceReport = $oldServiceReport[0];
+
+            //Check if first time it's had data
+            if (
+                $isSub &&
+                (
+                    (empty($oldServiceReport['performance_index1']) && !empty($performanceIndex1['value'])) ||
+                    (empty($oldServiceReport['performance_index2']) && !empty($performanceIndex2['value'])) ||
+                    (empty($oldServiceReport['performance_index3']) && !empty($performanceIndex3['value']))
+                )
+            ) {
+                $subName = !empty($subName)
+                    ? $subName
+                    : $serviceName;
+                throw new Exception("Mod `{$subName}` has values to use since the last report! It may be new!");
+            }
+
+            //Check if it had data, but now does not
+            if (
+                $isSub &&
+                (
+                    (!empty($oldServiceReport['performance_index1']) && (!empty($performanceIndex1 && empty($performanceIndex1['value'])))) ||
+                    (!empty($oldServiceReport['performance_index2']) && (!empty($performanceIndex2 && empty($performanceIndex2['value'])))) ||
+                    (!empty($oldServiceReport['performance_index3']) && (!empty($performanceIndex3 && empty($performanceIndex3['value']))))
+                )
+            ) {
+                $subName = !empty($subName)
+                    ? $subName
+                    : $serviceName;
+                throw new Exception("Mod `{$subName}` had values in the last report, but now does not! It may be broken!");
+            }
+
+            //Check if the run-time increased majorly
+            if (isset($runTime['min']) && !empty($runTime['growth'])) {
+                if ($runTime['value'] > $runTime['min'] && ($runTime['value'] > ($oldServiceReport['execution_time'] * (1 + $runTime['growth'])))) {
+                    $prettyGrowth = $runTime['growth'] * 100;
+                    $subName = !empty($subName)
+                        ? $subName
+                        : $serviceName;
+                    $extraContext = !empty($isSub)
+                        ? ' for `' . $subName . '`'
+                        : '';
+                    throw new Exception("Major increase (>{$prettyGrowth}%) in execution time{$extraContext}! {$oldServiceReport['execution_time']}secs to {$runTime['value']}secs");
+                }
+            }
+
+            //Check if the performance_index1 increased majorly
+            if (isset($performanceIndex1['min']) && !empty($performanceIndex1['growth'])) {
+                if ($performanceIndex1['value'] > $performanceIndex1['min'] && ($performanceIndex1['value'] > ($oldServiceReport['performance_index1'] * (1 + $performanceIndex1['growth'])))) {
+                    $prettyGrowth = $performanceIndex1['growth'] * 100;
+                    $prettyUnits = !empty($performanceIndex1['unit'])
+                        ? $performanceIndex1['unit']
+                        : 'values';
+                    $subName = !empty($subName)
+                        ? $subName
+                        : $serviceName;
+                    $extraContext = !empty($isSub)
+                        ? ' for `' . $subName . '`'
+                        : '';
+                    throw new Exception("Major increase (>{$prettyGrowth}%) in performance index #1{$extraContext}! {$oldServiceReport['performance_index1']} {$prettyUnits} to {$performanceIndex1['value']} {$prettyUnits}");
+                }
+            }
+
+            //Check if the performance_index2 increased majorly
+            if (isset($performanceIndex2['min']) && !empty($performanceIndex2['growth'])) {
+                if ($performanceIndex2['value'] > $performanceIndex2['min'] && ($performanceIndex2['value'] > ($oldServiceReport['performance_index2'] * (1 + $performanceIndex2['growth'])))) {
+                    $prettyGrowth = $performanceIndex2['growth'] * 100;
+                    $prettyUnits = !empty($performanceIndex2['unit'])
+                        ? $performanceIndex2['unit']
+                        : 'values';
+                    $subName = !empty($subName)
+                        ? $subName
+                        : $serviceName;
+                    $extraContext = !empty($isSub)
+                        ? ' for `' . $subName . '`'
+                        : '';
+                    throw new Exception("Major increase (>{$prettyGrowth}%) in performance index #2{$extraContext}! {$oldServiceReport['performance_index2']} {$prettyUnits} to {$performanceIndex2['value']} {$prettyUnits}");
+                }
+            }
+
+            //Check if the performance_index3 increased majorly
+            if (isset($performanceIndex3['min']) && !empty($performanceIndex3['growth'])) {
+                if ($performanceIndex3['value'] > $performanceIndex3['min'] && ($performanceIndex3['value'] > ($oldServiceReport['performance_index3'] * (1 + $performanceIndex3['growth'])))) {
+                    $prettyGrowth = $performanceIndex3['growth'] * 100;
+                    $prettyUnits = !empty($performanceIndex3['unit'])
+                        ? $performanceIndex3['unit']
+                        : 'values';
+                    $subName = !empty($subName)
+                        ? $subName
+                        : $serviceName;
+                    $extraContext = !empty($isSub)
+                        ? ' for `' . $subName . '`'
+                        : '';
+                    throw new Exception("Major increase (>{$prettyGrowth}%) in performance index #3{$extraContext}! {$oldServiceReport['performance_index3']} {$prettyUnits} to {$performanceIndex3['value']} {$prettyUnits}");
+                }
+            }
         }
 
         //Grabs a service log entry
@@ -1616,7 +1765,7 @@ if (!function_exists('adminWrapText')) {
     function adminWrapText($text)
     {
         if (empty($text)) throw new Exception('No text to wrap!');
-        $text = '<span class="boldRedText">' . $text . '</span> <span class="glyphicon glyphicon-magnet" title="ADMIN viewable only"></span>';
+        $text = '<span class="boldRedText">' . $text . '</span> <span class="db_link glyphicon glyphicon-magnet" title="ADMIN viewable only"></span>';
         return $text;
     }
 }
@@ -1645,3 +1794,102 @@ if (!function_exists('matchPhaseToGlyhpicon')) {
     }
 }
 
+if (!function_exists('matchConnectionStatusToGlyhpicon')) {
+    function matchConnectionStatusToGlyhpicon($connectionStatus)
+    {
+        if (empty($connectionStatus)) throw new Exception('No connection status to convert!');
+
+        switch ($connectionStatus) {
+            case 0:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-ok boldOrangeText" title="Unknown"></span>';
+                break;
+            case 1:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-ok boldGreenText" title="Has not Connected"></span>';
+                break;
+            case 2:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-ok boldGreenText" title="Connected"></span>';
+                break;
+            case 3:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-ok boldOrangeText" title="Disconnected"></span>';
+                break;
+            case 4:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-remove boldRedText" title="Abandoned"></span>';
+                break;
+            case 5:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-ok boldOrangeText" title="Loading"></span>';
+                break;
+            case 6:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-remove boldRedText" title="Failed"></span>';
+                break;
+            default:
+                $connectionStateGlyphicon = '<span class="glyphicon glyphicon-ok boldOrangeText" title="Unknown"></span>';
+                break;
+        }
+
+        return $connectionStateGlyphicon;
+    }
+}
+
+if (!function_exists('makePagination')) {
+    function makePagination($currentPage, $maxPage, $linkBase, $GET_Variable = 'n')
+    {
+        $startPage = ($currentPage < 6) ? 1 : $currentPage - 5;
+        $endPage = 9 + $startPage;
+        $endPage = ($maxPage < $endPage) ? $maxPage : $endPage;
+        $diff = ($startPage != $endPage)
+            ? $startPage - $endPage + 9
+            : 0;
+        $startPage -= ($startPage - $diff > 0) ? $diff : 1;
+
+        $paginationDisplay = '';
+
+        $paginationDisplay .= '<div class="row">';
+
+        //Render the "FIRST" or not
+        if ($startPage > 1) {
+            //If our first number is greater than one, let's add a first
+            $paginationDisplay .= "<div class='col-sm-1'><a class='nav-clickable' href='{$linkBase}{$GET_Variable}=1'>First</a></div>";
+        } else if ($startPage == 1) {
+            if ($currentPage == 1) {
+                //Bold if we are on page 1
+                $paginationDisplay .= "<div class='col-sm-1 text-center'><a class='nav-clickable' href='{$linkBase}{$GET_Variable}=1'><strong>1</strong></a></div>";
+            } else {
+                //Don't bold if we are not on page one
+                $paginationDisplay .= "<div class='col-sm-1 text-center'><a class='nav-clickable' href='{$linkBase}{$GET_Variable}=1'>1</a></div>";
+            }
+
+            //If we already at the end, finish here
+            if ($startPage == $endPage) {
+                $paginationDisplay .= '</div>';
+
+                return $paginationDisplay;
+            }
+
+            //We want to render the same number of pages, so let's push the window along
+            $startPage++;
+            $endPage++;
+        }
+        if ($endPage >= $maxPage) {
+            $startPage--;
+        }
+
+        //Render the middle numbers or not
+        for ($i = $startPage; $i <= $endPage; $i++) {
+            $prettyPageNumber = number_format($i);
+            if ($i == $currentPage) {
+                $paginationDisplay .= "<div class='col-sm-1 text-center'><a class='nav-clickable' href='{$linkBase}{$GET_Variable}={$i}'><strong>{$prettyPageNumber}</strong></a></div>";
+            } else {
+                $paginationDisplay .= "<div class='col-sm-1 text-center'><a class='nav-clickable' href='{$linkBase}{$GET_Variable}={$i}'>{$prettyPageNumber}</a></div>";
+            }
+        }
+
+        //Render the "LAST" or not
+        if ($endPage < $maxPage) {
+            $paginationDisplay .= "<div class='col-sm-1 text-right'><a class='nav-clickable' href='{$linkBase}{$GET_Variable}={$maxPage}'>Last</a></div>";
+        }
+
+        $paginationDisplay .= '</div>';
+
+        return $paginationDisplay;
+    }
+}
