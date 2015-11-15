@@ -33,7 +33,8 @@ if (!isset($_SESSION)) {
         <pre>settings.kv</pre>
     </li>
     <li>An Admin will review your mod registration and approve it if it meets the submission guidelines outlined on the
-        registration page. While your mod is reviewed, you can continue following this guide.
+        registration page and has a few completed games recorded. While your mod is reviewed, you can continue following
+        this guide.
     </li>
 </ol>
 
@@ -43,14 +44,16 @@ if (!isset($_SESSION)) {
 
 <ol>
     <li>Merge the files downloaded in (Stage 1 - Step 1). If done successfully, you will see a statcollection
-        folder in your <code>game/YOUR_ADDON/scripts/vscripts</code> folder.
+        folder in your <code>game/YOUR_ADDON/scripts/vscripts</code> folder. Pay attention to the included panorama
+        files. They should be merged into <code>content/YOUR_ADDON/panorama</code> folder.
     </li>
     <li>In your <code>addon_game_mode.lua</code> file, add a require statement at the top of your code that points at
         our library initialiser file.
         <pre>require("statcollection/init")</pre>
     </li>
     <li>Go into the <code>scripts/vscripts/statcollection</code> folder and inside the <code>settings.kv</code> file,
-        change the modID XXXXXXX value to the modID key you noted above (Stage 1 - Step 4).
+        change the modID XXXXXXX value to the modID key you noted above (Stage 1 - Step 4). If your mod requires rounds,
+        skip to Stage 2.5 in these instructions. If you can possibly help it, we advise modders to avoid using rounds.
     </li>
     <li>Check your game logic to ensure you set player win conditions nicely. This library hooks the SetGameWinner()
         function, so make sure to convert all of your MakeTeamLose() calls into SetGameWinner() calls. Also make sure to
@@ -70,12 +73,59 @@ if (!isset($_SESSION)) {
         recorded against your steamID by navigating to `<em>Custom Games -> Public Profile (My
             Section)</em>`<?= $myProfileText ?>.
     </li>
-    <li>You have completed the basic integration successfully if your games are recorded with a Phase value of 3 or
-        higher (a column in the tables on both pages). If you don't see any recorded games, or they are not reaching
-        Phase 3, refer to the troubleshooting section below.
+    <li>You have completed the basic integration successfully if the games recorded under your mod on the
+        <a class="nav-clickable" href="#s2__recent_games">RECENT GAMES</a> page (or in your public profile) have a green
+        phase value. If you don't see any recorded games, or they are not reaching the green phase, refer to the
+        troubleshooting section below.
     </li>
-    <li>Update your <code>settings.kv</code> by setting "TESTING" to false, and the "MIN_PLAYERS" to the minimum number
-        of players required to have a proper game.
+    <li>Update your <code>settings.kv</code> by setting TESTING to false, and the "MIN_PLAYERS" to the minimum number
+        of players you believe are required to have an interesting (playable) game. Only set TESTING to true, when
+        troubleshooting stats in your workshop tools.
+    </li>
+</ol>
+
+<h4>Stage 2.5 - Basic Integration for Round Based Games</h4>
+
+<p>Skip this section if your game is not round based. Implementing round based stats is not for the faint of heart. You
+    will need the ability to think critically, and hopefully understand how the logic in your game works.</p>
+
+<ol>
+    <li>Your mod should already have our library files merged from Stage 2 - Step 1. If not, go back and do that now.
+    </li>
+    <li>Go into the <code>scripts/vscripts/statcollection</code> folder and inside the <code>settings.kv</code> file.
+        Set HAS_ROUNDS to true and both of the win conditions (GAME_WINNER and ANCIENT_EXPLOSION) to false.
+    </li>
+    <li>In your game logic, call <code>statCollection:submitRound(false)</code> at the end of every
+        round. At the end of the final round, call <code>statCollection:submitRound(true)</code>. Make
+        sure to update line 108 in the <code>schema.lua</code> (for local current_winner_team), as we have no generic
+        way of determining who won your arbitrary round.
+    </li>
+    <li>Double check your game logic to ensure you properly indicate which teams won each round, and that it is recorded
+        in line 108 of <code>schema.lua</code>.
+    </li>
+    <?php
+    if (!empty($_SESSION['user_id64'])) {
+        $myProfileText = ', or by going straight to your <a
+            class="nav-clickable" href="#s2__user?id=' . $_SESSION['user_id64'] . '">Public
+            Profile</a>';
+    } else {
+        $myProfileText = '';
+    }
+    ?>
+    <li>Test your custom game (via workshop tools is fine), and see if stats were recorded. You will need to play your
+        game all the way through (up to your win or lose condition), unless you created a way to skip to the end of the
+        game. You can find games recently recorded against your steamID by navigating to `<em>Custom Games -> Public
+            Profile (My Section)</em>`<?= $myProfileText ?>.
+    </li>
+    <li>You have completed the basic integration (for rounds) successfully if the games recorded under your mod on the
+        <a class="nav-clickable" href="#s2__recent_games">RECENT GAMES</a> page (or in your public profile) have a green
+        phase value. If you don't see any recorded games, or they are not reaching the green phase, refer to the
+        troubleshooting section below.
+    </li>
+    <li>Update your <code>settings.kv</code> by setting TESTING to false, and the "MIN_PLAYERS" to the minimum number
+        of players you believe are required to have an interesting (playable) game. For most games, this will be a value
+        of 2 or 4. Only set TESTING to true, when troubleshooting stats in your workshop tools, as this setting
+        overrides MIN_PLAYERS to 0 and prints your schema stats (Stage 3) to console.
     </li>
 </ol>
 
