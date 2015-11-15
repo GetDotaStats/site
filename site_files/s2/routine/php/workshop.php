@@ -10,6 +10,8 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+    $serviceReport = new serviceReporting($db);
+
     //UPDATE WORKSHOP DETAILS
     {
         set_time_limit(0);
@@ -167,48 +169,33 @@ try {
         echo '<hr />';
 
         try {
-            $serviceName = 's2_cron_workshop_scrape';
-
-            $oldServiceReport = cached_query(
-                $serviceName . '_old_service_report',
-                'SELECT
-                        `instance_id`,
-                        `service_name`,
-                        `execution_time`,
-                        `performance_index1`,
-                        `performance_index2`,
-                        `performance_index3`,
-                        `date_recorded`
-                    FROM `cron_services`
-                    WHERE `service_name` = ?
-                    ORDER BY `date_recorded` DESC
-                    LIMIT 0,1;',
-                's',
-                array($serviceName),
-                1
+            $serviceReport->logAndCompareOld(
+                's2_cron_workshop_scrape',
+                array(
+                    'value' => $totalRunTime,
+                    'min' => 30,
+                    'growth' => 0.5,
+                ),
+                array(
+                    'value' => $workshopCronCounts['success'],
+                    'min' => 1,
+                    'growth' => 0.01,
+                    'unit' => 'successful scrapes',
+                ),
+                array(
+                    'value' => $workshopCronCounts['failure'],
+                    'min' => 1,
+                    'growth' => 0.01,
+                    'unit' => 'failed scrapes',
+                ),
+                array(
+                    'value' => $workshopCronCounts['unknown'],
+                    'min' => 1,
+                    'growth' => 0.01,
+                    'unit' => 'unknown scrapes',
+                ),
+                FALSE
             );
-
-            service_report($serviceName, $totalRunTime, $workshopCronCounts['success'], $workshopCronCounts['failure'], $workshopCronCounts['unknown']);
-
-            if (empty($oldServiceReport)) throw new Exception('No old service report data!');
-
-            $oldServiceReport = $oldServiceReport[0];
-
-            //Check if the run-time increased majorly
-            if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 1.5))) {
-                throw new Exception("Major increase (>50%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
-            }
-
-            //Check if the performance_index2 increased majorly
-            if($workshopCronCounts['failure'] > $oldServiceReport['performance_index2']){
-                throw new Exception("Increase in performance index #2! {$oldServiceReport['performance_index2']} failed scrapes to {$workshopCronCounts['failure']} failed scrapes");
-            }
-
-            //Check if the performance_index3 increased majorly
-            if($workshopCronCounts['unknown'] > $oldServiceReport['performance_index3']){
-                throw new Exception("Increase in performance index #3! {$oldServiceReport['performance_index3']} failed scrapes to {$workshopCronCounts['unknown']} failed scrapes");
-            }
-
         } catch (Exception $e) {
             echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 
@@ -230,7 +217,7 @@ try {
                     array(
                         $irc_message->colour_generator('bold'),
                         $irc_message->colour_generator('blue'),
-                        'Error:',
+                        'Warning:',
                         $irc_message->colour_generator(NULL),
                         $irc_message->colour_generator('bold'),
                     ),

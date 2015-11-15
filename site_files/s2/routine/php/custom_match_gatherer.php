@@ -10,6 +10,8 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+    $serviceReport = new serviceReporting($db);
+
     set_time_limit(0);
 
     $daysToGather = 7;
@@ -34,7 +36,7 @@ try {
 
     if (empty($activeMods)) throw new Exception('No active mods!');
 
-    $time_start2 = time();
+    $totalRunTime = 0;
     echo '<h2>Gather Matches</h2>';
 
     $db->q('DROP TABLE IF EXISTS `cache_cmg`;');
@@ -135,67 +137,33 @@ try {
 
             $time_end1 = time();
             $runTime = $time_end1 - $time_start1;
+            $totalRunTime += $runTime;
             echo '<strong>Run Time:</strong> ' . $runTime . " seconds<br />";
 
             try {
-                $serviceName = 's2_cron_cmg_' . $modID;
-
-                $oldServiceReport = cached_query(
-                    $serviceName . '_old_service_report',
-                    'SELECT
-                            `instance_id`,
-                            `service_name`,
-                            `execution_time`,
-                            `performance_index1`,
-                            `performance_index2`,
-                            `performance_index3`,
-                            `date_recorded`
-                        FROM `cron_services`
-                        WHERE `service_name` = ?
-                        ORDER BY `date_recorded` DESC
-                        LIMIT 0,1;',
-                    's',
-                    array($serviceName),
-                    1
+                $serviceReport->logAndCompareOld(
+                    's2_cron_cmg_' . $modID,
+                    array(
+                        'value' => $runTime,
+                        'min' => 5,
+                        'growth' => 4,
+                    ),
+                    array(
+                        'value' => $matchesConsidered,
+                        'min' => 10,
+                        'growth' => 1,
+                        'unit' => 'matches considered',
+                    ),
+                    array(
+                        'value' => $matchesUsed,
+                        'min' => 10,
+                        'growth' => 1,
+                        'unit' => 'matches used',
+                    ),
+                    NULL,
+                    TRUE,
+                    $modName
                 );
-
-                service_report($serviceName, $runTime, $matchesConsidered, $matchesUsed, NULL, TRUE);
-
-                if (!empty($oldServiceReport)) {
-                    $oldServiceReport = $oldServiceReport[0];
-
-                    //Check if first time it's had data
-                    if (
-                        (empty($oldServiceReport['performance_index1']) && !empty($matchesConsidered)) ||
-                        (empty($oldServiceReport['performance_index2']) && !empty($matchesUsed))
-                    ) {
-                        throw new Exception("Mod `{$modName}` has games to use since the last report!");
-                    }
-
-                    //Check if it had data, but now does not
-                    if (
-                        (!empty($oldServiceReport['performance_index1']) && empty($matchesConsidered)) ||
-                        (!empty($oldServiceReport['performance_index2']) && empty($matchesUsed))
-                    ) {
-                        throw new Exception("Mod `{$modName}` had games in the last report, but now does not!");
-                    }
-
-                    //Check if the run-time increased majorly
-                    if ($runTime > 5 && ($runTime > ($oldServiceReport['execution_time'] * 5))) {
-                        throw new Exception("Major increase (>400%) in execution time for `{$modName}`! {$oldServiceReport['execution_time']}secs to {$runTime}secs");
-                    }
-
-                    //Check if the performance_index1 increased majorly
-                    if ($matchesConsidered > ($oldServiceReport['performance_index1'] * 2)) {
-                        throw new Exception("Major increase (>100%) in performance index #1 for `{$modName}`! {$oldServiceReport['performance_index1']} matches considered to {$matchesConsidered} matches considered");
-                    }
-
-                    //Check if the performance_index2 increased majorly
-                    if ($matchesUsed > ($oldServiceReport['performance_index2'] * 2)) {
-                        throw new Exception("Major increase (>100%) in performance index #2 for `{$modName}`! {$oldServiceReport['performance_index2']} matches used to {$matchesUsed} matches used");
-                    }
-                }
-
             } catch (Exception $e) {
                 echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 
@@ -234,56 +202,34 @@ try {
         }
     }
 
-    $time_end2 = time();
-    $totalRunTime = $time_end2 - $time_start2;
     echo '<br />';
     echo '<strong>Total Run Time:</strong> ' . $totalRunTime . " seconds<br /><br />";
 
     echo '<hr />';
 
     try {
-        $serviceName = 's2_cron_cmg';
-
-        $oldServiceReport = cached_query(
-            $serviceName . '_old_service_report',
-            'SELECT
-                    `instance_id`,
-                    `service_name`,
-                    `execution_time`,
-                    `performance_index1`,
-                    `performance_index2`,
-                    `performance_index3`,
-                    `date_recorded`
-                FROM `cron_services`
-                WHERE `service_name` = ?
-                ORDER BY `date_recorded` DESC
-                LIMIT 0,1;',
-            's',
-            array($serviceName),
-            1
+        $serviceReport->logAndCompareOld(
+            's2_cron_cmg',
+            array(
+                'value' => $totalRunTime,
+                'min' => 20,
+                'growth' => 0.5,
+            ),
+            array(
+                'value' => $totalRecentMatchesConsidered,
+                'min' => 10,
+                'growth' => 0.2,
+                'unit' => 'matches',
+            ),
+            array(
+                'value' => $totalMatchesUsed,
+                'min' => 10,
+                'growth' => 0.2,
+                'unit' => 'matches',
+            ),
+            NULL,
+            FALSE
         );
-
-        service_report($serviceName, $totalRunTime, $totalRecentMatchesConsidered, $totalMatchesUsed, NULL, FALSE);
-
-        if (empty($oldServiceReport)) throw new Exception('No old service report data!');
-
-        $oldServiceReport = $oldServiceReport[0];
-
-        //Check if the run-time increased majorly
-        if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 1.5))) {
-            throw new Exception("Major increase (>50%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
-        }
-
-        //Check if the performance_index1 increased majorly
-        if ($totalRecentMatchesConsidered > ($oldServiceReport['performance_index1'] * 1.2)) {
-            throw new Exception("Major increase (>20%) in performance index #1! {$oldServiceReport['performance_index1']} matches to {$totalRecentMatchesConsidered} matches");
-        }
-
-        //Check if the performance_index2 increased majorly
-        if ($totalMatchesUsed > ($oldServiceReport['performance_index2'] * 1.2)) {
-            throw new Exception("Major increase (>20%) in performance index #2! {$oldServiceReport['performance_index2']} matches to {$totalMatchesUsed} matches");
-        }
-
     } catch (Exception $e) {
         echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
     }

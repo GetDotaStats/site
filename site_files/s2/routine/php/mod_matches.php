@@ -10,6 +10,7 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+    $serviceReport = new serviceReporting($db);
 
     $time_start1 = time();
     echo '<h2>Mod Matches</h2>';
@@ -103,43 +104,23 @@ try {
     echo '<hr />';
 
     try {
-        $serviceName = 's2_cron_matches';
-
-        $oldServiceReport = cached_query(
-            $serviceName . '_old_service_report',
-            'SELECT
-                    `instance_id`,
-                    `service_name`,
-                    `execution_time`,
-                    `performance_index1`,
-                    `performance_index2`,
-                    `performance_index3`,
-                    `date_recorded`
-                FROM `cron_services`
-                WHERE `service_name` = ?
-                ORDER BY `date_recorded` DESC
-                LIMIT 0,1;',
-            's',
-            array($serviceName),
-            1
+        $serviceReport->logAndCompareOld(
+            's2_cron_matches',
+            array(
+                'value' => $totalRunTime,
+                'min' => 10,
+                'growth' => 1,
+            ),
+            array(
+                'value' => $numMatchesProcessed,
+                'min' => 10,
+                'growth' => 0.1,
+                'unit' => 'matches',
+            ),
+            NULL,
+            NULL,
+            FALSE
         );
-
-        service_report($serviceName, $totalRunTime, $numMatchesProcessed);
-
-        if (empty($oldServiceReport)) throw new Exception('No old service report data!');
-
-        $oldServiceReport = $oldServiceReport[0];
-
-        //Check if the run-time increased majorly
-        if ($totalRunTime > 10 && ($totalRunTime > ($oldServiceReport['execution_time'] * 2))) {
-            throw new Exception("Major increase (>100%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
-        }
-
-        //Check if the performance_index1 increased majorly
-        if ($numMatchesProcessed > ($oldServiceReport['performance_index1'] * 1.10)) {
-            throw new Exception("Major increase (>10%) in performance index #1! {$oldServiceReport['performance_index1']} matches to {$numMatchesProcessed} matches");
-        }
-
     } catch (Exception $e) {
         echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 
@@ -161,7 +142,7 @@ try {
                 array(
                     $irc_message->colour_generator('bold'),
                     $irc_message->colour_generator('blue'),
-                    'Error:',
+                    'Warning:',
                     $irc_message->colour_generator(NULL),
                     $irc_message->colour_generator('bold'),
                 ),

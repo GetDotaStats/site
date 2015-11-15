@@ -10,6 +10,8 @@ try {
     $memcache = new Memcache;
     $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
 
+    $serviceReport = new serviceReporting($db);
+
     set_time_limit(0);
 
     $activeMods = cached_query(
@@ -32,7 +34,7 @@ try {
 
     if (empty($activeMods)) throw new Exception('No active mods!');
 
-    $time_start1 = $time_start2 = time();
+    $totalRunTime = 0;
     echo '<h2>Mod Player Values</h2>';
 
     $db->q('DROP TABLE IF EXISTS `cache_custom_player_values_temp0`;');
@@ -195,12 +197,13 @@ try {
 
                         $firstGroupMaxCategories = 30;
                         $secondGroupMaxCategories = 20;
+                        $firstGroupMaxValue = $firstGroupMaxCategories + 10;
 
                         //If the amount of values does not warrant splitting, skip it and do it normally
-                        if (($max <= ($firstGroupMaxCategories + 10)) || ($quart75 < $firstGroupMaxCategories)) {
+                        if (($max <= $firstGroupMaxValue) || ($quart75 < $firstGroupMaxCategories)) {
                             echo '<ul>';
                             echo "<li><strong>{$fieldName}</strong></li>";
-                            echo "<ul><li>Third quartile not above {$firstGroupMaxCategories} or maximum value not greater than {($firstGroupMaxCategories + 10)}!</li></ul>";
+                            echo "<ul><li>Third quartile not above {$firstGroupMaxCategories} or maximum value not greater than {$firstGroupMaxValue}!</li></ul>";
                             echo '</ul>';
                             continue;
                         }
@@ -337,67 +340,33 @@ try {
 
             $time_end1 = time();
             $runTime = $time_end1 - $time_start1;
+            $totalRunTime += $runTime;
             echo '<strong>Run Time:</strong> ' . $runTime . " seconds<br />";
 
             try {
-                $serviceName = 's2_cron_cmpv_' . $modID;
-
-                $oldServiceReport = cached_query(
-                    $serviceName . '_old_service_report',
-                    'SELECT
-                            `instance_id`,
-                            `service_name`,
-                            `execution_time`,
-                            `performance_index1`,
-                            `performance_index2`,
-                            `performance_index3`,
-                            `date_recorded`
-                        FROM `cron_services`
-                        WHERE `service_name` = ?
-                        ORDER BY `date_recorded` DESC
-                        LIMIT 0,1;',
-                    's',
-                    array($serviceName),
-                    1
+                $serviceReport->logAndCompareOld(
+                    's2_cron_cmpv_' . $modID,
+                    array(
+                        'value' => $runTime,
+                        'min' => 5,
+                        'growth' => 1,
+                    ),
+                    array(
+                        'value' => $customPlayerValues,
+                        'min' => 10,
+                        'growth' => 0.5,
+                        'unit' => 'player values',
+                    ),
+                    array(
+                        'value' => $customPlayerValueCombos,
+                        'min' => 10,
+                        'growth' => 0.5,
+                        'unit' => 'player value combos',
+                    ),
+                    NULL,
+                    TRUE,
+                    $modName
                 );
-
-                service_report($serviceName, $runTime, $customPlayerValues, $customPlayerValueCombos, NULL, TRUE);
-
-                if (!empty($oldServiceReport)) {
-                    $oldServiceReport = $oldServiceReport[0];
-
-                    //Check if first time it's had data
-                    if (
-                        (empty($oldServiceReport['performance_index1']) && !empty($customPlayerValues)) ||
-                        (empty($oldServiceReport['performance_index2']) && !empty($customPlayerValueCombos))
-                    ) {
-                        throw new Exception("Mod `{$modName}` has player values to use since the last report!");
-                    }
-
-                    //Check if it had data, but now does not
-                    if (
-                        (!empty($oldServiceReport['performance_index1']) && empty($customPlayerValues)) ||
-                        (!empty($oldServiceReport['performance_index2']) && empty($customPlayerValueCombos))
-                    ) {
-                        throw new Exception("Mod `{$modName}` had player in the last report, but now does not!");
-                    }
-
-                    //Check if the run-time increased majorly
-                    if ($runTime > 5 && ($runTime > ($oldServiceReport['execution_time'] * 5))) {
-                        throw new Exception("Major increase (>400%) in execution time for `{$modName}`! {$oldServiceReport['execution_time']}secs to {$runTime}secs");
-                    }
-
-                    //Check if the performance_index1 increased majorly
-                    if ($customPlayerValues > ($oldServiceReport['performance_index1'] * 1.5)) {
-                        throw new Exception("Major increase (>50%) in performance index #1 for `{$modName}`! {$oldServiceReport['performance_index1']} player values to {$customPlayerValues} player values");
-                    }
-
-                    //Check if the performance_index2 increased majorly
-                    if ($customPlayerValueCombos > ($oldServiceReport['performance_index2'] * 1.5)) {
-                        throw new Exception("Major increase (>50%) in performance index #2 for `{$modName}`! {$oldServiceReport['performance_index2']} player value combos to {$customPlayerValueCombos} player value combos");
-                    }
-                }
-
             } catch (Exception $e) {
                 echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 
@@ -452,9 +421,6 @@ try {
     $time_end1 = time();
     echo '<strong>Run Time:</strong> ' . ($time_end1 - $time_start1) . " seconds<br />";
 
-    $time_end2 = time();
-    $totalRunTime = $time_end2 - $time_start2;
-
     echo '<br />';
     echo '<strong>Total Run Time:</strong> ' . $totalRunTime . " seconds<br /><br />";
 
@@ -462,48 +428,28 @@ try {
 
 
     try {
-        $serviceName = 's2_cron_cmpv';
-
-        $oldServiceReport = cached_query(
-            $serviceName . '_old_service_report',
-            'SELECT
-                    `instance_id`,
-                    `service_name`,
-                    `execution_time`,
-                    `performance_index1`,
-                    `performance_index2`,
-                    `performance_index3`,
-                    `date_recorded`
-                FROM `cron_services`
-                WHERE `service_name` = ?
-                ORDER BY `date_recorded` DESC
-                LIMIT 0,1;',
-            's',
-            array($serviceName),
-            1
+        $serviceReport->logAndCompareOld(
+            's2_cron_cmpv',
+            array(
+                'value' => $totalRunTime,
+                'min' => 20,
+                'growth' => 0.5,
+            ),
+            array(
+                'value' => $totalCustomPlayerValues,
+                'min' => 10,
+                'growth' => 0.1,
+                'unit' => 'player values',
+            ),
+            array(
+                'value' => $totalCustomPlayerValueCombos,
+                'min' => 10,
+                'growth' => 0.1,
+                'unit' => 'player value combos',
+            ),
+            NULL,
+            FALSE
         );
-
-        service_report($serviceName, $totalRunTime, $totalCustomPlayerValues, $totalCustomPlayerValueCombos, NULL, FALSE);
-
-        if (empty($oldServiceReport)) throw new Exception('No old service report data!');
-
-        $oldServiceReport = $oldServiceReport[0];
-
-        //Check if the run-time increased majorly
-        if ($totalRunTime > 20 && ($totalRunTime > ($oldServiceReport['execution_time'] * 2))) {
-            throw new Exception("Major increase (>100%) in execution time! {$oldServiceReport['execution_time']}secs to {$totalRunTime}secs");
-        }
-
-        //Check if the performance_index1 increased majorly
-        if ($totalCustomPlayerValues > ($oldServiceReport['performance_index1'] * 1.1)) {
-            throw new Exception("Major increase (>10%) in performance index #1! {$oldServiceReport['performance_index1']} player values to {$totalCustomPlayerValues} player values");
-        }
-
-        //Check if the performance_index2 increased majorly
-        if ($totalCustomPlayerValueCombos > ($oldServiceReport['performance_index2'] * 1.1)) {
-            throw new Exception("Major increase (>10%) in performance index #2! {$oldServiceReport['performance_index2']} player value combos to {$totalCustomPlayerValueCombos} player value combos");
-        }
-
     } catch (Exception $e) {
         echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
     }
