@@ -64,6 +64,9 @@ try {
         : 1;
     $modID = $matchDetails[0]['modID'];
     $matchPhase = matchPhaseToGlyhpicon($matchDetails[0]['matchPhaseID']);
+    $matchDuration = !empty($matchDetails[0]['matchDuration'])
+        ? round($matchDetails[0]['matchDuration'] / 60)
+        : '??';
 
     if (!empty($modID)) {
         echo modPageHeader($modID, $CDN_image);
@@ -85,7 +88,7 @@ try {
                     <div class="row">
                         <div class="col-md-2 text-center">' . $matchPhase . '</div>
                         <div class="col-md-3 text-center">' . $numRounds . '</div>
-                        <div class="col-md-3">' . round($matchDetails[0]['matchDuration'] / 60) . ' mins</div>
+                        <div class="col-md-3">' . $matchDuration . ' mins</div>
                         <div class="col-md-4">' . relative_time_v3($matchDetails[0]['dateRecorded'], 1, NULL, false, true, false) . '</div>
                     </div>
                 </div>
@@ -199,6 +202,7 @@ try {
 
     //Client IPs
     {
+        $IParray = array();
         if (!empty($matchSummary) && !empty($_SESSION['user_id64'])) {
             //if admin, show clientIPs too
             $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
@@ -222,8 +226,10 @@ try {
 
                 if (!empty($clientDetails)) {
                     foreach ($clientDetails as $key => $value) {
-                        if (!isset($matchSummary[1]['players'][$value['steamID32']])) throw new Exception('No basic stats for user ' . $value['steamID32'] . ' in round #1!');
-                        $matchSummary[1]['players'][$value['steamID32']]['cpv']['IP'] = adminWrapText($value['clientIP']);
+                        foreach ($matchSummary AS $key2 => $value2) {
+                            if (!isset($matchSummary[1]['players'][$value['steamID32']])) throw new Exception('No basic stats for user ' . $value['steamID32'] . ' in round #1!');
+                            $matchSummary[$key2]['players'][$value['steamID32']]['cpv']['IP'] = adminWrapText($value['clientIP']);
+                        }
                     }
                 }
             }
@@ -290,10 +296,7 @@ try {
                     ? ' <span class="glyphicon glyphicon-asterisk" title="This player was the host"></span>'
                     : '';
 
-                $goodConnectionStates = array(1, 2, 3);
-                $connectionState = in_array($value2['connectionState'], $goodConnectionStates)
-                    ? '<span class="glyphicon glyphicon-ok boldGreenText" title="' . $value2['connectionStateName'] . '"></span>'
-                    : '<span class="glyphicon glyphicon-remove boldRedText" title="' . $value2['connectionStateName'] . '"></span>';
+                $connectionState = matchConnectionStatusToGlyhpicon($value2['connectionState']);
 
                 //Only show the custom stats button if there is data to show
                 $moreInfoButton = !empty($value2['cpv'])
