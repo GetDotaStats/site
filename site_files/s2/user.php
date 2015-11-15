@@ -143,6 +143,7 @@ try {
                         s2mp.`modID`,
                         s2mp.`steamID32`,
                         s2mp.`steamID64`,
+                        s2mp.`connectionState`,
 
                         ml.`mod_name`,
 
@@ -176,9 +177,14 @@ try {
                             <div class="col-md-2 text-center"><strong>Players</strong></div>
                             <div class="col-md-2 text-center"><strong>Rounds</strong></div>
                             <div class="col-md-2 text-center"><strong>Phase</strong></div>
-                            <div class="col-md-2 text-center"><strong>Host</strong></div>
-                            <div class="col-md-2 text-center"><strong>Win</strong></div>
-                            <div class="col-md-2 text-center"><strong>Duration</strong></div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-3 text-center"><strong>Host</strong></div>
+                                    <div class="col-md-3 text-center"><strong>Win</strong></div>
+                                    <div class="col-md-3 text-center"><strong>State</strong></div>
+                                    <div class="col-md-3 text-center"><strong>Duration</strong></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-2 text-center"><strong>Recorded</strong></div>
                     </div>';
@@ -198,13 +204,17 @@ try {
                     ? $value['numPlayers']
                     : '?';
 
-                if($numPlayers == '?' && !empty($value['numPlayers2']) && is_numeric($value['numPlayers2'])){
+                if ($numPlayers == '?' && !empty($value['numPlayers2']) && is_numeric($value['numPlayers2'])) {
                     $numPlayers = $value['numPlayers2'];
                 }
 
                 $matchDuration = !empty($value['matchDuration']) && is_numeric($value['matchDuration'])
                     ? secs_to_clock($value['matchDuration'])
                     : '??:??';
+
+                $connectionState = !empty(['connectionState'])
+                    ? matchConnectionStatusToGlyhpicon($value['connectionState'])
+                    : matchConnectionStatusToGlyhpicon(0);
 
                 echo '<div class="row searchRow">
                         <a class="nav-clickable" href="#s2__match?id=' . $value['matchID'] . '">
@@ -213,9 +223,14 @@ try {
                                 <div class="col-md-2 text-center">' . $numPlayers . '</div>
                                 <div class="col-md-2 text-center">' . $value['numRounds'] . '</div>
                                 <div class="col-md-2 text-center">' . $matchPhase . '</div>
-                                <div class="col-md-2 text-center">' . $isHost . '</div>
-                                <div class="col-md-2 text-center">' . $isWinner . '</div>
-                                <div class="col-md-2 text-center">' . $matchDuration . '</div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-3 text-center">' . $isHost . '</div>
+                                        <div class="col-md-3 text-center">' . $isWinner . '</div>
+                                        <div class="col-md-3 text-center">' . $connectionState . '</div>
+                                        <div class="col-md-3 text-center">' . $matchDuration . '</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-2 text-right">' . relative_time_v3($value['dateRecorded']) . '</div>
                         </a>
