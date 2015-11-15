@@ -1,12 +1,11 @@
 #!/usr/bin/php -q
 <?php
-require_once('../../functions.php');
-require_once('../../../global_functions.php');
-require_once('../../../connections/parameters.php');
+try {
+    require_once('../../../connections/parameters.php');
+    require_once('../../../global_functions.php');
 
-$db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
+    $db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
 
-if ($db) {
     //GOLDEN PROFILES GROUP
     //https://steamcommunity.com/groups/golden_profiles/memberslistxml
     {
@@ -19,21 +18,25 @@ if ($db) {
         echo '</pre>';
         exit();*/
 
-        if (!empty($xml)) {
-            $db->q("UPDATE `hof_golden_profiles` SET `isInGroup` = 0;");
+        if (empty($xml)) throw new Exception('XML empty!');
 
-            foreach ($xml->members->steamID64 as $key => $value) {
-                $sqlResult = $db->q("UPDATE `hof_golden_profiles` SET `isInGroup` = 1 WHERE `user_id64` = ?;",
-                    's',
-                    $value
-                );
+        $db->q("UPDATE `hof_golden_profiles` SET `isInGroup` = 0;");
 
-                echo '<br />';
+        foreach ($xml->members->steamID64 as $key => $value) {
+            $sqlResult = $db->q("UPDATE `hof_golden_profiles` SET `isInGroup` = 1 WHERE `user_id64` = ?;",
+                's',
+                $value
+            );
 
-                echo $sqlResult
-                    ? "[SUCCESS] User '.$value.' found!"
-                    : "[FAILURE] User '.$value.' not found!";
-            }
+            echo '<br />';
+
+            echo $sqlResult
+                ? "[SUCCESS] User '.$value.' found!"
+                : "[FAILURE] User '.$value.' not found!";
         }
     }
+} catch (Exception $e) {
+    echo 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+} finally {
+    if (isset($memcache)) $memcache->close();
 }
