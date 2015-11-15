@@ -84,135 +84,130 @@ try {
 
     echo '<p>Download all of the mods below by <a target="_blank" href="http://steamcommunity.com/sharedfiles/filedetails/?id=537809143">subscribing to our collection <span class="glyphicon glyphicon-new-window"></span></a>.</p>';
 
-    if (!empty($modWorkshopList)) {
-        $totalModSize = 0;
-        $totalGamesLastWeek = 0;
-        $totalGamesAllTime = 0;
+    if (empty($modWorkshopList)) throw new Exception('No mod data!');
 
-        $glpyh_test = '<span class="glyphicon glyphicon-question-sign" title="Games Recorded Last Week / Games Recorded in Total"></span>';
+    $totalModSize = 0;
+    $totalGamesLastWeek = 0;
+    $totalGamesAllTime = 0;
 
-        $glpyh_up = '<span class="glyphicon glyphicon-arrow-up"></span>';
-        $glpyh_down = '<span class="glyphicon glyphicon-arrow-down"></span>';
+    $glpyh_test = '<span class="glyphicon glyphicon-question-sign" title="Games Recorded Last Week / Games Recorded in Total"></span>';
 
-        echo '<div class="row">
-                    <div class="col-sm-5">&nbsp;</div>
-                    <div class="col-sm-3 text-center"><strong>Games</strong></div>
-                </div>';
+    $glpyh_up = '<span class="glyphicon glyphicon-arrow-up"></span>';
+    $glpyh_down = '<span class="glyphicon glyphicon-arrow-down"></span>';
 
-        echo '<div class="row">
-                    <div class="col-sm-5 text-center"><strong>Mod</strong></div>
-                    <div class="col-sm-4 text-center">
-                        <div class="row">
-                            <div class="col-sm-4 text-center"><strong>Week</strong><br />
-                                <a class="nav-clickable" href="#s2__directory?o=6">' . $glpyh_down . '</a>
-                                <a class="nav-clickable" href="#s2__directory?o=5">' . $glpyh_up . '</a>
-                            </div>
-                            <div class="col-sm-4 text-center"><strong>All</strong><br />
-                                <a class="nav-clickable" href="#s2__directory?o=8">' . $glpyh_down . '</a>
-                                <a class="nav-clickable" href="#s2__directory?o=7">' . $glpyh_up . '</a>
-                            </div>
-                            <div class="col-sm-4 text-center"><strong>Size</strong><br />
-                                <a class="nav-clickable" href="#s2__directory?o=4">' . $glpyh_down . '</a>
-                                <a class="nav-clickable" href="#s2__directory?o=3">' . $glpyh_up . '</a>
-                            </div>
+    echo '<div class="row">
+                <div class="col-sm-5">&nbsp;</div>
+                <div class="col-sm-3 text-center"><strong>Games</strong></div>
+            </div>';
+
+    echo '<div class="row">
+                <div class="col-sm-5 text-center"><strong>Mod</strong></div>
+                <div class="col-sm-3 text-center">
+                    <div class="row">
+                        <div class="col-sm-6 text-center"><strong>Week</strong><br />
+                            <a class="nav-clickable" href="#s2__directory?o=6">' . $glpyh_down . '</a>
+                            <a class="nav-clickable" href="#s2__directory?o=5">' . $glpyh_up . '</a>
+                        </div>
+                        <div class="col-sm-6 text-center"><strong>All</strong><br />
+                            <a class="nav-clickable" href="#s2__directory?o=8">' . $glpyh_down . '</a>
+                            <a class="nav-clickable" href="#s2__directory?o=7">' . $glpyh_up . '</a>
                         </div>
                     </div>
-                    <div class="col-sm-3 text-center">
-                        <div class="row">
-                            <div class="col-sm-6 text-center">
-                                <strong>Update</strong><br />
-                                <a class="nav-clickable" href="#s2__directory?o=2">' . $glpyh_down . '</a>
-                                <a class="nav-clickable" href="#s2__directory?o=1">' . $glpyh_up . '</a>
-                            </div>
-                            <div class="col-sm-6 text-center">
-                                <strong>Added</strong><br />
-                                <a class="nav-clickable" href="#s2__directory?o=10">' . $glpyh_down . '</a>
-                                <a class="nav-clickable" href="#s2__directory?o=9">' . $glpyh_up . '</a>
-                            </div>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <div class="row">
+                        <div class="col-sm-12 text-center"><strong>Size</strong><br />
+                            <a class="nav-clickable" href="#s2__directory?o=4">' . $glpyh_down . '</a>
+                            <a class="nav-clickable" href="#s2__directory?o=3">' . $glpyh_up . '</a>
                         </div>
                     </div>
-                </div>';
+                </div>
+                <div class="col-sm-2 text-center">
+                    <strong>Updated</strong><br />
+                    <a class="nav-clickable" href="#s2__directory?o=2">' . $glpyh_down . '</a>
+                    <a class="nav-clickable" href="#s2__directory?o=1">' . $glpyh_up . '</a>
+                </div>
+            </div>';
 
-        foreach ($modWorkshopList as $key => $value) {
-            $totalModSize += !empty($value['mod_size'])
-                ? $value['mod_size']
-                : 0;
+    foreach ($modWorkshopList as $key => $value) {
+        $totalModSize += !empty($value['mod_size'])
+            ? $value['mod_size']
+            : 0;
 
-            $totalGamesLastWeek += !empty($value['games_last_week'])
-                ? $value['games_last_week']
-                : 0;
+        $totalGamesLastWeek += !empty($value['games_last_week'])
+            ? $value['games_last_week']
+            : 0;
 
-            $totalGamesAllTime += !empty($value['games_all_time'])
-                ? $value['games_all_time']
-                : 0;
+        $totalGamesAllTime += !empty($value['games_all_time'])
+            ? $value['games_all_time']
+            : 0;
 
-            $modSize = !empty($value['mod_size'])
-                ? filesize_human_readable($value['mod_size'], 0, 'MB', true)
-                : NULL;
+        $modSize = !empty($value['mod_size'])
+            ? filesize_human_readable($value['mod_size'], 0, 'MB', true)
+            : NULL;
 
-            $modSize = !empty($modSize)
-                ? $modSize['number'] . '<span class="db_link"> ' . $modSize['string'] . '</span>'
-                : '??<span class="db_link"> MB</span>';
+        $modSize = !empty($modSize)
+            ? $modSize['number'] . '<span class="db_link"> ' . $modSize['string'] . '</span>'
+            : '??<span class="db_link"> MB</span>';
 
-            $workshopLink = 'http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'];
-            $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
-                ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
-                : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
-            $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
-            $modThumb = '<a target="_blank" href="' . $workshopLink . '">' . $modThumb . '</a>';
+        $workshopLink = 'http://steamcommunity.com/sharedfiles/filedetails/?id=' . $value['mod_workshop_link'];
+        $modThumb = is_file('../images/mods/thumbs/' . $value['mod_id'] . '.png')
+            ? $CDN_image . '/images/mods/thumbs/' . $value['mod_id'] . '.png'
+            : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
+        $modThumb = '<img width="25" height="25" src="' . $modThumb . '" />';
+        $modThumb = '<a target="_blank" href="' . $workshopLink . '">' . $modThumb . '</a>';
 
-            if (!empty($value['workshop_updated'])) {
-                $modLastUpdate = relative_time_v3($value['workshop_updated'], 0, 'day', 1);
-                $modLastUpdate = $modLastUpdate['number'] . ' <span class="db_link">days</span>';
-            } else {
-                $modLastUpdate = '??';
-            }
-
-            if (!empty($value['mod_date_added'])) {
-                $modAdded = relative_time_v3($value['mod_date_added'], 0, 'day', 1);
-                $modAdded = $modAdded['number'] . ' <span class="db_link">days</span>';
-            } else {
-                $modAdded = '??';
-            }
-
-            echo '<div class="row">
-                    <div class="col-sm-5">' . $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
-                    <div class="col-sm-4 text-center">
-                        <div class="row">
-                            <div class="col-sm-4 text-right">' . number_format($value['games_last_week']) . '</div>
-                            <div class="col-sm-4 text-right">' . number_format($value['games_all_time']) . '</div>
-                            <div class="col-sm-4 text-right">' . $modSize . '</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3 text-center">
-                        <div class="row">
-                            <div class="col-sm-6 text-right">' . $modLastUpdate . '</div>
-                            <div class="col-sm-6 text-right">' . $modAdded . '</div>
-                        </div>
-                    </div>
-                </div>';
-
-            echo '<span class="h5">&nbsp;</span>';
+        if (!empty($value['workshop_updated'])) {
+            $modLastUpdate = relative_time_v3($value['workshop_updated'], 0, 'day', 1);
+            $modLastUpdate = $modLastUpdate['number'] . ' <span class="db_link">days ago</span>';
+        } else {
+            $modLastUpdate = '??';
         }
 
-        $totalModSize = !empty($totalModSize)
-            ? filesize_human_readable($totalModSize, 1, 'GB', true)
-            : '??';
-
-        $totalModSize = !empty($totalModSize) && is_array($totalModSize)
-            ? $totalModSize['number'] . '<span class="db_link"> ' . $totalModSize['string'] . '</span>'
-            : '??<span class="db_link"> GB</span>';
+        if (!empty($value['mod_date_added'])) {
+            $modAdded = relative_time_v3($value['mod_date_added'], 0, 'day', 1);
+            $modAdded = $modAdded['number'] . ' <span class="db_link">days ago</span>';
+        } else {
+            $modAdded = '??';
+        }
 
         echo '<div class="row">
-                    <div class="col-sm-5 text-right">&nbsp;</div>
-                    <div class="col-sm-1 text-right"><strong>' . number_format($totalGamesLastWeek) . '</strong></div>
-                    <div class="col-sm-1 text-right"><strong>' . number_format($totalGamesAllTime) . '</strong></div>
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-1 text-right"><strong>' . $totalModSize . '</strong></div>
-                </div>';
-    } else {
-        echo bootstrapMessage('No data!');
+                <div class="col-sm-5">' . $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                <div class="col-sm-3 text-center">
+                    <div class="row">
+                        <div class="col-sm-6 text-center">' . number_format($value['games_last_week']) . '</div>
+                        <div class="col-sm-6 text-center">' . number_format($value['games_all_time']) . '</div>
+                    </div>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <div class="row">
+                        <div class="col-sm-12 text-center">' . $modSize . '</div>
+                    </div>
+                </div>
+                <div class="col-sm-2 text-right">' . $modLastUpdate . '</div>
+                </div>
+            </div>';
+
+        echo '<span class="h5">&nbsp;</span>';
     }
+
+    $totalModSize = !empty($totalModSize)
+        ? filesize_human_readable($totalModSize, 1, 'GB', true)
+        : '??';
+
+    $totalModSize = !empty($totalModSize) && is_array($totalModSize)
+        ? $totalModSize['number'] . '<span class="db_link"> ' . $totalModSize['string'] . '</span>'
+        : '??<span class="db_link"> GB</span>';
+
+    echo '<div class="row">
+                <div class="col-sm-5 text-right">&nbsp;</div>
+                <div class="col-sm-3 text-center">
+                    <div class="row">
+                        <div class="col-sm-6 text-center"><strong>' . number_format($totalGamesLastWeek) . '</strong></div>
+                        <div class="col-sm-6 text-center"><strong>' . number_format($totalGamesAllTime) . '</strong></div>
+                    </div>
+                </div>
+            </div>';
 
 
     echo '<span class="h4">&nbsp;</span>';
