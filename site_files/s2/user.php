@@ -169,7 +169,7 @@ try {
                 15
             );
 
-            if (empty($userRecentGames)) throw new Exception('User has games recorded against mods we track!');
+            if (empty($userRecentGames)) throw new Exception('User has no games recorded against mods we track!');
 
             echo '<div class="row">
                         <div class="col-md-4"><strong>Mod</strong></div>
@@ -258,7 +258,7 @@ try {
                 15
             );
 
-            if (empty($userModAggregate)) throw new Exception('User has games recorded against mods we track!');
+            if (empty($userModAggregate)) throw new Exception('User has no games recorded against mods we track!');
 
 
             echo '<div class="row">
