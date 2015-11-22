@@ -1609,7 +1609,12 @@ if (!class_exists('serviceReporting')) {
             //LOG new report data
             $this->log($serviceName, $runTime['value'], $performanceIndex1['value'], $performanceIndex2['value'], $performanceIndex3['value'], $isSub);
 
-            if (empty($oldServiceReport)) throw new Exception("First time running cron `{$serviceName}`! It may be new!");
+            if (empty($oldServiceReport)){
+                $cronName = !empty($subName)
+                    ? $subName
+                    : $serviceName;
+                throw new Exception("First time running cron `{$cronName}`! It may be new!");
+            }
             $oldServiceReport = $oldServiceReport[0];
 
             //Check if first time it's had data
@@ -1621,10 +1626,10 @@ if (!class_exists('serviceReporting')) {
                     (empty($oldServiceReport['performance_index3']) && !empty($performanceIndex3['value']))
                 )
             ) {
-                $subName = !empty($subName)
+                $cronName = !empty($subName)
                     ? $subName
                     : $serviceName;
-                throw new Exception("Mod `{$subName}` has values to use since the last report! It may be new!");
+                throw new Exception("Mod `{$cronName}` has values to use since the last report! It may be new!");
             }
 
             //Check if it had data, but now does not
@@ -1636,21 +1641,21 @@ if (!class_exists('serviceReporting')) {
                     (!empty($oldServiceReport['performance_index3']) && (!empty($performanceIndex3 && empty($performanceIndex3['value']))))
                 )
             ) {
-                $subName = !empty($subName)
+                $cronName = !empty($subName)
                     ? $subName
                     : $serviceName;
-                throw new Exception("Mod `{$subName}` had values in the last report, but now does not! It may be broken!");
+                throw new Exception("Mod `{$cronName}` had values in the last report, but now does not! It may be broken!");
             }
 
             //Check if the run-time increased majorly
             if (isset($runTime['min']) && !empty($runTime['growth'])) {
                 if ($runTime['value'] > $runTime['min'] && ($runTime['value'] > ($oldServiceReport['execution_time'] * (1 + $runTime['growth'])))) {
                     $prettyGrowth = $runTime['growth'] * 100;
-                    $subName = !empty($subName)
+                    $cronName = !empty($subName)
                         ? $subName
                         : $serviceName;
                     $extraContext = !empty($isSub)
-                        ? ' for `' . $subName . '`'
+                        ? ' for `' . $cronName . '`'
                         : '';
                     throw new Exception("Major increase (>{$prettyGrowth}%) in execution time{$extraContext}! {$oldServiceReport['execution_time']}secs to {$runTime['value']}secs");
                 }
@@ -1663,11 +1668,11 @@ if (!class_exists('serviceReporting')) {
                     $prettyUnits = !empty($performanceIndex1['unit'])
                         ? $performanceIndex1['unit']
                         : 'values';
-                    $subName = !empty($subName)
+                    $cronName = !empty($subName)
                         ? $subName
                         : $serviceName;
                     $extraContext = !empty($isSub)
-                        ? ' for `' . $subName . '`'
+                        ? ' for `' . $cronName . '`'
                         : '';
                     throw new Exception("Major increase (>{$prettyGrowth}%) in performance index #1{$extraContext}! {$oldServiceReport['performance_index1']} {$prettyUnits} to {$performanceIndex1['value']} {$prettyUnits}");
                 }
@@ -1680,11 +1685,11 @@ if (!class_exists('serviceReporting')) {
                     $prettyUnits = !empty($performanceIndex2['unit'])
                         ? $performanceIndex2['unit']
                         : 'values';
-                    $subName = !empty($subName)
+                    $cronName = !empty($subName)
                         ? $subName
                         : $serviceName;
                     $extraContext = !empty($isSub)
-                        ? ' for `' . $subName . '`'
+                        ? ' for `' . $cronName . '`'
                         : '';
                     throw new Exception("Major increase (>{$prettyGrowth}%) in performance index #2{$extraContext}! {$oldServiceReport['performance_index2']} {$prettyUnits} to {$performanceIndex2['value']} {$prettyUnits}");
                 }
@@ -1697,11 +1702,11 @@ if (!class_exists('serviceReporting')) {
                     $prettyUnits = !empty($performanceIndex3['unit'])
                         ? $performanceIndex3['unit']
                         : 'values';
-                    $subName = !empty($subName)
+                    $cronName = !empty($subName)
                         ? $subName
                         : $serviceName;
                     $extraContext = !empty($isSub)
-                        ? ' for `' . $subName . '`'
+                        ? ' for `' . $cronName . '`'
                         : '';
                     throw new Exception("Major increase (>{$prettyGrowth}%) in performance index #3{$extraContext}! {$oldServiceReport['performance_index3']} {$prettyUnits} to {$performanceIndex3['value']} {$prettyUnits}");
                 }
