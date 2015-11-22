@@ -64,7 +64,38 @@ try {
 
                     $tempArray = array();
 
-                    if ($modWorkshopDetails['response']['result'] == 1 && ($modWorkshopDetails['response']['resultcount'] >= 1 || $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1)) {
+                    if (
+                        empty($modWorkshopDetails['response']['result']) ||
+                        $modWorkshopDetails['response']['result'] != 1 ||
+                        (
+                            (
+                                !empty($modWorkshopDetails['response']['resultcount']) ||
+                                $modWorkshopDetails['response']['resultcount'] >= 1
+                            ) &&
+                            (
+                                !empty($modWorkshopDetails['response']['publishedfiledetails'][0]['result']) ||
+                                $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1
+                            )
+                        )
+                    ) {
+                        $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 10, 10);
+                        $modWorkshopDetails = json_decode($modWorkshopDetails, true);
+                    }
+
+                    if (
+                        !empty($modWorkshopDetails['response']['result']) &&
+                        $modWorkshopDetails['response']['result'] == 1 &&
+                        (
+                            (
+                                !empty($modWorkshopDetails['response']['resultcount']) &&
+                                $modWorkshopDetails['response']['resultcount'] >= 1
+                            ) ||
+                            (
+                                !empty($modWorkshopDetails['response']['publishedfiledetails'][0]['result']) &&
+                                $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1
+                            )
+                        )
+                    ) {
                         try {
                             if (!empty($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'])) {
                                 curl_download($modWorkshopDetails['response']['publishedfiledetails'][0]['preview_url'], '../../../images/mods/thumbs/', $value['mod_id'] . '.png');
@@ -156,6 +187,10 @@ try {
                     }
                 }
             } catch (Exception $e) {
+                $workshopID = !empty($workshopID)
+                    ? $workshopID
+                    : 'UNKNOWN';
+
                 echo '<br />';
                 echo "<strong>[FAILURE]</strong> Adding workshop details for: $workshopID!<br />";
                 echo $e->getMessage() . '<br /><br />';
