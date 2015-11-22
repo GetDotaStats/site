@@ -192,16 +192,23 @@ try {
             $i = -1;
             foreach ($value['players'] as $key2 => $value2) {
                 //Do steamID bot work around
-                if(!empty($value2['steamID32']) && is_numeric($value2['steamID32'])){
+                if (!empty($value2['steamID32']) && is_numeric($value2['steamID32'])) {
                     $steamID32 = $value2['steamID32'];
-                } else{
+                } else {
                     $steamID32 = $i;
                     $i--;
                 }
 
                 foreach ($schemaFieldsPlayerArray as $key3 => $value3) {
                     if (isset($value2[$value3]) && isset($steamID32)) {
-                        $schemaFieldsPlayerArrayResult[$key][$steamID32][$key3] = $value2[$value3];
+                        if (
+                            $value2[$value3] != NULL &&
+                            $value2[$value3] != 'nil' &&
+                            $value2[$value3] != 'null' &&
+                            $value2[$value3] != ''
+                        ) {
+                            $schemaFieldsPlayerArrayResult[$key][$steamID32][$key3] = $value2[$value3];
+                        }
                     } else {
                         throw new Exception("Missing `$value3` from Round `$key` in Player array!");
                     }

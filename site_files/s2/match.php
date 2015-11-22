@@ -227,8 +227,9 @@ try {
                 if (!empty($clientDetails)) {
                     foreach ($clientDetails as $key => $value) {
                         foreach ($matchSummary AS $key2 => $value2) {
-                            if (!isset($matchSummary[1]['players'][$value['steamID32']])) throw new Exception('No basic stats for user ' . $value['steamID32'] . ' in round #1!');
-                            $matchSummary[$key2]['players'][$value['steamID32']]['cpv']['IP'] = adminWrapText($value['clientIP']);
+                            if (isset($matchSummary[1]['players'][$value['steamID32']])) {
+                                $matchSummary[$key2]['players'][$value['steamID32']]['cpv']['IP'] = adminWrapText($value['clientIP']);
+                            }
                         }
                     }
                 }
