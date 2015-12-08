@@ -5,13 +5,15 @@ require_once('../global_functions.php');
 
 try {
     $input_file = './day8_input.txt';
-    //if (!is_file($input_file)) throw new Exception("Input put file missing!");
-    //$input = file_get_contents($input_file);
-    //if (empty($input)) throw new Exception("No input!");
+    if (!is_file($input_file)) throw new Exception("Input put file missing!");
+    $input = file_get_contents($input_file);
+    if (empty($input)) throw new Exception("No input!");
+
+    $input_array = explode("\n", $input);
 
     $part1 = $part2 = 0;
 
-    foreach (file($input_file, FILE_IGNORE_NEW_LINES) as $line) {
+    foreach($input_array as $line){
         eval('$str = ' . $line . ';');
         $part1 += strlen($line) - strlen($str);
         $part2 += strlen(addslashes($line)) + 2 - strlen($line);
