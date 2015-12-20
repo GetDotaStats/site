@@ -105,7 +105,11 @@ try {
             ? 0
             : 1;
 
-        if ($preGameAuthPayloadJSON['schemaVersion'] <= 3) {
+        $gameDuration = !empty($preGameAuthPayloadJSON['gameDuration']) && is_numeric($preGameAuthPayloadJSON['gameDuration'])
+            ? $preGameAuthPayloadJSON['gameDuration']
+            : NULL;
+
+        //if ($preGameAuthPayloadJSON['schemaVersion'] <= 3) {
             $sqlResult = $db->q(
                 'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchDuration`, `matchFinished`)
                     VALUES (?, ?, ?, ?)
@@ -117,11 +121,11 @@ try {
                 array(
                     $matchID,
                     3,
-                    $preGameAuthPayloadJSON['gameDuration'],
+                    $gameDuration,
                     $gameFinished
                 )
             );
-        } else {
+        /*} else {
             $sqlResult = $db->q(
                 'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchFinished`)
                     VALUES (?, ?, ?)
@@ -135,7 +139,7 @@ try {
                     $gameFinished
                 )
             );
-        }
+        }*/
     }
 
     //PLAYERS DETAILS
