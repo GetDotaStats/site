@@ -202,10 +202,10 @@ try {
                 foreach ($schemaFieldsPlayerArray as $key3 => $value3) {
                     if (isset($value2[$value3]) && isset($steamID32)) {
                         if (
-                            $value2[$value3] != NULL &&
-                            $value2[$value3] != 'nil' &&
-                            $value2[$value3] != 'null' &&
-                            $value2[$value3] != ''
+                            $value2[$value3] !== NULL &&
+                            $value2[$value3] !== 'nil' &&
+                            $value2[$value3] !== 'null' &&
+                            $value2[$value3] !== ''
                         ) {
                             $schemaFieldsPlayerArrayResult[$key][$steamID32][$key3] = $value2[$value3];
                         }
