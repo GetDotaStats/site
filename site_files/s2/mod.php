@@ -19,6 +19,33 @@ try {
 
     $modID = $_GET['id'];
 
+    $filterTimeSpan = !empty($_GET['t']) && is_numeric($_GET['t'])
+        ? $_GET['t']
+        : -1;
+
+    switch ($filterTimeSpan) {
+        case 1:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 7 DAY ';
+            $sqlFilter = 1;
+            break;
+        case 2:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 14 DAY ';
+            $sqlFilter = 2;
+            break;
+        case 3:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 30 DAY ';
+            $sqlFilter = 3;
+            break;
+        case 4:
+            $filterTimeSpanSQL = '';
+            $sqlFilter = 4;
+            break;
+        default:
+            $filterTimeSpanSQL = ' AND cmm.`dateRecorded` >= NOW() - INTERVAL 14 DAY ';
+            $sqlFilter = 2;
+            break;
+    }
+
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
@@ -48,8 +75,15 @@ try {
                 echo formatExceptionHandling($e);
             }
 
+            echo '<div class="text-center">
+                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=1">Last Week</a>
+                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=2">Last 2 Weeks</a>
+                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=3">Last Month</a>
+                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=4">All Time</a>
+               </div>';
+
             $gamesOverTime = cached_query(
-                's2_mod_page_games_over_time_all_' . $modID,
+                's2_mod_page_games_over_time_all_' . $modID . '_' . $sqlFilter,
                 'SELECT
                       cmm.`day`,
                       cmm.`month`,
@@ -58,11 +92,11 @@ try {
                       SUM(cmm.`gamesPlayed`) AS gamesPlayed,
                       MIN(cmm.`dateRecorded`) AS dateRecorded
                     FROM `cache_mod_matches` cmm
-                    WHERE cmm.`modID` = ? AND cmm.`dateRecorded` >= NOW() - INTERVAL 1 MONTH
+                    WHERE cmm.`modID` = ? ' . $filterTimeSpanSQL . '
                     GROUP BY 3,2,1,4;',
                 'i',
                 $modID,
-                1
+                10
             );
 
             if (empty($gamesOverTime)) {
@@ -81,7 +115,7 @@ try {
                     ? intval($value['gamesPlayed'])
                     : 0;
 
-                switch($value['gamePhase']){
+                switch ($value['gamePhase']) {
                     case 1:
                         $phase = '1 - Players loaded';
                         break;
