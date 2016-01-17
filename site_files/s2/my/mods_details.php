@@ -88,8 +88,10 @@ try {
               ORDER BY `date_recorded` DESC;',
             'i',
             array($modID),
-            5
+            1
         );
+
+        echo '<span id="modDetailsDelAJAXResult" class="labelWarnings label label-danger"></span>';
 
         foreach ($teamMembers as $key => $value) {
             $developerAvatar = !empty($value['user_avatar'])
@@ -105,9 +107,42 @@ try {
             echo '<div class="row">
                 <div class="col-md-3">' . $developerLink . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['date_recorded'], 1, NULL, false, true, true) . '</div>
+                <div class="col-md-2">
+                    <form id="modTeamMemberRemove' . $value['steam_id64'] . '">
+                        <input name="mod_id" type="hidden" value="' . $modID . '">
+                        <input name="team_member" type="hidden" value="' . $value['steam_id64'] . '">
+                        <button id="sub" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </div>
             </div>';
 
             echo '<span class="h5">&nbsp;</span>';
+
+            echo '<script type="application/javascript">
+            $("#modTeamMemberRemove' . $value['steam_id64'] . '").submit(function (event) {
+                event.preventDefault();
+
+                $.post("./s2/my/mods_details_del_tm_ajax.php", $("#modTeamMemberRemove' . $value['steam_id64'] . '").serialize(), function (data) {
+                    try {
+                        if(data){
+                            var response = JSON.parse(data);
+                            if(response && response.error){
+                                $("#modDetailsDelAJAXResult").html(response.error);
+                            }
+                            else if(response && response.result){
+                                loadPage("#s2__my__mods_details?id=' . $modID . '",1);
+                            }
+                            else{
+                                $("#modDetailsDelAJAXResult").html(data);
+                            }
+                        }
+                    }
+                    catch(err) {
+                        $("#modDetailsDelAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
+                    }
+                }, "text");
+            });
+        </script>';
         }
 
         echo '<h4>Add Team Member</h4>';
@@ -115,12 +150,12 @@ try {
         echo '<form id="modTeamMemberAdd">';
         echo '<input name="mod_id" type="hidden" value="' . $modID . '">';
         echo '<div class="row">
-                    <div class="col-md-5"><input class="formTextArea boxsizingBorder" name="team_member" type="text" maxlength="70" placeholder="URL or steamID64 or steamID32"></div>
+                    <div class="col-md-5"><input class="formTextArea boxsizingBorder" name="team_member" type="text" maxlength="100" placeholder="URL or steamID64 or steamID32"></div>
                     <div class="col-md-2"><button id="sub" class="btn btn-success">Add</button></div>
                 </div>';
         echo '</form>';
 
-        echo '<span id="modDetailsAJAXResult" class="labelWarnings label label-danger"></span>';
+        echo '<span id="modDetailsAddAJAXResult" class="labelWarnings label label-danger"></span>';
 
         echo '<script type="application/javascript">
             $("#modTeamMemberAdd").submit(function (event) {
@@ -131,18 +166,18 @@ try {
                         if(data){
                             var response = JSON.parse(data);
                             if(response && response.error){
-                                $("#modDetailsAJAXResult").html(response.error);
+                                $("#modDetailsAddAJAXResult").html(response.error);
                             }
                             else if(response && response.result){
                                 loadPage("#s2__my__mods_details?id=' . $modID . '",1);
                             }
                             else{
-                                $("#modDetailsAJAXResult").html(data);
+                                $("#modDetailsAddAJAXResult").html(data);
                             }
                         }
                     }
                     catch(err) {
-                        $("#modDetailsAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
+                        $("#modDetailsAddAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
                     }
                 }, "text");
             });
