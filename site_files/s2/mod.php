@@ -76,10 +76,10 @@ try {
             }
 
             echo '<div class="text-center">
-                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=1">Last Week</a>
-                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=2">Last 2 Weeks</a>
-                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=3">Last Month</a>
-                    <a class="nav-clickable btn btn-sm btn-info" href="#s2__mod?id=' . $modID . '&t=4">All Time</a>
+                    <a class="nav-clickable btn btn-sm btn-success" href="#s2__mod?id=' . $modID . '&t=1">Last Week</a>
+                    <a class="nav-clickable btn btn-sm btn-success" href="#s2__mod?id=' . $modID . '&t=2">Last 2 Weeks</a>
+                    <a class="nav-clickable btn btn-sm btn-success" href="#s2__mod?id=' . $modID . '&t=3">Last Month</a>
+                    <a class="nav-clickable btn btn-sm btn-success" href="#s2__mod?id=' . $modID . '&t=4">All Time</a>
                </div>';
 
             $gamesOverTime = cached_query(
