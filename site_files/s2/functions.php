@@ -1,4 +1,7 @@
 <?php
+require_once('../global_functions.php');
+require_once('../connections/parameters.php');
+
 if (!function_exists('modPageHeader')) {
     function modPageHeader($modID, $imageCDN)
     {
@@ -69,7 +72,8 @@ if (!function_exists('modPageHeader')) {
                     //if admin, show modIdentifier too
                     $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
                     if (!empty($adminCheck)) {
-                        $modIDname = '<small>' . adminWrapText($modDetails[0]['mod_identifier']) . '</small>';
+                        $modEditLink = '<a class="nav-clickable" href="#s2__my__mods_details?id=' . $modDetails[0]['mod_id'] . '"><span class="glyphicon glyphicon-pencil" title="Admin only!"></span></a>';
+                        $modIDname = '<small>' . adminWrapText($modDetails[0]['mod_identifier'] . ' ' . $modEditLink) . '</small>';
                     }
                 }
                 $modNameLink = $modThumb . ' <a class="nav-clickable" href="#s2__mod?id=' . $modDetails[0]['mod_id'] . '">' . $modDetails[0]['mod_name'] . $modNameLink . '</a> ' . $modIDname;
@@ -95,6 +99,79 @@ if (!function_exists('modPageHeader')) {
                     : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
                 $developerAvatar = '<img width="20" height="20" src="' . $developerAvatar . '" alt="Developer avatar" />';
                 $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $modDetails[0]['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $modDetails[0]['steam_id64'] . '">' . $modDetails[0]['user_name'] . '</a>';
+            }
+
+            //Team Members
+            {
+                $teamMembers = '';
+                $teamMembersSQL = cached_query(
+                    's2_mod_tm_' . $modID,
+                    'SELECT
+                          mlo.`steam_id64`,
+                          mlo.`date_recorded`,
+
+                          gdsu.`user_name`,
+                          gdsu.`user_avatar`
+
+                      FROM `mod_list_owners`  mlo
+                      LEFT JOIN `gds_users` gdsu
+                        ON mlo.`steam_id64` = gdsu.`user_id64`
+                      WHERE `mod_id` = ?
+                      ORDER BY `date_recorded` DESC;',
+                    'i',
+                    array($modID),
+                    5
+                );
+
+                if (!empty($teamMembersSQL)) {
+                    $modEditLink = '<a class="nav-clickable" href="#s2__my__mods_details?id=' . $modDetails[0]['mod_id'] . '"><span class="glyphicon glyphicon-pencil" title="Admin only!"></span></a>';
+                    $teamMembersTitle = 'Team Members';
+
+                    //Check if logged in user is on team
+                    $modDetailsAuthorisation = $db->q(
+                        'SELECT
+                            `mod_id`
+                          FROM mod_list_owners
+                          WHERE
+                            `mod_id` = ? AND
+                            `steam_id64` = ?
+                          LIMIT 0,1;',
+                        'is',
+                        array($modID, $_SESSION['user_id64'])
+                    );
+
+                    //Check if logged in user is an admin
+                    $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
+
+                    if (!empty($modDetailsAuthorisation) || $adminCheck) {
+                        $teamMembersTitle .= ' ' . $modEditLink;
+                    }
+
+                    $teamMembers = '<div class="row mod_info_panel">
+                                <div class="col-sm-3"><strong>' . $teamMembersTitle . '</strong></div>
+                                <div class="col-sm-9">';
+
+                    $teamMembersArray = array();
+                    foreach ($teamMembersSQL as $key => $value) {
+                        if ($value['steam_id64'] != $modDetails[0]['steam_id64']) {
+                            $teamMemberAvatar = !empty($value['user_avatar'])
+                                ? $value['user_avatar']
+                                : $imageCDN . '/images/misc/steam/blank_avatar.jpg';
+                            $teamMemberAvatar = '<img width="20" height="20" src="' . $teamMemberAvatar . '" />';
+                            $teamMemberUsername = !empty($value['user_name'])
+                                ? $value['user_name']
+                                : '???';
+                            $teamMembersArray[] = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $teamMemberAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $value['steam_id64'] . '">' . $teamMemberUsername . '</a>';
+                        }
+                    }
+
+                    if (!empty($teamMembersArray)) {
+                        $teamMembers .= implode('<br />', $teamMembersArray);
+                        $teamMembers .= '</div></div>';
+                    } else {
+                        $teamMembers = '';
+                    }
+                }
             }
 
             //Developer email
@@ -179,7 +256,7 @@ if (!function_exists('modPageHeader')) {
                         <div class="row mod_info_panel">
                             <div class="col-sm-3"><strong>Developer</strong></div>
                             <div class="col-sm-9">' . $developerLink . '</div>
-                        </div>' . $developerEmail . '
+                        </div>' . $teamMembers . $developerEmail . '
                         <div class="row mod_info_panel">
                             <div class="col-sm-3"><strong>Maps</strong></div>
                             <div class="col-sm-9">' . $modMaps . '</div>

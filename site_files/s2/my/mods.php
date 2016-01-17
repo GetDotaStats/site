@@ -16,10 +16,8 @@ try {
     checkLogin_v2();
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
-    $userID64 = $_SESSION['user_id64'];
-
     $modWorkshopList = cached_query(
-        's2_my_mods_' . $userID64,
+        's2_my_mods_' . $_SESSION['user_id64'],
         'SELECT
               ml.`mod_id`,
               ml.`steam_id64` AS developer_id64,
@@ -69,7 +67,7 @@ try {
             ) as s2mcs ON s2mcs.`modID` = ml.`mod_id`
             WHERE ml.`mod_id` IN (SELECT `mod_id` FROM mod_list_owners WHERE `steam_id64` = ?);',
         's',
-        array($userID64),
+        array($_SESSION['user_id64']),
         5
     );
 
@@ -84,7 +82,7 @@ try {
 
         echo '<div class="row">
                     <div class="col-sm-1 text-center"><strong>Status</strong></div>
-                    <div class="col-sm-4 text-center"><strong>Mod</strong></div>
+                    <div class="col-sm-3 text-center"><strong>Mod</strong></div>
                     <div class="col-sm-3 text-center"><strong>modID</strong></div>
                     <div class="col-sm-2 text-center"><strong>schemaID</strong></div>
 
@@ -140,11 +138,12 @@ try {
 
             echo '<div class="row">
                     <div class="col-sm-1 text-center">' . $modStatus . '</div>
-                    <div class="col-sm-4"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
+                    <div class="col-sm-3"><img width="25" height="25" src="' . $modThumb . '" /> <a class="nav-clickable" href="#s2__mod?id=' . $value['mod_id'] . '">' . $value['mod_name'] . '</a></div>
                     <div class="col-sm-3">' . $ModIdentifier . '</div>
                     <div class="col-sm-2">' . $schemaDetails . '</div>
                     <div class="col-sm-1 text-right">' . number_format($value['games_last_week']) . '</div>
                     <div class="col-sm-1 text-right">' . number_format($value['games_all_time']) . '</div>
+                    <div class="col-sm-1"><a class="nav-clickable" href="#s2__my__mods_details?id=' . $value['mod_id'] . '"><span class="glyphicon glyphicon-pencil"></span></a></div>
                 </div>';
 
             echo '<span class="h4">&nbsp;</span>';
