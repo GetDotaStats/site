@@ -85,14 +85,19 @@ try {
                 $teamMember = str_replace('/', '', cut_str($teamMember, 'steamcommunity.com/profiles/'));
             }
 
-            $steamWebAPI = new steam_webapi($api_key2);
+            if (is_numeric($teamMember)) {
+                $steamIDcheck = new SteamID($teamMember);
+                $teamMemberTreated = $steamIDcheck->getSteamID64();
+            } else {
+                $steamWebAPI = new steam_webapi($api_key2);
 
-            //Do webapi request
-            $vanityAPIcheck = $steamWebAPI->ResolveVanityURL($teamMember);
+                //Do webapi request
+                $vanityAPIcheck = $steamWebAPI->ResolveVanityURL($teamMember);
 
-            if (!empty($vanityAPIcheck)) {
-                if ($vanityAPIcheck['response']['success'] == 1 && !empty($vanityAPIcheck['response']['steamid'])) {
-                    $teamMemberTreated = $vanityAPIcheck['response']['steamid'];
+                if (!empty($vanityAPIcheck)) {
+                    if ($vanityAPIcheck['response']['success'] == 1 && !empty($vanityAPIcheck['response']['steamid'])) {
+                        $teamMemberTreated = $vanityAPIcheck['response']['steamid'];
+                    }
                 }
             }
         }
