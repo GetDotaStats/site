@@ -67,7 +67,7 @@ try {
                             GROUP BY s2mcs3.`modID`
                     )
             ) as s2mcs ON s2mcs.`modID` = ml.`mod_id`
-            WHERE ml.`steam_id64` = ?;',
+            WHERE ml.`mod_id` IN (SELECT `mod_id` FROM mod_list_owners WHERE `steam_id64` = ?);',
         's',
         array($userID64),
         5

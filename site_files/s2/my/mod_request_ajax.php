@@ -124,6 +124,16 @@ try {
         $modID = $db->last_index();
         $json_response['result'] = 'Success! Found mod and added to DB for approval as #' . $modID;
 
+        $db->q(
+            'INSERT INTO `mod_list_owners` (`mod_id`, `steam_id64`)
+            VALUES (?, ?);',
+            'is', //STUPID x64 windows PHP is actually x86
+            array(
+                $modID,
+                $modOwner,
+            )
+        );
+
         $irc_message = new irc_message($webhook_gds_site_normal);
 
         $message = array(
