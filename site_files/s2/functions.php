@@ -127,24 +127,26 @@ if (!function_exists('modPageHeader')) {
                     $modEditLink = '<a class="nav-clickable" href="#s2__my__mods_details?id=' . $modDetails[0]['mod_id'] . '"><span class="glyphicon glyphicon-pencil" title="Admin only!"></span></a>';
                     $teamMembersTitle = 'Team Members';
 
-                    //Check if logged in user is on team
-                    $modDetailsAuthorisation = $db->q(
-                        'SELECT
+                    if (!empty($_SESSION['user_id64'])) {
+                        //Check if logged in user is on team
+                        $modDetailsAuthorisation = $db->q(
+                            'SELECT
                             `mod_id`
                           FROM mod_list_owners
                           WHERE
                             `mod_id` = ? AND
                             `steam_id64` = ?
                           LIMIT 0,1;',
-                        'is',
-                        array($modID, $_SESSION['user_id64'])
-                    );
+                            'is',
+                            array($modID, $_SESSION['user_id64'])
+                        );
 
-                    //Check if logged in user is an admin
-                    $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
+                        //Check if logged in user is an admin
+                        $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
 
-                    if (!empty($modDetailsAuthorisation) || $adminCheck) {
-                        $teamMembersTitle .= ' ' . $modEditLink;
+                        if (!empty($modDetailsAuthorisation) || $adminCheck) {
+                            $teamMembersTitle .= ' ' . $modEditLink;
+                        }
                     }
 
                     $teamMembers = '<div class="row mod_info_panel">
