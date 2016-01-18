@@ -18,6 +18,9 @@ try {
     checkLogin_v2();
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
 
+    //Check if logged in user is an admin
+    $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
+
     $steamIDmanipulator = new SteamID($_SESSION['user_id64']);
     $steamID32 = $steamIDmanipulator->getsteamID32();
     $steamID64 = $steamIDmanipulator->getsteamID64();
@@ -92,8 +95,8 @@ try {
         ? htmlentities($mod_details['response']['publishedfiledetails'][0]['consumer_app_id'])
         : '-1';
 
-    if ($_SESSION['user_id64'] != $modOwner) {
-        throw new Exception('Insufficient privilege to add this mod. Login as the mod developer.');
+    if ($_SESSION['user_id64'] != $modOwner && !$adminCheck) {
+        throw new Exception('Insufficient privilege to add this mod. Login as the mod developer or contact admins via <strong><a class="boldGreenText" href="https://github.com/GetDotaStats/stat-collection/issues" target="_blank">issue tracker</a></strong>!');
     }
 
     if ($modApp != 570) {

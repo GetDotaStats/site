@@ -34,6 +34,10 @@ try {
             code libraries that are made with the intention to be shared.</li>
             <li>Your mod must include some custom code in the form of Lua. Mods that consist of only a map may not be accepted, but again will be approved on
             a case-by-case basis.</li>
+            <li>If the mod owner is not able to submit the request for their mod, team members are encouraged to get in-contact with us via our <strong>
+            <a href="https://github.com/GetDotaStats/stat-collection/issues" target="_blank">issue tracker</a></strong>. We will judge whether to allow such mods
+            to be added to the site on a case-by-case basis. The mod owner will still retain ownership of the mod at all times, and will be able to simply login
+            and remove team members in the case of abuse.</li>
         </ul>';
 
     checkLogin_v2();
