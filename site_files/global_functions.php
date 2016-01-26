@@ -1255,10 +1255,10 @@ if (!function_exists('updateUserDetails')) {
 }
 
 if (!function_exists('grabAndUpdateSteamUserDetails')) {
-    function grabAndUpdateSteamUserDetails($steamID32)
+    function grabAndUpdateSteamUserDetails($steamID32, $localDevOverride = false)
     {
         global $db, $memcache, $webAPI, $localDev;
-        if ($localDev) throw new Exception('We working locally!');
+        if (!$localDevOverride && $localDev) throw new Exception('We working locally!');
         if (!isset($db)) throw new Exception('No DB defined!');
         if (!isset($memcache)) throw new Exception('No memcache defined!');
         if (!isset($webAPI)) throw new Exception('webAPI not defined!');

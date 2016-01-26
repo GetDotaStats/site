@@ -7,33 +7,47 @@ try {
         session_start();
     }
 
-    if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-        throw new Exception('Selected schemaID is invalid!');
-    }
+    echo '<h2>Add User to Site Cache</h2>';
+    echo '<p>This tool is used to add users to the site cache. If you find yourself routinely using this tool,
+        please open an issue describing why... as there is likely a deficient process that can be improved.</p>';
 
-    $userID = $_GET['id'];
+    echo '<form id="userAdd">';
+    echo '<div class="row">
+                <div class="col-md-5"><input class="formTextArea boxsizingBorder" name="user_id" type="text" maxlength="100" placeholder="URL or steamID64 or steamID32"></div>
+                <div class="col-md-2"><button id="sub" class="btn btn-success">Add</button></div>
+            </div>';
+    echo '</form>';
 
-    $steamIDmanipulation = new SteamID($userID);
-    $steamID64 = $steamIDmanipulation->getSteamID64();
+    echo '<span class="h5">&nbsp;</span>';
 
-    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
-    if (empty($db)) throw new Exception('No DB!');
+    echo '<span id="userAddAJAXResult" class="labelWarnings label label-danger"></span>';
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    echo '<script type="application/javascript">
+            $("#userAdd").submit(function (event) {
+                event.preventDefault();
 
-    checkLogin_v2();
-    if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
+                $.post("./admin/tools/add_site_user_ajax.php", $("#userAdd").serialize(), function (data) {
+                    try {
+                        if(data){
+                            var response = JSON.parse(data);
+                            if(response && response.error){
+                                $("#userAddAJAXResult").html(response.error);
+                            }
+                            else if(response && response.result){
+                                $("#userAddAJAXResult").html(response.result);
+                            }
+                            else{
+                                $("#userAddAJAXResult").html(data);
+                            }
+                        }
+                    }
+                    catch(err) {
+                        $("#modDetailsAddAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
+                    }
+                }, "text");
+            });
+        </script>';
 
-    $adminCheck = adminCheck($_SESSION['user_id64'], 'admin');
-    if (empty($adminCheck)) throw new Exception('Not an admin!');
-
-    echo '<h2>Add Site User</h2>';
-    echo '<p>This is a tool for adding a user to the site user cache.</p>';
-
-    $playerDBStatus = updateUserDetails($steamID64, $api_key3);
-
-    var_dump($playerDBStatus);
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
 } finally {
