@@ -136,6 +136,8 @@ try {
                 $modOwner,
             )
         );
+		
+		updateUserDetails($modOwner, $api_key2);
 
         $irc_message = new irc_message($webhook_gds_site_normal);
 
