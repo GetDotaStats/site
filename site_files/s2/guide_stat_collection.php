@@ -274,7 +274,7 @@ if (!isset($_SESSION)) {
         <code>/content/dota_addons/YOUR_ADDON/panorama/layout/custom_game/custom_ui_manifest.xml</code>
         . We have an example file named <code>MERGE_custom_ui_manifest.xml</code> in
         <a href="https://github.com/GetDotaStats/stat-collection/tree/master/content/dota_addons/YOUR_ADDON/panorama/layout/custom_game"
-           target="_blank">our repo</a>
+           target="_blank">our repo</a> that needs to be merged into or become yours.
     </li>
     <li>Drop our other two Panorama files into your mod. They should not conflict with other files. They are:
         <code>content/dota_addons/YOUR_ADDON/panorama/layout/custom_game/statcollection.xml</code>
