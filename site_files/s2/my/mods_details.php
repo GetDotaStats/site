@@ -103,46 +103,51 @@ try {
                 : '???';
             $developerLink = '<a target="_blank" href="http://steamcommunity.com/profiles/' . $value['steam_id64'] . '">' . $developerAvatar . '</a> <a class="nav-clickable" href="#s2__user?id=' . $value['steam_id64'] . '">' . $developerUsername . '</a>';
 
-
-            echo '<div class="row">
-                <div class="col-md-3">' . $developerLink . '</div>
-                <div class="col-md-2 text-right">' . relative_time_v3($value['date_recorded'], 1, NULL, false, true, true) . '</div>
-                <div class="col-md-2">
+            $removeButton = $modDetails[0]['developer_id64'] != $value['steam_id64']
+                ? '<div class="col-md-2">
                     <form id="modTeamMemberRemove' . $value['steam_id64'] . '">
                         <input name="mod_id" type="hidden" value="' . $modID . '">
                         <input name="team_member" type="hidden" value="' . $value['steam_id64'] . '">
                         <button id="sub" class="btn btn-sm btn-danger">Remove</button>
                     </form>
-                </div>
+                </div>'
+                : '';
+
+            echo '<div class="row">
+                <div class="col-md-3">' . $developerLink . '</div>
+                <div class="col-md-2 text-right">' . relative_time_v3($value['date_recorded'], 1, NULL, false, true, true) . '</div>
+                ' . $removeButton . '
             </div>';
 
             echo '<span class="h5">&nbsp;</span>';
 
-            echo '<script type="application/javascript">
-            $("#modTeamMemberRemove' . $value['steam_id64'] . '").submit(function (event) {
-                event.preventDefault();
+            if ($modDetails[0]['developer_id64'] != $value['steam_id64']) {
+                echo '<script type="application/javascript">
+                    $("#modTeamMemberRemove' . $value['steam_id64'] . '").submit(function (event) {
+                        event.preventDefault();
 
-                $.post("./s2/my/mods_details_del_tm_ajax.php", $("#modTeamMemberRemove' . $value['steam_id64'] . '").serialize(), function (data) {
-                    try {
-                        if(data){
-                            var response = JSON.parse(data);
-                            if(response && response.error){
-                                $("#modDetailsDelAJAXResult").html(response.error);
+                        $.post("./s2/my/mods_details_del_tm_ajax.php", $("#modTeamMemberRemove' . $value['steam_id64'] . '").serialize(), function (data) {
+                            try {
+                                if(data){
+                                    var response = JSON.parse(data);
+                                    if(response && response.error){
+                                        $("#modDetailsDelAJAXResult").html(response.error);
+                                    }
+                                    else if(response && response.result){
+                                        loadPage("#s2__my__mods_details?id=' . $modID . '",1);
+                                    }
+                                    else{
+                                        $("#modDetailsDelAJAXResult").html(data);
+                                    }
+                                }
                             }
-                            else if(response && response.result){
-                                loadPage("#s2__my__mods_details?id=' . $modID . '",1);
+                            catch(err) {
+                                $("#modDetailsDelAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
                             }
-                            else{
-                                $("#modDetailsDelAJAXResult").html(data);
-                            }
-                        }
-                    }
-                    catch(err) {
-                        $("#modDetailsDelAJAXResult").html("Parsing Error: " + err.message + "<br />" + data);
-                    }
-                }, "text");
-            });
-        </script>';
+                        }, "text");
+                    });
+                </script>';
+            }
         }
 
         echo '<h4>Add Team Member</h4>';
