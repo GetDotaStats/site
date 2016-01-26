@@ -108,7 +108,7 @@ try {
             's2_cron_matches',
             array(
                 'value' => $totalRunTime,
-                'min' => 10,
+                'min' => 60,
                 'growth' => 1,
             ),
             array(
