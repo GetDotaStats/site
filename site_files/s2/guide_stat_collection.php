@@ -261,6 +261,31 @@ if (!isset($_SESSION)) {
     </li>
 </ul>
 
+<h4>Stage 4 - Player Demographics <code>OPTIONAL</code></h4>
+
+<p>Now that you have basic stats, you are encouraged to better understand your players. Simple things like which
+    regions your players play from, can have a large impact on game design and feature targeting (like
+    translations). We need data to figure out how we want to display it, so the more people that complete this
+    step, the better stats we can show.</p>
+
+<ol>
+    <li>You need to find your Panorama Custum UI XML manifest. If you have not touched your Panorama files, it should
+        be located and named thus:
+        <code>/content/dota_addons/YOUR_ADDON/panorama/layout/custom_game/custom_ui_manifest.xml</code>
+        . We have an example file named <code>MERGE_custom_ui_manifest.xml</code> in
+        <a href="https://github.com/GetDotaStats/stat-collection/tree/master/content/dota_addons/YOUR_ADDON/panorama/layout/custom_game"
+           target="_blank">our repo</a>
+    </li>
+    <li>Drop our other two Panorama files into your mod. They should not conflict with other files. They are:
+        <code>content/dota_addons/YOUR_ADDON/panorama/layout/custom_game/statcollection.xml</code>
+        and <code>content/dota_addons/YOUR_ADDON/panorama/scripts/custom_game/statcollection.js</code>
+    </li>
+    <li>If you have completed the steps successfully above, you should see a new flag `playerDemographics` with a value
+        of 'true' on match details pages for matches with more than one real player. Keep in mind that some players may
+        have weird computer configurations, that will cause these kind of stats to not be recorded against their games.
+    </li>
+</ol>
+
 <hr/>
 
 <h4>Troubleshooting FAQ</h4>

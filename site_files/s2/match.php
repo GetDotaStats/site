@@ -262,6 +262,8 @@ try {
 
     if (empty($matchSummary)) throw new Exception('No player details recorded!');
 
+    $numPlayers = 0;
+
     //Iterate over all of the rounds in the match summary array
     foreach ($matchSummary as $key => $value) {
         try {
@@ -299,6 +301,9 @@ try {
                     </div>';
 
             if (empty($value['players'])) throw new Exception("No basic stats for this round #{$key}!");
+            $numPlayers = count($value['players']) > $numPlayers
+                ? count($value['players'])
+                : $numPlayers;
 
             //Iterate over all of the players for this round in the match summary array
             foreach ($value['players'] as $key2 => $value2) {
@@ -386,6 +391,28 @@ try {
             $matchID,
             5
         );
+
+        if ($numPlayers > 1) {
+            $ipCheck = cached_query('s2_flags_match_details_ip' . $matchID,
+                'SELECT
+                          `matchID`,
+                          `modID`,
+                          `steamID32`,
+                          `steamID64`,
+                          `clientIP`,
+                          `isHost`,
+                          `dateRecorded`
+                        FROM `s2_match_client_details`
+                        WHERE `matchID` = ?;',
+                's',
+                $matchID,
+                5
+            );
+
+            if (!empty($ipCheck) && count($ipCheck) > 1) {
+                $flagsDetails[] = array('flagName' => '<em>playerDemographics</em>', 'flagValue' => 'true');
+            }
+        }
 
         if (!empty($flagsDetails)) {
             echo '<div class="row">
