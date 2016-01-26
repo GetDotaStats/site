@@ -269,7 +269,7 @@ if (!isset($_SESSION)) {
     step, the better stats we can show.</p>
 
 <ol>
-    <li>You need to find your Panorama Custum UI XML manifest. If you have not touched your Panorama files, it should
+    <li>You need to find your Panorama Custom UI XML manifest. If you have not touched your Panorama files, it should
         be located and named thus:
         <code>/content/dota_addons/YOUR_ADDON/panorama/layout/custom_game/custom_ui_manifest.xml</code>
         . We have an example file named <code>MERGE_custom_ui_manifest.xml</code> in
