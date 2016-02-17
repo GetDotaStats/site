@@ -182,7 +182,7 @@ try {
                     } else {
                         $workshopCronCounts['failure'] += 1;
                         echo "<strong>[FAILURE] NO DATA for:</strong> $workshopID!<br />";
-                        echo $modWorkshopDetails;
+                        print_r($modWorkshopDetails);
                         echo '<hr />';
                     }
                 }
