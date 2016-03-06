@@ -71,8 +71,7 @@ try {
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
     if (empty($db)) throw new Exception('No DB!');
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     /*!empty($_GET["base"]) && is_file($base_img_dir_sig . $_GET["base"])
         ? $base_img_name = $_GET["base"]
@@ -506,7 +505,7 @@ try {
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file_name_location)) . ' GMT', true, 200);
     header('Content-Length: ' . filesize($file_name_location));
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
 
     if ($areWeRegenning && !$caughtException) {
         imagepng($base_img, $file_name_location);
@@ -517,7 +516,7 @@ try {
     }
 
     if (!$areWeLocalDevEnv) {
-        $headers = apache_request_headers();
+        $headers = getallheaders();
     }
 
     if (file_exists($file_name_location) && isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == filemtime($file_name_location))) {
@@ -526,5 +525,7 @@ try {
         header('Content-Length: ' . filesize($file_name_location));
     }
 
-    readfile($file_name_location);
+    if (file_exists($file_name_location)) {
+        readfile($file_name_location);
+    }
 }
