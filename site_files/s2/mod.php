@@ -49,8 +49,7 @@ try {
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     echo modPageHeader($modID, $CDN_image);
 
@@ -131,19 +130,59 @@ try {
                 }
 
                 $bigArray[$phase][] = array(
-                    new HighchartJsExpr("Date.UTC($year, $month, $day)"),
-                    $gamesPlayedRaw,
+                    'x' => new HighchartJsExpr("Date.UTC($year, $month, $day)"),
+                    'y' => $gamesPlayedRaw,
                 );
             }
 
             ksort($bigArray);
+
+            foreach ($bigArray as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+                    $phase1 = 0;
+                    foreach ($bigArray['1 - Players loaded'] as $key3 => $value3) {
+                        if ($value3['x'] == $value2['x']) {
+                            $phase1 = !empty($value3['y']) && is_numeric($value3['y'])
+                                ? $value3['y']
+                                : 0;
+                            break;
+                        }
+                    }
+
+                    $phase2 = 0;
+                    foreach ($bigArray['2 - Game started'] as $key3 => $value3) {
+                        if ($value3['x'] == $value2['x']) {
+                            $phase2 = !empty($value3['y']) && is_numeric($value3['y'])
+                                ? $value3['y']
+                                : 0;
+                            break;
+                        }
+                    }
+
+                    $phase3 = 0;
+                    foreach ($bigArray['3 - Game ended'] as $key3 => $value3) {
+                        if ($value3['x'] == $value2['x']) {
+                            $phase3 = !empty($value3['y']) && is_numeric($value3['y'])
+                                ? $value3['y']
+                                : 0;
+                            break;
+                        }
+                    }
+
+                    if ($phase3 > 0) {
+                        $bigArray[$key][$key2]['percentage'] = number_format($value2['y'] / ($phase1 + $phase2 + $phase3) * 100, 1);
+                    }
+                }
+            }
 
             $lineChart = makeLineChart(
                 $bigArray,
                 'games_per_phase_all',
                 'Number of Games per Phase over Time',
                 new HighchartJsExpr("document.ontouchstart === undefined ? 'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'"),
-                array('title' => 'Games', 'min' => 0)
+                array('title' => 'Games', 'min' => 0),
+                NULL,
+                array("pointFormat" => "<b>{series.name}</b>: {point.percentage}% ({point.y})<br />", "shared" => true)
             );
 
             echo '<div id="games_per_phase_all"></div>';
@@ -167,5 +206,5 @@ try {
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
 }
