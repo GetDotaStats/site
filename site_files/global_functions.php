@@ -3,8 +3,8 @@
 //Common Variables
 //////////////////////
 
-$CDN_generic = '//static.getdotastats.com';
-$CDN_image = '//dota2.photography';
+$CDN_generic = '//getdotastats.com';
+$CDN_image = '//getdotastats.com';
 
 //////////////////////
 // javascript
@@ -71,6 +71,150 @@ if (!function_exists('exceptions_error_handler')) {
 
 set_error_handler('exceptions_error_handler');
 
+class Cache
+{
+    private $id;
+    private $obj;
+    private $memcache;
+
+    function __construct($host = 'localhost', $port = 11211, $useMemcache = false, $id = NULL)
+    {
+        $host = empty($host) ? 'localhost' : $host;
+        $port = empty($port) ? 11211 : $port;
+
+        $this->id = $id;
+        $this->memcache = $useMemcache;
+
+        if ($this->memcache) {
+            $this->obj = new Memcache();
+        } else {
+            $this->obj = new Memcached($id);
+        }
+
+        return $this->connect($host, $port);
+    }
+
+    public function connect($host, $port)
+    {
+        if ($this->memcache) {
+            return $this->obj->addServer($host, $port);
+        } else {
+            $servers = $this->obj->getServerList();
+            if (is_array($servers)) {
+                foreach ($servers as $server)
+                    if ($server['host'] == $host and $server['port'] == $port)
+                        return true;
+            }
+            return $this->obj->addServer($host, $port);
+        }
+    }
+
+    public function clear_servers()
+    {
+        if (!$this->memcache) {
+            return $this->obj->resetServerList();
+        }
+        return false;
+    }
+
+    public function close()
+    {
+        if ($this->memcache) {
+            return $this->obj->close();
+        } else {
+            //we don't need to close the connection if we are just gonna open them again immediately
+            //return $this->obj->quit();
+            return true;
+        }
+    }
+
+    public function get($cache_name)
+    {
+        return $this->obj->get($cache_name);
+    }
+
+    public function set($cache_name, $cache_value, $cache_expiration_secs = 15)
+    {
+        if ($this->memcache) {
+            return $this->obj->set($cache_name, $cache_value, 0, $cache_expiration_secs);
+        } else {
+            return $this->obj->set($cache_name, $cache_value, $cache_expiration_secs);
+        }
+    }
+
+    public function delete($cache_name, $cache_refusal_secs = 0)
+    {
+        if ($this->memcache) {
+            return $this->obj->delete($cache_name);
+        } else {
+            return $this->obj->delete($cache_name, $cache_refusal_secs);
+        }
+    }
+
+    public function replace($cache_name, $cache_value, $cache_expiration_secs = 15)
+    {
+        if ($this->memcache) {
+            return $this->obj->replace($cache_name, $cache_value, 0, $cache_expiration_secs);
+        } else {
+            return $this->obj->replace($cache_name, $cache_value, $cache_expiration_secs);
+        }
+    }
+
+    public function touch($cache_name, $cache_expiration_secs = 15)
+    {
+        if ($this->memcache) {
+            $cache_value = $this->obj->get($cache_name);
+            return $this->obj->set($cache_name, $cache_value, 0, $cache_expiration_secs);
+        } else {
+            return $this->obj->touch($cache_name, $cache_expiration_secs);
+        }
+    }
+
+    public function decrement($cache_name, $cache_offset = 1, $cache_initial_value = 0, $cache_expiration_secs = 15)
+    {
+        if ($this->memcache) {
+            return $this->obj->decrement($cache_name, $cache_offset);
+        } else {
+            return $this->obj->decrement($cache_name, $cache_offset, $cache_initial_value, $cache_expiration_secs);
+        }
+    }
+
+    public function increment($cache_name, $cache_offset = 1, $cache_initial_value = 0, $cache_expiration_secs = 15)
+    {
+        if ($this->memcache) {
+            return $this->obj->increment($cache_name, $cache_offset);
+        } else {
+            return $this->obj->increment($cache_name, $cache_offset, $cache_initial_value, $cache_expiration_secs);
+        }
+    }
+
+    public function flush($delay = 0)
+    {
+        if ($this->memcache) {
+            return $this->obj->flush();
+        } else {
+            return $this->obj->flush($delay);
+        }
+    }
+}
+
+if (!function_exists('getallheaders')) {
+    function getallheaders()
+    {
+        if (!is_array($_SERVER)) {
+            return array();
+        }
+
+        $headers = array();
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
+    }
+}
+
 if (!class_exists("dbWrapper_v3")) {
     Class dbWrapper_v3
     {
@@ -116,13 +260,13 @@ if (!class_exists("dbWrapper_v3")) {
                             array_slice($x, 2));
                         $args_ref = array();
                         foreach ($args as $k => &$arg) {
-                            $args_ref[$k] = & $arg;
+                            $args_ref[$k] = &$arg;
                         }
                     } else {
                         $args_ref = array();
                         $args_ref[] = func_get_arg(1);
                         foreach ($x[2] as $k => &$arg) {
-                            $args_ref[] = & $arg;
+                            $args_ref[] = &$arg;
                         }
                     }
 
@@ -143,7 +287,7 @@ if (!class_exists("dbWrapper_v3")) {
                 $params = array();
                 $meta = $query->result_metadata();
                 while ($field = $meta->fetch_field()) {
-                    $params[] = & $row[$field->name];
+                    $params[] = &$row[$field->name];
                 }
                 call_user_func_array(array($query, 'bind_result'), $params);
 
@@ -625,13 +769,13 @@ if (!function_exists('filesize_human_readable')) {
 if (!function_exists("simple_cached_query")) {
     function simple_cached_query($memcached_name, $sql = '', $cache_time_secs = 600)
     {
-        global $memcache, $db;
+        global $memcached, $db;
 
-        $variable = $memcache->get($memcached_name);
+        $variable = $memcached->get($memcached_name);
         if (!$variable) {
             if ($sql) {
                 $variable = $db->q($sql);
-                $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
+                $memcached->set($memcached_name, $variable, $cache_time_secs);
             } else {
                 return 'No sql provided!!!';
             }
@@ -650,14 +794,14 @@ if (!function_exists("cached_query")) {
         }
 
         if (!empty($memcache_specific)) {
-            $memcache = $memcache_specific;
+            $memcached = $memcache_specific;
         } else {
-            global $memcache;
+            global $memcached;
         }
 
-        if (empty($memcache) || empty($db)) throw new Exception('No DB or memcache connection specified!');
+        if (empty($memcached) || empty($db)) throw new Exception('No DB or memcache connection specified!');
 
-        $variable = $memcache->get($memcached_name);
+        $variable = $memcached->get($memcached_name);
         if (!$variable) {
             if ($sqlQuery) {
                 if (!empty($declarationString) && !empty($parameterArray)) {
@@ -672,7 +816,7 @@ if (!function_exists("cached_query")) {
                     );
                 }
 
-                $memcache->set($memcached_name, $variable, 0, $cache_time_secs);
+                $memcached->set($memcached_name, $variable, $cache_time_secs);
             } else {
                 throw new Exception('No DB provided!!!');
             }
@@ -1193,9 +1337,9 @@ if (!class_exists('SteamID')) {
 if (!function_exists('updateUserDetails')) {
     function updateUserDetails($steamID64, $api_key)
     {
-        global $memcache, $db;
+        global $memcached, $db;
 
-        if (!$memcache) {
+        if (!$memcached) {
             throw new Exception("No memcached instance to use!");
         }
 
@@ -1206,7 +1350,7 @@ if (!function_exists('updateUserDetails')) {
         $steamWebAPI = new steam_webapi($api_key);
         $playerID = new SteamID($steamID64);
 
-        $playerDetails = $memcache->get('cron_user_details' . $steamID64);
+        $playerDetails = $memcached->get('cron_user_details' . $steamID64);
         if (empty($playerDetails)) {
             sleep(0.5);
             $playerDetails_tmp = $steamWebAPI->GetPlayerSummariesV2($playerID->getSteamID64());
@@ -1244,7 +1388,7 @@ if (!function_exists('updateUserDetails')) {
                     return true;
                 }
 
-                $memcache->set('cron_user_details' . $steamID64, $playerDetails, 0, 15 * 60);
+                $memcached->set('cron_user_details' . $steamID64, $playerDetails, 15 * 60);
 
                 unset($playerDetails_tmp);
                 unset($playerDetails);
@@ -1257,10 +1401,10 @@ if (!function_exists('updateUserDetails')) {
 if (!function_exists('grabAndUpdateSteamUserDetails')) {
     function grabAndUpdateSteamUserDetails($steamID32, $localDevOverride = false)
     {
-        global $db, $memcache, $webAPI, $localDev;
+        global $db, $memcached, $webAPI, $localDev;
         if (!$localDevOverride && $localDev) throw new Exception('We working locally!');
         if (!isset($db)) throw new Exception('No DB defined!');
-        if (!isset($memcache)) throw new Exception('No memcache defined!');
+        if (!isset($memcached)) throw new Exception('No memcache defined!');
         if (!isset($webAPI)) throw new Exception('webAPI not defined!');
 
         $steamID = new SteamID($steamID32);
@@ -1278,7 +1422,7 @@ if (!function_exists('grabAndUpdateSteamUserDetails')) {
         $mg_lb_user_details[0]['user_avatar'] = $web_api_user_details_temp['response']['players'][0]['avatar'];
         $mg_lb_user_details[0]['user_avatar_medium'] = $web_api_user_details_temp['response']['players'][0]['avatarmedium'];
         $mg_lb_user_details[0]['user_avatar_large'] = $web_api_user_details_temp['response']['players'][0]['avatarfull'];
-        $memcache->set('mg_lb_user_details_' . $steamID->getSteamID64(), $mg_lb_user_details, 0, 10 * 60);
+        $memcached->set('mg_lb_user_details_' . $steamID->getSteamID64(), $mg_lb_user_details, 10 * 60);
 
         $db->q(
             'INSERT INTO `gds_users`
@@ -1342,7 +1486,7 @@ if (!function_exists('makePieChart')) {
 
 if (!function_exists('makeLineChart')) {
     //$seriesOptions -- Add series name as key, and all options in array attached to it will be applied to series in chart
-    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL, $series1Options = array('title' => 'Games', 'min' => 0), $seriesNOptions = array('Series2' => array('title' => 'Test', 'yAxis' => 1, 'opposite' => true)))
+    function makeLineChart($dataArray, $div_container = 'container', $chartTitle, $chartSubtitle = NULL, $series1Options = array('title' => 'Games', 'min' => 0), $seriesNOptions = array('Series2' => array('title' => 'Test', 'yAxis' => 1, 'opposite' => true)), $seriesTooltipFormat = array('pointFormat' => 'Value: {point.y:.2f} mm'))
     {
         require_once(__DIR__ . "/bootstrap/highcharts/Highchart.php");
         require_once(__DIR__ . "/bootstrap/highcharts/HighchartJsExpr.php");
@@ -1369,8 +1513,10 @@ if (!function_exists('makeLineChart')) {
                 this.y +' games';
             }"
         );*/
-        $chart->tooltip->formatter = new HighchartJsExpr(
-            "function() {
+
+        if ($seriesTooltipFormat == array('pointFormat' => 'Value: {point.y:.2f} mm') || empty($seriesTooltipFormat)) {
+            $chart->tooltip->formatter = new HighchartJsExpr(
+                "function() {
                 var order = [], i, j, temp = [],
                     points = this.points;
 
@@ -1393,7 +1539,11 @@ if (!function_exists('makeLineChart')) {
                 });
                 return temp;
             }"
-        );
+            );
+        } else {
+            $chart->tooltip = $seriesTooltipFormat;
+        }
+
         $chart->tooltip->crosshairs = array(true, true);
         $chart->tooltip->shared = true;
         $chart->credits->enabled = false;
@@ -1609,7 +1759,7 @@ if (!class_exists('serviceReporting')) {
             //LOG new report data
             $this->log($serviceName, $runTime['value'], $performanceIndex1['value'], $performanceIndex2['value'], $performanceIndex3['value'], $isSub);
 
-            if (empty($oldServiceReport)){
+            if (empty($oldServiceReport)) {
                 $cronName = !empty($subName)
                     ? $subName
                     : $serviceName;
