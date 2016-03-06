@@ -4,6 +4,12 @@ require_once('../../../global_functions.php');
 require_once('../../../connections/parameters.php');
 
 try {
+    /////////////////////////////
+    // Parameters
+    /////////////////////////////
+
+    $daysToGather = 7;
+
     $db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
     if (empty($db)) throw new Exception('No DB!');
 
@@ -12,6 +18,8 @@ try {
     $serviceReport = new serviceReporting($db);
 
     set_time_limit(0);
+
+    $time_start1 = time();
 
     $activeMods = cached_query(
         's2_cron_active_mods',
@@ -30,13 +38,35 @@ try {
         NULL,
         5
     );
-
     if (empty($activeMods)) throw new Exception('No active mods!');
 
-    $totalRunTime = 0;
     echo '<h2>Mod Flags</h2>';
 
-    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp0`;');
+    $maxSQL = cached_query(
+        's2_cron_cmf_max',
+        'SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match`) LIMIT 0,1;'
+    );
+    if (empty($maxSQL)) throw new Exception('No matches with flags!');
+
+    $maxMatchID = $maxSQL[0]['matchID'];
+    $maxMatchDate = $maxSQL[0]['dateRecorded'];
+    echo "<strong>Max:</strong> {$maxMatchID} [{$maxMatchDate}]<br />";
+
+    $minSQL = cached_query(
+        's2_cron_cmf_min',
+        "SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `dateRecorded` >= (? - INTERVAL ? DAY) LIMIT 0,1;",
+        'ss',
+        array($maxMatchDate, $daysToGather),
+        15
+    );
+    if (empty($minSQL)) throw new Exception('No matches with flags!');
+
+    $minMatchID = $minSQL[0]['matchID'];
+    $minMatchDate = $minSQL[0]['dateRecorded'];
+    echo "<strong>Min:</strong> {$minMatchID} [{$minMatchDate}]<br />";
+
+    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp0_games`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1_sort`;');
 
     $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags` (
                 `modID` bigint(255) NOT NULL,
@@ -45,6 +75,29 @@ try {
                 `numGames` bigint(255) NOT NULL,
                 PRIMARY KEY (`modID`, `flagName`, `flagValue`)
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+    $db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_flags_temp0_games` (
+                `modID` bigint(255) NOT NULL,
+                `flagName` varchar(100) NOT NULL,
+                `flagValue` varchar(100) NOT NULL,
+                KEY (`modID`, `flagName`, `flagValue`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+    $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags_temp1_sort` (
+                    `modID` bigint(255) NOT NULL,
+                    `flagName` varchar(100) NOT NULL,
+                    `flagValue` varchar(100) NOT NULL,
+                    `numGames` bigint(255) NOT NULL,
+                    PRIMARY KEY (`modID`, `flagName`, `flagValue`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+    $db->q("INSERT INTO `cache_custom_flags_temp0_games`(`modID`, `flagName`, `flagValue`)
+              SELECT `modID`, `flagName`, `flagValue`
+                FROM `s2_match_flags`
+                WHERE `matchID` >= ?;",
+        's',
+        array($minMatchID)
+    );
 
     $totalFlagValues = $totalFlagValueCombos = 0;
 
@@ -56,58 +109,30 @@ try {
 
             echo "<h4>{$modName}</h4>";
 
-            $time_start1 = time();
-
-            $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1`;');
-
-            $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags_temp0` (
-                `modID` bigint(255) NOT NULL,
-                `flagName` varchar(100) NOT NULL,
-                `flagValue` varchar(100) NOT NULL,
-                `numGames` bigint(255) NOT NULL,
-                PRIMARY KEY (`modID`, `flagName`, `flagValue`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-
-            $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags_temp1` (
-                `modID` int(255) NOT NULL,
-                `flagName` varchar(100) NOT NULL,
-                `flagValue` varchar(100) NOT NULL,
-                KEY (`modID`, `flagName`, `flagValue`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+            $time_start2 = time();
 
             $flagsUsed = $db->q(
-                'INSERT INTO `cache_custom_flags_temp1`
-                    SELECT
-                            s2mf.`modID`,
-                            s2mf.`flagName`,
-                            s2mf.`flagValue`
-                        FROM `s2_match_flags` s2mf
-                        WHERE s2mf.`matchID` IN (
-                          SELECT
-                            `matchID`
-                          FROM `cache_cmg`
-                          WHERE `modID` = ?
-                        );',
+                'SELECT COUNT(*) as `numFlags` FROM `cache_custom_flags_temp0_games` WHERE `modID` = ? LIMIT 0,1;',
                 's',
-                $modID
+                array($modID)
             );
-
-            echo "Flags: {$flagsUsed}<br />";
+            $flagsUsed = $flagsUsed[0]['numFlags'];
+            echo "Flags: {$flagsUsed[0]['numFlags']}<br />";
 
             $flagValueCombinations = $db->q(
-                'INSERT INTO `cache_custom_flags_temp0`
+                'INSERT INTO `cache_custom_flags_temp1_sort` (`modID`, `flagName`, `flagValue`, `numGames`)
                     SELECT
-                            s2mf.`modID`,
-                            s2mf.`flagName`,
-                            s2mf.`flagValue`,
+                            ccft0.`modID`,
+                            ccft0.`flagName`,
+                            ccft0.`flagValue`,
                             COUNT(*) AS numGames
-                        FROM `cache_custom_flags_temp1` s2mf
-                        GROUP BY s2mf.`modID`, s2mf.`flagName`, s2mf.`flagValue`;'
+                        FROM `cache_custom_flags_temp0_games` ccft0
+                        WHERE ccft0.`modID` = ?
+                        GROUP BY ccft0.`modID`, ccft0.`flagName`, ccft0.`flagValue`;',
+                's',
+                array($modID)
             );
-
             echo "Flag Combos: {$flagValueCombinations}<br />";
-
-            $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1`;');
 
             $totalFlagValues += $flagsUsed = is_numeric($flagsUsed)
                 ? $flagsUsed
@@ -117,10 +142,9 @@ try {
                 ? $flagValueCombinations
                 : 0;
 
-            $time_end1 = time();
-            $runTime = $time_end1 - $time_start1;
-            $totalRunTime += $runTime;
-            echo '<strong>Run Time:</strong> ' . $runTime . " seconds<br />";
+            $time_end2 = time();
+            $runTime = $time_end2 - $time_start2;
+            echo '<strong>Run Time (query):</strong> ' . $runTime . " seconds<br />";
 
             try {
                 $serviceReport->logAndCompareOld(
@@ -147,7 +171,7 @@ try {
                     $modName
                 );
             } catch (Exception $e) {
-                echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+                echo '<br />Caught Exception (SERVICE REPORT) -- ' . $e->getMessage() . '<br /><br />';
 
                 //WEBHOOK
                 {
@@ -180,21 +204,25 @@ try {
                 }
             }
         } catch (Exception $e) {
-            echo 'Caught Exception (LOOP) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+            echo '<br />Caught Exception (LOOP) -- ' . $e->getFile() . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
         }
     }
 
-    $time_start1 = time();
+    $time_start3 = time();
     echo "<h3>Final Insert</h3>";
 
-    $db->q('RENAME TABLE `cache_custom_flags` TO `cache_custom_flags_old`, `cache_custom_flags_temp0` TO `cache_custom_flags`;');
+    $db->q('RENAME TABLE `cache_custom_flags` TO `cache_custom_flags_old`, `cache_custom_flags_temp1_sort` TO `cache_custom_flags`;');
 
     $db->q('DROP TABLE IF EXISTS `cache_custom_flags_old`;');
-    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1`;');
-    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp0`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp0_games`;');
+    $db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1_sort`;');
+
+    $time_end3 = time();
+    $runTime = $time_end3 - $time_start3;
+    echo '<strong>Run Time (final insert):</strong> ' . $runTime . " seconds<br />";
 
     $time_end1 = time();
-    echo '<strong>Run Time:</strong> ' . ($time_end1 - $time_start1) . " seconds<br />";
+    $totalRunTime = $time_end1 - $time_start1;
 
     echo '<br />';
     echo '<strong>Total Run Time:</strong> ' . $totalRunTime . " seconds<br /><br />";
@@ -226,10 +254,11 @@ try {
             FALSE
         );
     } catch (Exception $e) {
-        echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+        echo '<br />Caught Exception (SERVICE REPORT) -- ' . $e->getMessage() . '<br /><br />';
     }
+
 } catch (Exception $e) {
-    echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
+    echo '<br />Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
 } finally {
     if (isset($memcached)) $memcached->close();
 }

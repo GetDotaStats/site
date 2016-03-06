@@ -320,6 +320,11 @@ if (!class_exists("dbWrapper_v3")) {
         {
             return $this->_mysqli->insert_id;
         }
+
+        public function affected_rows()
+        {
+            return $this->_mysqli->affected_rows;
+        }
     }
 }
 
