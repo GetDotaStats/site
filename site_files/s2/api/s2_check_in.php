@@ -32,8 +32,7 @@ try {
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $matchID = $preGameAuthPayloadJSON['matchID'];
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
@@ -170,7 +169,7 @@ try {
     $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
     $s2_response['schemaVersion'] = $responseSchemaVersionClientCheckIn;
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
     if (!isset($s2_response)) $s2_response = array('error' => 'Unknown exception');
 }
 

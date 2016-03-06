@@ -51,5 +51,5 @@ try {
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
 }

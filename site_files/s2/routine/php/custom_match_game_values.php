@@ -7,8 +7,7 @@ try {
     $db = new dbWrapper_v3($hostname_gds_cron, $username_gds_cron, $password_gds_cron, $database_gds_cron, true);
     if (empty($db)) throw new Exception('No DB!');
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     $serviceReport = new serviceReporting($db);
 
@@ -436,5 +435,5 @@ try {
 } catch (Exception $e) {
     echo 'Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage() . '<br /><br />';
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
 }

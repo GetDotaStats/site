@@ -1,12 +1,11 @@
 <?php
-require_once('./connections/parameters.php');
+require_once('../connections/parameters.php');
 is_numeric(@$_GET["match_id"]) ? $match_id = @$_GET["match_id"] : $match_id = NULL;
 
 if(!empty($match_id)){
-	$memcache = new Memcache;
-	$memcache->connect("localhost",11211); # You might need to set "localhost" to "127.0.0.1"
+	$memcached = new Cache(NULL, NULL, $localDev);
 
-	$match_results = $memcache->get("dbe_match_map".$match_id);
+	$match_results = $memcached->get("dbe_match_map".$match_id);
 	if(!$match_results){
 		$url="https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?match_id=" . $match_id . "&key=" . $api_key_dbe;
 
@@ -32,7 +31,7 @@ if(!empty($match_id)){
 
 		$match_results .= '</div></body></html>';
 
-		$memcache->set("dbe_match_map".$match_id, $match_results, 0, 6*60*60);
+		$memcached->set("dbe_match_map".$match_id, $match_results, 6*60*60);
 	}
 
 	echo $match_results;

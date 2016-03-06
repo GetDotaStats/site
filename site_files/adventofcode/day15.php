@@ -171,7 +171,7 @@ try {
     $result = 'Caught Exception: ' . $e->getMessage() . ' on line ' . $e->getLine() . '<br />';
     echo $result;
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
     if (!isset($result)) {
         echo 'Unknown error! #1' . '<br />';
     }

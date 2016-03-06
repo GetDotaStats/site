@@ -18,8 +18,7 @@ try {
 
     checkLogin_v2();
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     $canAccessUserProfile = false;
     if (!empty($_SESSION['user_id64'])) {
@@ -96,5 +95,5 @@ try {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
     echo bootstrapMessage('Oh Snap', $message, 'danger');
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
 }

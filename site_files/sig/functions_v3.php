@@ -3,9 +3,9 @@
 if (!function_exists("get_account_details")) {
     function get_account_details($account_id = '28755155', $limit_result, $min_games, $flush, $cacheTimeHours)
     {
-        global $db, $memcache;
+        global $db, $memcached;
         if (!isset($db)) throw new Exception('No DB defined!');
-        if (!isset($memcache)) throw new Exception('No memcache defined!');
+        if (!isset($memcached)) throw new Exception('No memcache defined!');
 
         $userDetails = cached_query(
             'sigs_db_user_details' . $account_id,
@@ -57,9 +57,9 @@ if (!function_exists("get_account_details")) {
 if (!function_exists("getAndUpdateDBDetails")) {
     function getAndUpdateDBDetails($account_id, $limit_result, $min_games, $flush)
     {
-        global $db, $memcache;
+        global $db, $memcached;
         if (!isset($db)) throw new Exception('No DB defined!');
-        if (!isset($memcache)) throw new Exception('No memcache defined!');
+        if (!isset($memcached)) throw new Exception('No memcache defined!');
 
         $steamID = new SteamID($account_id);
 
@@ -118,15 +118,15 @@ if (!function_exists("getAndUpdateDBDetails")) {
 if (!function_exists("get_account_char_winrate")) {
     function get_account_char_winrate($account_id = '28755155', $limit_result, $min_games, $flush)
     {
-        global $db, $memcache;
+        global $db, $memcached;
         if (!isset($db)) throw new Exception('No DB defined!');
-        if (!isset($memcache)) throw new Exception('No memcache defined!');
+        if (!isset($memcached)) throw new Exception('No memcache defined!');
 
         if ($flush == 1) {
-            $memcache->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
+            $memcached->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
         }
 
-        $big_array = $memcache->get("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
+        $big_array = $memcached->get("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
         if (!$big_array) {
             $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=winning&date=&game_mode=&match_type=real', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
@@ -180,7 +180,7 @@ if (!function_exists("get_account_char_winrate")) {
                 }
             }
 
-            $memcache->set("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate', $big_array, 0, 60 * 60);
+            $memcached->set("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate', $big_array, 60 * 60);
         }
 
         if (empty($big_array['username'])) {
@@ -195,15 +195,15 @@ if (!function_exists("get_account_char_winrate")) {
 if (!function_exists("get_account_char_mostplayed")) {
     function get_account_char_mostplayed($account_id = '28755155', $limit_result, $min_games, $flush)
     {
-        global $db, $memcache;
+        global $db, $memcached;
         if (!isset($db)) throw new Exception('No DB defined!');
-        if (!isset($memcache)) throw new Exception('No memcache defined!');
+        if (!isset($memcached)) throw new Exception('No memcache defined!');
 
         if ($flush == 1) {
-            $memcache->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
+            $memcached->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
         }
 
-        $big_array = $memcache->get("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
+        $big_array = $memcached->get("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
         if (!$big_array) {
             $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=played', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
@@ -257,7 +257,7 @@ if (!function_exists("get_account_char_mostplayed")) {
                 }
             }
 
-            $memcache->set("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed', $big_array, 0, 60 * 60);
+            $memcached->set("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed', $big_array, 60 * 60);
         }
 
         if (empty($big_array['username'])) {

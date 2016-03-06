@@ -5,7 +5,7 @@ require_once('../connections/parameters.php');
 if (!function_exists('modPageHeader')) {
     function modPageHeader($modID, $imageCDN)
     {
-        global $db, $memcache;
+        global $db, $memcached;
 
         $result = '';
 

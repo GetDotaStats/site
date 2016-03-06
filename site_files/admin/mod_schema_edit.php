@@ -10,8 +10,7 @@ try {
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     checkLogin_v2();
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in!');
@@ -665,13 +664,13 @@ try {
                         <input type="radio" name="cpv_objective" value="3" checked>Info
                     </div>
 
-                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric (not decimal) and will contain many unique values (e.g. more than 50)"></span></div>
+                    <div class="col-md-1">Groupable<br /><span class="glyphicon glyphicon-question-sign" title="Select `yes` if the data is numeric and will contain many unique values (e.g. more than 50). As long as it\'s numeric, it will group if there is a large enough range"></span></div>
                     <div class="col-md-2">
                         <input type="radio" name="cpv_isgroupable" value="1">Yes<br />
                         <input type="radio" name="cpv_isgroupable" value="0" checked>No
                     </div>
 
-                    <div class="col-md-1">Graph<br /><span class="glyphicon glyphicon-question-sign" title="Select `no` if there is going to be too many unique values"></span></div>
+                    <div class="col-md-1">Graph<br /><span class="glyphicon glyphicon-question-sign" title="Select `no` if there is going to be too many unique string values (use grouping if numeric)"></span></div>
                     <div class="col-md-2">
                         <input type="radio" name="cpv_graph" value="0" checked>Yes<br />
                         <input type="radio" name="cpv_graph" value="1">No
@@ -975,5 +974,5 @@ try {
 } catch (Exception $e) {
     echo formatExceptionHandling($e);
 } finally {
-    if (isset($memcache)) $memcache->close();
+    if (isset($memcached)) $memcached->close();
 }

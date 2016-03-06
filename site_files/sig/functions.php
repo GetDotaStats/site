@@ -1,4 +1,7 @@
 <?php
+
+$localDev = false;
+
 if (!function_exists("curl")) {
     function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeout = false)
     {
@@ -14,8 +17,8 @@ if (!function_exists("curl")) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
-        if($timeout){
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT , $timeout);
+        if ($timeout) {
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); //timeout in seconds
         }
         if ($refer) {
@@ -32,7 +35,7 @@ if (!function_exists("curl")) {
 
         $page = curl_exec($ch);
 
-        if(!$page){
+        if (!$page) {
             $page = false;
         }
 
@@ -56,24 +59,23 @@ if (!function_exists("cut_str")) {
 if (!function_exists("get_account_char_winrate")) {
     function get_account_char_winrate($account_id = '28755155', $limit_result = NULL, $min_games = 15, $flush = 0)
     {
-        $memcache = new Memcache;
-        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+        global $localDev;
+
+        $memcached = new Cache(NULL, NULL, $localDev);
 
         if ($flush == 1) {
-            $memcache->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
+            $memcached->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
         }
 
-        $big_array = $memcache->get("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
+        $big_array = $memcached->get("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate');
         if (!$big_array) {
             $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=winning&date=&game_mode=&match_type=real', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
-            if($page == false){
+            if ($page == false) {
                 return 'Timeout';
-            }
-            else if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
+            } else if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
                 return false;
-            }
-            else if(stristr($page, 'DOTABUFF - Too Many Requests')){
+            } else if (stristr($page, 'DOTABUFF - Too Many Requests')) {
                 return 'Rate-limited';
             }
 
@@ -118,10 +120,10 @@ if (!function_exists("get_account_char_winrate")) {
                 }
             }
 
-            $memcache->set("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate', $big_array, 0, 60 * 60);
+            $memcached->set("d2_accountstats" . $account_id . '-' . $limit_result . '-' . $min_games . '-HighestWinRate', $big_array, 60 * 60);
         }
 
-        $memcache->close();
+        $memcached->close();
 
         if (empty($big_array['username'])) {
             return false;
@@ -135,24 +137,23 @@ if (!function_exists("get_account_char_winrate")) {
 if (!function_exists("get_account_char_mostplayed")) {
     function get_account_char_mostplayed($account_id = '28755155', $limit_result = NULL, $flush = 0)
     {
-        $memcache = new Memcache;
-        $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+        global $localDev;
+
+        $memcached = new Cache(NULL, NULL, $localDev);
 
         if ($flush == 1) {
-            $memcache->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
+            $memcached->delete("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
         }
 
-        $big_array = $memcache->get("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
+        $big_array = $memcached->get("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed');
         if (!$big_array) {
             $page = curl('http://dotabuff.com/players/' . $account_id . '/heroes?metric=played', NULL, NULL, NULL, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', 10);
 
-            if($page == false){
+            if ($page == false) {
                 return 'Timeout';
-            }
-            else if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
+            } else if (stristr($page, 'DOTABUFF - Not Found') || !$page) {
                 return false;
-            }
-            else if(stristr($page, 'DOTABUFF - Too Many Requests')){
+            } else if (stristr($page, 'DOTABUFF - Too Many Requests')) {
                 return 'Rate-limited';
             }
 
@@ -195,10 +196,10 @@ if (!function_exists("get_account_char_mostplayed")) {
                 }
             }
 
-            $memcache->set("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed', $big_array, 0, 60 * 60);
+            $memcached->set("d2_accountstats" . $account_id . '-' . $limit_result . '-MostPlayed', $big_array, 60 * 60);
         }
 
-        $memcache->close();
+        $memcached->close();
 
         if (empty($big_array['username'])) {
             return false;
