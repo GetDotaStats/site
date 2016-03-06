@@ -7,11 +7,10 @@ try {
         session_start();
     }
 
-    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, false);
+    $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
-    $memcache = new Memcache;
-    $memcache->connect("localhost", 11211); # You might need to set "localhost" to "127.0.0.1"
+    $memcached = new Cache(NULL, NULL, $localDev);
 
     checkLogin_v2();
 
@@ -28,8 +27,8 @@ try {
 }
 
 try {
-    if (!empty($memcache)) {
-        $memcache->close();
+    if (!empty($memcached)) {
+        $memcached->close();
     }
 } catch (Exception $e) {
     $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
@@ -166,7 +165,6 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs</a></li>
-                            <li><a class="nav-clickable" href="#admin__mod_version">Mod Versions</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Tools</li>
@@ -224,11 +222,9 @@ try {
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-9">
-            <div id="main_content" class="blog-post"></div>
-        </div>
+        <div id="main_content" class="col-sm-12"></div>
 
-        <div class="col-sm-3">
+        <!--<div class="col-sm-3">
             <div class="sidebar-module sidebar-module-inset">
                 <div class="text-center">
                     <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
@@ -240,12 +236,16 @@ try {
                 </div>
 
                 <!-- Begin chatwing.com chatbox -->
-                <iframe src="//chatwing.com/chatbox/e7f2bbd0-e292-4596-ab15-1667b4319e95" width="100%" height="650"
-                        frameborder="0" scrolling="0">Embedded chat
-                </iframe>
-                <!-- End chatwing.com chatbox -->
-            </div>
-        </div>
+        <!--<iframe src="//chatwing.com/chatbox/e7f2bbd0-e292-4596-ab15-1667b4319e95" width="100%" height="650"
+                frameborder="0" scrolling="0">Embedded chat
+        </iframe>-->
+        <!-- End chatwing.com chatbox -->
+        <!--
+                        <br />
+
+                        <p><strong>Chatbox: Removed for pressing ceremonial reasons</strong></p>
+                    </div>
+                </div>-->
     </div>
 </div>
 <div class="clear"></div>
@@ -254,6 +254,15 @@ try {
     <div class="container">
         <p class="text-muted">Built by jimmydorry. Dota 2 is a registered trademark of Valve Corporation. Powered by
             Steam.
+
+            <a href="//steamcommunity.com/groups/getdotastats" target="_blank" class="steam-group-button"><span
+                    class="steam-group-icon"></span> <span class="steam-group-label">Steam Group</span></a>
+
+            <a href="https://www.changetip.com/tipme/getdotastats" target="_blank"
+               class="changetip-button"><span
+                    class="changetip-icon"></span> <span class="changetip-label">Tip.me</span></a>
+
+
             <small><a target="_blank" href="https://github.com/GetDotaStats/stat-collection/issues">stat-collection
                     Issues</a>
             </small>
