@@ -14,7 +14,7 @@ try {
             $rssfeed = '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">';
             $rssfeed .= '<channel>';
             $rssfeed .= '<title>GetDotaStats Animu Feed</title>';
-            $rssfeed .= '<atom:link href="http://getdotastats.com/feeds/rss" rel="self" type="application/rss+xml" />';
+            $rssfeed .= '<atom:link href="https://getdotastats.com/feeds/rss/" rel="self" type="application/rss+xml" />';
             $rssfeed .= '<link>http://getdotastats.com/feeds/rss</link>';
             $rssfeed .= '<description>This is a compilation of the latest anime</description>';
             $rssfeed .= '<language>en-us</language>';
