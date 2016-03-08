@@ -18,6 +18,11 @@ try {
     echo '<p>This page allows logged in users to create a forum signature based on their Dotabuff page and data
     submitted to the site.</p>';
 
+    echo '<div class="alert alert-danger">
+            <strong>Notice:</strong>
+            <p>We have taken signatures down for now while we sort out our infrastructure after our recent site host migration. You can track our progress on the new signatures in our <a href="https://github.com/GetDotaStats/site/issues/259" target="_blank">Issue Tracker</a>.</p>
+        </div>';
+
     checkLogin_v2();
     if (empty($_SESSION['user_id64'])) throw new Exception('Not logged in! Please login via the Steam button at the top right of the screen.');
 
