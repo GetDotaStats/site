@@ -45,7 +45,7 @@ try {
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com *.changetip.com 'unsafe-eval' 'unsafe-inline' data:;
-          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net *.google-analytics.com *.steamusercontent.com steamcdn-a.akamaihd.net data:;
+          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net *.google-analytics.com *.steamusercontent.com steamcdn-a.akamaihd.net montools.com data:;
           font-src 'self' static.getdotastats.com getdotastats.com data:;
           frame-src chatwing.com *.youtube.com *.mibbit.com *.changetip.com;
           object-src 'none';
@@ -150,6 +150,7 @@ try {
                         <li class="divider"></li>
                         <li class="dropdown-header">Misc.</li>
                         <li><a class="nav-clickable" href="#site__service_stats">Service Stats</a></li>
+                        <li><a class="nav-clickable" href="#site__uptime">Up-Time Graph</a></li>
                         <li><a class="nav-clickable" href="#site__who">Who are we?</a></li>
                         <li><a class="nav-clickable" href="#site__game_servers">Game Servers</a></li>
                         <li><a class="nav-clickable" href="#site__contact">Contact</a></li>
