@@ -95,7 +95,6 @@ try {
         echo '<p>How long services have taken to execute over the last month.</p>';
 
         $subServices = array(
-            's2_cron_cmg',
             's2_cron_cmf',
             's2_cron_cmgv',
             's2_cron_cmpv'
