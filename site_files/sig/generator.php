@@ -53,7 +53,7 @@ try {
 
     echo '<div class="row">
             <div class="text-center">
-                <img src="http://getdotastats.com/sig/' . $steamID->getSteamID32() . '.png" /><br />
+                <img src="//getdotastats.com/sig/' . $steamID->getSteamID32() . '.png" /><br />
             </div>
         </div>';
 
