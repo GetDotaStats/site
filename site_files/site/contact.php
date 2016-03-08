@@ -22,5 +22,3 @@
 
 <p>If you insist in getting in contact via Steam, make sure to leave a profile comment. My invite list gets flooded with
     random invites!</p>
-
-<p>Comments and site feedback can also be left in the ChatBox to the left.</p>

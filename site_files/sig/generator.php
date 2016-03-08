@@ -370,7 +370,7 @@ try {
             <ul>
                 <li>This happens when an existing hero is renamed or a new hero is added.</li>
                 <li>Report your issue in our <a target="_blank" href="http://github.com/GetDotaStats/site/issues">
-                    Issue Tracker</a> or in the chatbox on the right hand side of this page.</li>
+                    Issue Tracker</a>.</li>
             </ul>
         </div>';
 
