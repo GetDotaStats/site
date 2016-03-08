@@ -83,7 +83,7 @@ try {
                 KEY (`modID`, `flagName`, `flagValue`)
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-    $db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_flags_temp1_sort` (
+    $db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags_temp1_sort` (
                     `modID` bigint(255) NOT NULL,
                     `flagName` varchar(100) NOT NULL,
                     `flagValue` varchar(100) NOT NULL,
