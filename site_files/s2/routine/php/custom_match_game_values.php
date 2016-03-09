@@ -43,7 +43,7 @@ try {
     echo '<h2>Mod Game Values</h2>';
 
     $maxSQL = cached_query(
-        's2_cron_cmf_max',
+        's2_cron_cmgv_max',
         'SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `matchID` = (SELECT MAX(`matchID`) FROM `s2_match`) LIMIT 0,1;'
     );
     if (empty($maxSQL)) throw new Exception('No matches with game values!');
@@ -53,7 +53,7 @@ try {
     echo "<strong>Max:</strong> {$maxMatchID} [{$maxMatchDate}]<br />";
 
     $minSQL = cached_query(
-        's2_cron_cmf_min',
+        's2_cron_cmgv_min',
         "SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `dateRecorded` >= (? - INTERVAL ? DAY) LIMIT 0,1;",
         'si',
         array($maxMatchDate, $daysToGather),
@@ -123,7 +123,7 @@ try {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             $customGameValues = cached_query(
-                's2_cron_cmg_match_count_' . $modID,
+                's2_cron_cmgv_match_count_' . $modID,
                 'SELECT COUNT(*) AS `totalGameValues` FROM `cache_custom_game_values_temp0_games` WHERE `modID` = ?;',
                 'i',
                 array($modID)
@@ -261,21 +261,6 @@ try {
                                 'iii',
                                 array($modID, $fieldID, $firstGroupLimit)
                             );
-
-                            ////////////////////////////////////////////////////////////
-                            //DEBUG
-
-                            /*$dump = $db->q('SELECT * FROM `cache_custom_game_values_temp1_grouping`
-                                    WHERE `modID` = ? AND `fieldOrder` = ? AND `fieldValue` < ?;',
-                                'sss',
-                                array($modID, $fieldID, $firstGroupLimit)
-                            );
-                            echo '<pre>';
-                            print_r($dump);
-                            echo '</pre>';
-                            exit();*/
-
-                            ////////////////////////////////////////////////////////////
 
                             $db->q(
                                 'DELETE FROM `cache_custom_game_values_temp0_games`
