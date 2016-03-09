@@ -97,9 +97,9 @@ try {
     $db->q("INSERT INTO `cache_custom_game_values_temp0_games`(`modID`, `schemaID`, `fieldOrder`, `fieldValue`)
               SELECT `modID`, `schemaID`, `fieldOrder`, `fieldValue`
                 FROM `s2_match_custom`
-                WHERE `matchID` >= ?;",
-        'i',
-        array($minMatchID)
+                WHERE `matchID` BETWEEN ? AND ?;",
+        'ii',
+        array($minMatchID, $maxMatchID)
     );
 
     //Kill old schemas

@@ -94,9 +94,9 @@ try {
     $db->q("INSERT INTO `cache_custom_flags_temp0_games`(`modID`, `flagName`, `flagValue`)
               SELECT `modID`, `flagName`, `flagValue`
                 FROM `s2_match_flags`
-                WHERE `matchID` >= ?;",
-        's',
-        array($minMatchID)
+                WHERE `matchID` BETWEEN ? AND ?;",
+        'ii',
+        array($minMatchID, $maxMatchID)
     );
 
     $totalFlagValues = $totalFlagValueCombos = 0;
