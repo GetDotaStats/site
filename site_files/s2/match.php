@@ -23,6 +23,7 @@ try {
         's2_match_check' . $matchID,
         'SELECT
                 s2m.`matchID`,
+                s2m.`dotaMatchID`,
                 s2m.`modID`,
                 s2m.`matchHostSteamID32`,
                 s2m.`matchPhaseID`,
@@ -67,6 +68,9 @@ try {
         ? round($matchDetails[0]['matchDuration'] / 60)
         : '??';
     $matchSchemaVersion = NULL;
+    $matchDotaMatchID = !empty($matchDetails[0]['dotaMatchID'])
+        ? $matchDetails[0]['dotaMatchID']
+        : 'N/A';
 
     if (!empty($modID)) {
         echo modPageHeader($modID, $CDN_image);
@@ -226,8 +230,8 @@ try {
         ? '<div class="col-md-4 text-center"><strong><a class="nav-clickable" href="#s2__mod_schema?id=' . $matchSchemaVersion . '">' . $matchSchemaVersion . '</a></strong></div>'
         : '';
     $otherWidths = !empty($matchSchemaVersion) && is_numeric($matchSchemaVersion)
-        ? '4'
-        : '6';
+        ? '3'
+        : '4';
 
     //GAME SUMMARY
     echo '<div class="row">
@@ -239,6 +243,7 @@ try {
                                 ' . $matchSchemaVersionText_head . '
                                 <div class="col-md-' . $otherWidths . ' text-center"><strong>Phase</strong></div>
                                 <div class="col-md-' . $otherWidths . ' text-center"><strong>Rounds</strong></div>
+                                <div class="col-md-' . $otherWidths . ' text-center"><strong>Dota MID</strong></div>
                             </div>
                         </div>
                         <div class="col-md-2"><strong>Duration</strong></div>
@@ -251,6 +256,7 @@ try {
                                 ' . $matchSchemaVersionText_body . '
                                 <div class="col-md-' . $otherWidths . ' text-center">' . $matchPhase . '</div>
                                 <div class="col-md-' . $otherWidths . ' text-center">' . $numRounds . '</div>
+                                <div class="col-md-' . $otherWidths . ' text-center">' . $matchDotaMatchID . '</div>
                             </div>
                         </div>
                         <div class="col-md-2">' . $matchDuration . ' mins</div>

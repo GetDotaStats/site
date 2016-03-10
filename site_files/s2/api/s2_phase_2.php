@@ -33,6 +33,9 @@ try {
     $matchID = $preGameAuthPayloadJSON['matchID'];
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $authKey = $preGameAuthPayloadJSON['authKey'];
+    $dotaMatchID = (!empty($preGameAuthPayloadJSON['dotaMatchID']) && is_numeric($preGameAuthPayloadJSON['dotaMatchID']))
+        ? $preGameAuthPayloadJSON['dotaMatchID']
+        : NULL;
 
     $memcached = new Cache(NULL, NULL, $localDev);
 
@@ -100,17 +103,33 @@ try {
 
     //MATCH DETAILS
     {
-        $sqlResult = $db->q(
-            'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`)
+        if (empty($dotaMatchID)) {
+            $sqlResult = $db->q(
+                'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`)
                 VALUES (?, ?)
                 ON DUPLICATE KEY UPDATE
                   `matchPhaseID` = VALUES(`matchPhaseID`);',
-            'si',
-            array(
-                $matchID,
-                2
-            )
-        );
+                'si',
+                array(
+                    $matchID,
+                    2
+                )
+            );
+        } else {
+            $sqlResult = $db->q(
+                'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `dotaMatchID`)
+                VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                  `matchPhaseID` = VALUES(`matchPhaseID`),
+                  `dotaMatchID` = VALUES(`dotaMatchID`);',
+                'sis',
+                array(
+                    $matchID,
+                    2,
+                    $dotaMatchID
+                )
+            );
+        }
     }
 
     //PLAYERS DETAILS
@@ -121,12 +140,12 @@ try {
             $i = -1;
             foreach ($preGameAuthPayloadJSON['players'] as $key => $value) {
                 //Do steamID bot work around
-                if(!empty($value['steamID32']) && is_numeric($value['steamID32'])){
+                if (!empty($value['steamID32']) && is_numeric($value['steamID32'])) {
                     $steamID_manipulator->setSteamID($value['steamID32']);
 
                     $steamID32 = $steamID_manipulator->getSteamID32();
                     $steamID64 = $steamID_manipulator->getSteamID64();
-                } else{
+                } else {
                     $steamID32 = $i;
                     $steamID64 = $i;
                     $i--;
