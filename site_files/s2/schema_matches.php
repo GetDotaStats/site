@@ -26,84 +26,86 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
 
-<!--
-////////////////////////////////////////////////////
-//Phase 1 - Client - Before Loaders
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingOne">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-               aria-expanded="false" aria-controls="collapseOne">
-                Phase 1 - Client - Before Loaders
-            </a>
-        </h4>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-        <div class="panel-body">
+    <!--
+    ////////////////////////////////////////////////////
+    //Phase 1 - Client - Before Loaders
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseOne"
+                   aria-expanded="false" aria-controls="collapseOne">
+                    Phase 1 - Client - Before Loaders
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
 
-            <p>This is for catching all of the games that fail to start due to people not loading.</p>
+                <p>This is for catching all of the games that fail to start due to people not loading.</p>
 
-            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_1.php || "payload" = <em>JSONschema</em></code>
-            </p>
+                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_1.php || "payload" =
+                        <em>JSONschema</em></code>
+                </p>
 
-            <hr/>
+                <hr/>
 
-            <div>
-                <div class="row">
-                    <div class="col-sm-3"><strong>Key</strong></div>
-                    <div class="col-sm-2"><strong>Type</strong></div>
-                    <div class="col-sm-3"><strong>Example</strong></div>
-                    <div class="col-sm-4"><strong>Notes</strong></div>
-                </div>
-                <span class="h4">&nbsp;</span>
-
-                <div class="row">
-                    <div class="col-sm-3">modIdentifier</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"7adfki234jlk23"</div>
-                    <div class="col-sm-4">
-                        <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Key</strong></div>
+                        <div class="col-sm-2"><strong>Type</strong></div>
+                        <div class="col-sm-3"><strong>Example</strong></div>
+                        <div class="col-sm-4"><strong>Notes</strong></div>
                     </div>
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-3">modIdentifier</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"7adfki234jlk23"</div>
+                        <div class="col-sm-4">
+                            <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">hostSteamID32</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"2875155"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">isDedicated</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">0</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">mapName</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"dota_pvp"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">numPlayers</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">4 <strong>(Deprecated in v3)</strong></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaVersion</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">1</div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-3">hostSteamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"2875155"</div>
-                </div>
+                <hr/>
 
-                <div class="row">
-                    <div class="col-sm-3">isDedicated</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">0</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">mapName</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"dota_pvp"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">numPlayers</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">4 <strong>(Deprecated in v3)</strong></div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">schemaVersion</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <span class="h4">&nbsp;</span>
-            </div>
-
-            <hr/>
-
-            <h3>Example Schema</h3>
+                <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
@@ -116,29 +118,31 @@
 }
             </pre>
 
+            </div>
         </div>
     </div>
-</div>
 
-<!--
-////////////////////////////////////////////////////
-//Phase 1 - Server - Before Loaders
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingTwo">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
-               aria-expanded="false" aria-controls="collapseTwo">
-                Phase 1 - Server - Before Loaders
-            </a>
-        </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-        <div class="panel-body">
-            <p>This is the response from the server after receiving the communication from the client for Phase 1. The
-                authKey is required for the host to update the match details later, and prevents other clients from
-                later changing the match details.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Phase 1 - Server - Before Loaders
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseTwo"
+                   aria-expanded="false" aria-controls="collapseTwo">
+                    Phase 1 - Server - Before Loaders
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                <p>This is the response from the server after receiving the communication from the client for Phase 1.
+                    The
+                    authKey is required for the host to update the match details later, and prevents other clients from
+                    later changing the match details.</p>
 
             <pre class="pre-scrollable">
 {
@@ -148,77 +152,79 @@
     "schemaVersion": 1
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
 
-<!--
-////////////////////////////////////////////////////
-//Client Check-In - Request
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingOneB">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOneB"
-               aria-expanded="false" aria-controls="collapseOneB">
-                Client Check-In - Request
-            </a>
-        </h4>
-    </div>
-    <div id="collapseOneB" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneB">
-        <div class="panel-body">
+    <!--
+    ////////////////////////////////////////////////////
+    //Client Check-In - Request
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOneB">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseOneB"
+                   aria-expanded="false" aria-controls="collapseOneB">
+                    Client Check-In - Request
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOneB" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOneB">
+            <div class="panel-body">
 
-            <p>This is for building an idea of where clients are connecting from.</p>
+                <p>This is for building an idea of where clients are connecting from.</p>
 
-            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_check_in.php || "payload" = <em>JSONschema</em></code>
-            </p>
+                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_check_in.php || "payload" =
+                        <em>JSONschema</em></code>
+                </p>
 
-            <hr/>
+                <hr/>
 
-            <div>
-                <div class="row">
-                    <div class="col-sm-3"><strong>Key</strong></div>
-                    <div class="col-sm-2"><strong>Type</strong></div>
-                    <div class="col-sm-3"><strong>Example</strong></div>
-                    <div class="col-sm-4"><strong>Notes</strong></div>
-                </div>
-                <span class="h4">&nbsp;</span>
-
-                <div class="row">
-                    <div class="col-sm-3">modIdentifier</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"7adfki234jlk23"</div>
-                    <div class="col-sm-4">
-                        <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Key</strong></div>
+                        <div class="col-sm-2"><strong>Type</strong></div>
+                        <div class="col-sm-3"><strong>Example</strong></div>
+                        <div class="col-sm-4"><strong>Notes</strong></div>
                     </div>
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-3">modIdentifier</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"7adfki234jlk23"</div>
+                        <div class="col-sm-4">
+                            <a class="nav-clickable" href="#s2__my__mods">Unique value assigned to your mod</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">steamID32</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"2875155"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">matchID</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"213123342"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaVersion</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">1</div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-3">steamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"2875155"</div>
-                </div>
+                <hr/>
 
-                <div class="row">
-                    <div class="col-sm-3">matchID</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"213123342"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">schemaVersion</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <span class="h4">&nbsp;</span>
-            </div>
-
-            <hr/>
-
-            <h3>Example Schema</h3>
+                <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
@@ -229,28 +235,29 @@
 }
             </pre>
 
+            </div>
         </div>
     </div>
-</div>
 
-<!--
-////////////////////////////////////////////////////
-//Client Check-In - Response
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingTwoB">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwoB"
-               aria-expanded="false" aria-controls="collapseTwoB">
-                Client Check-In - Response
-            </a>
-        </h4>
-    </div>
-    <div id="collapseTwoB" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoB">
-        <div class="panel-body">
-            <p>This is the response from the server after receiving the communication from the client for the
-                check-in.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Client Check-In - Response
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwoB">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseTwoB"
+                   aria-expanded="false" aria-controls="collapseTwoB">
+                    Client Check-In - Response
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwoB" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwoB">
+            <div class="panel-body">
+                <p>This is the response from the server after receiving the communication from the client for the
+                    check-in.</p>
 
             <pre class="pre-scrollable">
 {
@@ -258,126 +265,128 @@
     "error": "Unknown Error"
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
 
-<!--
-////////////////////////////////////////////////////
-//Phase 2 - Client - Pre Game
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingThree">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
-               aria-expanded="false" aria-controls="collapseThree">
-                Phase 2 - Client - Pre Game
-            </a>
-        </h4>
-    </div>
-    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-        <div class="panel-body">
-            <p>This is for catching all of the games that crash, and understanding what heroes and game modes are
-                played.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Phase 2 - Client - Pre Game
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseThree"
+                   aria-expanded="false" aria-controls="collapseThree">
+                    Phase 2 - Client - Pre Game
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <p>This is for catching all of the games that crash, and understanding what heroes and game modes are
+                    played.</p>
 
-            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_2.php || "payload" = <em>JSONschema</em></code>
-            </p>
+                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_2.php || "payload" =
+                        <em>JSONschema</em></code>
+                </p>
 
-            <hr/>
+                <hr/>
 
-            <div>
-                <div class="row">
-                    <div class="col-sm-3"><strong>Key</strong></div>
-                    <div class="col-sm-2"><strong>Type</strong></div>
-                    <div class="col-sm-3"><strong>Example</strong></div>
-                    <div class="col-sm-4"><strong>Notes</strong></div>
-                </div>
-                <span class="h4">&nbsp;</span>
-
-                <div class="row">
-                    <div class="col-sm-3">authKey</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">matchID</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"21347923432"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">modIdentifier</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"7adfki234jlk23"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">flags</div>
-                    <div class="col-sm-2">array</div>
-                    <div class="col-sm-3">{"mode": "ctf15", "winCondition": "kill50", "crazyCouriers": 1}</div>
-                    <div class="col-sm-4">Un-structured and indicate lobby options</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">schemaVersion</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <!--players array-->
-
-                <div class="row">
-                    <div class="col-sm-3">players</div>
-                    <div class="col-sm-2">key-value array</div>
-                    <div class="col-sm-7">&nbsp;</div>
-                </div>
-
-                <span class="h4">&nbsp;</span>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">playerName</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"jimmydorry"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">steamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"2875155"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">connectionState</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">2</div>
-                    <div class="col-sm-4">
-                        0 = unknown<br/>
-                        1 = not yet connected<br/>
-                        2 = connected<br/>
-                        3 = disconnected match<br/>
-                        4 = abandoned<br/>
-                        5 = loading<br/>
-                        6 = failed<br/>
-                        <a target="_blank"
-                           href="https://github.com/SteamRE/SteamKit/blob/f6c0578506690d63a2b159340fe19835fe33564c/Resources/Protobufs/dota/dota_gcmessages_common.proto#L564">Refer
-                            to enum DOTAConnectionState_t</a>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Key</strong></div>
+                        <div class="col-sm-2"><strong>Type</strong></div>
+                        <div class="col-sm-3"><strong>Example</strong></div>
+                        <div class="col-sm-4"><strong>Notes</strong></div>
                     </div>
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-3">authKey</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+                        <div class="col-sm-4">Obtained by pre-match API</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">matchID</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"21347923432"</div>
+                        <div class="col-sm-4">Obtained by pre-match API</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">modIdentifier</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"7adfki234jlk23"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">flags</div>
+                        <div class="col-sm-2">array</div>
+                        <div class="col-sm-3">{"mode": "ctf15", "winCondition": "kill50", "crazyCouriers": 1}</div>
+                        <div class="col-sm-4">Un-structured and indicate lobby options</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaVersion</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">1</div>
+                    </div>
+
+                    <!--players array-->
+
+                    <div class="row">
+                        <div class="col-sm-3">players</div>
+                        <div class="col-sm-2">key-value array</div>
+                        <div class="col-sm-7">&nbsp;</div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-2">playerName</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"jimmydorry"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-2">steamID32</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"2875155"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-2">connectionState</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-3">2</div>
+                        <div class="col-sm-4">
+                            0 = unknown<br/>
+                            1 = not yet connected<br/>
+                            2 = connected<br/>
+                            3 = disconnected match<br/>
+                            4 = abandoned<br/>
+                            5 = loading<br/>
+                            6 = failed<br/>
+                            <a target="_blank"
+                               href="https://github.com/SteamRE/SteamKit/blob/f6c0578506690d63a2b159340fe19835fe33564c/Resources/Protobufs/dota/dota_gcmessages_common.proto#L564">Refer
+                                to enum DOTAConnectionState_t</a>
+                        </div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
                 </div>
 
-                <span class="h4">&nbsp;</span>
-            </div>
+                <hr/>
 
-            <hr/>
-
-            <h3>Example Schema</h3>
+                <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
@@ -414,29 +423,31 @@
     ]
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
-<!--
-////////////////////////////////////////////////////
-//Phase 2 - Server - Pre Game
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingFour">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"
-               aria-expanded="false" aria-controls="collapseFour">
-                Phase 2 - Server - Pre Game
-            </a>
-        </h4>
-    </div>
-    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-        <div class="panel-body">
-            <p>This is the response from the server after receiving the communication from the client for Phase 2. The
-                result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
-                accompanying textual error, for debugging purposes.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Phase 2 - Server - Pre Game
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFour">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseFour"
+                   aria-expanded="false" aria-controls="collapseFour">
+                    Phase 2 - Server - Pre Game
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+            <div class="panel-body">
+                <p>This is the response from the server after receiving the communication from the client for Phase 2.
+                    The
+                    result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
+                    accompanying textual error, for debugging purposes.</p>
 
             <pre class="pre-scrollable">
 {
@@ -444,128 +455,130 @@
     "error": "Bad JSON"
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
 
-<!--
-////////////////////////////////////////////////////
-//Phase 3 - Client - End Game
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingFive">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive"
-               aria-expanded="false" aria-controls="collapseFive">
-                Phase 3 - Client - End Game
-            </a>
-        </h4>
-    </div>
-    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-        <div class="panel-body">
-            <p>This is for catching all of the games that properly end. The main difference here is that the resulting
-                data can be
-                broken down into rounds.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Phase 3 - Client - End Game
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFive">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseFive"
+                   aria-expanded="false" aria-controls="collapseFive">
+                    Phase 3 - Client - End Game
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+            <div class="panel-body">
+                <p>This is for catching all of the games that properly end. The main difference here is that the
+                    resulting
+                    data can be
+                    broken down into rounds.</p>
 
-            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_3.php || "payload" =
-                    <em>JSONschema</em></code></p>
+                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_3.php || "payload" =
+                        <em>JSONschema</em></code></p>
 
-            <hr/>
+                <hr/>
 
-            <div>
-                <div class="row">
-                    <div class="col-sm-3"><strong>Key</strong></div>
-                    <div class="col-sm-2"><strong>Type</strong></div>
-                    <div class="col-sm-3"><strong>Example</strong></div>
-                    <div class="col-sm-4"><strong>Notes</strong></div>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Key</strong></div>
+                        <div class="col-sm-2"><strong>Type</strong></div>
+                        <div class="col-sm-3"><strong>Example</strong></div>
+                        <div class="col-sm-4"><strong>Notes</strong></div>
+                    </div>
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-3">authKey</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+                        <div class="col-sm-4">Obtained by pre-match API</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">matchID</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"21347923432"</div>
+                        <div class="col-sm-4">Obtained by pre-match API</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">modIdentifier</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"7adfki234jlk23"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">gameDuration</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">3954</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">gameFinished</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-3">1</div>
+                        <div class="col-sm-4">Default value of 1 if not defined</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaVersion</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">1</div>
+                    </div>
+
+                    <!--players array-->
+
+                    <div class="row">
+                        <div class="col-sm-3">rounds</div>
+                        <div class="col-sm-2">array</div>
+                        <div class="col-sm-7">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-2">players</div>
+                        <div class="col-sm-2">array</div>
+                        <div class="col-sm-7">&nbsp;</div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">steamID32</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-6">"2875155"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">isWinner</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-6">1</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">connectionState</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-6">2</div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
                 </div>
-                <span class="h4">&nbsp;</span>
 
-                <div class="row">
-                    <div class="col-sm-3">authKey</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
+                <hr/>
 
-                <div class="row">
-                    <div class="col-sm-3">matchID</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"21347923432"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">modIdentifier</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"7adfki234jlk23"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">gameDuration</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">3954</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">gameFinished</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-3">1</div>
-                    <div class="col-sm-4">Default value of 1 if not defined</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">schemaVersion</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <!--players array-->
-
-                <div class="row">
-                    <div class="col-sm-3">rounds</div>
-                    <div class="col-sm-2">array</div>
-                    <div class="col-sm-7">&nbsp;</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-2">players</div>
-                    <div class="col-sm-2">array</div>
-                    <div class="col-sm-7">&nbsp;</div>
-                </div>
-
-                <span class="h4">&nbsp;</span>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">steamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-6">"2875155"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">isWinner</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-6">1</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">connectionState</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-6">2</div>
-                </div>
-
-                <span class="h4">&nbsp;</span>
-            </div>
-
-            <hr/>
-
-            <h3>Example Schema</h3>
+                <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
@@ -646,29 +659,31 @@
     }
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
-<!--
-////////////////////////////////////////////////////
-//Phase 3 - Server - End Game
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingSix">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix"
-               aria-expanded="false" aria-controls="collapseSix">
-                Phase 3 - Server - End Game
-            </a>
-        </h4>
-    </div>
-    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-        <div class="panel-body">
-            <p>This is the response from the server after receiving the communication from the client for Phase 3. The
-                result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
-                accompanying textual error, for debugging purposes.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Phase 3 - Server - End Game
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingSix">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseSix"
+                   aria-expanded="false" aria-controls="collapseSix">
+                    Phase 3 - Server - End Game
+                </a>
+            </h4>
+        </div>
+        <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+            <div class="panel-body">
+                <p>This is the response from the server after receiving the communication from the client for Phase 3.
+                    The
+                    result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
+                    accompanying textual error, for debugging purposes.</p>
 
             <pre class="pre-scrollable">
 {
@@ -676,144 +691,146 @@
     "error" : "Bad JSON"
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
 
-<!--
-////////////////////////////////////////////////////
-//Client - CUSTOM
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingSeven">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven"
-               aria-expanded="false" aria-controls="collapseSeven">
-                Client - CUSTOM DATA
-            </a>
-        </h4>
-    </div>
-    <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
-        <div class="panel-body">
-            <p>If your mod wishes to capture additional data (such as scoring, items or abilities), the developer will
-                need to contact an admin and have their schema entered and approved in the system (<a
-                    class="nav-clickable" href="#admin__mod_schema">HERE</a>). Each implementation is unique and
-                requires careful planning for current and future needs.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Client - CUSTOM
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingSeven">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseSeven"
+                   aria-expanded="false" aria-controls="collapseSeven">
+                    Client - CUSTOM DATA
+                </a>
+            </h4>
+        </div>
+        <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+            <div class="panel-body">
+                <p>If your mod wishes to capture additional data (such as scoring, items or abilities), the developer
+                    will
+                    need to contact an admin and have their schema entered and approved in the system (<a
+                        class="nav-clickable" href="#admin__mod_schema">HERE</a>). Each implementation is unique and
+                    requires careful planning for current and future needs.</p>
 
-            <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_custom.php || "payload" =
-                    <em>JSONschema</em></code></p>
+                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_custom.php || "payload" =
+                        <em>JSONschema</em></code></p>
 
-            <hr/>
+                <hr/>
 
-            <div>
-                <div class="row">
-                    <div class="col-sm-3"><strong>Key</strong></div>
-                    <div class="col-sm-2"><strong>Type</strong></div>
-                    <div class="col-sm-3"><strong>Example</strong></div>
-                    <div class="col-sm-4"><strong>Notes</strong></div>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Key</strong></div>
+                        <div class="col-sm-2"><strong>Type</strong></div>
+                        <div class="col-sm-3"><strong>Example</strong></div>
+                        <div class="col-sm-4"><strong>Notes</strong></div>
+                    </div>
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-3">authKey</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
+                        <div class="col-sm-4">Obtained by pre-match API</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">matchID</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"21347923432"</div>
+                        <div class="col-sm-4">Obtained by pre-match API</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">modIdentifier</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"7adfki234jlk23"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaAuthKey</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"jh345235ljhfads"</div>
+                        <div class="col-sm-4">Obtained by schema obtaining approval</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaVersion</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">1</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">rounds</div>
+                        <div class="col-sm-2">array</div>
+                        <div class="col-sm-7">&nbsp;</div>
+                    </div>
+
+                    <!--game array-->
+
+                    <div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-3">game</div>
+                        <div class="col-sm-2">key-value array</div>
+                        <div class="col-sm-6">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">customValue1</div>
+                        <div class="col-sm-2">???</div>
+                        <div class="col-sm-6">XXXX</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">customValue2</div>
+                        <div class="col-sm-2">???</div>
+                        <div class="col-sm-6">YYYY</div>
+                    </div>
+
+                    <!--players array-->
+
+                    <div class="row">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-3">players</div>
+                        <div class="col-sm-2">key-value array</div>
+                        <div class="col-sm-6">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">steamID32</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-6">"2875155"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">customValue1</div>
+                        <div class="col-sm-2">???</div>
+                        <div class="col-sm-6">XXXX</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2">&nbsp;</div>
+                        <div class="col-sm-2">customValue2</div>
+                        <div class="col-sm-2">???</div>
+                        <div class="col-sm-6">YYYY</div>
+                    </div>
+
+                    <span class="h4">&nbsp;</span>
                 </div>
-                <span class="h4">&nbsp;</span>
 
-                <div class="row">
-                    <div class="col-sm-3">authKey</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
+                <hr/>
 
-                <div class="row">
-                    <div class="col-sm-3">matchID</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"21347923432"</div>
-                    <div class="col-sm-4">Obtained by pre-match API</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">modIdentifier</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-7">"7adfki234jlk23"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">schemaAuthKey</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-3">"jh345235ljhfads"</div>
-                    <div class="col-sm-4">Obtained by schema obtaining approval</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">schemaVersion</div>
-                    <div class="col-sm-2">integer</div>
-                    <div class="col-sm-7">1</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">rounds</div>
-                    <div class="col-sm-2">array</div>
-                    <div class="col-sm-7">&nbsp;</div>
-                </div>
-
-                <!--game array-->
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-3">game</div>
-                    <div class="col-sm-2">key-value array</div>
-                    <div class="col-sm-6">&nbsp;</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">customValue1</div>
-                    <div class="col-sm-2">???</div>
-                    <div class="col-sm-6">XXXX</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">customValue2</div>
-                    <div class="col-sm-2">???</div>
-                    <div class="col-sm-6">YYYY</div>
-                </div>
-
-                <!--players array-->
-
-                <div class="row">
-                    <div class="col-sm-1">&nbsp;</div>
-                    <div class="col-sm-3">players</div>
-                    <div class="col-sm-2">key-value array</div>
-                    <div class="col-sm-6">&nbsp;</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">steamID32</div>
-                    <div class="col-sm-2">string</div>
-                    <div class="col-sm-6">"2875155"</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">customValue1</div>
-                    <div class="col-sm-2">???</div>
-                    <div class="col-sm-6">XXXX</div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">&nbsp;</div>
-                    <div class="col-sm-2">customValue2</div>
-                    <div class="col-sm-2">???</div>
-                    <div class="col-sm-6">YYYY</div>
-                </div>
-
-                <span class="h4">&nbsp;</span>
-            </div>
-
-            <hr/>
-
-            <h3>Example Schema</h3>
+                <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
@@ -903,29 +920,31 @@
 }
             </pre>
 
+            </div>
         </div>
     </div>
-</div>
 
-<!--
-////////////////////////////////////////////////////
-//Server - CUSTOM
-////////////////////////////////////////////////////
--->
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingEight">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight"
-               aria-expanded="false" aria-controls="collapseEight">
-                Server - CUSTOM DATA
-            </a>
-        </h4>
-    </div>
-    <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
-        <div class="panel-body">
-            <p>This is the response from the server after receiving the communication from the client for CUSTOM DATA.
-                The result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
-                accompanying textual error, for debugging purposes.</p>
+    <!--
+    ////////////////////////////////////////////////////
+    //Server - CUSTOM
+    ////////////////////////////////////////////////////
+    -->
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingEight">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseEight"
+                   aria-expanded="false" aria-controls="collapseEight">
+                    Server - CUSTOM DATA
+                </a>
+            </h4>
+        </div>
+        <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+            <div class="panel-body">
+                <p>This is the response from the server after receiving the communication from the client for CUSTOM
+                    DATA.
+                    The result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
+                    accompanying textual error, for debugging purposes.</p>
 
             <pre class="pre-scrollable">
 {
@@ -933,217 +952,144 @@
     "error": "Bad JSON"
 }
             </pre>
+            </div>
         </div>
     </div>
-</div>
 
+    <!--
+    ////////////////////////////////////////////////////
+    //Client - Player Summary
+    ////////////////////////////////////////////////////
+    -->
 
-<!--
-////////////////////////////////////////////////////
-//Client - Timelapse
-////////////////////////////////////////////////////
--->
-
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingNine">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine"
-               aria-expanded="false" aria-controls="collapseNine">
-                Client - Timelapse Data
-            </a>
-        </h4>
-    </div>
-    <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
-        <div class="panel-body">
-        <p>If your mod wishes to capture time sensitive data (such as item or skill build progression), the developer will
-            need to contact an admin and have their schema entered and approved in the system. Each implementation is unique and
-            requires careful planning for current and future needs.</p>
-
-        <p><strong>Endpoint:</strong> <code>POST T.B.D. || "payload" =
-                <em>JSONschema</em></code></p>
-
-        <hr/>
-
-        <div>
-            <div class="row">
-                <div class="col-sm-3"><strong>Key</strong></div>
-                <div class="col-sm-2"><strong>Type</strong></div>
-                <div class="col-sm-3"><strong>Example</strong></div>
-                <div class="col-sm-4"><strong>Notes</strong></div>
-            </div>
-            <span class="h4">&nbsp;</span>
-
-            <div class="row">
-                <div class="col-sm-3">authKey</div>
-                <div class="col-sm-2">string</div>
-                <div class="col-sm-3">"asdfhkj324jklnfadssdafsd"</div>
-                <div class="col-sm-4">Obtained by pre-match API</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-3">matchID</div>
-                <div class="col-sm-2">string</div>
-                <div class="col-sm-3">"21347923432"</div>
-                <div class="col-sm-4">Obtained by pre-match API</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-3">modIdentifier</div>
-                <div class="col-sm-2">string</div>
-                <div class="col-sm-7">"7adfki234jlk23"</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-3">schemaAuthKey</div>
-                <div class="col-sm-2">string</div>
-                <div class="col-sm-3">"jh345235ljhfads"</div>
-                <div class="col-sm-4">Obtained by schema obtaining approval</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-3">schemaVersion</div>
-                <div class="col-sm-2">integer</div>
-                <div class="col-sm-7">1</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-3">timelapses</div>
-                <div class="col-sm-2">array</div>
-                <div class="col-sm-7">&nbsp;</div>
-            </div>
-
-            <!--timelapse array-->
-
-            <div class="row">
-                <div class="col-sm-1">&nbsp;</div>
-                <div class="col-sm-2">customTimeLapse1</div>
-                <div class="col-sm-2">array</div>
-                <div class="col-sm-6">&nbsp;</div>
-            </div>
-
-                <!--timelapse data array-->
-
-            <div class="row">
-                <div class="col-sm-2">&nbsp;</div>
-                <div class="col-sm-2">steamID32</div>
-                <div class="col-sm-2">string</div>
-                <div class="col-sm-6">"2875155"</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-2">&nbsp;</div>
-                <div class="col-sm-2">gameTime</div>
-                <div class="col-sm-2">integer</div>
-                <div class="col-sm-6">1234</div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-2">&nbsp;</div>
-                <div class="col-sm-2">customValue</div>
-                <div class="col-sm-2">???</div>
-                <div class="col-sm-6">YYYY</div>
-            </div>
-
-            <span class="h4">&nbsp;</span>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingNine">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseNine"
+                   aria-expanded="false" aria-controls="collapseNine">
+                    Client - Player Summary Data
+                </a>
+            </h4>
         </div>
+        <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+            <div class="panel-body">
+                <p>If your mod wishes to check on the general stats of a player, they can use this request.</p>
 
-        <hr/>
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/player_summary.php || "payload" =
+                        <em>JSONschema</em></code></p>
 
-        <h3>Example Schema</h3>
+                <hr/>
+
+                <div>
+                    <div class="row">
+                        <div class="col-sm-3"><strong>Key</strong></div>
+                        <div class="col-sm-2"><strong>Type</strong></div>
+                        <div class="col-sm-3"><strong>Example</strong></div>
+                        <div class="col-sm-4"><strong>Notes</strong></div>
+                    </div>
+                    <span class="h4">&nbsp;</span>
+
+                    <div class="row">
+                        <div class="col-sm-3">modIdentifier</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-7">"7adfki234jlk23"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">schemaVersion</div>
+                        <div class="col-sm-2">integer</div>
+                        <div class="col-sm-7">1</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">players</div>
+                        <div class="col-sm-2">array</div>
+                        <div class="col-sm-7">array('28755155', '28755156', '28755157')</div>
+                    </div>
+                </div>
+
+                <hr/>
+
+                <h3>Example Schema</h3>
 
             <pre class="pre-scrollable">
 {
-    "authKey": "asdfhkj324jklnfadssdafsd",
-    "matchID": "21347923432",
-    "modIdentifier": "7adfki234jlk23",
-    "schemaAuthKey": "K65S5J7HFD",
-    "schemaVersion": 1,
-    "timelapses": {
-        "customTimeLapse1": {
-            "0": {
-                    "steamID32": "2875155",
-                    "gameTime": 1234,
-                    "customValue": "brown_boots"
-            },
-            "1": {
-                    "steamID32": "2875155",
-                    "gameTime": 1240,
-                    "customValue": "mask_of_madness"
-            },
-            "2": {
-                    "steamID32": "2875156",
-                    "gameTime": 1245,
-                    "customValue": "brown_boots"
-            },
-            "3": {
-                    "steamID32": "2875155",
-                    "gameTime": 1250,
-                    "customValue": "divine_rapier_plus"
-            }
-        },
-        "customTimeLapse2": {
-            "0": {
-                    "steamID32": "2875155",
-                    "gameTime": 1234,
-                    "customValue": "ability_1_level_1"
-            },
-            "1": {
-                    "steamID32": "2875155",
-                    "gameTime": 1240,
-                    "customValue": "ability_3_level_1"
-            },
-            "2": {
-                    "steamID32": "2875156",
-                    "gameTime": 1245,
-                    "customValue": "ability_1_level_1"
-            },
-            "3": {
-                    "steamID32": "2875155",
-                    "gameTime": 1250,
-                    "customValue": "ability_1_level_2"
-            }
-        }
+	"modIdentifier": "2374504c2c518fafc9731a120e67fdf5",
+	"schemaVersion": 1,
+	"players": ["2875155", "2875156", "2875157"]
+}
+            </pre>
+
+            </div>
+        </div>
+    </div>
+
+    <!--
+    ////////////////////////////////////////////////////
+    //Server - Timelapse
+    ////////////////////////////////////////////////////
+    -->
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTen">
+            <h4 class="panel-title">
+                <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseTen"
+                   aria-expanded="false" aria-controls="collapseTen">
+                    Server - Player Summary Data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+            <div class="panel-body">
+                <p>This is the response from the server if there was no data on the selected players.</p>
+
+            <pre class="pre-scrollable">
+{
+	"result": 0,
+	"error": "No details for selected player(s)!",
+	"schemaVersion": 1
+}
+            </pre>
+
+                <p>And this is a response from the server that shows a successful query.</p>
+
+            <pre class="pre-scrollable">
+{
+  "result": [
+    {
+      "steamID32": 2875155,
+      "numGames": 1,
+      "numWins": 1,
+      "lastAbandon": null,
+      "lastFail": null,
+      "dateUpdated": "2016-03-13 17:09:28"
+    },
+    {
+      "steamID32": 2875156,
+      "numGames": 1,
+      "numWins": 0,
+      "lastAbandon": "2016-03-13 17:09:10",
+      "lastFail": null,
+      "dateUpdated": "2016-03-13 17:09:10"
+    },
+    {
+      "steamID32": 2875157,
+      "numGames": 1,
+      "numWins": 0,
+      "lastAbandon": null,
+      "lastFail": "2016-03-13 17:09:11",
+      "dateUpdated": "2016-03-13 17:09:11"
     }
+  ],
+  "schemaVersion": 1
 }
             </pre>
 
+            </div>
         </div>
     </div>
-</div>
-
-<!--
-////////////////////////////////////////////////////
-//Server - Timelapse
-////////////////////////////////////////////////////
--->
-
-<div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingTen">
-        <h4 class="panel-title">
-            <a class="h4 collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen"
-               aria-expanded="false" aria-controls="collapseTen">
-                Server - Timelapse Data
-            </a>
-        </h4>
-    </div>
-    <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
-        <div class="panel-body">
-            <p>This is the response from the server after receiving the communication from the client for Timelapse Data.
-                The result field will either be 0 or 1. A result of 0 indicates there was a failure. There may be an
-                accompanying textual error, for debugging purposes.</p>
-
-            <pre class="pre-scrollable">
-{
-    "result": 0,
-    "error": "Bad JSON"
-}
-            </pre>
-        </div>
-    </div>
-</div>
-
-
-
 
 
 </div>

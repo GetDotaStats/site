@@ -8,6 +8,7 @@ $requiredSchemaVersionPhase2 = 1;
 $requiredSchemaVersionPhase3 = 1;
 $requiredSchemaVersionClientCheckIn = 1;
 $requiredSchemaVersionCustom = 1;
+$requiredSchemaVersionPlayerSummary = 1;
 
 /////////////////////////////
 // RESPONSE VERSIONS
@@ -17,6 +18,7 @@ $responseSchemaVersionPhase2 = 3;
 $responseSchemaVersionPhase3 = 3;
 $responseSchemaVersionClientCheckIn = 3;
 $responseSchemaVersionCustom = 3;
+$responseSchemaVersionPlayerSummary = 1;
 
 /////////////////////////////
 // OTHER APIs
