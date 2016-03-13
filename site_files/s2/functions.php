@@ -297,6 +297,7 @@ if (!function_exists('modPageHeader')) {
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cgv?id={$modID}'>Game Values</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_cpv?id={$modID}'>Player Values</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_wr?id={$modID}'>Winrates</a>
+                            <a class='nav-clickable btn btn-info' href='#s2__mod_lb?id={$modID}'>Top Players</a>
                             <a class='nav-clickable btn btn-info' href='#s2__recent_games?m={$modID}'>Recent Games</a>
                         </div>
                     </div>";
