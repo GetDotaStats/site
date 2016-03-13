@@ -31,7 +31,7 @@ try {
     //////////////////
     {
         try {
-            echo '<h3>Leaderboard <small>Top 47 Players</small></h3>';
+            echo '<h3>Leaderboard <small>Top 101 Players</small></h3>';
 
             echo '<p>Rough leaderboard that was put together in a few minutes.</p>';
 
@@ -56,7 +56,7 @@ try {
                     LEFT JOIN `gds_users` gdsu ON sugs.`steamID64` = gdsu.`user_id64`
                     WHERE sugs.`modID` = ?
                     ORDER BY sugs.`numGames` DESC
-                    LIMIT 0, 47;',
+                    LIMIT 0, 101;',
                 'i',
                 $modID,
                 10
