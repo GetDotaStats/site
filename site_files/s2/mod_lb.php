@@ -27,7 +27,7 @@ try {
     echo modPageHeader($modID, $CDN_image);
 
     //////////////////
-    //FLAGS
+    //Leaderboard
     //////////////////
     {
         try {
@@ -59,13 +59,14 @@ try {
                     LIMIT 0, 47;',
                 'i',
                 $modID,
-                1
+                10
             );
 
             if (empty($userLeaderboardSQL)) throw new Exception('No players have games recorded for this mod!');
 
             echo '<div class="row">
-                    <div class="col-md-4"><strong>Player</strong></div>
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-3"><strong>Player</strong></div>
                     <div class="col-md-1 text-center"><strong>Games</strong></div>
                     <div class="col-md-1 text-center"><strong>Wins</strong></div>
                     <div class="col-md-2 text-center"><strong>Last Abandon</strong></div>
@@ -86,8 +87,10 @@ try {
                 $userName = '<a class="nav-clickable" href="#s2__user?id=' . $value['steamID64'] . '">' . $userName . '</a>';
 
                 $userAvatar = !empty($value['user_avatar'])
-                    ? '<img src="' . $value['user_avatar'] . '" />'
-                    : '<img src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg' . '" />';
+                    ? '<img width="24" height="24" src="' . $value['user_avatar'] . '" alt="User thumbnail" />'
+                    : '<img width="24" height="24" src="' . $CDN_image . '/images/misc/steam/blank_avatar.jpg' . '" alt="User thumbnail" />';
+
+                $userAvatar = '<a target="_blank" href="//steamcommunity.com/profiles/' . $value['steamID64'] . '">' . $userAvatar . '</a>';
 
                 $lastAbandon = !empty($value['lastAbandon'])
                     ? relative_time_v3($value['lastAbandon'])
@@ -101,9 +104,11 @@ try {
                     ? relative_time_v3($value['dateUpdated'])
                     : '&nbsp;';
 
+                $rank = '#' . ($key + 1);
 
                 echo "<div class='row'>
-                    <div class='col-md-4'>{$userAvatar} {$userName}</div>
+                    <div class='col-md-1'>{$rank}</div>
+                    <div class='col-md-3'>{$userAvatar} {$userName}</div>
                     <div class='col-md-1 text-center'>{$value['numGames']}</div>
                     <div class='col-md-1 text-center'>{$value['numWins']}</div>
                     <div class='col-md-2 text-right'>{$lastAbandon}</div>
