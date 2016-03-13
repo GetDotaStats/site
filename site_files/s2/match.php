@@ -224,43 +224,40 @@ try {
     echo '<span class="h4">&nbsp;</span>';
 
     $matchSchemaVersionText_head = !empty($matchSchemaVersion) && is_numeric($matchSchemaVersion)
-        ? '<div class="col-md-4 text-center"><strong>Schema</strong></div>'
-        : '';
+        ? '<strong>Schema</strong>'
+        : '&nbsp;';
     $matchSchemaVersionText_body = !empty($matchSchemaVersion) && is_numeric($matchSchemaVersion)
-        ? '<div class="col-md-4 text-center"><strong><a class="nav-clickable" href="#s2__mod_schema?id=' . $matchSchemaVersion . '">' . $matchSchemaVersion . '</a></strong></div>'
-        : '';
-    $otherWidths = !empty($matchSchemaVersion) && is_numeric($matchSchemaVersion)
-        ? '3'
-        : '4';
+        ? '<strong><a class="nav-clickable" href="#s2__mod_schema?id=' . $matchSchemaVersion . '">' . $matchSchemaVersion . '</a></strong>'
+        : '&nbsp;';
 
     //GAME SUMMARY
     echo '<div class="row">
                 <div class="col-md-5">&nbsp;</div>
                 <div class="col-md-7 mod_info_panel">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="row">
-                                ' . $matchSchemaVersionText_head . '
-                                <div class="col-md-' . $otherWidths . ' text-center"><strong>Phase</strong></div>
-                                <div class="col-md-' . $otherWidths . ' text-center"><strong>Rounds</strong></div>
-                                <div class="col-md-' . $otherWidths . ' text-center"><strong>Dota MID</strong></div>
+                                <div class="col-md-4 text-center">' . $matchSchemaVersionText_head . '</div>
+                                <div class="col-md-4 text-center"><strong>Phase</strong></div>
+                                <div class="col-md-4 text-center"><strong>Rounds</strong></div>
                             </div>
                         </div>
-                        <div class="col-md-2"><strong>Duration</strong></div>
-                        <div class="col-md-4"><strong>Recorded</strong></div>
+                        <div class="col-md-2 text-center"><strong>DID <span class="glyphicon glyphicon-exclamation-sign" title="The official DotA2 matchID">&nbsp;</span></strong></div>
+                        <div class="col-md-2"><strong>Length</strong></div>
+                        <div class="col-md-3"><strong>Recorded</strong></div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="row">
-                                ' . $matchSchemaVersionText_body . '
-                                <div class="col-md-' . $otherWidths . ' text-center">' . $matchPhase . '</div>
-                                <div class="col-md-' . $otherWidths . ' text-center">' . $numRounds . '</div>
-                                <div class="col-md-' . $otherWidths . ' text-center">' . $matchDotaMatchID . '</div>
+                                <div class="col-md-4 text-center">' . $matchSchemaVersionText_body . '</div>
+                                <div class="col-md-4 text-center">' . $matchPhase . '</div>
+                                <div class="col-md-4 text-center">' . $numRounds . '</div>
                             </div>
                         </div>
+                        <div class="col-md-2">' . $matchDotaMatchID . '</div>
                         <div class="col-md-2">' . $matchDuration . ' mins</div>
-                        <div class="col-md-4">' . relative_time_v3($matchDetails[0]['dateRecorded'], 1, NULL, false, true, false) . '</div>
+                        <div class="col-md-3">' . relative_time_v3($matchDetails[0]['dateRecorded'], 1, NULL, false, true, false) . '</div>
                     </div>
                 </div>
             </div>';
