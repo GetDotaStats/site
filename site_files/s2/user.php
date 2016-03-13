@@ -131,10 +131,75 @@ try {
     // RECENT GAMES
     ///////////////////////////////////
     {
-        echo '<h3>Recent Games</h3>';
-        echo '<p>The last 25 games this user has played for mods we track.</p>';
-
         try {
+            echo '<h3>Overview of Games</h3>';
+            echo '<p>The aggregate view of games played per mod.</p>';
+
+            $userModAggregate = cached_query(
+                's2_user_page_aggregate_games' . $userID64,
+                'SELECT
+                        s2mp.`modID`,
+                        s2mp.`numGames`,
+                        s2mp.`numWins`,
+                        s2mp.`lastAbandon`,
+                        s2mp.`lastFail`,
+                        s2mp.`dateUpdated`,
+                        ml.`mod_name`
+                    FROM `s2_user_game_summary` s2mp
+                    LEFT JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
+                    WHERE s2mp.`steamID64` = ? AND ml.`mod_active` = 1
+                    GROUP BY s2mp.`modID`
+                    ORDER BY s2mp.`numGames` DESC;',
+                's',
+                $userID64,
+                15
+            );
+
+            if (empty($userModAggregate)) throw new Exception('User has no games recorded against mods we track!');
+
+
+            echo '<div class="row searchRow">
+                        <div class="col-md-3"><strong>Mod</strong></div>
+                        <div class="col-md-1 text-center"><strong>Games</strong></div>
+                        <div class="col-md-2 text-center"><strong>Wins</strong></div>
+                        <div class="col-md-2 text-center"><strong>Last Abandon</strong></div>
+                        <div class="col-md-2 text-center"><strong>Last Failed Load</strong></div>
+                        <div class="col-md-2 text-center"><strong>Last Updated</strong></div>
+                    </div>';
+
+            foreach ($userModAggregate as $key => $value) {
+                $winPercent = number_format($value['numWins'] / $value['numGames'] * 100, 1);
+
+                $lastAbandon = !empty($value['lastAbandon'])
+                    ? relative_time_v3($value['lastAbandon'])
+                    : '&nbsp;';
+
+                $lastFail = !empty($value['lastFail'])
+                    ? relative_time_v3($value['lastFail'])
+                    : '&nbsp;';
+
+                $dateUpdated = !empty($value['dateUpdated'])
+                    ? relative_time_v3($value['dateUpdated'])
+                    : '&nbsp;';
+
+                echo '<div class="row searchRow">
+                            <div class="col-md-3"><a class="nav-clickable" href="#s2__mod?id=' . $value['modID'] . '"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</a></div>
+                            <div class="col-md-1 text-center">' . number_format($value['numGames']) . '</div>
+                            <div class="col-md-2 text-center">' . number_format($value['numWins']) . ' (' . $winPercent . '%)</div>
+                            <div class="col-md-2 text-right">' . $lastAbandon . '</div>
+                            <div class="col-md-2 text-right">' . $lastFail . '</div>
+                            <div class="col-md-2 text-right">' . $dateUpdated . '</div>
+                        </div>';
+            }
+
+
+
+            echo '<hr />';
+
+
+
+            echo '<h3>Recent Games</h3>';
+            echo '<p>The last 25 games this user has played for mods we track.</p>';
             $userRecentGames = cached_query(
                 's2_user_page_recent_games' . $userID32,
                 'SELECT
@@ -238,49 +303,6 @@ try {
 
             echo '<hr />';
 
-            echo '<h3>Total Games</h3>';
-            echo '<p>The aggregate view of games played per mod.</p>';
-
-            $userModAggregate = cached_query(
-                's2_user_page_aggregate_games' . $userID32,
-                'SELECT
-                        s2mp.`modID`,
-                        COUNT(DISTINCT `matchID`) AS `total_games`,
-                        ml.`mod_name`
-                    FROM `s2_match_players` s2mp
-                    LEFT JOIN `mod_list` ml ON s2mp.`modID` = ml.`mod_id`
-                    WHERE s2mp.`steamID32` = ? AND ml.`mod_active` = 1
-                    GROUP BY s2mp.`modID`
-                    ORDER BY `total_games` DESC;',
-                's',
-                $userID32,
-                15
-            );
-
-            if (empty($userModAggregate)) throw new Exception('User has no games recorded against mods we track!');
-
-
-            echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="row searchRow">
-                                <div class="col-md-9"><strong>Mod</strong></div>
-                                <div class="col-md-3 text-center"><strong>Games</strong></div>
-                            </div>
-                        </div>
-                    </div>';
-
-            foreach ($userModAggregate as $key => $value) {
-                echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="row searchRow">
-                                <div class="col-md-9"><a class="nav-clickable" href="#s2__mod?id=' . $value['modID'] . '"><span class="glyphicon glyphicon-eye-open"></span> ' . $value['mod_name'] . '</a></div>
-                                <div class="col-md-3 text-right">' . number_format($value['total_games']) . '</div>
-                            </div>
-                        </div>
-                    </div>';
-            }
-
-            echo '<hr />';
         } catch (Exception $e) {
             echo formatExceptionHandling($e);
         }
