@@ -146,6 +146,7 @@ try {
         if (!empty($preGameAuthPayloadJSON['rounds'])) {
             $steamID_manipulator = new SteamID();
 
+            $maxArrayKey = max(array_keys($preGameAuthPayloadJSON['rounds']));
             foreach ($preGameAuthPayloadJSON['rounds'] as $key => $value) {
                 if (!empty($value['players'])) {
                     $i = -1;
@@ -179,6 +180,64 @@ try {
                                 $value2['isWinner']
                             )
                         );
+
+                        //PLAYER SUMMARY
+                        try {
+                            if ($steamID64 > 0 && $key == $maxArrayKey) {
+                                //player is not a bot!
+
+                                if ($value2['connectionState'] == 4) {
+                                    //player abandoned
+                                    $db->q(
+                                        'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `lastAbandon`)
+                                            VALUES (?, ?, ?, ?, ?, NOW())
+                                            ON DUPLICATE KEY UPDATE
+                                              `lastAbandon` = VALUES(`lastAbandon`);',
+                                        'ssiii',
+                                        array(
+                                            $steamID64,
+                                            $steamID32,
+                                            $modID,
+                                            1,
+                                            0
+                                        )
+                                    );
+                                } else if ($value2['connectionState'] == 6) {
+                                    //player failed
+                                    $db->q(
+                                        'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `lastFail`)
+                                            VALUES (?, ?, ?, ?, ?, NOW())
+                                            ON DUPLICATE KEY UPDATE
+                                              `lastFail` = VALUES(`lastFail`);',
+                                        'ssiii',
+                                        array(
+                                            $steamID64,
+                                            $steamID32,
+                                            $modID,
+                                            1,
+                                            0
+                                        )
+                                    );
+                                } else {
+                                    $db->q(
+                                        'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`)
+                                            VALUES (?, ?, ?, ?, ?)
+                                            ON DUPLICATE KEY UPDATE
+                                              `numWins` = `numWins` + VALUES(`numWins`);',
+                                        'ssiii',
+                                        array(
+                                            $steamID64,
+                                            $steamID32,
+                                            $modID,
+                                            1,
+                                            $value2['isWinner']
+                                        )
+                                    );
+                                }
+                            }
+                        } catch (Exception $e) {
+                            $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
+                        }
                     }
                 } else {
                     throw new Exception("No player data for round #$key!");

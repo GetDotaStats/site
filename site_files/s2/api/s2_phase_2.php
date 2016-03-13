@@ -180,6 +180,66 @@ try {
                         htmlentities($value['playerName'])
                     )
                 );
+
+                //PLAYER SUMMARY
+                try {
+                    if ($steamID64 > 0) {
+                        //player is not a bot!
+
+                        if ($value['connectionState'] == 4) {
+                            //player abandoned
+                            $db->q(
+                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `lastAbandon`)
+                                    VALUES (?, ?, ?, ?, ?, NOW())
+                                    ON DUPLICATE KEY UPDATE
+                                      `numGames` = `numGames` + 1,
+                                      `lastAbandon` = VALUES(`lastAbandon`);',
+                                'ssiii',
+                                array(
+                                    $steamID64,
+                                    $steamID32,
+                                    $modID,
+                                    1,
+                                    0
+                                )
+                            );
+                        } else if ($value['connectionState'] == 6) {
+                            //player failed
+                            $db->q(
+                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `lastFail`)
+                                    VALUES (?, ?, ?, ?, ?, NOW())
+                                    ON DUPLICATE KEY UPDATE
+                                      `numGames` = `numGames` + 1,
+                                      `lastFail` = VALUES(`lastFail`);',
+                                'ssiii',
+                                array(
+                                    $steamID64,
+                                    $steamID32,
+                                    $modID,
+                                    1,
+                                    0
+                                )
+                            );
+                        } else {
+                            $db->q(
+                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`)
+                                    VALUES (?, ?, ?, ?, ?)
+                                    ON DUPLICATE KEY UPDATE
+                                      `numGames` = `numGames` + 1;',
+                                'ssiii',
+                                array(
+                                    $steamID64,
+                                    $steamID32,
+                                    $modID,
+                                    1,
+                                    0
+                                )
+                            );
+                        }
+                    }
+                } catch (Exception $e) {
+                    $s2_response['error'] = 'Caught Exception: ' . $e->getMessage();
+                }
             }
         }
     }
