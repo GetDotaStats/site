@@ -74,7 +74,7 @@ try {
                   ml.`date_recorded`
 
                 FROM `mod_list` ml
-                WHERE ml.`mod_identifier` = ?
+                WHERE ml.`mod_id` = ?
                 LIMIT 0,1;',
         's',
         $highscoreModID,
@@ -88,6 +88,7 @@ try {
               (
                 `highscoreID`,
                 `modID`,
+                `modIdentifier`,
                 `highscoreName`,
                 `highscoreDescription`,
                 `highscoreObjective`,
@@ -95,11 +96,12 @@ try {
                 `highscoreFactor`,
                 `highscoreDecimals`
               )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
-        'ssssssss', //STUPID x64 windows PHP is actually x86
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
+        'sssssssss', //STUPID x64 windows PHP is actually x86
         array(
             $highscoreID,
             $highscoreModID,
+            $modDetails[0]['mod_identifier'],
             $highscoreName,
             $highscoreDescription,
             $highscoreObjective,
@@ -143,7 +145,7 @@ try {
                 $irc_message->colour_generator('purple'),
                 $modDetails[0]['mod_name'],
                 $irc_message->colour_generator(NULL),
-                $irc_message->colour_generator('purple'),
+                $irc_message->colour_generator('bold'),
             ),
             array(' || http://getdotastats.com/#admin__hs_mod'),
         );

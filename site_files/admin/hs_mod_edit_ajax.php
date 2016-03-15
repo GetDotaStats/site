@@ -30,14 +30,16 @@ try {
         !isset($_POST['highscore_decimals']) || !is_numeric($_POST['highscore_decimals']) ||
         empty($_POST['highscore_name'])
     ) {
-        throw new Exception('Missing or invalid required parameter(s)!<br /> ' . json_encode($_POST));
+        throw new Exception('Missing or invalid required parameter(s)!');
     }
 
     $highscoreID = htmlentities($_POST['highscore_ID']);
     $modID = htmlentities($_POST['mod_ID']);
+
     $highscoreName = htmlentities($_POST['highscore_name']);
     $highscoreDescription = htmlentities($_POST['highscore_description']);
     $highscoreActive = htmlentities($_POST['highscore_active']);
+    $highscoreSecure = htmlentities($_POST['highscore_secure']);
 
     $highscoreObjective = htmlentities($_POST['highscore_objective']);
     $highscoreOperator = htmlentities($_POST['highscore_operator']);
@@ -63,7 +65,7 @@ try {
                   ml.`date_recorded`
 
                 FROM `mod_list` ml
-                WHERE ml.`mod_identifier` = ?
+                WHERE ml.`mod_id` = ?
                 LIMIT 0,1;',
         's',
         $modID,
@@ -76,13 +78,23 @@ try {
           SET
             `highscoreDescription` = ?,
             `highscoreActive` = ?,
+            `secureWithAuth` = ?,
             `highscoreObjective` = ?,
             `highscoreOperator` = ?,
             `highscoreFactor` = ?,
             `highscoreDecimals` = ?
           WHERE `highscoreID` = ?;',
-        'sissssi',
-        $highscoreDescription, $highscoreActive, $highscoreObjective, $highscoreOperator, $highscoreFactor, $highscoreDecimals, $highscoreID
+        'sisssssi',
+        array(
+            $highscoreDescription,
+            $highscoreActive,
+            $highscoreSecure,
+            $highscoreObjective,
+            $highscoreOperator,
+            $highscoreFactor,
+            $highscoreDecimals,
+            $highscoreID
+        )
     );
 
     if ($insertSQL) {
@@ -119,7 +131,7 @@ try {
                 $irc_message->colour_generator('purple'),
                 $modDetails[0]['mod_name'],
                 $irc_message->colour_generator(NULL),
-                $irc_message->colour_generator('purple'),
+                $irc_message->colour_generator('bold'),
             ),
             array(' || http://getdotastats.com/#admin__hs_mod'),
         );

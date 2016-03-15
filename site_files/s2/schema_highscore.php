@@ -39,7 +39,8 @@
         <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
             <div class="panel-body">
 
-                <p>This is for saving a highscore.</p>
+                <p>This is for saving a highscore. If you have not secured your highscores, then you do not need the
+                    `userAuthKey` field.</p>
 
                 <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_highscore.php || "payload" =
                         <em>JSONschema</em></code>
@@ -99,6 +100,15 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-sm-3">userAuthKey</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"XJAHVAS"</div>
+                        <div class="col-sm-4">
+                            OPTIONAL FIELD (see method description)
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-sm-3">schemaVersion</div>
                         <div class="col-sm-2">integer</div>
                         <div class="col-sm-7">1</div>
@@ -117,6 +127,7 @@
     "steamID32": "28755155",
     "userName": "jimmydorry",
     "highscoreValue": 12321,
+    "userAuthKey": "XJAHVAS",
     "schemaVersion": 1
 }</pre>
 
@@ -403,11 +414,13 @@
     {
       "highscoreID": "h2345kjn52314",
       "highscoreValue": 12321,
+      "highscoreAuthKey": "XXXXXXXX",
       "date_recorded": "2015-07-11 19:30:22"
     },
     {
       "highscoreID": "hj43152khjb342",
       "highscoreValue": 12321,
+      "highscoreAuthKey": "XXXXXXXX",
       "date_recorded": "2015-07-11 19:08:43"
     }
   ],
@@ -454,9 +467,12 @@ try {
               shms.`highscoreObjective`,
               shms.`highscoreOperator`,
               shms.`highscoreFactor`,
-              shms.`highscoreDecimals`
+              shms.`highscoreDecimals`,
+
+              ml.`mod_name`
             FROM `stat_highscore_mods` shm
             JOIN `stat_highscore_mods_schema` shms ON shm.`highscoreID` = shms.`highscoreID`
+            JOIN `mod_list` ml ON shm.`modID` = ml.`mod_id`
             ORDER BY shm.`date_recorded` DESC
             LIMIT 0,5;',
         NULL,
@@ -467,15 +483,15 @@ try {
     if (!empty($latestData)) {
         echo '<div class="row">
                     <div class="col-sm-3"><strong>Highscore</strong></div>
-                    <div class="col-sm-3"><strong>Mod ID</strong></div>
+                    <div class="col-sm-3"><strong>Mod</strong></div>
                     <div class="col-sm-4">
                         <div class="row">
-                            <div class="col-sm-4"><strong>Steam ID</strong></div>
-                            <div class="col-sm-4"><strong>Player</strong></div>
-                            <div class="col-sm-4"><strong>Value</strong></div>
+                            <div class="col-sm-4 text-center"><strong>Steam ID</strong></div>
+                            <div class="col-sm-4 text-center"><strong>Player</strong></div>
+                            <div class="col-sm-4 text-center"><strong>Value</strong></div>
                         </div>
                     </div>
-                    <div class="col-sm-2"><strong>Recorded</strong></div>
+                    <div class="col-sm-2 text-center"><strong>Recorded</strong></div>
                 </div>
                 <span class="h4">&nbsp;</span>
                 ';
@@ -489,15 +505,15 @@ try {
 
             echo '<div class="row">
                 <div class="col-sm-3"><span>' . $value['highscoreName'] . '</span></div>
-                <div class="col-sm-3"><span class="db_link">' . $value['modID'] . '</span></div>
+                <div class="col-sm-3"><span>' . $value['mod_name'] . '</span></div>
                 <div class="col-sm-4">
                     <div class="row">
                         <div class="col-sm-4">' . $value['steamID32'] . '</div>
                         <div class="col-sm-4">' . $value['userName'] . '</div>
-                        <div class="col-sm-4">' . $value['highscoreValue'] . '</div>
+                        <div class="col-sm-4">' . number_format($value['highscoreValue']) . '</div>
                     </div>
                 </div>
-                <div class="col-sm-2"><span class="' . $timeColour . '">' . relative_time_v3($value['date_recorded'], 1) . '</span></div>
+                <div class="col-sm-2 text-right"><span class="' . $timeColour . '">' . relative_time_v3($value['date_recorded'], 1) . '</span></div>
             </div>
             ';
 

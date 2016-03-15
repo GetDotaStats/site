@@ -23,7 +23,7 @@ try {
 
     $modSelectInput = cached_query(
         'admin_mod_select_input',
-        'SELECT `mod_identifier`, `mod_name` FROM `mod_list` WHERE `mod_active` = 1 ORDER BY `mod_name`;',
+        'SELECT `mod_id`, `mod_identifier`, `mod_name` FROM `mod_list` WHERE `mod_active` = 1 ORDER BY `mod_name`;',
         NULL,
         NULL,
         30
@@ -49,7 +49,7 @@ try {
 
     if (!empty($modSelectInput)) {
         foreach ($modSelectInput as $key => $value) {
-            echo '<option value="' . $value['mod_identifier'] . '">' . $value['mod_name'] . '</option>';
+            echo '<option value="' . $value['mod_id'] . '">' . $value['mod_name'] . '</option>';
         }
     }
 
@@ -160,6 +160,8 @@ try {
                 shms.`highscoreID`,
                 ml.`mod_name`,
                 shms.`modID`,
+                shms.`modIdentifier`,
+                shms.`secureWithAuth`,
                 shms.`highscoreIdentifier`,
                 shms.`highscoreName`,
                 shms.`highscoreDescription`,
@@ -170,7 +172,7 @@ try {
                 shms.`highscoreDecimals`,
                 shms.`date_recorded`
             FROM `stat_highscore_mods_schema` shms
-            JOIN `mod_list` ml ON shms.`modID` = ml.`mod_identifier`;',
+            JOIN `mod_list` ml ON shms.`modID` = ml.`mod_id`;',
         NULL,
         NULL,
         1
@@ -216,6 +218,12 @@ try {
             : '<input type="radio" name="highscore_active" value="0" checked>No<br />
                     <input type="radio" name="highscore_active" value="1">Yes';
 
+        $secureWithAuth = isset($value['secureWithAuth']) && $value['secureWithAuth'] == 1
+            ? '<input type="radio" name="highscore_secure" value="0">No<br />
+                    <input type="radio" name="highscore_secure" value="1" checked>Yes'
+            : '<input type="radio" name="highscore_secure" value="0" checked>No<br />
+                    <input type="radio" name="highscore_secure" value="1">Yes';
+
         $mgFactor = isset($value['highscoreFactor']) && is_numeric($value['highscoreFactor'])
             ? '<input class="formTextArea boxsizingBorder" type="number" name="highscore_factor" maxlength="20" size="4" value="' . floatval($value['highscoreFactor']) . '" min="0" max="1000">'
             : '<input class="formTextArea boxsizingBorder" type="number" name="highscore_factor" maxlength="20" size="4" value="1" min="0" max="1000">';
@@ -244,8 +252,8 @@ try {
 
         echo '<div class="row">
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1"><strong>ModID</strong></div>
-                <div class="col-md-5">' . $value['modID'] . '</div>
+                <div class="col-md-1"><strong>Mod ID</strong></div>
+                <div class="col-md-5">' . $value['modIdentifier'] . '</div>
             </div>';
 
         echo '<div class="row">
@@ -277,6 +285,9 @@ try {
 
                     <div class="col-md-1"><strong>Decimals</strong></div>
                     <div class="col-md-2">' . $mgDecimals . '</div>
+
+                    <div class="col-md-1"><strong>Secure</strong> <span class="glyphicon glyphicon-exclamation-sign" title="Whether the mod retains and sends an auth code to replace existing scores"></span></div>
+                    <div class="col-md-2">' . $secureWithAuth . '</div>
                 </div>';
 
         echo '<span class="h5">&nbsp;</span>';

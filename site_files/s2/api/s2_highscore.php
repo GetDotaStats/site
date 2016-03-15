@@ -40,6 +40,8 @@ try {
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
     if (empty($db)) throw new Exception('No DB!');
 
+    $steamIDConvertor = new SteamID();
+
 
     ///////////////
     // SAVE
@@ -61,10 +63,20 @@ try {
             $highscoreID = $preGameAuthPayloadJSON['highscoreID'];
             $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
             $highscoreType = $preGameAuthPayloadJSON['type'];
-            $playerSteamID32 = $preGameAuthPayloadJSON['steamID32'];
             $playerName = $preGameAuthPayloadJSON['userName'];
             $highscoreValue = $preGameAuthPayloadJSON['highscoreValue'];
-            $highscoreAuthKey = 'XXXXXX';
+            $userAuthKey = !empty($preGameAuthPayloadJSON['userAuthKey'])
+                ? $preGameAuthPayloadJSON['userAuthKey']
+                : NULL;
+
+            $steamIDConvertor->setSteamID($preGameAuthPayloadJSON['steamID32']);
+            $playerSteamID32 = $steamIDConvertor->getSteamID32();
+            $playerSteamID64 = $steamIDConvertor->getSteamID64();
+
+            $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $newAuthKey = '';
+            for ($i = 0; $i < 10; $i++)
+                $newAuthKey .= $characters[rand(0, 35)];
 
             //Check if the modIdentifier is valid
             $modIdentifierCheck = cached_query(
@@ -92,15 +104,26 @@ try {
                 15
             );
 
-            if (empty($modIdentifierCheck)) {
-                throw new Exception('Invalid modID!');
-            }
+            if (empty($modIdentifierCheck)) throw new Exception('Invalid modID!');
 
             $modID = $modIdentifierCheck[0]['mod_id'];
 
             $hsidLookup = cached_query(
                 's2_highscore_hsid_lookup_' . $highscoreID,
-                'SELECT *
+                'SELECT
+                      `highscoreIdentifier`,
+                      `highscoreID`,
+                      `modID`,
+                      `modIdentifier`,
+                      `secureWithAuth`,
+                      `highscoreName`,
+                      `highscoreDescription`,
+                      `highscoreActive`,
+                      `highscoreObjective`,
+                      `highscoreOperator`,
+                      `highscoreFactor`,
+                      `highscoreDecimals`,
+                      `date_recorded`
                     FROM `stat_highscore_mods_schema`
                     WHERE `highscoreID` = ?
                     LIMIT 0,1;',
@@ -110,56 +133,75 @@ try {
                 ),
                 60
             );
+            if (empty($hsidLookup)) throw new Exception('Invalid highscoreID!');
 
-            if (!empty($hsidLookup)) {
-                $saveLookup = cached_query(
-                    's2_highscore_save_lookup_' . $modID . '_' . $highscoreID . '_' . $playerSteamID32,
-                    'SELECT
+            $saveLookup = cached_query(
+                's2_highscore_save_lookup_' . $modID . '_' . $highscoreID . '_' . $playerSteamID64,
+                'SELECT
                             `modID`,
                             `highscoreID`,
                             `steamID32`,
+                            `steamID64`,
                             `highscoreAuthKey`,
                             `userName`,
                             `highscoreValue`,
                             `date_recorded`
                         FROM `stat_highscore_mods`
-                        WHERE `modID` = ? AND `highscoreID` = ? AND `steamID32` = ?
+                        WHERE `modID` = ? AND `highscoreID` = ? AND `steamID64` = ?
                         LIMIT 0,1;',
-                    'iss',
-                    array(
-                        $modID,
-                        $highscoreID,
-                        $playerSteamID32
-                    ),
-                    5
-                );
+                'iss',
+                array(
+                    $modID,
+                    $highscoreID,
+                    $playerSteamID64
+                ),
+                5
+            );
 
-                /*if(!empty($saveLookup)){
-                    //ALAN ADD SECURITY TOKEN BIZ HERE
-                    //$saveAuth = md5($playerSteamID32 . '_' . time());
-                } */
-
+            if (empty($saveLookup) || $hsidLookup[0]['secureWithAuth'] == 0 || ($hsidLookup[0]['secureWithAuth'] == 1 && $saveLookup[0]['highscoreAuthKey'] == $userAuthKey)) {
                 $sqlResult = $db->q(
-                    'INSERT INTO `stat_highscore_mods` (`modID`, `highscoreID`, `steamID32`, `highscoreAuthKey`, `userName`, `highscoreValue`, `date_recorded`)
-                      VALUES (?, ?, ?, ?, ?, ?, NULL)
-                        ON DUPLICATE KEY UPDATE
-                          `highscoreValue` = GREATEST(`highscoreValue`, VALUES(`highscoreValue`)),
-                          `userName` = VALUES(`userName`),
-                          `date_recorded` = NULL;',
-                    'issssi',
+                    'INSERT INTO `stat_highscore_mods` (`modID`, `highscoreID`, `steamID32`, `steamID64`, `highscoreAuthKey`, `userName`, `highscoreValue`, `date_recorded`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, NULL)
+                            ON DUPLICATE KEY UPDATE
+                                `highscoreValue` = GREATEST(`highscoreValue`, VALUES(`highscoreValue`)),
+                                `userName` = VALUES(`userName`),
+                                `highscoreAuthKey` = VALUES(`highscoreAuthKey`),
+                                `date_recorded` = NULL;',
+                    'isssssi',
                     array(
                         $modID,
                         $highscoreID,
                         $playerSteamID32,
-                        $highscoreAuthKey,
+                        $playerSteamID64,
+                        $newAuthKey,
                         $playerName,
                         $highscoreValue
                     )
                 );
 
-                $s2_response['authKey'] = $highscoreAuthKey;
+                $db->q(
+                    'INSERT INTO `stat_highscore_mods_top` (`modID`, `highscoreID`, `steamID64`, `steamID32`, `userName`, `highscoreValue`)
+                        VALUES (?, ?, ?, ?, ?, ?);',
+                    'issssi',
+                    array(
+                        $modID,
+                        $highscoreID,
+                        $playerSteamID64,
+                        $playerSteamID32,
+                        $playerName,
+                        $highscoreValue
+                    )
+                );
+
+                $s2_response['authKey'] = $newAuthKey;
             } else {
-                throw new Exception('No schema for given highscore ID!');
+                if (empty($userAuthKey)) {
+                    throw new Exception('User provided authKey field is empty!');
+                } else if ($hsidLookup[0]['secureWithAuth'] == 1 && $saveLookup[0]['highscoreAuthKey'] == $userAuthKey) {
+                    throw new Exception('Invalid authKey for this save!');
+                } else {
+                    throw new Exception('Save already exists, is secure, and the authKey provided did not match!');
+                }
             }
         }
     }
@@ -179,7 +221,10 @@ try {
             }
 
             $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
-            $playerSteamID32 = $preGameAuthPayloadJSON['steamID32'];
+
+            $steamIDConvertor->setSteamID($preGameAuthPayloadJSON['steamID32']);
+            $playerSteamID32 = $steamIDConvertor->getSteamID32();
+            $playerSteamID64 = $steamIDConvertor->getSteamID64();
 
             //Check if the modIdentifier is valid
             $modIdentifierCheck = cached_query(
@@ -206,27 +251,24 @@ try {
                 $modIdentifier,
                 15
             );
-
-            if (empty($modIdentifierCheck)) {
-                throw new Exception('Invalid modID!');
-            }
+            if (empty($modIdentifierCheck)) throw new Exception('Invalid modID!');
 
             $modID = $modIdentifierCheck[0]['mod_id'];
 
 
-
             $sqlResult = cached_query(
-                's2_highscore_list_lookup_' . $modID . '_' . $playerSteamID32,
+                's2_highscore_list_lookup_' . $modID . '_' . $playerSteamID64,
                 'SELECT
                         `highscoreID`,
                         `highscoreValue`,
+                        `highscoreAuthKey`,
                         `date_recorded`
                     FROM `stat_highscore_mods`
-                    WHERE `modID` = ? AND `steamID32` = ?;',
+                    WHERE `modID` = ? AND `steamID64` = ?;',
                 'is',
                 array(
                     $modID,
-                    $playerSteamID32
+                    $playerSteamID64
                 ),
                 5
             );
@@ -275,10 +317,7 @@ try {
                 $modIdentifier,
                 15
             );
-
-            if (empty($modIdentifierCheck)) {
-                throw new Exception('Invalid modID!');
-            }
+            if (empty($modIdentifierCheck)) throw new Exception('Invalid modID!');
 
             $modID = $modIdentifierCheck[0]['mod_id'];
 
@@ -286,6 +325,7 @@ try {
                 's2_highscore_top_schema_lookup_' . $modID,
                 'SELECT
                         `modID`,
+                        `modIdentifier`,
                         `highscoreID`,
                         `highscoreName`,
                         `highscoreDescription`,
@@ -305,35 +345,33 @@ try {
                 ),
                 30
             );
+            if (empty($topLookup)) throw new Exception('No schema for selected mod!');
 
-            if (!empty($topLookup)) {
-                $topObjective = !empty($topLookup) && isset($topLookup[0]['highscoreObjective']) && $topLookup[0]['highscoreObjective'] == 'min'
-                    ? 'ASC'
-                    : 'DESC';
+            $topObjective = !empty($topLookup) && isset($topLookup[0]['highscoreObjective']) && $topLookup[0]['highscoreObjective'] == 'min'
+                ? 'ASC'
+                : 'DESC';
 
-                $sqlResult = cached_query(
-                    's2_highscore_top_lookup_' . $modID,
-                    'SELECT
+            $sqlResult = cached_query(
+                's2_highscore_top_lookup_' . $modID,
+                'SELECT
                             `highscoreID`,
                             `userName`,
                             `steamID32`,
                             `highscoreValue`,
                             `date_recorded`
-                        FROM `cron_hs_mod`
+                        FROM `stat_highscore_mods_top`
                         WHERE `modID` = ?
                         ORDER BY
+                            `modID`,
                             `highscoreID`,
                             `highscoreValue` ' . $topObjective . ',
-                            `date_recorded` ASC;',
-                    's',
-                    array(
-                        $modID
-                    ),
-                    30
-                );
-            } else {
-                throw new Exception('No schema for selected mod!');
-            }
+                            `date_recorded`;',
+                's',
+                array(
+                    $modID
+                ),
+                30
+            );
 
             $s2_response['jsonData'] = $sqlResult;
         }
