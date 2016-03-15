@@ -14,8 +14,20 @@ try {
     $time_start1 = time();
     echo '<h2>Mod Matches</h2>';
 
-    $db->q('CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp0`
-        SELECT `matchID`, `modID`, `matchPhaseID`, `dateRecorded` FROM `s2_match` LIMIT 0, 100;');
+    $db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp3` (
+                  `matchID` bigint(255) NOT NULL,
+                  `modID` int(255) NOT NULL,
+                  `matchPhaseID` tinyint(1) NOT NULL,
+                  `dateRecorded` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+                ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+    );
+
+    $db->q("ALTER TABLE `cache_mod_matches_temp3`
+                  ADD PRIMARY KEY (`matchID`),
+                  ADD KEY `indx_mod_winner` (`modID`),
+                  ADD KEY `indx_dateRecorded` (`dateRecorded`),
+                  ADD KEY `indx_mod_phase` (`modID`,`matchPhaseID`);"
+    );
 
     $db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp1` (
         `day` int(2) NOT NULL DEFAULT '0',
@@ -41,10 +53,10 @@ try {
         KEY (`dateRecorded`)
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-    $db->q('TRUNCATE `cache_mod_matches_temp0`;');
+    $db->q('TRUNCATE `cache_mod_matches_temp3`;');
     $db->q('TRUNCATE `cache_mod_matches_temp1`;');
 
-    $numMatchesProcessed = $db->q('INSERT INTO `cache_mod_matches_temp0`
+    $numMatchesProcessed = $db->q('INSERT INTO `cache_mod_matches_temp3`
         SELECT
           `matchID`, `modID`, `matchPhaseID`, `dateRecorded`
         FROM `s2_match`
@@ -60,7 +72,7 @@ try {
                 `matchPhaseID` AS gamePhase,
                 COUNT(*) as `gamesPlayed`,
                 DATE_FORMAT(MAX(`dateRecorded`), "%Y-%m-%d 00:00:00") as `dateRecorded`
-            FROM `cache_mod_matches_temp0`
+            FROM `cache_mod_matches_temp3`
             GROUP BY 4,5,3,2,1
             ORDER BY 4 DESC, 5 DESC, 3 DESC, 2 DESC, 1 DESC
         ON DUPLICATE KEY UPDATE
@@ -76,7 +88,7 @@ try {
 
     $last_rows = $db->q('SELECT * FROM `cache_mod_matches_temp1` ORDER BY `dateRecorded` DESC, `modID`, `gamePhase`;');
 
-    $db->q('DROP TABLE `cache_mod_matches_temp0`;');
+    $db->q('DROP TABLE `cache_mod_matches_temp3`;');
     $db->q('DROP TABLE `cache_mod_matches_temp1`;');
 
     echo '<table border="1" cellspacing="1">';
