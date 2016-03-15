@@ -295,7 +295,6 @@
     </div>
 
 
-
     <!--
     ////////////////////////////////////////////////////
     // Method "LIST" - Client
@@ -482,7 +481,7 @@ try {
                 ';
 
         foreach ($latestData as $key => $value) {
-            $relativeDateRaw = relative_time_v3($value['date_recorded'], 'hour', true);
+            $relativeDateRaw = relative_time_v3($value['date_recorded'], 1, 'hour', true);
 
             $timeColour = $relativeDateRaw['number'] <= 2
                 ? ' hs_lb_recent_score'

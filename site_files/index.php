@@ -166,6 +166,7 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_edit">Mod Edit</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_rejected">Mods Rejected</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs</a></li>
+                            <li><a class="nav-clickable" href="#admin__hs_mod">Highscores Schema</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Tools</li>
