@@ -77,7 +77,7 @@
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"hj43152khjb342"</div>
                         <div class="col-sm-4">
-                            Ask a site moderator to for one
+                            Ask a site moderator for one
                         </div>
                     </div>
 
@@ -222,6 +222,15 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-sm-3">highscoreID</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"fads780324n23"</div>
+                        <div class="col-sm-4">
+                            Ask a site moderator for one
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-sm-3">schemaVersion</div>
                         <div class="col-sm-2">integer</div>
                         <div class="col-sm-7">1</div>
@@ -236,6 +245,7 @@
 {
     "type": "TOP",
     "modIdentifier": "7689asdfjh1231",
+    "highscoreID": "fads780324n23",
     "schemaVersion": 1
 }</pre>
 
@@ -270,31 +280,27 @@
   "type": "top",
   "jsonData": [
     {
-      "highscoreID": "fads780324n23",
       "userName": "BMD",
       "steamID32": 28755156,
       "highscoreValue": 12321,
       "date_recorded": "2015-07-11 19:30:03"
     },
     {
-      "highscoreID": "fads780324n23",
       "userName": "jimmydorry",
       "steamID32": 28755155,
-      "highscoreValue": 12321,
+      "highscoreValue": 11111,
       "date_recorded": "2015-07-11 19:30:22"
     },
     {
-      "highscoreID": "hj43152khjb342",
       "userName": "jimmydorry",
       "steamID32": 28755155,
-      "highscoreValue": 12321,
+      "highscoreValue": 9999,
       "date_recorded": "2015-07-11 19:08:43"
     },
     {
-      "highscoreID": "hj43152khjb342",
       "userName": "BMD",
       "steamID32": 28755156,
-      "highscoreValue": 12321,
+      "highscoreValue": 1234,
       "date_recorded": "2015-07-11 19:12:30"
     }
   ],

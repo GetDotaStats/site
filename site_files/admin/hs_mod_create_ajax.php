@@ -53,7 +53,7 @@ try {
         ? $_POST['highscore_decimals']
         : 2;
 
-    $highscoreID = md5($highscoreModID . '_' . $highscoreName . '_' . time());
+    $highscoreIdentifier = md5($highscoreModID . '_' . $highscoreName . '_' . time());
 
     $modDetails = cached_query(
         's2_mod_header_mod_details' . $highscoreModID,
@@ -86,7 +86,7 @@ try {
     $insertSQL = $db->q(
         'INSERT INTO `stat_highscore_mods_schema`
               (
-                `highscoreID`,
+                `highscoreIdentifier`,
                 `modID`,
                 `modIdentifier`,
                 `highscoreName`,
@@ -99,7 +99,7 @@ try {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
         'sssssssss', //STUPID x64 windows PHP is actually x86
         array(
-            $highscoreID,
+            $highscoreIdentifier,
             $highscoreModID,
             $modDetails[0]['mod_identifier'],
             $highscoreName,

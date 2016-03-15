@@ -158,7 +158,7 @@ try {
         'admin_hs_mod_types',
         'SELECT
                 shms.`highscoreID`,
-                ml.`mod_name`,
+                shms.`highscoreIdentifier`,
                 shms.`modID`,
                 shms.`modIdentifier`,
                 shms.`secureWithAuth`,
@@ -170,7 +170,9 @@ try {
                 shms.`highscoreOperator`,
                 shms.`highscoreFactor`,
                 shms.`highscoreDecimals`,
-                shms.`date_recorded`
+                shms.`date_recorded`,
+
+                ml.`mod_name`
             FROM `stat_highscore_mods_schema` shms
             JOIN `mod_list` ml ON shms.`modID` = ml.`mod_id`;',
         NULL,
@@ -259,7 +261,7 @@ try {
         echo '<div class="row">
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-1"><strong>HS ID</strong></div>
-                <div class="col-md-5">' . $value['highscoreID'] . '</div>
+                <div class="col-md-5">' . $value['highscoreIdentifier'] . '</div>
             </div>';
 
         echo '<span class="h5">&nbsp;</span>';

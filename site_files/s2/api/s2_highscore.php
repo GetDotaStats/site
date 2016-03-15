@@ -4,6 +4,8 @@ require_once('../../global_functions.php');
 require_once('../../connections/parameters.php');
 
 try {
+    $numPlayersPerLeaderboard = 51;
+
     $s2_response = array();
 
     if (!isset($_POST['payload']) || empty($_POST['payload'])) {
@@ -60,7 +62,7 @@ try {
                 throw new Exception('Payload missing fields for given type!');
             }
 
-            $highscoreID = $preGameAuthPayloadJSON['highscoreID'];
+            $highscoreIdentifier = $preGameAuthPayloadJSON['highscoreID'];
             $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
             $highscoreType = $preGameAuthPayloadJSON['type'];
             $playerName = $preGameAuthPayloadJSON['userName'];
@@ -109,10 +111,10 @@ try {
             $modID = $modIdentifierCheck[0]['mod_id'];
 
             $hsidLookup = cached_query(
-                's2_highscore_hsid_lookup_' . $highscoreID,
+                's2_highscore_hsid_lookup_' . $highscoreIdentifier,
                 'SELECT
-                      `highscoreIdentifier`,
                       `highscoreID`,
+                      `highscoreIdentifier`,
                       `modID`,
                       `modIdentifier`,
                       `secureWithAuth`,
@@ -125,15 +127,17 @@ try {
                       `highscoreDecimals`,
                       `date_recorded`
                     FROM `stat_highscore_mods_schema`
-                    WHERE `highscoreID` = ?
+                    WHERE `highscoreIdentifier` = ?
                     LIMIT 0,1;',
                 's',
                 array(
-                    $highscoreID
+                    $highscoreIdentifier
                 ),
                 60
             );
             if (empty($hsidLookup)) throw new Exception('Invalid highscoreID!');
+
+            $highscoreID = $hsidLookup[0]['highscoreID'];
 
             $saveLookup = cached_query(
                 's2_highscore_save_lookup_' . $modID . '_' . $highscoreID . '_' . $playerSteamID64,
@@ -285,12 +289,14 @@ try {
             $s2_response['type'] = 'top';
 
             if (
-                !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier'])
+                !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
+                !isset($preGameAuthPayloadJSON['highscoreID']) || empty($preGameAuthPayloadJSON['highscoreID'])
             ) {
                 throw new Exception('Payload missing fields for given type!');
             }
 
             $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
+            $highscoreIdentifier = $preGameAuthPayloadJSON['highscoreID'];
 
             //Check if the modIdentifier is valid
             $modIdentifierCheck = cached_query(
@@ -327,6 +333,7 @@ try {
                         `modID`,
                         `modIdentifier`,
                         `highscoreID`,
+                        `highscoreIdentifier`,
                         `highscoreName`,
                         `highscoreDescription`,
                         `highscoreActive`,
@@ -347,28 +354,29 @@ try {
             );
             if (empty($topLookup)) throw new Exception('No schema for selected mod!');
 
-            $topObjective = !empty($topLookup) && isset($topLookup[0]['highscoreObjective']) && $topLookup[0]['highscoreObjective'] == 'min'
+            $topObjective = !empty($topLookup[0]['highscoreObjective']) && $topLookup[0]['highscoreObjective'] == 'min'
                 ? 'ASC'
                 : 'DESC';
 
             $sqlResult = cached_query(
                 's2_highscore_top_lookup_' . $modID,
-                'SELECT
-                            `highscoreID`,
+                "SELECT
                             `userName`,
                             `steamID32`,
                             `highscoreValue`,
                             `date_recorded`
                         FROM `stat_highscore_mods_top`
-                        WHERE `modID` = ?
+                        WHERE `modID` = ? AND `highscoreID` = ?
                         ORDER BY
                             `modID`,
                             `highscoreID`,
-                            `highscoreValue` ' . $topObjective . ',
-                            `date_recorded`;',
-                's',
+                            `highscoreValue` {$topObjective},
+                            `date_recorded`
+                        LIMIT 0, {$numPlayersPerLeaderboard};",
+                'ii',
                 array(
-                    $modID
+                    $modID,
+                    $topLookup[0]['highscoreID']
                 ),
                 30
             );
