@@ -366,6 +366,7 @@
             <pre class="pre-scrollable">
 {
     "type": "LIST",
+    "modIdentifier": "7689asdfjh1231",
     "steamID32": "28755155",
     "schemaVersion": 1
 }</pre>
