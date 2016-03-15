@@ -19,6 +19,7 @@
 */10  * * * *   /home/www-getdotastats/s2/routine/scripts/10minute.sh > /home/www-getdotastats/s2/routine/log_10minute.html 2>&1
 00 01,13 * * *  /home/www-getdotastats/s2/routine/scripts/daily.sh > /home/www-getdotastats/s2/routine/log_daily.html 2>&1
 #@daily   /home/www-getdotastats/s2/routine/scripts/hourly.sh > /home/www-getdotastats/s2/routine/log_hourly.html 2>&1
+@hourly   /home/www-getdotastats/s2/routine/scripts/highscores.sh > /home/www-getdotastats/s2/routine/log_highscores.html 2>&1
 
 ####################
 #hall of fame
