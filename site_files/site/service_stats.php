@@ -97,7 +97,8 @@ try {
         $subServices = array(
             's2_cron_cmf',
             's2_cron_cmgv',
-            's2_cron_cmpv'
+            's2_cron_cmpv',
+            's2_cron_highscore_clean'
         );
 
         foreach ($subServices as $key => $value) {
