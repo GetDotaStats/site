@@ -41,7 +41,7 @@ try {
 <head>
     <meta http-equiv="Content-Security-Policy"
           content="
-          default-src 'none';
+          default-src 'self' getdotastats.com;
           connect-src 'self' static.getdotastats.com getdotastats.com;
           style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
           script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com *.changetip.com 'unsafe-eval' 'unsafe-inline' data:;
