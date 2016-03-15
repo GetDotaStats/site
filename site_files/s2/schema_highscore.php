@@ -42,7 +42,7 @@
                 <p>This is for saving a highscore. If you have not secured your highscores, then you do not need the
                     `userAuthKey` field.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_highscore.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_highscore.php || "payload" =
                         <em>JSONschema</em></code>
                 </p>
 
@@ -191,7 +191,7 @@
 
                 <p>This is for getting the top 20 players for each highscore type for a specified mod.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_highscore.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_highscore.php || "payload" =
                         <em>JSONschema</em></code>
                 </p>
 
@@ -332,7 +332,7 @@
 
                 <p>This is for getting all of a user's highscores for a specified mod.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_highscore.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_highscore.php || "payload" =
                         <em>JSONschema</em></code>
                 </p>
 

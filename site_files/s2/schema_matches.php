@@ -46,7 +46,7 @@
 
                 <p>This is for catching all of the games that fail to start due to people not loading.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_1.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_phase_1.php || "payload" =
                         <em>JSONschema</em></code>
                 </p>
 
@@ -177,7 +177,7 @@
 
                 <p>This is for building an idea of where clients are connecting from.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_check_in.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_check_in.php || "payload" =
                         <em>JSONschema</em></code>
                 </p>
 
@@ -290,7 +290,7 @@
                 <p>This is for catching all of the games that crash, and understanding what heroes and game modes are
                     played.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_2.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_phase_2.php || "payload" =
                         <em>JSONschema</em></code>
                 </p>
 
@@ -482,7 +482,7 @@
                     data can be
                     broken down into rounds.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_phase_3.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_phase_3.php || "payload" =
                         <em>JSONschema</em></code></p>
 
                 <hr/>
@@ -719,7 +719,7 @@
                         class="nav-clickable" href="#admin__mod_schema">HERE</a>). Each implementation is unique and
                     requires careful planning for current and future needs.</p>
 
-                <p><strong>Endpoint:</strong> <code>POST http://getdotastats.com/s2/api/s2_custom.php || "payload" =
+                <p><strong>Endpoint:</strong> <code>POST https://api.getdotastats.com/s2_custom.php || "payload" =
                         <em>JSONschema</em></code></p>
 
                 <hr/>
