@@ -185,7 +185,11 @@ try {
 
                 $db->q(
                     'INSERT INTO `stat_highscore_mods_top` (`modID`, `highscoreID`, `steamID64`, `steamID32`, `userName`, `highscoreValue`)
-                        VALUES (?, ?, ?, ?, ?, ?);',
+                        VALUES (?, ?, ?, ?, ?, ?)
+                            ON DUPLICATE KEY UPDATE
+                                `highscoreValue` = GREATEST(`highscoreValue`, VALUES(`highscoreValue`)),
+                                `userName` = VALUES(`userName`),
+                                `date_recorded` = NULL;',
                     'issssi',
                     array(
                         $modID,
