@@ -44,7 +44,7 @@ if (!function_exists('modPageHeader')) {
                   ) AS games_all_time
 
                 FROM `mod_list` ml
-                JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
+                LEFT JOIN `gds_users` gu ON ml.`steam_id64` = gu.`user_id64`
                 LEFT JOIN `gds_users_options` guo ON ml.`steam_id64` = guo.`user_id64`
                 WHERE ml.`mod_id` = ?
                 LIMIT 0,1;',
