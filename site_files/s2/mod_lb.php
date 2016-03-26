@@ -43,6 +43,8 @@ try {
                       sugs.`steamID64`,
                       sugs.`numGames`,
                       sugs.`numWins`,
+                      sugs.`numAbandons`,
+                      sugs.`numFails`,
                       sugs.`lastAbandon`,
                       sugs.`lastFail`,
                       sugs.`dateUpdated`,
@@ -67,10 +69,14 @@ try {
             echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-3"><strong>Player</strong></div>
-                    <div class="col-md-1 text-center"><strong>Games</strong></div>
-                    <div class="col-md-1 text-center"><strong>Wins</strong></div>
-                    <div class="col-md-2 text-center"><strong>Last Abandon</strong></div>
-                    <div class="col-md-2 text-center"><strong>Last Failed Load</strong></div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3 text-center"><strong>Games</strong></div>
+                            <div class="col-md-3 text-center"><strong>Wins</strong></div>
+                            <div class="col-md-3 text-center"><strong>Abandons</strong></div>
+                            <div class="col-md-3 text-center"><strong>Fails</strong></div>
+                        </div>
+                    </div>
                     <div class="col-md-2 text-center"><strong>Last Updated</strong></div>
                 </div>';
             echo '<span class="h4">&nbsp;</span>';
@@ -109,10 +115,14 @@ try {
                 echo "<div class='row'>
                     <div class='col-md-1'>{$rank}</div>
                     <div class='col-md-3'>{$userAvatar} {$userName}</div>
-                    <div class='col-md-1 text-center'>{$value['numGames']}</div>
-                    <div class='col-md-1 text-center'>{$value['numWins']}</div>
-                    <div class='col-md-2 text-right'>{$lastAbandon}</div>
-                    <div class='col-md-2 text-right'>{$lastFail}</div>
+                    <div class='col-md-6'>
+                        <div class='row'>
+                            <div class='col-md-3 text-center'>{$value['numGames']}</div>
+                            <div class='col-md-3 text-center'>{$value['numWins']}</div>
+                            <div class='col-md-3 text-center'>{$value['numAbandons']}</div>
+                            <div class='col-md-3 text-center'>{$value['numFails']}</div>
+                        </div>
+                    </div>
                     <div class='col-md-2 text-right'>{$dateUpdated}</div>
                 </div>";
                 echo '<span class="h5">&nbsp;</span>';
