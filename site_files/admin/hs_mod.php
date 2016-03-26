@@ -254,13 +254,13 @@ try {
 
         echo '<div class="row">
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1"><strong>Mod Ident</strong></div>
-                <div class="col-md-5">' . $value['modIdentifier'] . '</div>
+                <div class="col-md-1"><strong>Mod</strong></div>
+                <div class="col-md-5"><a class="nav-clickable" href="#s2__mod?id='.$value['modID'].'">' . $value['modIdentifier'] . '</a></div>
             </div>';
 
         echo '<div class="row">
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-1"><strong>HS Ident</strong></div>
+                <div class="col-md-1"><strong>HS ID</strong></div>
                 <div class="col-md-5">' . $value['highscoreIdentifier'] . '</div>
             </div>';
 
