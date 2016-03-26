@@ -13,11 +13,11 @@ $requiredSchemaVersionPlayerSummary = 1;
 /////////////////////////////
 // RESPONSE VERSIONS
 /////////////////////////////
-$responseSchemaVersionPhase1 = 3;
-$responseSchemaVersionPhase2 = 3;
-$responseSchemaVersionPhase3 = 3;
-$responseSchemaVersionClientCheckIn = 3;
-$responseSchemaVersionCustom = 3;
+$responseSchemaVersionPhase1 = 4;
+$responseSchemaVersionPhase2 = 4;
+$responseSchemaVersionPhase3 = 4;
+$responseSchemaVersionClientCheckIn = 4;
+$responseSchemaVersionCustom = 4;
 $responseSchemaVersionPlayerSummary = 1;
 
 /////////////////////////////

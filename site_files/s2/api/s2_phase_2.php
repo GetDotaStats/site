@@ -189,16 +189,19 @@ try {
                         if ($value['connectionState'] == 4) {
                             //player abandoned
                             $db->q(
-                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `lastAbandon`)
-                                    VALUES (?, ?, ?, ?, ?, NOW())
+                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `numAbandons`, `numFails`, `lastAbandon`)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
                                     ON DUPLICATE KEY UPDATE
                                       `numGames` = `numGames` + 1,
+                                      `numAbandons` = `numAbandons` + 1,
                                       `lastAbandon` = VALUES(`lastAbandon`);',
-                                'ssiii',
+                                'ssiiiii',
                                 array(
                                     $steamID64,
                                     $steamID32,
                                     $modID,
+                                    1,
+                                    0,
                                     1,
                                     0
                                 )
@@ -206,32 +209,37 @@ try {
                         } else if ($value['connectionState'] == 6) {
                             //player failed
                             $db->q(
-                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `lastFail`)
-                                    VALUES (?, ?, ?, ?, ?, NOW())
+                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `numAbandons`, `numFails`, `lastFail`)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
                                     ON DUPLICATE KEY UPDATE
                                       `numGames` = `numGames` + 1,
+                                      `numFails` = `numFails` + 1,
                                       `lastFail` = VALUES(`lastFail`);',
-                                'ssiii',
+                                'ssiiiii',
                                 array(
                                     $steamID64,
                                     $steamID32,
                                     $modID,
                                     1,
-                                    0
+                                    0,
+                                    0,
+                                    1
                                 )
                             );
                         } else {
                             $db->q(
-                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`)
+                                'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `numAbandons`, `numFails`)
                                     VALUES (?, ?, ?, ?, ?)
                                     ON DUPLICATE KEY UPDATE
                                       `numGames` = `numGames` + 1;',
-                                'ssiii',
+                                'ssiiiii',
                                 array(
                                     $steamID64,
                                     $steamID32,
                                     $modID,
                                     1,
+                                    0,
+                                    0,
                                     0
                                 )
                             );
