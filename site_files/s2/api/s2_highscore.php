@@ -70,6 +70,9 @@ try {
             $userAuthKey = !empty($preGameAuthPayloadJSON['userAuthKey'])
                 ? $preGameAuthPayloadJSON['userAuthKey']
                 : NULL;
+            $matchID = !empty($preGameAuthPayloadJSON['matchID'])
+                ? $preGameAuthPayloadJSON['matchID']
+                : NULL;
 
             $steamIDConvertor->setSteamID($preGameAuthPayloadJSON['steamID32']);
             $playerSteamID32 = $steamIDConvertor->getSteamID32();
@@ -144,6 +147,7 @@ try {
                 'SELECT
                             `modID`,
                             `highscoreID`,
+                            `matchID`,
                             `steamID32`,
                             `steamID64`,
                             `highscoreAuthKey`,
@@ -164,17 +168,19 @@ try {
 
             if (empty($saveLookup) || $hsidLookup[0]['secureWithAuth'] == 0 || ($hsidLookup[0]['secureWithAuth'] == 1 && $saveLookup[0]['highscoreAuthKey'] == $userAuthKey)) {
                 $sqlResult = $db->q(
-                    'INSERT INTO `stat_highscore_mods` (`modID`, `highscoreID`, `steamID32`, `steamID64`, `highscoreAuthKey`, `userName`, `highscoreValue`, `date_recorded`)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, NULL)
+                    'INSERT INTO `stat_highscore_mods` (`modID`, `highscoreID`, `matchID`, `steamID32`, `steamID64`, `highscoreAuthKey`, `userName`, `highscoreValue`, `date_recorded`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL)
                             ON DUPLICATE KEY UPDATE
                                 `highscoreValue` = GREATEST(`highscoreValue`, VALUES(`highscoreValue`)),
+                                `matchID` = VALUES(`matchID`),
                                 `userName` = VALUES(`userName`),
                                 `highscoreAuthKey` = VALUES(`highscoreAuthKey`),
                                 `date_recorded` = NULL;',
-                    'isssssi',
+                    'issssssi',
                     array(
                         $modID,
                         $highscoreID,
+                        $matchID,
                         $playerSteamID32,
                         $playerSteamID64,
                         $newAuthKey,
@@ -184,16 +190,18 @@ try {
                 );
 
                 $db->q(
-                    'INSERT INTO `stat_highscore_mods_top` (`modID`, `highscoreID`, `steamID64`, `steamID32`, `userName`, `highscoreValue`)
+                    'INSERT INTO `stat_highscore_mods_top` (`modID`, `highscoreID`, `matchID`, `steamID64`, `steamID32`, `userName`, `highscoreValue`)
                         VALUES (?, ?, ?, ?, ?, ?)
                             ON DUPLICATE KEY UPDATE
                                 `highscoreValue` = GREATEST(`highscoreValue`, VALUES(`highscoreValue`)),
+                                `matchID` = VALUES(`matchID`),
                                 `userName` = VALUES(`userName`),
                                 `date_recorded` = NULL;',
-                    'issssi',
+                    'isssssi',
                     array(
                         $modID,
                         $highscoreID,
+                        $matchID,
                         $playerSteamID64,
                         $playerSteamID32,
                         $playerName,
@@ -270,6 +278,7 @@ try {
                         `highscoreID`,
                         `highscoreValue`,
                         `highscoreAuthKey`,
+                        `matchID`,
                         `date_recorded`
                     FROM `stat_highscore_mods`
                     WHERE `modID` = ? AND `steamID64` = ?;',
@@ -368,6 +377,7 @@ try {
                             `userName`,
                             `steamID32`,
                             `highscoreValue`,
+                            `matchID`,
                             `date_recorded`
                         FROM `stat_highscore_mods_top`
                         WHERE `modID` = ? AND `highscoreID` = ?

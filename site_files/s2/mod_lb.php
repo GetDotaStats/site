@@ -3,11 +3,6 @@ require_once('../global_functions.php');
 require_once('../connections/parameters.php');
 require_once('./functions.php');
 
-require_once('../bootstrap/highcharts/Highchart.php');
-require_once('../bootstrap/highcharts/HighchartJsExpr.php');
-require_once('../bootstrap/highcharts/HighchartOption.php');
-require_once('../bootstrap/highcharts/HighchartOptionRenderer.php');
-
 if (!isset($_SESSION)) {
     session_start();
 }

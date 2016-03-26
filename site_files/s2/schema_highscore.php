@@ -109,6 +109,15 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-sm-3">matchID</div>
+                        <div class="col-sm-2">string</div>
+                        <div class="col-sm-3">"127398123"</div>
+                        <div class="col-sm-4">
+                            OPTIONAL FIELD
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-sm-3">schemaVersion</div>
                         <div class="col-sm-2">integer</div>
                         <div class="col-sm-7">1</div>
@@ -128,6 +137,7 @@
     "userName": "jimmydorry",
     "highscoreValue": 12321,
     "userAuthKey": "XJAHVAS",
+    "matchID": "1235124321",
     "schemaVersion": 1
 }</pre>
 
@@ -283,6 +293,7 @@
       "userName": "BMD",
       "steamID32": 28755156,
       "highscoreValue": 12321,
+      "matchID": 112312321,
       "date_recorded": "2015-07-11 19:30:03"
     },
     {
@@ -427,6 +438,7 @@
       "highscoreID": "hj43152khjb342",
       "highscoreValue": 12321,
       "highscoreAuthKey": "XXXXXXXX",
+      "matchID": "12315415",
       "date_recorded": "2015-07-11 19:08:43"
     }
   ],
