@@ -223,6 +223,11 @@ try {
 
 <div class="container">
     <div class="row">
+        <div class="alert alert-danger">
+            We just recovered the site from a backup from the 1st of February. Any data that came into our possession
+            since then has been lost, including mods that signed up. We apologise for the inconvenience.
+        </div>
+
         <div id="main_content" class="col-sm-12"></div>
 
         <!--<div class="col-sm-3">
