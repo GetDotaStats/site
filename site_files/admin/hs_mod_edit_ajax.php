@@ -3,6 +3,8 @@ try {
     require_once('../global_functions.php');
     require_once('../connections/parameters.php');
 
+    $json_response = array();
+
     if (!isset($_SESSION)) {
         session_start();
     }
