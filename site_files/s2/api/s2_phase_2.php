@@ -229,7 +229,7 @@ try {
                         } else {
                             $db->q(
                                 'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `numAbandons`, `numFails`)
-                                    VALUES (?, ?, ?, ?, ?)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?)
                                     ON DUPLICATE KEY UPDATE
                                       `numGames` = `numGames` + 1;',
                                 'ssiiiii',
