@@ -90,8 +90,11 @@ try {
                     `steamID32`,
                     `numGames`,
                     `numWins`,
+                    `numAbandons`,
+                    `numFails`,
                     `lastAbandon`,
                     `lastFail`,
+                    `lastRegular`,
                     `dateUpdated`
                 FROM `s2_user_game_summary`
                 WHERE `modID` = ? AND `steamID64` IN ({$playerArraySQLstring});",
