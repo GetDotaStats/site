@@ -206,7 +206,7 @@
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-3">"2875155"</div>
                         <div class="col-sm-4">
-                            The player's steamID. If they are a bot or a dedicated server, set to a value of -1.
+                            The player's steamID. If they are a dedicated server set it to a value of -1.
                         </div>
                     </div>
 

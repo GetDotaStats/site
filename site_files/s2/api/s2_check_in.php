@@ -113,7 +113,7 @@ try {
                 $steamID32 = $steamID_manipulator->getSteamID32();
                 $steamID64 = $steamID_manipulator->getSteamID64();
             } else {
-                $steamID32 = $steamID64 = NULL;
+                $steamID32 = $steamID64 = -1;
             }
 
 
@@ -122,7 +122,7 @@ try {
                     VALUES (?, ?, ?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE
                       `clientIP` = VALUES(`clientIP`);',
-                'sssssi',
+                'ssiisi',
                 array(
                     $matchID,
                     $modID,
