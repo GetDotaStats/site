@@ -24,15 +24,18 @@ try {
     if (
         !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
         !isset($preGameAuthPayloadJSON['steamID32']) || empty($preGameAuthPayloadJSON['steamID32']) ||
-        !isset($preGameAuthPayloadJSON['matchID']) || empty($preGameAuthPayloadJSON['matchID']) || !is_numeric($preGameAuthPayloadJSON['matchID']) ||
-        !isset($preGameAuthPayloadJSON['isHost']) || !is_numeric($preGameAuthPayloadJSON['isHost'])
+        !isset($preGameAuthPayloadJSON['matchID']) || empty($preGameAuthPayloadJSON['matchID']) || !is_numeric($preGameAuthPayloadJSON['matchID'])
     ) {
         throw new Exception('Payload missing fields!');
     }
 
+    if (isset($preGameAuthPayloadJSON['isHost']) && !is_numeric($preGameAuthPayloadJSON['isHost'])) {
+        throw new Exception('Field `isHost` has invalid value!');
+    }
+
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $matchID = $preGameAuthPayloadJSON['matchID'];
-    $isHost = $preGameAuthPayloadJSON['isHost'] == '1'
+    $isHost = isset($preGameAuthPayloadJSON['isHost']) && $preGameAuthPayloadJSON['isHost'] == '1'
         ? 1
         : 0;
 
