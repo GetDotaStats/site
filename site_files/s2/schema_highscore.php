@@ -473,6 +473,7 @@ try {
         'SELECT
               shm.`modID`,
               shm.`highscoreID`,
+              shm.`matchID`,
               shm.`steamID32`,
               shm.`highscoreAuthKey`,
               shm.`userName`,
@@ -500,13 +501,14 @@ try {
 
     if (!empty($latestData)) {
         echo '<div class="row">
-                    <div class="col-sm-3"><strong>Highscore</strong></div>
+                    <div class="col-sm-2"><strong>Highscore</strong></div>
                     <div class="col-sm-3"><strong>Mod</strong></div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2"><strong>Match</strong></div>
+                    <div class="col-sm-3">
                         <div class="row">
                             <div class="col-sm-4 text-center"><strong>Steam ID</strong></div>
-                            <div class="col-sm-4 text-center"><strong>Player</strong></div>
-                            <div class="col-sm-4 text-center"><strong>Value</strong></div>
+                            <div class="col-sm-5 text-center"><strong>Player</strong></div>
+                            <div class="col-sm-3 text-center"><strong>Value</strong></div>
                         </div>
                     </div>
                     <div class="col-sm-2 text-center"><strong>Recorded</strong></div>
@@ -522,13 +524,14 @@ try {
                 : '';
 
             echo '<div class="row">
-                <div class="col-sm-3"><span>' . $value['highscoreName'] . '</span></div>
+                <div class="col-sm-2"><span>' . $value['highscoreName'] . '</span></div>
                 <div class="col-sm-3"><span>' . $value['mod_name'] . '</span></div>
-                <div class="col-sm-4">
+                <div class="col-sm-2"><span>' . $value['matchID'] . '</span></div>
+                <div class="col-sm-3">
                     <div class="row">
                         <div class="col-sm-4">' . $value['steamID32'] . '</div>
-                        <div class="col-sm-4">' . $value['userName'] . '</div>
-                        <div class="col-sm-4">' . number_format($value['highscoreValue']) . '</div>
+                        <div class="col-sm-5">' . $value['userName'] . '</div>
+                        <div class="col-sm-3">' . number_format($value['highscoreValue']) . '</div>
                     </div>
                 </div>
                 <div class="col-sm-2 text-right"><span class="' . $timeColour . '">' . relative_time_v3($value['date_recorded'], 1) . '</span></div>
