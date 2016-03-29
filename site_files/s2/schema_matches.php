@@ -243,7 +243,7 @@
     "modIdentifier": "7adfki234jlk23",
     "steamID32": "2875155",
     "matchID": "213123342",
-    "matchID": "213123342",
+    "isHost": 1,
     "schemaVersion": 1
 }
             </pre>
