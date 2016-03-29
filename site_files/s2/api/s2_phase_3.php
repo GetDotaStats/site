@@ -193,7 +193,8 @@ try {
                                             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
                                             ON DUPLICATE KEY UPDATE
                                               `lastAbandon` = VALUES(`lastAbandon`),
-                                              `numAbandons` = `numAbandons` + 1;',
+                                              `numAbandons` = `numAbandons` + 1,
+                                              `numGames` = `numGames` + 1;',
                                         'ssiiiii',
                                         array(
                                             $steamID64,
@@ -212,7 +213,8 @@ try {
                                             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
                                             ON DUPLICATE KEY UPDATE
                                               `lastFail` = VALUES(`lastFail`),
-                                              `numFails` = `numFails` + 1;',
+                                              `numFails` = `numFails` + 1,
+                                              `numGames` = `numGames` + 1;',
                                         'ssiiiii',
                                         array(
                                             $steamID64,
@@ -229,7 +231,8 @@ try {
                                         'INSERT INTO `s2_user_game_summary`(`steamID64`, `steamID32`, `modID`, `numGames`, `numWins`, `numAbandons`, `numFails`, `lastRegular`)
                                             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
                                             ON DUPLICATE KEY UPDATE
-                                              `numWins` = `numWins` + VALUES(`numWins`);',
+                                              `numWins` = `numWins` + VALUES(`numWins`),
+                                              `numGames` = `numGames` + 1;',
                                         'ssiiiii',
                                         array(
                                             $steamID64,
