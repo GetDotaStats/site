@@ -116,40 +116,6 @@ try {
 
     $matchID = $db->last_index();
 
-    //HOST DETAILS
-    {
-        if (!empty($preGameAuthPayloadJSON['hostSteamID32'])) {
-            $remoteIP = isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])
-                ? $_SERVER['REMOTE_ADDR']
-                : '??';
-
-            $steamID_manipulator = new SteamID();
-
-            $steamID_manipulator->setSteamID($preGameAuthPayloadJSON['hostSteamID32']);
-
-            $steamID32 = $steamID_manipulator->getSteamID32();
-            $steamID64 = $steamID_manipulator->getSteamID64();
-
-            $db->q(
-                'INSERT INTO `s2_match_client_details`(`matchID`, `modID`, `steamID32`, `steamID64`, `clientIP`, `isHost`)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                    ON DUPLICATE KEY UPDATE
-                      `modID` = VALUES(`modID`),
-                      `clientIP` = VALUES(`clientIP`),
-                      `isHost` = VALUES(`isHost`);',
-                'sisssi',
-                array(
-                    $matchID,
-                    $modID,
-                    $steamID32,
-                    $steamID64,
-                    $remoteIP,
-                    1
-                )
-            );
-        }
-    }
-
     if (!empty($sqlResult)) {
         $s2_response['result'] = 1;
         $s2_response['authKey'] = $authKey;

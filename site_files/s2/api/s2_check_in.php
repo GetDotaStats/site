@@ -24,13 +24,17 @@ try {
     if (
         !isset($preGameAuthPayloadJSON['modIdentifier']) || empty($preGameAuthPayloadJSON['modIdentifier']) ||
         !isset($preGameAuthPayloadJSON['steamID32']) || empty($preGameAuthPayloadJSON['steamID32']) ||
-        !isset($preGameAuthPayloadJSON['matchID']) || empty($preGameAuthPayloadJSON['matchID']) || !is_numeric($preGameAuthPayloadJSON['matchID'])
+        !isset($preGameAuthPayloadJSON['matchID']) || empty($preGameAuthPayloadJSON['matchID']) || !is_numeric($preGameAuthPayloadJSON['matchID']) ||
+        !isset($preGameAuthPayloadJSON['isHost']) || !is_numeric($preGameAuthPayloadJSON['isHost'])
     ) {
         throw new Exception('Payload missing fields!');
     }
 
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
     $matchID = $preGameAuthPayloadJSON['matchID'];
+    $isHost = $preGameAuthPayloadJSON['isHost'] == '1'
+        ? 1
+        : 0;
 
     $memcached = new Cache(NULL, NULL, $localDev);
 
@@ -38,9 +42,10 @@ try {
     if (empty($db)) throw new Exception('No DB!');
 
     //Check if the modIdentifier is valid
-    $modIdentifierCheck = cached_query(
-        's2_mod_identifier_check' . $modIdentifier,
-        'SELECT
+    {
+        $modIdentifierCheck = cached_query(
+            's2_mod_identifier_check' . $modIdentifier,
+            'SELECT
                 `mod_id`,
                 `steam_id64`,
                 `mod_name`,
@@ -54,13 +59,11 @@ try {
             FROM `mod_list`
             WHERE `mod_identifier` = ?
             LIMIT 0,1;',
-        's',
-        $modIdentifier,
-        15
-    );
-
-    if (empty($modIdentifierCheck)) {
-        throw new Exception('Invalid modID!');
+            's',
+            $modIdentifier,
+            15
+        );
+        if (empty($modIdentifierCheck)) throw new Exception('Invalid modID!');
     }
 
     $modID = $modIdentifierCheck[0]['mod_id'];
@@ -91,10 +94,7 @@ try {
             ),
             5
         );
-    }
-
-    if (empty($matchDetails)) {
-        throw new Exception('No match found matching parameters!');
+        if (empty($matchDetails)) throw new Exception('No match found matching parameters!');
     }
 
     //CLIENT DETAILS
@@ -104,12 +104,15 @@ try {
                 ? $_SERVER['REMOTE_ADDR']
                 : '??';
 
-            $steamID_manipulator = new SteamID();
+            if ($preGameAuthPayloadJSON['steamID32'] > 0) {
+                $steamID_manipulator = new SteamID();
+                $steamID_manipulator->setSteamID($preGameAuthPayloadJSON['steamID32']);
+                $steamID32 = $steamID_manipulator->getSteamID32();
+                $steamID64 = $steamID_manipulator->getSteamID64();
+            } else {
+                $steamID32 = $steamID64 = NULL;
+            }
 
-            $steamID_manipulator->setSteamID($preGameAuthPayloadJSON['steamID32']);
-
-            $steamID32 = $steamID_manipulator->getSteamID32();
-            $steamID64 = $steamID_manipulator->getSteamID64();
 
             $sqlResult = $db->q(
                 'INSERT INTO `s2_match_client_details`(`matchID`, `modID`, `steamID32`, `steamID64`, `clientIP`, `isHost`)
@@ -123,7 +126,7 @@ try {
                     $steamID32,
                     $steamID64,
                     $remoteIP,
-                    0
+                    $isHost
                 )
             );
 

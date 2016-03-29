@@ -204,13 +204,25 @@
                     <div class="row">
                         <div class="col-sm-3">steamID32</div>
                         <div class="col-sm-2">string</div>
-                        <div class="col-sm-7">"2875155"</div>
+                        <div class="col-sm-3">"2875155"</div>
+                        <div class="col-sm-4">
+                            The player's steamID. If they are a bot or a dedicated server, set to a value of -1.
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-3">matchID</div>
                         <div class="col-sm-2">string</div>
                         <div class="col-sm-7">"213123342"</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">isHost</div>
+                        <div class="col-sm-2">bool</div>
+                        <div class="col-sm-3">"0"</div>
+                        <div class="col-sm-4">
+                            Either a value of 0 if they are a player, or 1 if they have host privileges.
+                        </div>
                     </div>
 
                     <div class="row">
@@ -230,6 +242,7 @@
 {
     "modIdentifier": "7adfki234jlk23",
     "steamID32": "2875155",
+    "matchID": "213123342",
     "matchID": "213123342",
     "schemaVersion": 1
 }
