@@ -11,7 +11,6 @@ try {
     if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
         throw new Exception('Invalid modID! Bad type.');
     }
-
     $modID = $_GET['id'];
 
     $db = new dbWrapper_v3($hostname_gds_site, $username_gds_site, $password_gds_site, $database_gds_site, true);
@@ -32,8 +31,42 @@ try {
 
             echo '<hr />';
 
+            $order_col = !empty($_GET['o']) && is_numeric($_GET['o'])
+                ? $_GET['o']
+                : -1;
+
+            switch ($order_col) {
+                case 1:
+                    $order_clause = 'sugs.`numGames` ASC';
+                    break;
+                case 2:
+                    $order_clause = 'sugs.`numGames` DESC';
+                    break;
+                case 3:
+                    $order_clause = 'sugs.`numWins` ASC';
+                    break;
+                case 4:
+                    $order_clause = 'sugs.`numWins` DESC';
+                    break;
+                case 5:
+                    $order_clause = 'sugs.`numAbandons` ASC';
+                    break;
+                case 6:
+                    $order_clause = 'sugs.`numAbandons` DESC';
+                    break;
+                case 7:
+                    $order_clause = 'sugs.`numFails` ASC';
+                    break;
+                case 8:
+                    $order_clause = 'sugs.`numFails` DESC';
+                    break;
+                default:
+                    $order_clause = 'sugs.`numGames` DESC';
+                    break;
+            }
+
             $userLeaderboardSQL = cached_query(
-                's2_mod_page_lb' . $modID,
+                's2_mod_page_lb' . $modID . '_' . $order_col,
                 'SELECT
                       sugs.`steamID64`,
                       sugs.`numGames`,
@@ -52,24 +85,42 @@ try {
                     LEFT JOIN `s2_match_players_name` smpn ON sugs.`steamID64` = smpn.`steamID64`
                     LEFT JOIN `gds_users` gdsu ON sugs.`steamID64` = gdsu.`user_id64`
                     WHERE sugs.`modID` = ?
-                    ORDER BY sugs.`numGames` DESC
+                    ORDER BY ' . $order_clause . '
                     LIMIT 0, 101;',
                 'i',
                 $modID,
                 10
             );
-
             if (empty($userLeaderboardSQL)) throw new Exception('No players have games recorded for this mod!');
+
+            $glpyh_up = '<span class="glyphicon glyphicon-arrow-up"></span>';
+            $glpyh_down = '<span class="glyphicon glyphicon-arrow-down"></span>';
 
             echo '<div class="row">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-3"><strong>Player</strong></div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-3 text-center"><strong>Games</strong></div>
-                            <div class="col-md-3 text-center"><strong>Wins</strong></div>
-                            <div class="col-md-3 text-center"><strong>Abandons</strong></div>
-                            <div class="col-md-3 text-center"><strong>Fails</strong></div>
+                            <div class="col-md-3 text-center">
+                                <strong>Games</strong><br />
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=2">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=1">' . $glpyh_up . '</a>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <strong>Wins</strong><br />
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=4">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=3">' . $glpyh_up . '</a>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <strong>Abandons</strong><br />
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=6">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=5">' . $glpyh_up . '</a>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <strong>Fails</strong><br />
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=8">' . $glpyh_down . '</a>
+                                <a class="nav-clickable" href="#s2__mod_lb?id=' . $modID . '&o=7">' . $glpyh_up . '</a>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-2 text-center"><strong>Last Updated</strong></div>
