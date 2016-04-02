@@ -140,32 +140,38 @@ try {
             foreach ($bigArray as $key => $value) {
                 foreach ($value as $key2 => $value2) {
                     $phase1 = 0;
-                    foreach ($bigArray['1 - Players loaded'] as $key3 => $value3) {
-                        if ($value3['x'] == $value2['x']) {
-                            $phase1 = !empty($value3['y']) && is_numeric($value3['y'])
-                                ? $value3['y']
-                                : 0;
-                            break;
+                    if(!empty($bigArray['1 - Players loaded'])){
+                        foreach ($bigArray['1 - Players loaded'] as $key3 => $value3) {
+                            if ($value3['x'] == $value2['x']) {
+                                $phase1 = !empty($value3['y']) && is_numeric($value3['y'])
+                                    ? $value3['y']
+                                    : 0;
+                                break;
+                            }
                         }
                     }
 
                     $phase2 = 0;
-                    foreach ($bigArray['2 - Game started'] as $key3 => $value3) {
-                        if ($value3['x'] == $value2['x']) {
-                            $phase2 = !empty($value3['y']) && is_numeric($value3['y'])
-                                ? $value3['y']
-                                : 0;
-                            break;
+                    if(!empty($bigArray['2 - Game started'])) {
+                        foreach ($bigArray['2 - Game started'] as $key3 => $value3) {
+                            if ($value3['x'] == $value2['x']) {
+                                $phase2 = !empty($value3['y']) && is_numeric($value3['y'])
+                                    ? $value3['y']
+                                    : 0;
+                                break;
+                            }
                         }
                     }
 
                     $phase3 = 0;
-                    foreach ($bigArray['3 - Game ended'] as $key3 => $value3) {
-                        if ($value3['x'] == $value2['x']) {
-                            $phase3 = !empty($value3['y']) && is_numeric($value3['y'])
-                                ? $value3['y']
-                                : 0;
-                            break;
+                    if(!empty($bigArray['3 - Game ended'])) {
+                        foreach ($bigArray['3 - Game ended'] as $key3 => $value3) {
+                            if ($value3['x'] == $value2['x']) {
+                                $phase3 = !empty($value3['y']) && is_numeric($value3['y'])
+                                    ? $value3['y']
+                                    : 0;
+                                break;
+                            }
                         }
                     }
 
