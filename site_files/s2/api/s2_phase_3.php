@@ -100,6 +100,7 @@ try {
 
     //MATCH DETAILS
     {
+		/*
         $gameFinished = isset($preGameAuthPayloadJSON['gameFinished']) && $preGameAuthPayloadJSON['gameFinished'] == 0
             ? 0
             : 1;
@@ -108,7 +109,6 @@ try {
             ? $preGameAuthPayloadJSON['gameDuration']
             : NULL;
 
-        //if ($preGameAuthPayloadJSON['schemaVersion'] <= 3) {
         $sqlResult = $db->q(
             'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchDuration`, `matchFinished`)
                     VALUES (?, ?, ?, ?)
@@ -123,22 +123,35 @@ try {
                 $gameDuration,
                 $gameFinished
             )
-        );
-        /*} else {
-            $sqlResult = $db->q(
-                'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchFinished`)
-                    VALUES (?, ?, ?)
-                    ON DUPLICATE KEY UPDATE
-                      `matchPhaseID` = VALUES(`matchPhaseID`),
-                      `matchFinished` = VALUES(`matchFinished`);',
-                'sii',
-                array(
-                    $matchID,
-                    3,
-                    $gameFinished
-                )
-            );
-        }*/
+        );*/
+		
+		if(isset($preGameAuthPayloadJSON['gameFinished']) && $preGameAuthPayloadJSON['gameFinished'] == 0){
+			$gameFinished = 0;
+			$matchPhaseSet = 2;
+		} else {
+			$gameFinished = 1;
+			$matchPhaseSet = 3;
+		}
+
+		$gameDuration = !empty($preGameAuthPayloadJSON['gameDuration']) && is_numeric($preGameAuthPayloadJSON['gameDuration'])
+			? $preGameAuthPayloadJSON['gameDuration']
+			: NULL;
+
+		$sqlResult = $db->q(
+			'INSERT INTO `s2_match`(`matchID`, `matchPhaseID`, `matchDuration`, `matchFinished`)
+					VALUES (?, ?, ?, ?)
+					ON DUPLICATE KEY UPDATE
+					  `matchPhaseID` = VALUES(`matchPhaseID`),
+					  `matchDuration` = VALUES(`matchDuration`),
+					  `matchFinished` = VALUES(`matchFinished`);',
+			'siii',
+			array(
+				$matchID,
+				$matchPhaseSet,
+				$gameDuration,
+				$gameFinished
+			)
+		);
     }
 
     //PLAYERS DETAILS
