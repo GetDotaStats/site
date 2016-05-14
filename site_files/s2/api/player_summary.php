@@ -34,6 +34,9 @@ try {
     if (empty($db)) throw new Exception('No DB!');
 
     $modIdentifier = $preGameAuthPayloadJSON['modIdentifier'];
+    $fullData = !empty($preGameAuthPayloadJSON['full'])
+        ? true
+        : false;
 
     //Check if the modIdentifier is valid
     $modIdentifierCheck = cached_query(
@@ -73,7 +76,7 @@ try {
                 $steamIDconvertor->setSteamID($value);
                 $steamID64 = $steamIDconvertor->getSteamID64();
 
-                if(!empty($playerArraySQLstring)){
+                if (!empty($playerArraySQLstring)) {
                     $playerArraySQLstring .= ', ';
                 }
 
@@ -87,15 +90,15 @@ try {
 
         $playersSQL = $db->q(
             "SELECT
-                    `steamID32`,
-                    `numGames`,
-                    `numWins`,
-                    `numAbandons`,
-                    `numFails`,
-                    `lastAbandon`,
-                    `lastFail`,
-                    `lastRegular`,
-                    `dateUpdated`
+                    `steamID32` as sid,
+                    `numGames` AS ng,
+                    `numWins` AS nw,
+                    `numAbandons` AS na,
+                    `numFails` AS nf,
+                    `lastAbandon` AS la,
+                    `lastFail` AS lf,
+                    `lastRegular` AS lr,
+                    `dateUpdated` AS lu
                 FROM `s2_user_game_summary`
                 WHERE `modID` = ? AND `steamID64` IN ({$playerArraySQLstring});",
             'i',
@@ -104,6 +107,28 @@ try {
     }
 
     if (!empty($playersSQL)) {
+        foreach ($playersSQL as $key => $value) {
+            $lastAbandon = !empty($value['la'])
+                ? relative_time_v3($value['la'], 1, 'hour', true)
+                : array('number' => -1);
+            $playersSQL[$key]['la'] = doubleval($lastAbandon['number']);
+
+            $lastFail = !empty($value['lf'])
+                ? relative_time_v3($value['lf'], 1, 'hour', true)
+                : array('number' => -1);
+            $playersSQL[$key]['lf'] = doubleval($lastFail['number']);
+
+            $lastRegular = !empty($value['lr'])
+                ? relative_time_v3($value['lr'], 1, 'hour', true)
+                : array('number' => -1);
+            $playersSQL[$key]['lr'] = doubleval($lastRegular['number']);
+
+            $dateUpdated = !empty($value['lu'])
+                ? relative_time_v3($value['lu'], 1, 'hour', true)
+                : array('number' => -1);
+            $playersSQL[$key]['lu'] = doubleval($dateUpdated['number']);
+        }
+
         $s2_response['result'] = $playersSQL;
         $s2_response['schemaVersion'] = $responseSchemaVersionPlayerSummary;
     } else {
