@@ -1018,7 +1018,7 @@
                     <div class="row">
                         <div class="col-sm-3">players</div>
                         <div class="col-sm-2">array</div>
-                        <div class="col-sm-7">array('28755155', '28755156', '28755157')</div>
+                        <div class="col-sm-7">array('28755155', '28755156')</div>
                     </div>
                 </div>
 
@@ -1030,7 +1030,7 @@
 {
 	"modIdentifier": "2374504c2c518fafc9731a120e67fdf5",
 	"schemaVersion": 1,
-	"players": ["2875155", "2875156", "2875157"]
+	"players": ["2875155", "2875156"]
 }
             </pre>
 
@@ -1040,7 +1040,7 @@
 
     <!--
     ////////////////////////////////////////////////////
-    //Server - Timelapse
+    //Server - Player Summary
     ////////////////////////////////////////////////////
     -->
 
@@ -1066,34 +1066,31 @@
 }
             </pre>
 
-                <p>And this is a response from the server that shows a successful query.</p>
+                <p>And this is a response from the server that shows a successful query. There obviously are no comments
+                    on the actual returned data.</p>
 
             <pre class="pre-scrollable">
 {
   "result": [
     {
-      "steamID32": 2875155,
-      "numGames": 1,
-      "numWins": 1,
-      "lastAbandon": null,
-      "lastFail": null,
-      "dateUpdated": "2016-03-13 17:09:28"
+      "ng": 91,     //Number of Games
+      "nw": 0,      //Number of Wins
+      "na": 46,     //Number of Abandons
+      "nf": 0,      //Number of Failures to Load
+      "la": 259.1,  //Hours since last abandon
+      "lf": -1,     //Hours since last failure to load
+      "lr": -1,     //Hours since last regular game
+      "lu": 258.5   //Hours since any change to user data
     },
     {
-      "steamID32": 2875156,
-      "numGames": 1,
-      "numWins": 0,
-      "lastAbandon": "2016-03-13 17:09:10",
-      "lastFail": null,
-      "dateUpdated": "2016-03-13 17:09:10"
-    },
-    {
-      "steamID32": 2875157,
-      "numGames": 1,
-      "numWins": 0,
-      "lastAbandon": null,
-      "lastFail": "2016-03-13 17:09:11",
-      "dateUpdated": "2016-03-13 17:09:11"
+      "ng": 30,
+      "nw": 0,
+      "na": 14,
+      "nf": 1,
+      "la": 360.6,
+      "lf": 434,
+      "lr": 768.8,
+      "lu": 127
     }
   ],
   "schemaVersion": 1
