@@ -482,3 +482,7 @@ table td.bashful, table th.bashful {
     background-image: -moz-linear-gradient(top, #FFD4FF, #FFEEFF);
     background-image: linear-gradient(top, #FFD4FF, #FFEEFF);
 }
+
+.mod_div_graphs{
+    border-style: solid;
+}
