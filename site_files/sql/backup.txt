@@ -1,5 +1,5 @@
 //Dumping a DB excluding some tables
-mysqldump -u root -p gds_site --ignore-table=gds_site.sigs_access_log --ignore-table=gds_site.reports_csp --ignore-table=gds_site.reports_csp_filter --ignore-table=gds_site.sigs_dotabuff_info --ignore-table=gds_site.sigs_generated --ignore-table=gds_site.lobby_list --ignore-table=gds_site.lobby_list_players --ignore-table=gds_site.lobby_regions | gzip > gds_`date +\%Y-\%m-\%d`.sql.gz
+mysqldump -u root -p gds_site --ignore-table=gds_site.sigs_access_log --ignore-table=gds_site.reports_csp --ignore-table=gds_site.reports_csp_filter --ignore-table=gds_site.sigs_dotabuff_info --ignore-table=gds_site.sigs_generated --ignore-table=gds_site.lobby_list --ignore-table=gds_site.lobby_list_players --ignore-table=gds_site.lobby_regions --ignore-table=gds_site.gds_users_mmr --ignore-table=gds_site.gds_users_sessions --ignore-table=gds_site.s2_match_client_details | gzip > gds_`date +\%Y-\%m-\%d`.sql.gz
 
 //Dumping a specific table
 mysqldump -u root -p gds_site node_listener | gzip > node-listener_`date +\%Y-\%m-\%d`.sql.gz
