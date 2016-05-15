@@ -8,20 +8,33 @@
 ####################
 #@hourly         /home/www-getdotastats/sig/routine/scripts/hourly.sh > /home/www-getdotastats/sig/routine/log_hourly_sig_stats.html 2>&1
 
+
 ####################
 #RSS feeds
 ####################
-*/30 * * * *   /home/www-getdotastats/feeds/routine/scripts/15mins.sh > /home/www-getdotastats/feeds/routine/log_30mins.html 2>&1
+*/15 * * * *   /home/www-getdotastats/feeds/routine/scripts/15mins.sh > /home/www-getdotastats/feeds/routine/log_30mins.html 2>&1
+
 
 ####################
 #s2
 ####################
-*/10  * * * *   /home/www-getdotastats/s2/routine/scripts/10minute.sh > /home/www-getdotastats/s2/routine/log_10minute.html 2>&1
-00 01,13 * * *  /home/www-getdotastats/s2/routine/scripts/daily.sh > /home/www-getdotastats/s2/routine/log_daily.html 2>&1
-#@daily   /home/www-getdotastats/s2/routine/scripts/hourly.sh > /home/www-getdotastats/s2/routine/log_hourly.html 2>&1
-@hourly   /home/www-getdotastats/s2/routine/scripts/highscores.sh > /home/www-getdotastats/s2/routine/log_highscores.html 2>&1
+* * * * *       /home/www-getdotastats/s2/routine/scripts/cron_execution.sh > /home/www-getdotastats/s2/routine/logs/log_cron_`date +\%Y-\%m-\%d_\%H-\%M-\%S`.html 2>&1
+*/10  * * * *   /home/www-getdotastats/s2/routine/scripts/cron_matches_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_matches_scheduler.html 2>&1
+00 01,13 * * *  /home/www-getdotastats/s2/routine/scripts/cron_mod_analysis_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_mod_analysis_scheduler.html 2>&1
+@hourly         /home/www-getdotastats/s2/routine/scripts/cron_mod_workshop_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_mod_workshop_scheduler.html 2>&1
+@hourly         /home/www-getdotastats/s2/routine/scripts/cron_mod_highscores_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_mod_highscores_scheduler.html 2>&1
+
 
 ####################
 #hall of fame
 ####################
 #@daily   /home/www-getdotastats/hof/routine/scripts/daily.sh > /home/www-getdotastats/hof/routine/log_daily.html 2>&1
+
+
+
+################
+#OLD
+#######
+*/10  * * * *   /home/www-getdotastats/s2/routine/scripts/10minute.sh > /home/www-getdotastats/s2/routine/log_10minute.html 2>&1
+00 13 * * *  /home/www-getdotastats/s2/routine/scripts/daily.sh > /home/www-getdotastats/s2/routine/log_daily.html 2>&1
+@hourly   /home/www-getdotastats/s2/routine/scripts/highscores.sh > /home/www-getdotastats/s2/routine/log_highscores.html 2>&1

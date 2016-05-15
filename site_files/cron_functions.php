@@ -1,0 +1,725 @@
+<?php
+require_once(dirname(__FILE__) . '/connections/parameters.php');
+require_once(dirname(__FILE__) . '/global_functions.php');
+
+if (!class_exists('cron_task')) {
+    class cron_task
+    {
+        protected $db = null;
+        protected $memcached = null;
+        protected $isLocal = null;
+        protected $allowWebhooks = null;
+        protected $runningWindows = null;
+        protected $behindProxy = null;
+        protected $webHook = null;
+        protected $webAPIkey = null;
+        protected $taskID = null;
+        protected $taskName = null;
+        protected $timeStart = null;
+        protected $timeEnd = null;
+
+        public function __construct($db, $memcached, bool $isLocal, bool $allowWebhooks, bool $runningWindows, bool $behindProxy, string $webHook, string $webAPIkey)
+        {
+            if (empty($db)) throw new Exception('No DB connection provided!');
+            if (empty($memcached)) throw new Exception('No memcached connection provided!');
+            if (!is_bool($isLocal)) throw new Exception('Variable `isLocal` invalid!');
+            if (!is_bool($allowWebhooks)) throw new Exception('Variable `allowWebhooks` invalid!');
+            if (!is_bool($runningWindows)) throw new Exception('Variable `runningWindows` invalid!');
+            if (!is_bool($behindProxy)) throw new Exception('Variable `behindProxy` invalid!');
+            if (filter_var($webHook, FILTER_VALIDATE_URL) === FALSE) throw new Exception('Invalid URL provided!');
+            if (empty($webAPIkey)) throw new Exception('No webAPI key provided!');
+
+            $this->db = $db;
+            $this->memcached = $memcached;
+            $this->isLocal = $isLocal;
+            $this->allowWebhooks = $allowWebhooks;
+            $this->runningWindows = $runningWindows;
+            $this->behindProxy = $behindProxy;
+            $this->webHook = $webHook;
+            $this->webAPIkey = $webAPIkey;
+        }
+
+        protected function task_queue(
+            string $taskName,
+            string $taskGroup = NULL,
+            array $taskParameters = NULL,
+            int $taskPriority = 1,
+            int $taskBlocking = 1,
+            int $taskUser = NULL
+        )
+        {
+            if (!empty($taskParameters)) {
+                if (!is_array($taskParameters)) throw new Exception("Task parameters not given as an array!");
+                $taskParameters = json_encode($taskParameters);
+            }
+
+            $this->db->q("INSERT INTO `cron_tasks`
+                  (
+                      `cron_task`,
+                      `cron_task_group`,
+                      `cron_parameters`,
+                      `cron_priority`,
+                      `cron_blocking`,
+                      `cron_user`
+                  )
+                VALUES (?, ?, ?, ?, ?, ?);",
+                'sssiii',
+                array(
+                    $taskName,
+                    $taskGroup,
+                    $taskParameters,
+                    $taskPriority,
+                    $taskBlocking,
+                    $taskUser
+                )
+            );
+        }
+
+        protected function task_validate(int $taskID, string $taskName): bool
+        {
+            if (empty($taskID) || !is_numeric($taskID)) throw new Exception("Invalid TaskID!");
+            if (empty($taskName)) throw new Exception("Variable `taskName` missing!");
+
+            $taskSQL = $this->db->q("SELECT `cron_id` FROM `cron_tasks` WHERE `cron_id` = ? AND `cron_task` = ? LIMIT 0,1;",
+                'is',
+                array($taskID, $taskName)
+            );
+
+            if (!empty($taskSQL)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        protected function task_update_status(int $taskID, int $taskStatus, int $taskDuration = NULL)
+        {
+            if (empty($taskID) || !is_numeric($taskID)) throw new Exception("Invalid TaskID!");
+            if (!isset($taskStatus) || !is_numeric($taskStatus) || $taskStatus < 0 || $taskStatus > 2) throw new Exception("Invalid Task Status!");
+            if (isset($taskDuration) && !is_numeric($taskDuration)) throw new Exception("Invalid Task Duration!");
+
+            $this->db->q("UPDATE `cron_tasks` SET `cron_status` = ?, `cron_duration` = ? WHERE `cron_id` = ?;",
+                'iii',
+                array(
+                    $taskStatus,
+                    $taskDuration,
+                    $taskID
+                )
+            );
+        }
+
+        protected function report_execution_stats(
+            string $taskName,
+
+            int $durationValue,
+            int $durationMin,
+            float $durationMaxGrowth,
+
+            int $report1Value,
+            int $report1Min,
+            float $report1MaxGrowth,
+            string $report1Units,
+
+            int $report2Value = NULL,
+            int $report2Min = NULL,
+            float $report2MaxGrowth = NULL,
+            string $report2Units = NULL,
+
+            int $report3Value = NULL,
+            int $report3Min = NULL,
+            float $report3MaxGrowth = NULL,
+            string $report3Units = NULL
+        )
+        {
+            if (!isset($durationValue) || !is_numeric($durationValue)) throw new Exception('Invalid duration given!');
+
+            echo "<br />Task ran for {$durationValue} seconds<br />";
+
+            $serviceReport = new serviceReporting($this->db);
+
+            try {
+                {
+                    $durationArray = array();
+                    isset($durationValue)
+                        ? $durationArray['value'] = $durationValue
+                        : NULL;
+                    isset($durationMin)
+                        ? $durationArray['min'] = $durationMin
+                        : NULL;
+                    !empty($durationMaxGrowth)
+                        ? $durationArray['growth'] = $durationMaxGrowth
+                        : NULL;
+                    if (
+                        empty($durationArray) ||
+                        !isset($durationArray['value']) ||
+                        !isset($durationArray['min']) ||
+                        !isset($durationArray['growth'])
+                    ) throw new Exception('Invalid duration parameters given!');
+                }
+
+                {
+                    $report1Array = array();
+                    isset($report1Value)
+                        ? $report1Array['value'] = $report1Value
+                        : NULL;
+                    isset($report1Min)
+                        ? $report1Array['min'] = $report1Min
+                        : NULL;
+                    !empty($report1MaxGrowth)
+                        ? $report1Array['growth'] = $report1MaxGrowth
+                        : NULL;
+                    !empty($report1Units)
+                        ? $report1Array['unit'] = $report1Units
+                        : NULL;
+                    if (
+                        empty($report1Array) ||
+                        !isset($report1Array['value']) ||
+                        !isset($report1Array['min']) ||
+                        !isset($report1Array['growth'])
+                    ) throw new Exception('Invalid Report Array #1 parameters given!');
+                }
+
+                {
+                    $report2Array = array();
+                    isset($report2Value)
+                        ? $report2Array['value'] = $report2Value
+                        : NULL;
+                    isset($report2Min)
+                        ? $report2Array['min'] = $report2Min
+                        : NULL;
+                    !empty($report2MaxGrowth)
+                        ? $report2Array['growth'] = $report2MaxGrowth
+                        : NULL;
+                    !empty($report2Units)
+                        ? $report2Array['unit'] = $report2Units
+                        : NULL;
+                    if (
+                        empty($report2Array) ||
+                        !isset($report2Array['value']) ||
+                        !isset($report2Array['min']) ||
+                        !isset($report2Array['growth'])
+                    ) $report2Array = NULL;
+                }
+
+                {
+                    $report3Array = array();
+                    isset($report3Value)
+                        ? $report3Array['value'] = $report3Value
+                        : NULL;
+                    isset($report3Min)
+                        ? $report3Array['min'] = $report3Min
+                        : NULL;
+                    !empty($report3MaxGrowth)
+                        ? $report3Array['growth'] = $report3MaxGrowth
+                        : NULL;
+                    !empty($report3Units)
+                        ? $report3Array['unit'] = $report3Units
+                        : NULL;
+                    if (
+                        empty($report3Array) ||
+                        !isset($report3Array['value']) ||
+                        !isset($report3Array['min']) ||
+                        !isset($report3Array['growth'])
+                    ) $report3Array = NULL;
+                }
+
+                $serviceReport->logAndCompareOld(
+                    $taskName,
+                    $durationArray,
+                    $report1Array,
+                    $report2Array,
+                    $report3Array,
+                    FALSE
+                );
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+
+                //WEBHOOK
+                {
+                    if ($this->allowWebhooks) {
+                        $irc_message = new irc_message($this->webHook);
+
+                        $message = array(
+                            array(
+                                $irc_message->colour_generator('red'),
+                                '[CRON]',
+                                $irc_message->colour_generator(NULL),
+                            ),
+                            array(
+                                $irc_message->colour_generator('green'),
+                                '[MATCHES]',
+                                $irc_message->colour_generator(NULL),
+                            ),
+                            array(
+                                $irc_message->colour_generator('bold'),
+                                $irc_message->colour_generator('blue'),
+                                'Warning:',
+                                $irc_message->colour_generator(NULL),
+                                $irc_message->colour_generator('bold'),
+                            ),
+                            array($e->getMessage() . ' ||'),
+                            array('http://getdotastats.com/s2/routine/logs/log_cron_' . date('Y-m-d_h-i-s') . '.html'),
+                        );
+
+                        $message = $irc_message->combine_message($message);
+                        $irc_message->post_message($message, array('localDev' => false));
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+if (!class_exists('cron_workshop')) {
+    class cron_workshop extends cron_task
+    {
+        private $modList = null;
+        private $modID = null;
+        private $modIdentifier = null;
+        private $workshopID = null;
+        private $numWorkshopSuccess = 0;
+        private $numWorkshopFailure = 0;
+        private $numWorkshopUnknown = 0;
+
+        public function execute($taskID, $taskName, $taskParameters)
+        {
+            echo '<h2>Workshop Scraping</h2>';
+
+            $this->timeStart = time();
+            $this->taskID = $taskID;
+            $this->taskName = $taskName;
+
+            if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+
+            $this->parse_parameters($taskParameters);
+
+            echo "<p>Mod: <a target='_blank' href='//getdotastats.com/#s2__mod?id={$this->modID}'>{$this->modID}</a></p>";
+            echo "<p>Workshop ID: <a target='_blank' href='//steamcommunity.com/sharedfiles/filedetails/?id={$this->workshopID}'>{$this->workshopID}</a></p>";
+
+            $this->task_update_status($this->taskID, 1);
+
+            $modDetails = $this->get_mod_info_from_api($this->workshopID, $this->webAPIkey);
+            if ($modDetails) {
+                //download that mod picture
+                try {
+                    $this->get_mod_display_picture($modDetails['response']['publishedfiledetails'][0]['preview_url'], dirname(__FILE__) . '/images/mods/thumbs/', $this->modID . '.png', $this->behindProxy);
+                } catch (Exception $e) {
+                    echo '<br />' . $e->getMessage() . '<br /><br />';
+                }
+
+                $this->set_workshop_details($modDetails);
+            }
+
+            $this->timeEnd = time();
+            $totalRunTime = $this->timeEnd - $this->timeStart;
+
+            $this->task_update_status($this->taskID, 2, $totalRunTime);
+
+            $this->report_execution_stats(
+                's2_cron_workshop_scrape_' . $this->modID,
+                $totalRunTime, 30, 0.5,
+                $this->numWorkshopSuccess, 1, 0.01, 'successful scrapes',
+                $this->numWorkshopFailure, 1, 0.01, 'failed scrapes',
+                $this->numWorkshopUnknown, 1, 0.01, 'unknown scrapes'
+            );
+        }
+
+        public function queue($modID = NULL, $modIdentifier = NULL, $workshopID = NULL, $userID = NULL)
+        {
+            //If we called this function with a specific modID we can send it straight into the queue
+            //otherwise we will call this function for every non-rejected modID
+            if (!empty($modID)) {
+                if (!is_numeric($modID)) throw new Exception("Invalid modID!");
+                if (!isset($modIdentifier)) throw new Exception("Invalid modIdentifier!");
+                if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
+                if (isset($workshopID) && !is_numeric($workshopID)) throw new Exception("Invalid workshop ID provided!");
+
+                $this->task_queue('cron_workshop__' . $modID, 'cron_workshop', array('modID' => $modID, 'modIdentifier' => $modIdentifier, 'workshopID' => $workshopID), 1, 1, $userID);
+            } else {
+                $modList = $this->db->q(
+                    'SELECT
+                                `mod_id`,
+                                `steam_id64`,
+                                `mod_identifier`,
+                                `mod_name`,
+                                `mod_workshop_link`,
+                                `mod_active`,
+                                `date_recorded`
+                            FROM `mod_list`
+                            WHERE `mod_rejected` = 0
+                            ORDER BY `date_recorded`;'
+                );
+
+                if (empty($modList)) throw new Exception("No non-rejected mods to scrape workshop for!");
+
+                foreach ($modList as $key => $value) {
+                    $this->queue($value['mod_id'], $value['mod_identifier'], $value['mod_workshop_link']);
+                }
+            }
+        }
+
+        private function parse_parameters(string $taskParameters)
+        {
+            $taskParameters = json_decode($taskParameters, true);
+
+            if (!empty($taskParameters['modID']) && is_numeric($taskParameters['modID'])) {
+                $this->modID = $taskParameters['modID'];
+            } else {
+                throw new Exception('Invalid modID parsed!');
+            }
+
+            if (!empty($taskParameters['modIdentifier'])) {
+                $this->modIdentifier = $taskParameters['modIdentifier'];
+            } else {
+                throw new Exception('Invalid modIdentifier parsed!');
+            }
+
+            if (!empty($taskParameters['workshopID']) && is_numeric($taskParameters['workshopID'])) {
+                $this->workshopID = $taskParameters['workshopID'];
+            } else {
+                throw new Exception('Invalid workshopID parsed!');
+            }
+        }
+
+        private function get_mod_info_from_api(int $workshopID, string $webAPIkey)
+        {
+            //start defining API request
+            $page = 'http://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/';
+
+            $fields = array(
+                'itemcount' => '1',
+                'publishedfileids[0]' => $workshopID,
+                'key' => $webAPIkey,
+                'format' => 'json',
+            );
+
+            $fields_string = '';
+            foreach ($fields as $key2 => $value2) {
+                $fields_string .= $key2 . '=' . $value2 . '&';
+            }
+            rtrim($fields_string, '&');
+
+            //scrape API
+            $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 10, 10);
+            $modWorkshopDetails = json_decode($modWorkshopDetails, true);
+
+            //try API scrape again if we got a bad response
+            if (
+                empty($modWorkshopDetails['response']['result']) ||
+                $modWorkshopDetails['response']['result'] != 1 ||
+                (
+                    (
+                        !empty($modWorkshopDetails['response']['resultcount']) ||
+                        $modWorkshopDetails['response']['resultcount'] >= 1
+                    ) &&
+                    (
+                        !empty($modWorkshopDetails['response']['publishedfiledetails'][0]['result']) ||
+                        $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1
+                    )
+                )
+            ) {
+                $modWorkshopDetails = curl($page, $fields_string, NULL, NULL, NULL, 10, 10);
+                $modWorkshopDetails = json_decode($modWorkshopDetails, true);
+            }
+
+            //check if we finally have a good response
+            if (
+                !empty($modWorkshopDetails['response']['result']) &&
+                $modWorkshopDetails['response']['result'] == 1 &&
+                (
+                    (
+                        !empty($modWorkshopDetails['response']['resultcount']) &&
+                        $modWorkshopDetails['response']['resultcount'] >= 1
+                    ) ||
+                    (
+                        !empty($modWorkshopDetails['response']['publishedfiledetails'][0]['result']) &&
+                        $modWorkshopDetails['response']['publishedfiledetails'][0]['result'] == 1
+                    )
+                )
+            ) {
+                return $modWorkshopDetails;
+            } else {
+                $this->numWorkshopFailure += 1;
+                echo "<strong>[FAILURE] NO DATA for:</strong> {$this->modID}!<br />";
+                print_r($modWorkshopDetails);
+                echo '<hr />';
+
+                return false;
+            }
+        }
+
+        private function get_mod_display_picture(string $download_url, string $save_location, string $file_name, $behindProxy = false)
+        {
+            if ($behindProxy) {
+                throw new Exception("Skipping download of mod display picture as we are behind a proxy!");
+            } else {
+                if (empty($download_url)) throw new Exception("Empty download URL!");
+                if (filter_var($download_url, FILTER_VALIDATE_URL) === FALSE) throw new Exception('Invalid download URL provided!');
+                if (empty($save_location)) throw new Exception("Empty save location!");
+                if (!is_dir($save_location)) throw new Exception("Invalid save location provided!");
+                if (empty($file_name)) throw new Exception("Empty file name!");
+
+                curl_download($download_url, $save_location, $file_name);
+            }
+        }
+
+        private function set_workshop_details(array $modDetails)
+        {
+            try {
+                $tempArray = array();
+
+                $tempArray['mod_identifier'] = isset($this->modIdentifier)
+                    ? $this->modIdentifier
+                    : NULL;
+
+                $tempArray['mod_workshop_id'] = isset($modDetails['response']['publishedfiledetails'][0]['publishedfileid'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['publishedfileid']
+                    : NULL;
+
+                $tempArray['mod_size'] = isset($modDetails['response']['publishedfiledetails'][0]['file_size'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['file_size']
+                    : 0;
+
+                $tempArray['mod_hcontent_file'] = isset($modDetails['response']['publishedfiledetails'][0]['hcontent_file'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['hcontent_file']
+                    : NULL;
+
+                $tempArray['mod_hcontent_preview'] = isset($modDetails['response']['publishedfiledetails'][0]['hcontent_preview'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['hcontent_preview']
+                    : NULL;
+
+                $tempArray['mod_thumbnail'] = isset($modDetails['response']['publishedfiledetails'][0]['preview_url'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['preview_url']
+                    : NULL;
+
+                $tempArray['mod_views'] = isset($modDetails['response']['publishedfiledetails'][0]['views'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['views']
+                    : 0;
+
+                $tempArray['mod_subs'] = isset($modDetails['response']['publishedfiledetails'][0]['subscriptions'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['subscriptions']
+                    : 0;
+
+                $tempArray['mod_favs'] = isset($modDetails['response']['publishedfiledetails'][0]['favorited'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['favorited']
+                    : 0;
+
+                $tempArray['mod_subs_life'] = isset($modDetails['response']['publishedfiledetails'][0]['lifetime_subscriptions'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['lifetime_subscriptions']
+                    : 0;
+
+                $tempArray['mod_favs_life'] = isset($modDetails['response']['publishedfiledetails'][0]['lifetime_favorited'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['lifetime_favorited']
+                    : 0;
+
+                $tempArray['date_last_updated'] = isset($modDetails['response']['publishedfiledetails'][0]['time_updated'])
+                    ? $modDetails['response']['publishedfiledetails'][0]['time_updated']
+                    : NULL;
+
+                $sqlResult = $this->db->q(
+                    'INSERT INTO `mod_workshop`
+                        (
+                          `mod_identifier`,
+                          `mod_workshop_id`,
+                          `mod_size`,
+                          `mod_hcontent_file`,
+                          `mod_hcontent_preview`,
+                          `mod_thumbnail`,
+                          `mod_views`,
+                          `mod_subs`,
+                          `mod_favs`,
+                          `mod_subs_life`,
+                          `mod_favs_life`,
+                          `date_last_updated`
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?));',
+                    'siisssiiiiis',
+                    $tempArray
+                );
+
+                if ($sqlResult) {
+                    $this->db->q(
+                        'UPDATE `mod_list` SET `workshop_updated` = FROM_UNIXTIME(?), `mod_size` = ? WHERE `mod_id` = ?;',
+                        'ssi',
+                        array(
+                            $tempArray['date_last_updated'],
+                            $tempArray['mod_size'],
+                            $this->modID
+                        )
+                    );
+
+                    $this->numWorkshopSuccess += 1;
+                    echo "[SUCCESS] Added workshop details for: {$this->modID}!<br />";
+                } else {
+                    $this->numWorkshopUnknown += 1;
+                    echo "[UNKNOWN] Adding workshop details for: {$this->modID}!<br />";
+                }
+            } catch (Exception $e) {
+                echo '<br />';
+                echo "<strong>[UNKNOWN]</strong> Adding workshop details for: {$this->modID}!<br />";
+                echo $e->getMessage() . '<br /><br />';
+                $this->numWorkshopUnknown += 1;
+            }
+        }
+    }
+}
+
+if (!class_exists('cron_mod_matches')) {
+    class cron_mod_matches extends cron_task
+    {
+        private $numMatchesProcessed = 0;
+
+        public function execute($taskID, $taskName)
+        {
+            echo '<h2>Mod Matches</h2>';
+
+            $this->timeStart = time();
+            $this->taskID = $taskID;
+            $this->taskName = $taskName;
+
+            if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+
+            $this->task_update_status($this->taskID, 1);
+
+            $this->create_tables();
+            $this->populate_match_processing_table();
+            $this->process_matches();
+            $this->update_cache_table();
+            $this->display_match_periods_updated();
+            $this->cleanup_temp_tables();
+
+            $this->timeEnd = time();
+            $totalRunTime = $this->timeEnd - $this->timeStart;
+
+            $this->task_update_status($this->taskID, 2, $totalRunTime);
+
+            $this->report_execution_stats('s2_cron_matches', $totalRunTime, 60, 1, $this->numMatchesProcessed, 10, 0.1, 'matches');
+        }
+
+        public function queue()
+        {
+            $this->task_queue('cron_matches');
+        }
+
+        private function create_tables()
+        {
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp0_fix1` (
+                  `matchID` BIGINT(255) NOT NULL,
+                  `modID` INT(255) NOT NULL,
+                  `matchPhaseID` TINYINT(1) NOT NULL,
+                  `dateRecorded` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'
+                ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("ALTER TABLE `cache_mod_matches_temp0_fix1`
+                  ADD PRIMARY KEY (`matchID`),
+                  ADD KEY `indx_mod_winner` (`modID`),
+                  ADD KEY `indx_dateRecorded` (`dateRecorded`),
+                  ADD KEY `indx_mod_phase` (`modID`,`matchPhaseID`);"
+            );
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches_temp1` (
+                        `day` INT(2) NOT NULL DEFAULT '0',
+                        `month` INT(2) NOT NULL DEFAULT '0',
+                        `year` INT(4) NOT NULL DEFAULT '0',
+                        `modID` INT(255) NOT NULL,
+                        `gamePhase` TINYINT(1) NOT NULL,
+                        `gamesPlayed` BIGINT(255) NOT NULL,
+                        `dateRecorded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (`modID`, `gamePhase`, `year`,`month`,`day`),
+                        KEY (`dateRecorded`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_matches` (
+                        `day` INT(2) NOT NULL DEFAULT '0',
+                        `month` INT(2) NOT NULL DEFAULT '0',
+                        `year` INT(4) NOT NULL DEFAULT '0',
+                        `modID` INT(255) NOT NULL,
+                        `gamePhase` TINYINT(1) NOT NULL,
+                        `gamesPlayed` BIGINT(255) NOT NULL,
+                        `dateRecorded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (`modID`, `gamePhase`, `year`,`month`,`day`),
+                        KEY (`dateRecorded`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q('TRUNCATE `cache_mod_matches_temp0_fix1`;');
+            $this->db->q('TRUNCATE `cache_mod_matches_temp1`;');
+        }
+
+        private function populate_match_processing_table()
+        {
+            $numMatchesProcessed = $this->db->q('INSERT INTO `cache_mod_matches_temp0_fix1`
+                    SELECT
+                      `matchID`, `modID`, `matchPhaseID`, `dateRecorded`
+                    FROM `s2_match`
+                    WHERE `dateRecorded` >= (SELECT DATE_FORMAT( IF( MAX(`dateRecorded`) >0, MAX(`dateRecorded`), (SELECT MIN(`dateRecorded`) FROM `s2_match` ) ), "%Y-%m-%d 00:00:00") - INTERVAL 1 DAY FROM `cache_mod_matches`);'
+            );
+
+            if (!empty($numMatchesProcessed)) $this->numMatchesProcessed = $numMatchesProcessed;
+        }
+
+        private function process_matches()
+        {
+            $this->db->q('INSERT INTO `cache_mod_matches_temp1`
+                                SELECT
+                                    DAY(`dateRecorded`) AS `day`,
+                                    MONTH(`dateRecorded`) AS `month`,
+                                    YEAR(`dateRecorded`) AS `year`,
+                                    `modID`,
+                                    `matchPhaseID` AS gamePhase,
+                                    COUNT(*) AS `gamesPlayed`,
+                                    DATE_FORMAT(MAX(`dateRecorded`), "%Y-%m-%d 00:00:00") AS `dateRecorded`
+                                FROM `cache_mod_matches_temp0_fix1`
+                                GROUP BY 4,5,3,2,1
+                                ORDER BY 4 DESC, 5 DESC, 3 DESC, 2 DESC, 1 DESC
+                            ON DUPLICATE KEY UPDATE
+                                `gamesPlayed` = VALUES(`gamesPlayed`);'
+            );
+        }
+
+        private function update_cache_table()
+        {
+            $this->db->q(
+                'INSERT INTO `cache_mod_matches`
+                        SELECT
+                            *
+                        FROM `cache_mod_matches_temp1`
+                        ON DUPLICATE KEY UPDATE
+                          `gamesPlayed` = VALUES(`gamesPlayed`);'
+            );
+        }
+
+        private function display_match_periods_updated()
+        {
+            $last_rows = $this->db->q('SELECT * FROM `cache_mod_matches_temp1` ORDER BY `dateRecorded` DESC, `modID`, `gamePhase`;');
+
+            echo '<table border="1" cellspacing="1">';
+            echo '<tr>
+                        <th>modID</th>
+                        <th>Phase</th>
+                        <th>Games</th>
+                        <th>Date</th>
+                    </tr>';
+
+            foreach ($last_rows as $key => $value) {
+                echo '<tr>
+                        <td>' . $value['modID'] . '</td>
+                        <td>' . $value['gamePhase'] . '</td>
+                        <td>' . $value['gamesPlayed'] . '</td>
+                        <td>' . $value['dateRecorded'] . '</td>
+                    </tr>';
+            }
+
+            echo '</table>';
+        }
+
+        private function cleanup_temp_tables()
+        {
+            $this->db->q('DROP TABLE `cache_mod_matches_temp0_fix1`;');
+            $this->db->q('DROP TABLE `cache_mod_matches_temp1`;');
+        }
+    }
+}
