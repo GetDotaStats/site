@@ -167,6 +167,8 @@ try {
                             <li><a class="nav-clickable" href="#admin__mod_contact_devs">Contact Devs</a></li>
                             <li><a class="nav-clickable" href="#admin__hs_mod">Highscores Schema</a></li>
                             <li><a class="nav-clickable" href="#admin__mod_schema">Mod Schema</a></li>
+                            <li><a class="nav-clickable" href="#admin__cron_list">Cron List <span
+                                        class="label label-danger">NEW</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Tools</li>
                             <li><a class="nav-clickable" href="#admin__tools__add_site_user">Add User to Site
@@ -223,10 +225,10 @@ try {
 
 <div class="container">
     <div class="row">
-        <div class="alert alert-danger">
+        <!--<div class="alert alert-danger">
             We just recovered the site from a backup from the 1st of February. Any data that came into our possession
             since then has been lost, including mods that signed up. We apologise for the inconvenience.
-        </div>
+        </div>-->
 
         <div id="main_content" class="col-sm-12"></div>
 
