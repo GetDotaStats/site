@@ -258,7 +258,7 @@ if (!class_exists('cron_task')) {
                                 $irc_message->colour_generator('bold'),
                             ),
                             array($e->getMessage() . ' ||'),
-                            array('http://getdotastats.com/s2/routine/logs/log_cron_' . date('Y-m-d_h-i-s') . '.html'),
+                            array('http://getdotastats.com/s2/routine/logs/log_cron_' . date('Y-m-d_H-i-s') . '.html'),
                         );
 
                         $message = $irc_message->combine_message($message);
