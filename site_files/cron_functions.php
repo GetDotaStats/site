@@ -17,9 +17,14 @@ if (!class_exists('cron_task')) {
         protected $taskName = null;
         protected $timeStart = null;
         protected $timeEnd = null;
+        protected $logFileTimeStart = null;
 
-        public function __construct($db, $memcached, bool $isLocal, bool $allowWebhooks, bool $runningWindows, bool $behindProxy, string $webHook, string $webAPIkey)
+        public function __construct($db, $memcached, bool $isLocal, bool $allowWebhooks, bool $runningWindows, bool $behindProxy, string $webHook, string $webAPIkey, $actualStartUnixTimestamp = NULL)
         {
+            $this->logFileTimeStart = isset($actualStartUnixTimestamp) && is_numeric($actualStartUnixTimestamp)
+                ? date('Y-m-d_H-i-s', $actualStartUnixTimestamp)
+                : date('Y-m-d_H-i-s');
+
             if (empty($db)) throw new Exception('No DB connection provided!');
             if (empty($memcached)) throw new Exception('No memcached connection provided!');
             if (!is_bool($isLocal)) throw new Exception('Variable `isLocal` invalid!');
@@ -258,7 +263,7 @@ if (!class_exists('cron_task')) {
                                 $irc_message->colour_generator('bold'),
                             ),
                             array($e->getMessage() . ' ||'),
-                            array('http://getdotastats.com/s2/routine/logs/log_cron_' . date('Y-m-d_H-i-s') . '.html'),
+                            array('http://getdotastats.com/s2/routine/logs/log_cron_' . $this->logFileTimeStart . '.html'),
                         );
 
                         $message = $irc_message->combine_message($message);

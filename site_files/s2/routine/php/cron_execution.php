@@ -20,6 +20,8 @@ try {
 
     set_time_limit(0);
 
+    $timeStarted = time();
+
     //Grab active tasks
     $taskListActive = $db->q("SELECT
             `cron_id`,
@@ -140,12 +142,12 @@ try {
 
                 switch ($evaluateFunction) {
                     case 'cron_matches':
-                        $cron_mod_matches = new cron_mod_matches($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1);
+                        $cron_mod_matches = new cron_mod_matches($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
                         $cron_mod_matches->execute($value['cron_id'], $value['cron_task']);
                         break;
                     case 'cron_workshop':
                         //we use API key 6 here, to capture the mods that are friends only to jimmydorry
-                        $cron_workshop = new cron_workshop($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key6);
+                        $cron_workshop = new cron_workshop($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key6, $timeStarted);
                         $cron_workshop->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
                         break;
                     default:
