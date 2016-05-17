@@ -131,9 +131,9 @@ try {
         //Actually process tasks
         $startTime = microtime(true);
         foreach ($taskList as $key => $value) {
-            ///////////////////////////////////////////////////////////////////////////////////////////////////
-            //DO STUFF
-            ///////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////
+            // DO STUFF
+            ///////////////////////////////////////////////////
 
             try {
                 $evaluateFunction = !empty($value['cron_task_group'])
@@ -154,21 +154,15 @@ try {
                         echo '<h2>Unknown Cron Task</h2>';
                         break;
                 }
-
-                ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (EXECUTION LOOP) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+            } finally{
                 $currentTime = microtime(true);
                 $tasksDuration = number_format(($currentTime - $startTime), 4);
 
                 echo "<br /><strong>We have run for {$tasksDuration} seconds</strong>";
 
-                if (($currentTime - $startTime) >= 55) {
-                    throw new Exception("Tasks have run for more than 55 seconds!");
-                }
-
                 echo '<hr />';
-            } catch (Exception $e) {
-                echo '<br />Caught Exception (EXECUTION LOOP) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
             }
         }
     }
