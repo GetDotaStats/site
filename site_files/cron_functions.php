@@ -100,7 +100,7 @@ if (!class_exists('cron_task')) {
         protected function task_update_status(int $taskID, int $taskStatus, int $taskDuration = NULL)
         {
             if (empty($taskID) || !is_numeric($taskID)) throw new Exception("Invalid TaskID!");
-            if (!isset($taskStatus) || !is_numeric($taskStatus) || $taskStatus < 0 || $taskStatus > 2) throw new Exception("Invalid Task Status!");
+            if (!isset($taskStatus) || !is_numeric($taskStatus) || $taskStatus < 0 || $taskStatus > 3) throw new Exception("Invalid Task Status!");
             if (isset($taskDuration) && !is_numeric($taskDuration)) throw new Exception("Invalid Task Duration!");
 
             $this->db->q("UPDATE `cron_tasks` SET `cron_status` = ?, `cron_duration` = ? WHERE `cron_id` = ?;",
@@ -276,6 +276,236 @@ if (!class_exists('cron_task')) {
     }
 }
 
+if (!class_exists('cron_highscores')) {
+    class cron_highscores extends cron_task
+    {
+        private $numPlayersPerLeaderboard = 51;
+        private $modID = null;
+        private $modName = null;
+        private $highscoreID = null;
+        private $highscoreName = null;
+        private $highscoreObjective = 'max';
+        private $numDeletes = 0;
+
+        public function execute($taskID, $taskName, $taskParameters)
+        {
+            try {
+                echo '<h2>Highscores</h2>';
+
+                $this->timeStart = time();
+                $this->taskID = $taskID;
+                $this->taskName = $taskName;
+
+                if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+
+                $this->parse_parameters($taskParameters);
+
+                $this->task_update_status($this->taskID, 1);
+
+                echo "<h4>{$this->modName} <small>{$this->highscoreName}</small></h4>";
+
+                $lowestLeaderboardValue = $this->get_minimum_leaderboard_value();
+                $this->clear_low_leaderboard_values($lowestLeaderboardValue);
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+            } finally {
+                $this->timeEnd = time();
+                $totalRunTime = $this->timeEnd - $this->timeStart;
+                $this->task_update_status($this->taskID, 2, $totalRunTime);
+
+                $this->report_execution_stats(
+                    'cron_highscores__' . $this->modID . '_' . $this->highscoreID,
+                    $totalRunTime, 10, 0.5,
+                    $this->numDeletes, 100, 0.1, 'highscores dropped'
+                );
+            }
+        }
+
+        public function queue($numPlayersPerLeaderboard = 51, int $modID = null, string $modName = null, int $highscoreID = null, string $highscoreName = null, string $highscoreObjective = null, $userID = NULL)
+        {
+            //If we called this function with a specific modID we can send it straight into the queue
+            //otherwise we will call this function for every non-rejected modID
+            $numPlayersPerLeaderboard = !empty($numPlayersPerLeaderboard) && is_numeric($numPlayersPerLeaderboard)
+                ? $numPlayersPerLeaderboard
+                : 51;
+
+            if (!empty($modID)) {
+                if (!is_numeric($modID)) throw new Exception("Invalid modID!");
+                if (!isset($modName)) throw new Exception("Invalid modName!");
+                if (!isset($highscoreID) || !is_numeric($highscoreID)) throw new Exception("Invalid highscoreID provided!");
+                if (!isset($highscoreName)) throw new Exception("Invalid highscoreName!");
+                if (!isset($highscoreObjective) || ($highscoreObjective != 'max' && $highscoreObjective != 'min')) throw new Exception("Invalid highscoreObjective!");
+                if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
+
+                $this->task_queue(
+                    'cron_highscores__' . $modID . '_' . $highscoreID,
+                    'cron_highscores',
+                    array(
+                        'numPlayersPerLeaderboard' => $numPlayersPerLeaderboard,
+                        'modID' => $modID,
+                        'modName' => $modName,
+                        'highscoreID' => $highscoreID,
+                        'highscoreName' => $highscoreName,
+                        'highscoreObjective' => $highscoreObjective
+                    ),
+                    1,
+                    1,
+                    $userID
+                );
+            } else {
+                $schemaList = cached_query(
+                    'cron_highscore_schema_list',
+                    'SELECT
+                            shms.`highscoreID`,
+                            shms.`highscoreIdentifier`,
+                            shms.`modID`,
+                            shms.`modIdentifier`,
+                            shms.`secureWithAuth`,
+                            shms.`highscoreName`,
+                            shms.`highscoreDescription`,
+                            shms.`highscoreActive`,
+                            shms.`highscoreObjective`,
+                            shms.`highscoreOperator`,
+                            shms.`highscoreFactor`,
+                            shms.`highscoreDecimals`,
+                            shms.`date_recorded`,
+
+                            ml.`mod_name`
+                        FROM `stat_highscore_mods_schema` shms
+                        JOIN `mod_list` ml ON shms.`modID` = ml.`mod_id`;'
+                );
+                if (empty($schemaList)) throw new Exception("No highscore schemas to clean highscores of!");
+
+                foreach ($schemaList as $key => $value) {
+                    $this->queue(
+                        51,
+                        $value['modID'],
+                        $value['mod_name'],
+                        $value['highscoreID'],
+                        $value['highscoreName'],
+                        $value['highscoreObjective']
+                    );
+                }
+            }
+        }
+
+        private function parse_parameters(string $taskParameters)
+        {
+            $taskParameters = json_decode($taskParameters, true);
+
+            if (!empty($taskParameters['numPlayersPerLeaderboard']) && is_numeric($taskParameters['numPlayersPerLeaderboard'])) {
+                $this->numPlayersPerLeaderboard = $taskParameters['numPlayersPerLeaderboard'];
+            } else {
+                throw new Exception('Invalid numPlayersPerLeaderboard parsed!');
+            }
+
+            if (!empty($taskParameters['modID']) && is_numeric($taskParameters['modID'])) {
+                $this->modID = $taskParameters['modID'];
+            } else {
+                throw new Exception('Invalid modID parsed!');
+            }
+
+            if (!empty($taskParameters['highscoreID']) && is_numeric($taskParameters['highscoreID'])) {
+                $this->highscoreID = $taskParameters['highscoreID'];
+            } else {
+                throw new Exception('Invalid highscoreID parsed!');
+            }
+
+            if (!empty($taskParameters['modName'])) {
+                $this->modName = $taskParameters['modName'];
+            } else {
+                throw new Exception('Invalid modName parsed!');
+            }
+
+            if (!empty($taskParameters['highscoreName'])) {
+                $this->highscoreName = $taskParameters['highscoreName'];
+            } else {
+                throw new Exception('Invalid highscoreName parsed!');
+            }
+
+            if (!empty($taskParameters['highscoreObjective'])) {
+                $this->highscoreObjective = $taskParameters['highscoreObjective'];
+            } else {
+                throw new Exception('Invalid highscoreObjective parsed!');
+            }
+        }
+
+        private function get_minimum_leaderboard_value(): int
+        {
+            if ($this->highscoreObjective == 'min') {
+                $findPositionOfLast = $this->db->q(
+                    "SELECT
+                                `modID`,
+                                `highscoreID`,
+                                `steamID32`,
+                                `steamID64`,
+                                `highscoreAuthKey`,
+                                `userName`,
+                                `highscoreValue`,
+                                `date_recorded`
+                            FROM `stat_highscore_mods`
+                            WHERE `modID` = ? AND `highscoreID` = ?
+                            ORDER BY `highscoreValue` ASC
+                            LIMIT {$this->numPlayersPerLeaderboard},1;",
+                    'ii',
+                    array($this->modID, $this->highscoreID)
+                );
+            } else {
+                $findPositionOfLast = $this->db->q(
+                    "SELECT
+                                `modID`,
+                                `highscoreID`,
+                                `steamID32`,
+                                `steamID64`,
+                                `highscoreAuthKey`,
+                                `userName`,
+                                `highscoreValue`,
+                                `date_recorded`
+                            FROM `stat_highscore_mods`
+                            WHERE `modID` = ? AND `highscoreID` = ?
+                            ORDER BY `highscoreValue` DESC
+                            LIMIT {$this->numPlayersPerLeaderboard},1;",
+                    'ii',
+                    array($this->modID, $this->highscoreID)
+                );
+            }
+
+            if (empty($findPositionOfLast)) throw new Exception('Not enough entries in leaderboard to cull!');
+
+            if (!empty($findPositionOfLast[0]['highscoreValue']) && is_numeric($findPositionOfLast[0]['highscoreValue'])) {
+                return $findPositionOfLast[0]['highscoreValue'];
+            } else {
+                throw new Exception("Un-able to cull leaderboard. Leaderboard either too empty or value at bottom is not numeric!");
+            }
+        }
+
+        private function clear_low_leaderboard_values(int $lowestLeaderboardValue)
+        {
+            if ($this->highscoreObjective == 'min') {
+                $SQLdelete = $this->db->q(
+                    'DELETE FROM `stat_highscore_mods_top` WHERE `highscoreValue` >= ?;',
+                    'i',
+                    array($lowestLeaderboardValue)
+                );
+            } else if ($this->highscoreObjective == 'max') {
+                $SQLdelete = $this->db->q(
+                    'DELETE FROM `stat_highscore_mods_top` WHERE `highscoreValue` <= ?;',
+                    'i',
+                    array($lowestLeaderboardValue)
+                );
+            } else {
+                throw new Exception("Invalid highscoreObjective! Aborted deletion!");
+            }
+
+            $SQLdelete = is_numeric($SQLdelete)
+                ? $SQLdelete
+                : 0;
+
+            $this->numDeletes += $SQLdelete;
+        }
+    }
+}
+
 if (!class_exists('cron_workshop')) {
     class cron_workshop extends cron_task
     {
@@ -289,45 +519,48 @@ if (!class_exists('cron_workshop')) {
 
         public function execute($taskID, $taskName, $taskParameters)
         {
-            echo '<h2>Workshop Scraping</h2>';
+            try {
+                echo '<h2>Workshop Scraping</h2>';
 
-            $this->timeStart = time();
-            $this->taskID = $taskID;
-            $this->taskName = $taskName;
+                $this->timeStart = time();
+                $this->taskID = $taskID;
+                $this->taskName = $taskName;
 
-            if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+                if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
 
-            $this->parse_parameters($taskParameters);
+                $this->parse_parameters($taskParameters);
 
-            echo "<p>Mod: <a target='_blank' href='//getdotastats.com/#s2__mod?id={$this->modID}'>{$this->modID}</a></p>";
-            echo "<p>Workshop ID: <a target='_blank' href='//steamcommunity.com/sharedfiles/filedetails/?id={$this->workshopID}'>{$this->workshopID}</a></p>";
+                echo "<p>Mod: <a target='_blank' href='//getdotastats.com/#s2__mod?id={$this->modID}'>{$this->modID}</a></p>";
+                echo "<p>Workshop ID: <a target='_blank' href='//steamcommunity.com/sharedfiles/filedetails/?id={$this->workshopID}'>{$this->workshopID}</a></p>";
 
-            $this->task_update_status($this->taskID, 1);
+                $this->task_update_status($this->taskID, 1);
 
-            $modDetails = $this->get_mod_info_from_api($this->workshopID, $this->webAPIkey);
-            if ($modDetails) {
-                //download that mod picture
-                try {
-                    $this->get_mod_display_picture($modDetails['response']['publishedfiledetails'][0]['preview_url'], dirname(__FILE__) . '/images/mods/thumbs/', $this->modID . '.png', $this->behindProxy);
-                } catch (Exception $e) {
-                    echo '<br />' . $e->getMessage() . '<br /><br />';
+                $modDetails = $this->get_mod_info_from_api($this->workshopID, $this->webAPIkey);
+                if ($modDetails) {
+                    //download that mod picture
+                    try {
+                        $this->get_mod_display_picture($modDetails['response']['publishedfiledetails'][0]['preview_url'], dirname(__FILE__) . '/images/mods/thumbs/', $this->modID . '.png', $this->behindProxy);
+                    } catch (Exception $e) {
+                        echo '<br />' . $e->getMessage() . '<br /><br />';
+                    }
+
+                    $this->set_workshop_details($modDetails);
                 }
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+            } finally {
+                $this->timeEnd = time();
+                $totalRunTime = $this->timeEnd - $this->timeStart;
+                $this->task_update_status($this->taskID, 2, $totalRunTime);
 
-                $this->set_workshop_details($modDetails);
+                $this->report_execution_stats(
+                    's2_cron_workshop_scrape_' . $this->modID,
+                    $totalRunTime, 30, 0.5,
+                    $this->numWorkshopSuccess, 1, 0.01, 'successful scrapes',
+                    $this->numWorkshopFailure, 1, 0.01, 'failed scrapes',
+                    $this->numWorkshopUnknown, 1, 0.01, 'unknown scrapes'
+                );
             }
-
-            $this->timeEnd = time();
-            $totalRunTime = $this->timeEnd - $this->timeStart;
-
-            $this->task_update_status($this->taskID, 2, $totalRunTime);
-
-            $this->report_execution_stats(
-                's2_cron_workshop_scrape_' . $this->modID,
-                $totalRunTime, 30, 0.5,
-                $this->numWorkshopSuccess, 1, 0.01, 'successful scrapes',
-                $this->numWorkshopFailure, 1, 0.01, 'failed scrapes',
-                $this->numWorkshopUnknown, 1, 0.01, 'unknown scrapes'
-            );
         }
 
         public function queue($modID = NULL, $modIdentifier = NULL, $workshopID = NULL, $userID = NULL)
@@ -337,8 +570,8 @@ if (!class_exists('cron_workshop')) {
             if (!empty($modID)) {
                 if (!is_numeric($modID)) throw new Exception("Invalid modID!");
                 if (!isset($modIdentifier)) throw new Exception("Invalid modIdentifier!");
+                if (!isset($workshopID) || !is_numeric($workshopID)) throw new Exception("Invalid workshop ID provided!");
                 if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
-                if (isset($workshopID) && !is_numeric($workshopID)) throw new Exception("Invalid workshop ID provided!");
 
                 $this->task_queue('cron_workshop__' . $modID, 'cron_workshop', array('modID' => $modID, 'modIdentifier' => $modIdentifier, 'workshopID' => $workshopID), 1, 1, $userID);
             } else {
@@ -577,29 +810,35 @@ if (!class_exists('cron_mod_matches')) {
 
         public function execute($taskID, $taskName)
         {
-            echo '<h2>Mod Matches</h2>';
+            try {
+                echo '<h2>Mod Matches</h2>';
 
-            $this->timeStart = time();
-            $this->taskID = $taskID;
-            $this->taskName = $taskName;
+                $this->timeStart = time();
+                $this->taskID = $taskID;
+                $this->taskName = $taskName;
 
-            if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+                if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
 
-            $this->task_update_status($this->taskID, 1);
+                $this->task_update_status($this->taskID, 1);
 
-            $this->create_tables();
-            $this->populate_match_processing_table();
-            $this->process_matches();
-            $this->update_cache_table();
-            $this->display_match_periods_updated();
-            $this->cleanup_temp_tables();
+                $this->create_tables();
+                $this->populate_match_processing_table();
+                $this->process_matches();
+                $this->update_cache_table();
+                $this->display_match_periods_updated();
+                $this->cleanup_temp_tables();
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+            } finally {
+                $this->timeEnd = time();
+                $totalRunTime = $this->timeEnd - $this->timeStart;
+                $this->task_update_status($this->taskID, 2, $totalRunTime);
 
-            $this->timeEnd = time();
-            $totalRunTime = $this->timeEnd - $this->timeStart;
-
-            $this->task_update_status($this->taskID, 2, $totalRunTime);
-
-            $this->report_execution_stats('s2_cron_matches', $totalRunTime, 60, 1, $this->numMatchesProcessed, 10, 0.1, 'matches');
+                $this->report_execution_stats(
+                    's2_cron_matches', $totalRunTime, 60, 1,
+                    $this->numMatchesProcessed, 10, 0.1, 'matches'
+                );
+            }
         }
 
         public function queue()

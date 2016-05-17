@@ -150,13 +150,17 @@ try {
                         $cron_workshop = new cron_workshop($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key6, $timeStarted);
                         $cron_workshop->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
                         break;
+                    case 'cron_highscores':
+                        $cron_highscores = new cron_highscores($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
+                        $cron_highscores->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
+                        break;
                     default:
                         echo '<h2>Unknown Cron Task</h2>';
                         break;
                 }
             } catch (Exception $e) {
                 echo '<br />Caught Exception (EXECUTION LOOP) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
-            } finally{
+            } finally {
                 $currentTime = microtime(true);
                 $tasksDuration = number_format(($currentTime - $startTime), 4);
 
