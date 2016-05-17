@@ -53,6 +53,9 @@ if (!class_exists('cron_task')) {
             int $taskUser = NULL
         )
         {
+            if (empty($taskName)) throw new Exception("Task name missing in queue request!");
+            if (empty($taskGroup)) $taskGroup = $taskName;
+
             if (!empty($taskParameters)) {
                 if (!is_array($taskParameters)) throw new Exception("Task parameters not given as an array!");
                 $taskParameters = json_encode($taskParameters);
@@ -509,7 +512,6 @@ if (!class_exists('cron_highscores')) {
 if (!class_exists('cron_workshop')) {
     class cron_workshop extends cron_task
     {
-        private $modList = null;
         private $modID = null;
         private $modIdentifier = null;
         private $workshopID = null;
@@ -573,7 +575,18 @@ if (!class_exists('cron_workshop')) {
                 if (!isset($workshopID) || !is_numeric($workshopID)) throw new Exception("Invalid workshop ID provided!");
                 if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
 
-                $this->task_queue('cron_workshop__' . $modID, 'cron_workshop', array('modID' => $modID, 'modIdentifier' => $modIdentifier, 'workshopID' => $workshopID), 1, 1, $userID);
+                $this->task_queue(
+                    'cron_workshop__' . $modID,
+                    'cron_workshop',
+                    array(
+                        'modID' => $modID,
+                        'modIdentifier' => $modIdentifier,
+                        'workshopID' => $workshopID
+                    ),
+                    1,
+                    1,
+                    $userID
+                );
             } else {
                 $modList = $this->db->q(
                     'SELECT

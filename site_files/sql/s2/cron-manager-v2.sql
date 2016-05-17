@@ -5,7 +5,7 @@
 CREATE TABLE IF NOT EXISTS `cron_tasks` (
   `cron_id` bigint(255) NOT NULL,
   `cron_task` varchar(100) NOT NULL,
-  `cron_task_group` varchar(100) DEFAULT NULL,
+  `cron_task_group` varchar(100) NOT NULL,
   `cron_parameters` text,
   `cron_priority` tinyint(2) NOT NULL DEFAULT '1',
   `cron_blocking` tinyint(1) NOT NULL DEFAULT '1',
