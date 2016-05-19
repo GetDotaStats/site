@@ -271,7 +271,7 @@ if (!class_exists('cron_task')) {
 
                         if (!empty($taskShortID)) {
                             $message[] = array(
-                                $irc_message->colour_generator('green'),
+                                $irc_message->colour_generator('orange'),
                                 '[' . $taskShortID . ']',
                                 $irc_message->colour_generator(NULL),
                             );
