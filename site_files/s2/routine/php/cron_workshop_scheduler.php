@@ -11,7 +11,7 @@ try {
     $memcached = new Cache(NULL, NULL, $localDev);
 
     $cron_workshop = new cron_workshop($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1);
-    $cron_workshop->queue();
+    $cron_workshop->queue(2);
 
 } catch (Exception $e) {
     echo '<br />Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';

@@ -100,23 +100,30 @@ if (!class_exists('cron_task')) {
             }
         }
 
-        protected function task_update_status(int $taskID, int $taskStatus, int $taskDuration = NULL)
+        protected function task_update_status(int $taskID, int $taskStatus, int $taskDuration = NULL, $taskNotes = array())
         {
             if (empty($taskID) || !is_numeric($taskID)) throw new Exception("Invalid TaskID!");
             if (!isset($taskStatus) || !is_numeric($taskStatus) || $taskStatus < 0 || $taskStatus > 3) throw new Exception("Invalid Task Status!");
             if (isset($taskDuration) && !is_numeric($taskDuration)) throw new Exception("Invalid Task Duration!");
+            if (!empty($taskNotes) && is_array($taskNotes)) {
+                $taskNotes = json_encode($taskNotes);
+            } else {
+                $taskNotes = null;
+            }
 
-            $this->db->q("UPDATE `cron_tasks` SET `cron_status` = ?, `cron_duration` = ? WHERE `cron_id` = ?;",
-                'iii',
+            $this->db->q("UPDATE `cron_tasks` SET `cron_status` = ?, `cron_duration` = ?, `cron_notes` = ? WHERE `cron_id` = ?;",
+                'iisi',
                 array(
                     $taskStatus,
                     $taskDuration,
-                    $taskID
+                    $taskNotes,
+                    $taskID,
                 )
             );
         }
 
         protected function report_execution_stats(
+            string $taskShortName,
             string $taskName,
 
             int $durationValue,
@@ -255,7 +262,7 @@ if (!class_exists('cron_task')) {
                             ),
                             array(
                                 $irc_message->colour_generator('green'),
-                                '[MATCHES]',
+                                '[' . $taskShortName . ']',
                                 $irc_message->colour_generator(NULL),
                             ),
                             array(
@@ -307,7 +314,9 @@ if (!class_exists('cron_highscores')) {
 
                 echo "<h4>{$this->modName} <small>{$this->highscoreName}</small></h4>";
 
+                echo "Getting leaderboard cut-off!<br />";
                 $lowestLeaderboardValue = $this->get_minimum_leaderboard_value();
+                echo "Clearing leaderboard of values below cut-off!<br />";
                 $this->clear_low_leaderboard_values($lowestLeaderboardValue);
             } catch (Exception $e) {
                 echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
@@ -317,6 +326,7 @@ if (!class_exists('cron_highscores')) {
                 $this->task_update_status($this->taskID, 2, $totalRunTime);
 
                 $this->report_execution_stats(
+                    'HIGHSCORES',
                     'cron_highscores__' . $this->modID . '_' . $this->highscoreID,
                     $totalRunTime, 10, 0.5,
                     $this->numDeletes, 100, 0.1, 'highscores dropped'
@@ -324,7 +334,7 @@ if (!class_exists('cron_highscores')) {
             }
         }
 
-        public function queue($numPlayersPerLeaderboard = 51, int $modID = null, string $modName = null, int $highscoreID = null, string $highscoreName = null, string $highscoreObjective = null, $userID = NULL)
+        public function queue(int $taskPriority = 2, int $numPlayersPerLeaderboard = 51, int $modID = null, string $modName = null, int $highscoreID = null, string $highscoreName = null, string $highscoreObjective = null, $userID = NULL)
         {
             //If we called this function with a specific modID we can send it straight into the queue
             //otherwise we will call this function for every non-rejected modID
@@ -351,7 +361,7 @@ if (!class_exists('cron_highscores')) {
                         'highscoreName' => $highscoreName,
                         'highscoreObjective' => $highscoreObjective
                     ),
-                    1,
+                    $taskPriority,
                     1,
                     $userID
                 );
@@ -381,7 +391,8 @@ if (!class_exists('cron_highscores')) {
 
                 foreach ($schemaList as $key => $value) {
                     $this->queue(
-                        51,
+                        $taskPriority,
+                        $numPlayersPerLeaderboard,
                         $value['modID'],
                         $value['mod_name'],
                         $value['highscoreID'],
@@ -537,15 +548,18 @@ if (!class_exists('cron_workshop')) {
 
                 $this->task_update_status($this->taskID, 1);
 
+                echo "Grabbing mod data from workshop!<br />";
                 $modDetails = $this->get_mod_info_from_api($this->workshopID, $this->webAPIkey);
                 if ($modDetails) {
                     //download that mod picture
                     try {
+                        echo "Grabbing mod display pictures!<br />";
                         $this->get_mod_display_picture($modDetails['response']['publishedfiledetails'][0]['preview_url'], dirname(__FILE__) . '/images/mods/thumbs/', $this->modID . '.png', $this->behindProxy);
                     } catch (Exception $e) {
                         echo '<br />' . $e->getMessage() . '<br /><br />';
                     }
 
+                    echo "Updating cache of mod details!<br />";
                     $this->set_workshop_details($modDetails);
                 }
             } catch (Exception $e) {
@@ -556,6 +570,7 @@ if (!class_exists('cron_workshop')) {
                 $this->task_update_status($this->taskID, 2, $totalRunTime);
 
                 $this->report_execution_stats(
+                    'WORKSHOP',
                     's2_cron_workshop_scrape_' . $this->modID,
                     $totalRunTime, 30, 0.5,
                     $this->numWorkshopSuccess, 1, 0.01, 'successful scrapes',
@@ -565,7 +580,7 @@ if (!class_exists('cron_workshop')) {
             }
         }
 
-        public function queue($modID = NULL, $modIdentifier = NULL, $workshopID = NULL, $userID = NULL)
+        public function queue($taskPriority = 2, $modID = NULL, $modIdentifier = NULL, $workshopID = NULL, $userID = NULL)
         {
             //If we called this function with a specific modID we can send it straight into the queue
             //otherwise we will call this function for every non-rejected modID
@@ -583,7 +598,7 @@ if (!class_exists('cron_workshop')) {
                         'modIdentifier' => $modIdentifier,
                         'workshopID' => $workshopID
                     ),
-                    1,
+                    $taskPriority,
                     1,
                     $userID
                 );
@@ -601,11 +616,15 @@ if (!class_exists('cron_workshop')) {
                             WHERE `mod_rejected` = 0
                             ORDER BY `date_recorded`;'
                 );
-
                 if (empty($modList)) throw new Exception("No non-rejected mods to scrape workshop for!");
 
                 foreach ($modList as $key => $value) {
-                    $this->queue($value['mod_id'], $value['mod_identifier'], $value['mod_workshop_link']);
+                    $this->queue(
+                        $taskPriority,
+                        $value['mod_id'],
+                        $value['mod_identifier'],
+                        $value['mod_workshop_link']
+                    );
                 }
             }
         }
@@ -834,11 +853,17 @@ if (!class_exists('cron_mod_matches')) {
 
                 $this->task_update_status($this->taskID, 1);
 
+                echo "Creating tables!<br />";
                 $this->create_tables();
+                echo "Grabbing match data!<br />";
                 $this->populate_match_processing_table();
+                echo "Parsing match data!<br />";
                 $this->process_matches();
+                echo "Updating cache of match summary!<br />";
                 $this->update_cache_table();
+                echo "Displaying match periods updated!<br />";
                 $this->display_match_periods_updated();
+                echo "Cleaning up tables!<br />";
                 $this->cleanup_temp_tables();
             } catch (Exception $e) {
                 echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
@@ -848,15 +873,16 @@ if (!class_exists('cron_mod_matches')) {
                 $this->task_update_status($this->taskID, 2, $totalRunTime);
 
                 $this->report_execution_stats(
+                    'MATCHES',
                     's2_cron_matches', $totalRunTime, 60, 1,
                     $this->numMatchesProcessed, 10, 0.1, 'matches'
                 );
             }
         }
 
-        public function queue()
+        public function queue($taskPriority = 2)
         {
-            $this->task_queue('cron_matches');
+            $this->task_queue('cron_matches', NULL, NULL, $taskPriority);
         }
 
         private function create_tables()
@@ -977,6 +1003,275 @@ if (!class_exists('cron_mod_matches')) {
         {
             $this->db->q('DROP TABLE `cache_mod_matches_temp0_fix1`;');
             $this->db->q('DROP TABLE `cache_mod_matches_temp1`;');
+        }
+    }
+}
+
+if (!class_exists('cron_match_flags')) {
+    class cron_match_flags extends cron_task
+    {
+        private $numMatchesToUse = null;
+        private $modID = null;
+        private $modName = null;
+        private $cronNotes = array();
+
+        private $maxMatchID = null;
+        private $minMatchID = null;
+        private $totalFlagValues = 0;
+        private $totalFlagValueCombos = 0;
+
+        public function execute($taskID, $taskName, $taskParameters)
+        {
+            try {
+                echo '<h2>Mod Flags</h2>';
+
+                $this->timeStart = time();
+                $this->taskID = $taskID;
+                $this->taskName = $taskName;
+
+                if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+
+                $this->parse_parameters($taskParameters);
+
+                $this->task_update_status($this->taskID, 1);
+
+                echo "<h4>{$this->modName}</h4>";
+
+                echo "Getting `matchID` ranges for parsing!<br />";
+                $this->get_match_range($this->numMatchesToUse);
+                echo "Setting up tables!<br />";
+                $this->setup_tables();
+                echo "Grabbing flags from matches!<br />";
+                $this->grab_flags_from_matches($this->minMatchID, $this->maxMatchID);
+                echo "Aggregating flags!<br />";
+                $this->aggregate_flags();
+                echo "Cleaning up tables!<br />";
+                $this->clean_tables();
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+                $this->cronNotes['Failure'] = basename($e->getFile()) . ':' . $e->getLine() . ' -- ' . $e->getMessage();
+            } finally {
+                $this->timeEnd = time();
+                $totalRunTime = $this->timeEnd - $this->timeStart;
+                $this->task_update_status($this->taskID, 2, $totalRunTime, $this->cronNotes);
+
+                $this->report_execution_stats(
+                    'CMF',
+                    'cron_match_flags__' . $this->modID,
+                    $totalRunTime, 5, 1,
+                    $this->totalFlagValues, 10, 0.5, 'flag values',
+                    $this->totalFlagValueCombos, 10, 0.5, 'flag value combos'
+                );
+            }
+        }
+
+        public function queue(int $taskPriority = 0, int $numMatchesToUse = 10000, int $modID = null, string $modName = null, $userID = NULL)
+        {
+            //If we called this function with a specific modID we can send it straight into the queue
+            //otherwise we will call this function for every non-rejected modID
+            $numMatchesToUse = !empty($numMatchesToUse) && is_numeric($numMatchesToUse)
+                ? $numMatchesToUse
+                : 1000;
+
+            if (!empty($modID)) {
+                if (!is_numeric($modID)) throw new Exception("Invalid modID!");
+                if (!isset($modName)) throw new Exception("Invalid modName!");
+                if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
+
+                $this->task_queue(
+                    'cron_match_flags__' . $modID,
+                    'cron_match_flags',
+                    array(
+                        'numMatchesToUse' => $numMatchesToUse,
+                        'modID' => $modID,
+                        'modName' => $modName,
+                    ),
+                    $taskPriority,
+                    1,
+                    $userID
+                );
+            } else {
+                $activeMods = $this->db->q(
+                    'SELECT
+                              ml.`mod_id`,
+                              ml.`mod_identifier`,
+                              ml.`mod_name`,
+                              ml.`mod_steam_group`,
+                              ml.`mod_workshop_link`,
+                              ml.`mod_size`,
+                              ml.`workshop_updated`,
+                              ml.`date_recorded`
+                            FROM `mod_list` ml
+                            WHERE ml.`mod_active` = 1;'
+                );
+                if (empty($activeMods)) throw new Exception("No active mods!");
+
+                foreach ($activeMods as $key => $value) {
+                    $this->queue(
+                        $taskPriority,
+                        $numMatchesToUse,
+                        $value['mod_id'],
+                        $value['mod_name']
+                    );
+                }
+            }
+        }
+
+        private function parse_parameters(string $taskParameters)
+        {
+            $taskParameters = json_decode($taskParameters, true);
+
+            if (!empty($taskParameters['numMatchesToUse']) && is_numeric($taskParameters['numMatchesToUse'])) {
+                $this->numMatchesToUse = $taskParameters['numMatchesToUse'];
+            } else {
+                throw new Exception('Invalid `numMatchesToUse` parsed!');
+            }
+
+            if (!empty($taskParameters['modID']) && is_numeric($taskParameters['modID'])) {
+                $this->modID = $taskParameters['modID'];
+            } else {
+                throw new Exception('Invalid modID parsed!');
+            }
+
+            if (!empty($taskParameters['modName'])) {
+                $this->modName = $taskParameters['modName'];
+            } else {
+                throw new Exception('Invalid modName parsed!');
+            }
+        }
+
+        private function get_match_range($numMatchesToUse)
+        {
+            //MAX
+            $maxSQL = cached_query(
+                's2_cron_cmf_max',
+                'SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `modID` = ? ORDER BY `dateRecorded` DESC LIMIT 0,1;',
+                'i',
+                $this->modID
+            );
+            if (empty($maxSQL)) throw new Exception('No matches for this modID!');
+
+            $this->maxMatchID = $maxSQL[0]['matchID'];
+            $maxMatchDate = $maxSQL[0]['dateRecorded'];
+            echo "<strong>Max:</strong> {$this->maxMatchID} [{$maxMatchDate}]<br />";
+
+            $this->cronNotes['Max matchID'] = $this->maxMatchID;
+            $this->cronNotes['Max Date'] = $maxMatchDate;
+
+            //MIN
+            $minSQL = cached_query(
+                's2_cron_cmf_min',
+                "SELECT `matchID`, `dateRecorded`
+                      FROM
+                        (
+                            SELECT `matchID`, `dateRecorded`
+                            FROM `s2_match`
+                            WHERE
+                              `modID` = ? AND
+                              `dateRecorded` >= (? - INTERVAL 7 DAY)
+                            ORDER BY `dateRecorded` DESC
+                            LIMIT 0,{$numMatchesToUse}
+                        ) t1
+                      ORDER BY `dateRecorded` ASC
+                      LIMIT 0,1;",
+                'is',
+                array($this->modID, $maxMatchDate)
+            );
+            if (empty($minSQL)) throw new Exception('No matches for this modID!');
+
+            $this->minMatchID = $minSQL[0]['matchID'];
+            $minMatchDate = $minSQL[0]['dateRecorded'];
+            echo "<strong>Min:</strong> {$this->minMatchID} [{$minMatchDate}]<br />";
+
+            $this->cronNotes['Min matchID'] = $this->minMatchID;
+            $this->cronNotes['Min Date'] = $minMatchDate;
+        }
+
+        private function setup_tables()
+        {
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp0_games`;');
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1_sort`;');
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags` (
+                        `modID` BIGINT(255) NOT NULL,
+                        `flagName` VARCHAR(100) NOT NULL,
+                        `flagValue` VARCHAR(100) NOT NULL,
+                        `numGames` BIGINT(255) NOT NULL,
+                        PRIMARY KEY (`modID`, `flagName`, `flagValue`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_flags_temp0_games` (
+                        `flagName` VARCHAR(100) NOT NULL,
+                        `flagValue` VARCHAR(100) NOT NULL,
+                        KEY (`flagName`, `flagValue`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_custom_flags_temp1_sort` (
+                        `modID` BIGINT(255) NOT NULL,
+                        `flagName` VARCHAR(100) NOT NULL,
+                        `flagValue` VARCHAR(100) NOT NULL,
+                        `numGames` BIGINT(255) NOT NULL,
+                        PRIMARY KEY (`modID`, `flagName`, `flagValue`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("INSERT INTO `cache_custom_flags_temp1_sort`(`modID`, `flagName`, `flagValue`, `numGames`)
+                      SELECT `modID`, `flagName`, `flagValue`, `numGames`
+                        FROM `cache_custom_flags`;"
+            );
+
+            $this->db->q("DELETE FROM `cache_custom_flags_temp1_sort` WHERE `modID` = ?;",
+                'i',
+                array($this->modID)
+            );
+        }
+
+        private function grab_flags_from_matches(int $minMatchID, int $maxMatchID)
+        {
+            if (empty($minMatchID) || empty($maxMatchID) || $maxMatchID <= $minMatchID) throw new Exception('Invalid min or max matchID!');
+
+            $totalFlagValues = $this->db->q("INSERT INTO `cache_custom_flags_temp0_games`(`flagName`, `flagValue`)
+                      SELECT `flagName`, `flagValue`
+                        FROM `s2_match_flags`
+                        WHERE `matchID` BETWEEN ? AND ? AND `modID` = ?;",
+                'iii',
+                array($minMatchID, $maxMatchID, $this->modID)
+            );
+            if (empty($totalFlagValues)) throw new Exception('No flags found for given `modID`');
+
+            $this->totalFlagValues = $totalFlagValues;
+            echo "<strong>Flag Values:</strong> {$this->totalFlagValues}<br />";
+        }
+
+        private function aggregate_flags()
+        {
+            $flagValueCombinations = $this->db->q(
+                'INSERT INTO `cache_custom_flags_temp1_sort` (`modID`, `flagName`, `flagValue`, `numGames`)
+                        SELECT
+                                ?,
+                                ccft0.`flagName`,
+                                ccft0.`flagValue`,
+                                COUNT(*) AS numGames
+                            FROM `cache_custom_flags_temp0_games` ccft0
+                            GROUP BY ccft0.`flagName`, ccft0.`flagValue`;',
+                's',
+                array($this->modID)
+            );
+            if (empty($flagValueCombinations)) throw new Exception('No flag combos found for given `modID`');
+
+            $this->totalFlagValueCombos = $flagValueCombinations;
+            echo "<strong>Flag Combos:</strong> {$this->totalFlagValueCombos}<br />";
+        }
+
+        private function clean_tables()
+        {
+            $this->db->q('RENAME TABLE `cache_custom_flags` TO `cache_custom_flags_old`, `cache_custom_flags_temp1_sort` TO `cache_custom_flags`;');
+
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_flags_old`;');
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp0_games`;');
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_flags_temp1_sort`;');
         }
     }
 }

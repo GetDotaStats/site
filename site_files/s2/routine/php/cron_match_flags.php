@@ -10,8 +10,8 @@ try {
 
     $memcached = new Cache(NULL, NULL, $localDev);
 
-    $cronHighscores = new cron_highscores($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1);
-    $cronHighscores->queue(2);
+    $cronMatchFlags = new cron_match_flags($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1);
+    $cronMatchFlags->queue(0);
 
 } catch (Exception $e) {
     echo '<br />Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';

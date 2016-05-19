@@ -92,6 +92,8 @@ try {
 
     //Execute scheduled tasks
     {
+        if (empty($taskList)) throw new Exception("No tasks to process!");
+
         //List the scheduled tasks
         echo "<h2>Scheduled Tasks</h2>";
         echo "<table border='1' cellspacing='1' cellpadding='5'>";
@@ -154,6 +156,10 @@ try {
                         $cron_highscores = new cron_highscores($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
                         $cron_highscores->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
                         break;
+                    case 'cron_match_flags':
+                        $cron_cron_match_flags = new cron_match_flags($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
+                        $cron_cron_match_flags->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
+                        break;
                     default:
                         echo '<h2>Unknown Cron Task</h2>';
                         break;
@@ -165,9 +171,13 @@ try {
                 $tasksDuration = number_format(($currentTime - $startTime), 4);
 
                 echo "<br /><strong>We have run for {$tasksDuration} seconds</strong>";
-
-                echo '<hr />';
             }
+
+            if (($currentTime - $startTime) >= 55) {
+                throw new Exception("Tasks have run for more than 55 seconds!");
+            }
+
+            echo '<hr />';
         }
     }
 
