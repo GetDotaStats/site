@@ -123,7 +123,8 @@ if (!class_exists('cron_task')) {
         }
 
         protected function report_execution_stats(
-            string $taskShortName,
+            string $taskShortGroupName,
+            string $taskShortID = NULL,
             string $taskName,
 
             int $durationValue,
@@ -254,27 +255,40 @@ if (!class_exists('cron_task')) {
                     if ($this->allowWebhooks) {
                         $irc_message = new irc_message($this->webHook);
 
-                        $message = array(
-                            array(
-                                $irc_message->colour_generator('red'),
-                                '[CRON]',
-                                $irc_message->colour_generator(NULL),
-                            ),
-                            array(
-                                $irc_message->colour_generator('green'),
-                                '[' . $taskShortName . ']',
-                                $irc_message->colour_generator(NULL),
-                            ),
-                            array(
-                                $irc_message->colour_generator('bold'),
-                                $irc_message->colour_generator('blue'),
-                                'Warning:',
-                                $irc_message->colour_generator(NULL),
-                                $irc_message->colour_generator('bold'),
-                            ),
-                            array($e->getMessage() . ' ||'),
-                            array('http://getdotastats.com/s2/routine/logs/log_cron_' . $this->logFileTimeStart . '.html'),
+                        $message = array();
+
+                        $message[] = array(
+                            $irc_message->colour_generator('red'),
+                            '[CRON]',
+                            $irc_message->colour_generator(NULL),
                         );
+
+                        $message[] = array(
+                            $irc_message->colour_generator('green'),
+                            '[' . $taskShortGroupName . ']',
+                            $irc_message->colour_generator(NULL),
+                        );
+
+                        if (!empty($taskSecondWebHookTag)) {
+                            $message[] = array(
+                                $irc_message->colour_generator('green'),
+                                '[' . $taskShortID . ']',
+                                $irc_message->colour_generator(NULL),
+                            );
+                        }
+
+                        $message[] = array(
+                            $irc_message->colour_generator('bold'),
+                            $irc_message->colour_generator('blue'),
+                            'Warning:',
+                            $irc_message->colour_generator(NULL),
+                            $irc_message->colour_generator('bold'),
+                        );
+
+                        $message[] = array($e->getMessage() . ' ||');
+
+                        $message[] = array('http://getdotastats.com/s2/routine/logs/log_cron_' . $this->logFileTimeStart . '.html');
+
 
                         $message = $irc_message->combine_message($message);
                         $irc_message->post_message($message, array('localDev' => false));
@@ -327,6 +341,7 @@ if (!class_exists('cron_highscores')) {
 
                 $this->report_execution_stats(
                     'HIGHSCORES',
+                    $this->modName . ' -- ' . $this->highscoreName,
                     'cron_highscores__' . $this->modID . '_' . $this->highscoreID,
                     $totalRunTime, 10, 0.5,
                     $this->numDeletes, 100, 0.1, 'highscores dropped'
@@ -525,6 +540,7 @@ if (!class_exists('cron_workshop')) {
     {
         private $modID = null;
         private $modIdentifier = null;
+        private $modName = null;
         private $workshopID = null;
         private $numWorkshopSuccess = 0;
         private $numWorkshopFailure = 0;
@@ -543,8 +559,9 @@ if (!class_exists('cron_workshop')) {
 
                 $this->parse_parameters($taskParameters);
 
-                echo "<p>Mod: <a target='_blank' href='//getdotastats.com/#s2__mod?id={$this->modID}'>{$this->modID}</a></p>";
-                echo "<p>Workshop ID: <a target='_blank' href='//steamcommunity.com/sharedfiles/filedetails/?id={$this->workshopID}'>{$this->workshopID}</a></p>";
+                echo "Mod: {$this->modName}<br />";
+                echo "Mod ID: <a target='_blank' href='//getdotastats.com/#s2__mod?id={$this->modID}'>{$this->modID}</a><br />";
+                echo "Workshop ID: <a target='_blank' href='//steamcommunity.com/sharedfiles/filedetails/?id={$this->workshopID}'>{$this->workshopID}</a><br />";
 
                 $this->task_update_status($this->taskID, 1);
 
@@ -571,6 +588,7 @@ if (!class_exists('cron_workshop')) {
 
                 $this->report_execution_stats(
                     'WORKSHOP',
+                    $this->modName,
                     's2_cron_workshop_scrape_' . $this->modID,
                     $totalRunTime, 30, 0.5,
                     $this->numWorkshopSuccess, 1, 0.01, 'successful scrapes',
@@ -580,7 +598,7 @@ if (!class_exists('cron_workshop')) {
             }
         }
 
-        public function queue($taskPriority = 2, $modID = NULL, $modIdentifier = NULL, $workshopID = NULL, $userID = NULL)
+        public function queue(int $taskPriority = 2, int $modID = NULL, string $modIdentifier = NULL, int $workshopID = NULL, string $modName = null, $userID = NULL)
         {
             //If we called this function with a specific modID we can send it straight into the queue
             //otherwise we will call this function for every non-rejected modID
@@ -589,6 +607,7 @@ if (!class_exists('cron_workshop')) {
                 if (!isset($modIdentifier)) throw new Exception("Invalid modIdentifier!");
                 if (!isset($workshopID) || !is_numeric($workshopID)) throw new Exception("Invalid workshop ID provided!");
                 if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
+                if (empty($modName)) throw new Exception("Invalid `modName`!");
 
                 $this->task_queue(
                     'cron_workshop__' . $modID,
@@ -596,7 +615,8 @@ if (!class_exists('cron_workshop')) {
                     array(
                         'modID' => $modID,
                         'modIdentifier' => $modIdentifier,
-                        'workshopID' => $workshopID
+                        'workshopID' => $workshopID,
+                        'modName' => $modName
                     ),
                     $taskPriority,
                     1,
@@ -623,7 +643,8 @@ if (!class_exists('cron_workshop')) {
                         $taskPriority,
                         $value['mod_id'],
                         $value['mod_identifier'],
-                        $value['mod_workshop_link']
+                        $value['mod_workshop_link'],
+                        $value['mod_name']
                     );
                 }
             }
@@ -649,6 +670,12 @@ if (!class_exists('cron_workshop')) {
                 $this->workshopID = $taskParameters['workshopID'];
             } else {
                 throw new Exception('Invalid workshopID parsed!');
+            }
+
+            if (!empty($taskParameters['modName'])) {
+                $this->modName = $taskParameters['modName'];
+            } else {
+                throw new Exception('Invalid `modName` parsed!');
             }
         }
 
@@ -874,6 +901,7 @@ if (!class_exists('cron_mod_matches')) {
 
                 $this->report_execution_stats(
                     'MATCHES',
+                    NULL,
                     's2_cron_matches', $totalRunTime, 60, 1,
                     $this->numMatchesProcessed, 10, 0.1, 'matches'
                 );
@@ -1057,6 +1085,7 @@ if (!class_exists('cron_match_flags')) {
 
                 $this->report_execution_stats(
                     'CMF',
+                    $this->modName,
                     'cron_match_flags__' . $this->modID,
                     $totalRunTime, 5, 1,
                     $this->totalFlagValues, 10, 0.5, 'flag values',
