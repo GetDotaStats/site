@@ -33,17 +33,16 @@ try {
         try {
             echo '<h3>Flags</h3>';
 
-            echo '<p>Breakdown of flags for all games played in the last week. Calculated twice a day. Flags are arbitrary values that a mod assigns before the game starts.';
+            echo '<p>Breakdown of flags for all games played in the last week. Calculated twice a day. Flags are arbitrary values that a mod assigns before the game starts.</p>';
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cmf');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('cron_match_flags__' . $modID);
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
-                echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
+                echo "<p>This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
             } catch (Exception $e) {
-                echo '</p>';
                 echo formatExceptionHandling($e);
             }
 

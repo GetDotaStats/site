@@ -64,17 +64,16 @@ try {
         try {
             echo '<h3>Workshop Stats</h3>';
 
-            echo '<p>Breakdown of workshop stats per day. Scraped twice a day, depending on availability of Steam webAPI.';
+            echo '<p>Breakdown of workshop stats per day. Scraped twice a day, depending on availability of Steam webAPI.</p>';
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_workshop_scrape');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_workshop_scrape_' . $modID);
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
-                echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
+                echo "<p>This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
             } catch (Exception $e) {
-                echo '</p>';
                 echo formatExceptionHandling($e);
             }
 
@@ -108,9 +107,9 @@ try {
             $workshopStats = cached_query(
                 's2_mod_ws_' . $modID . '_' . $sqlFilter,
                 'SELECT
-                      DAY(mw.`date_recorded`) as `day`,
-                      MONTH(mw.`date_recorded`) as `month`,
-                      YEAR(mw.`date_recorded`) as `year`,
+                      DAY(mw.`date_recorded`) AS `day`,
+                      MONTH(mw.`date_recorded`) AS `month`,
+                      YEAR(mw.`date_recorded`) AS `year`,
                       mw.`mod_check_id`,
                       mw.`mod_identifier`,
                       mw.`mod_workshop_id`,

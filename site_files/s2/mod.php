@@ -60,7 +60,7 @@ try {
         try {
             echo '<h3>Games</h3>';
 
-            echo '<p>Breakdown of games per day over the last month. Calculated every 10minutes.';
+            echo '<p>Breakdown of games per day over the last month. Calculated every 10minutes.</p>';
 
             try {
                 $serviceReporting = new serviceReporting($db);
@@ -68,9 +68,8 @@ try {
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
-                echo " This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
+                echo "<p>This data was last updated <strong>{$lastCronUpdateRunTime}</strong>, taking <strong>{$lastCronUpdateExecutionTime}</strong> to generate.</p>";
             } catch (Exception $e) {
-                echo '</p>';
                 echo formatExceptionHandling($e);
             }
 
@@ -140,7 +139,7 @@ try {
             foreach ($bigArray as $key => $value) {
                 foreach ($value as $key2 => $value2) {
                     $phase1 = 0;
-                    if(!empty($bigArray['1 - Players loaded'])){
+                    if (!empty($bigArray['1 - Players loaded'])) {
                         foreach ($bigArray['1 - Players loaded'] as $key3 => $value3) {
                             if ($value3['x'] == $value2['x']) {
                                 $phase1 = !empty($value3['y']) && is_numeric($value3['y'])
@@ -152,7 +151,7 @@ try {
                     }
 
                     $phase2 = 0;
-                    if(!empty($bigArray['2 - Game started'])) {
+                    if (!empty($bigArray['2 - Game started'])) {
                         foreach ($bigArray['2 - Game started'] as $key3 => $value3) {
                             if ($value3['x'] == $value2['x']) {
                                 $phase2 = !empty($value3['y']) && is_numeric($value3['y'])
@@ -164,7 +163,7 @@ try {
                     }
 
                     $phase3 = 0;
-                    if(!empty($bigArray['3 - Game ended'])) {
+                    if (!empty($bigArray['3 - Game ended'])) {
                         foreach ($bigArray['3 - Game ended'] as $key3 => $value3) {
                             if ($value3['x'] == $value2['x']) {
                                 $phase3 = !empty($value3['y']) && is_numeric($value3['y'])

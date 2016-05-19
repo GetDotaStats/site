@@ -902,7 +902,8 @@ if (!class_exists('cron_mod_matches')) {
                 $this->report_execution_stats(
                     'MATCHES',
                     NULL,
-                    's2_cron_matches', $totalRunTime, 60, 1,
+                    's2_cron_matches',
+                    $totalRunTime, 60, 1,
                     $this->numMatchesProcessed, 10, 0.1, 'matches'
                 );
             }
@@ -1100,7 +1101,7 @@ if (!class_exists('cron_match_flags')) {
             //otherwise we will call this function for every non-rejected modID
             $numMatchesToUse = !empty($numMatchesToUse) && is_numeric($numMatchesToUse)
                 ? $numMatchesToUse
-                : 1000;
+                : 10000;
 
             if (!empty($modID)) {
                 if (!is_numeric($modID)) throw new Exception("Invalid modID!");
