@@ -269,7 +269,7 @@ if (!class_exists('cron_task')) {
                             $irc_message->colour_generator(NULL),
                         );
 
-                        if (!empty($taskSecondWebHookTag)) {
+                        if (!empty($taskShortID)) {
                             $message[] = array(
                                 $irc_message->colour_generator('green'),
                                 '[' . $taskShortID . ']',
