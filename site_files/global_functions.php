@@ -48,8 +48,10 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.min.css?45';
+$path_css_site_name = 'getdotastats.min.css?49';
+//$path_css_site_name = 'getdotastats.css?46';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
+//$path_css_site_full = '.' . $path_css_site . $path_css_site_name;
 
 $path_css_bootstrap = '/bootstrap/css/';
 $path_css_bootstrap_name = 'bootstrap.min.css?1';
