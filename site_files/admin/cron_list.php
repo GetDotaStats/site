@@ -179,13 +179,13 @@ try {
             FROM `cron_tasks`
             WHERE `cron_status` = 2
             ORDER BY `cron_date` DESC
-            LIMIT 0, 20;',
+            LIMIT 0, 100;',
         NULL,
         NULL,
         1
     );
 
-    echo '<h3>Completed Tasks <small>Last 20</small></h3>';
+    echo '<h3>Completed Tasks <small>Last 100</small></h3>';
     {
         if (!empty($cronTasksCompleted)) {
             echo '<div class="row">
@@ -208,16 +208,19 @@ try {
                 $group = !empty($value['cron_task_group'])
                     ? $value['cron_task_group']
                     : '-';
-
                 echo '<div class="row searchRow">
-                <div class="col-md-3">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
-                <div class="col-md-2">' . $group . '</div>
-                <div class="col-md-1 text-center">' . $value['cron_priority'] . '</div>
-                <div class="col-md-1 text-center">' . $value['cron_blocking'] . '</div>
-                <div class="col-md-2">' . $user . '</div>
-                <div class="col-md-1 text-right">' . $value['cron_duration'] . ' sec</div>
-                <div class="col-md-2 text-right">' . relative_time_v3($value['cron_date']) . '</div>
-            </div>';
+                        <div class="col-md-3">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
+                        <div class="col-md-2">' . $group . '</div>
+                        <div class="col-md-1 text-center">' . $value['cron_priority'] . '</div>
+                        <div class="col-md-1 text-center">' . $value['cron_blocking'] . '</div>
+                        <div class="col-md-2">' . $user . '</div>
+                        <div class="col-md-1 text-right">' . $value['cron_duration'] . ' sec</div>
+                        <div class="col-md-2 text-right">' . relative_time_v3($value['cron_date']) . '</div>
+                    </div>';
+
+                echo !empty($value['cron_parameters'])
+                    ? "<div class='row'><div class='col-md-1'>&nbsp;</div><div class='col-md-11 db_link'>{$value['cron_parameters']}</div></div>"
+                    : '';
 
                 echo '<span class="h5">&nbsp;</span>';
             }
