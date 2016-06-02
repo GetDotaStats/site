@@ -86,7 +86,7 @@ try {
           `cron_date`
         FROM `cron_tasks`
         WHERE `cron_status` = 0
-        ORDER BY `cron_priority` DESC, `cron_date` ASC
+        ORDER BY `cron_priority` DESC, `cron_blocking` ASC, `cron_date` ASC
         LIMIT 0, 100;"
     );
 
