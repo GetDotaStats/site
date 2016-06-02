@@ -48,8 +48,8 @@ $path_lib_highcharts_full = $CDN_generic . $path_lib_highcharts . $path_lib_high
 //////////////////////
 
 $path_css_site = '/';
-$path_css_site_name = 'getdotastats.min.css?49';
-//$path_css_site_name = 'getdotastats.css?46';
+$path_css_site_name = 'getdotastats.min.css?51';
+//$path_css_site_name = 'getdotastats.css?51';
 $path_css_site_full = $CDN_generic . $path_css_site . $path_css_site_name;
 //$path_css_site_full = '.' . $path_css_site . $path_css_site_name;
 
@@ -2053,5 +2053,227 @@ if (!function_exists('makePagination')) {
         $paginationDisplay .= '</div>';
 
         return $paginationDisplay;
+    }
+}
+
+if (!function_exists('generate_csp')) {
+    function generate_csp(array $csp):string
+    {
+        if (empty($csp)) throw new Exception("Empty CSP declaration!");
+
+        $csp_parts = array();
+        foreach ($csp as $key => $value) {
+            $csp_parts[] = $key . ' ' . implode(' ', $value);
+        }
+
+        $csp_string = implode('; ', $csp_parts);
+
+        return $csp_string;
+    }
+}
+
+if (!class_exists('curl_improved')) {
+    class curl_improved
+    {
+        private $ch = null;
+        private $page = null;
+
+        private $isBehindProxy = null;
+        private $hasEnabledProxy = false;
+
+        public function __construct(bool $behindProxy, string $link = null)
+        {
+            $this->isBehindProxy = $behindProxy;
+
+            $this->ch = curl_init();
+            $this->setOptions();
+            $this->setUserAgent();
+            $this->setTimeOuts();
+
+            if (!empty($link)) {
+                $this->setLink($link);
+            }
+        }
+
+        public function __destruct()
+        {
+            $this->closeLink();
+        }
+
+        public function setLink(string $link)
+        {
+            curl_setopt($this->ch, CURLOPT_URL, $link);
+        }
+
+        public function getPage()
+        {
+            if ($this->isBehindProxy) {
+                if (!$this->hasEnabledProxy) {
+                    throw new Exception('Config says we are behind proxy! We must setProxyDetails() before attempting to grab page!');
+                }
+            }
+
+            $this->page = curl_exec($this->ch);
+
+            if (empty($this->page) || !$this->page) {
+                $this->page = false;
+            }
+
+            $this->closeLink();
+
+            return $this->page;
+        }
+
+        public function closeLink()
+        {
+            if (gettype($this->ch) == 'resource') {
+                curl_close($this->ch);
+            }
+        }
+
+        public function setOptions(array $options = array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_HEADER => 0, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_AUTOREFERER => 1, CURLOPT_HTTPHEADER => array('Expect:')))
+        {
+
+            if (empty($options) || !isset($options[CURLOPT_RETURNTRANSFER])) {
+                curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+            }
+
+            if (empty($options) || !isset($options[CURLOPT_HEADER])) {
+                curl_setopt($this->ch, CURLOPT_HEADER, 0);
+            }
+
+            if (empty($options) || !isset($options[CURLOPT_FOLLOWLOCATION])) {
+                curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
+            }
+
+            if (empty($options) || !isset($options[CURLOPT_AUTOREFERER])) {
+                curl_setopt($this->ch, CURLOPT_AUTOREFERER, 1);
+            }
+
+            if (empty($options) || !isset($options[CURLOPT_HTTPHEADER])) {
+                curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('Expect:'));
+            }
+
+            if (!empty($options) && is_array($options)) {
+                curl_setopt_array($this->ch, $options);
+            }
+        }
+
+        public function setUserAgent(string $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1')
+        {
+            empty($userAgent)
+                ? $userAgent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1'
+                : null;
+
+            $this->setOptions(array(CURLOPT_USERAGENT => $userAgent));
+        }
+
+        public function setTimeOuts(int $connectTimeout = 5, int $executeTimeout = 10)
+        {
+            empty($connectTimeout) || !is_numeric($connectTimeout)
+                ? $connectTimeout = 5
+                : null;
+
+            empty($executeTimeout) || !is_numeric($executeTimeout)
+                ? $executeTimeout = 10
+                : null;
+
+            $this->setOptions(array(CURLOPT_CONNECTTIMEOUT => $connectTimeout, CURLOPT_TIMEOUT => $executeTimeout));
+        }
+
+        public function setReferrer(string $referrer = 'https://google.com')
+        {
+            if (isset($referrer)) {
+                $this->setOptions(array(CURLOPT_REFERER => $referrer));
+            } else {
+                throw new Exception('Attempted to set empty referrer!');
+            }
+        }
+
+        public function setPostFields($postFields = array())
+        {
+            if (is_array($postFields)) {
+                $fields_string = '';
+                foreach ($postFields as $key => $value) {
+                    $fields_string .= $key . '=' . $value . '&';
+                }
+                rtrim($fields_string, '&');
+                $postFields = $fields_string;
+                unset($fields_string);
+            }
+
+            if (!empty($postFields)) {
+                $this->setOptions(array(CURLOPT_POST => 1, CURLOPT_POSTFIELDS => $postFields));
+            } else {
+                throw new Exception('Attempted to POST with empty postfields!');
+            }
+        }
+
+        public function setCookie($cookie)
+        {
+            if (!empty($cookie)) {
+                $this->setOptions(array(CURLOPT_COOKIEJAR => $cookie, CURLOPT_COOKIEFILE => $cookie));
+            }
+        }
+
+        public function setProxyDetails(string $proxyAddress, string $proxyPort = '8080', string $proxyType = 'HTTP', string $proxyUser = NULL, string $proxyPass = NULL, bool $debug = false)
+        {
+            if ($this->isBehindProxy === false) {
+                return false;
+            }
+
+            if (!empty($proxyAddress)) {
+                //PORT
+                if ($debug) echo 'PORT: ' . $proxyPort . '<br />';
+                if (!empty($proxyPort)) {
+                    $this->setOptions(array(CURLOPT_PROXYPORT => $proxyPort));
+                } else {
+                    $this->setOptions(array(CURLOPT_PROXYPORT => '8080'));
+                }
+
+                //TYPE
+                if ($debug) echo 'TYPE: ' . $proxyType . '<br />';
+                if (!empty($proxyType)) {
+                    $this->setOptions(array(CURLOPT_PROXYTYPE => $proxyType));
+                } else {
+                    $this->setOptions(array(CURLOPT_PROXYTYPE => 'HTTP'));
+                }
+
+                //ADDRESS
+                if ($debug) echo 'ADDRESS: ' . $proxyAddress . '<br />';
+                $this->setOptions(array(CURLOPT_PROXY => $proxyAddress));
+
+                //AUTH
+                if (!empty($proxyUser) || !empty($proxyPass)) {
+                    $proxyAuthCredentials = $proxyUser . ':' . $proxyPass;
+                    if ($debug) echo 'AUTH: ' . $proxyAuthCredentials . '<br />';
+                    $this->setOptions(array(CURLOPT_PROXYUSERPWD => $proxyAuthCredentials));
+                } else {
+                    $proxyAuthCredentials = NULL;
+                }
+
+                //curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
+                //curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
+
+                $this->hasEnabledProxy = true;
+            } else {
+                throw new Exception('Attempted to user Proxy with empty proxy address!');
+            }
+        }
+    }
+}
+
+if (!function_exists('convert_array_bools')) {
+    function convert_array_bools(Array $data)
+    {
+        function converter(&$value, $key)
+        {
+            if (is_bool($value)) {
+                $value = ($value ? 1 : 0);
+            }
+        }
+
+        array_walk_recursive($data, 'converter');
+        return $data;
     }
 }
