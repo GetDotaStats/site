@@ -1173,8 +1173,7 @@ if (!class_exists('cron_match_flags')) {
         private function get_match_range($numMatchesToUse)
         {
             //MAX
-            $maxSQL = cached_query(
-                's2_cron_cmf_max',
+            $maxSQL = $this->db->q(
                 'SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `modID` = ? ORDER BY `dateRecorded` DESC LIMIT 0,1;',
                 'i',
                 $this->modID
@@ -1189,8 +1188,7 @@ if (!class_exists('cron_match_flags')) {
             $this->cronNotes['Max Date'] = $maxMatchDate;
 
             //MIN
-            $minSQL = cached_query(
-                's2_cron_cmf_min',
+            $minSQL = $this->db->q(
                 "SELECT `matchID`, `dateRecorded`
                       FROM
                         (
