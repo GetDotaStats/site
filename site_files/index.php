@@ -1,7 +1,8 @@
 <?php
 try {
-    require_once("./global_functions.php");
     require_once("./connections/parameters.php");
+    require_once("./global_functions.php");
+    require_once("./global_variables.php");
 
     if (!isset($_SESSION)) {
         session_start();
@@ -21,36 +22,23 @@ try {
     $feedCheck = !empty($_SESSION['user_id64'])
         ? adminCheck($_SESSION['user_id64'], 'animufeed')
         : false;
-} catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
-}
 
-try {
+    $csp = generate_csp($CSParray);
+    $csp = !empty($csp) ? '<meta http-equiv="Content-Security-Policy" content="' . $csp . '">' : '';
+} catch (Exception $e) {
+    $message = 'Caught Exception -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
+    echo bootstrapMessage('Oh Snap', $message, 'danger');
+} finally {
     if (!empty($memcached)) {
         $memcached->close();
     }
-} catch (Exception $e) {
-    $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-    echo bootstrapMessage('Oh Snap', $message, 'danger');
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-    <meta http-equiv="Content-Security-Policy"
-          content="
-          default-src 'self' getdotastats.com;
-          connect-src 'self' static.getdotastats.com getdotastats.com;
-          style-src 'self' static.getdotastats.com getdotastats.com 'unsafe-inline' ajax.googleapis.com *.google.com;
-          script-src 'self' static.getdotastats.com getdotastats.com oss.maxcdn.com ajax.googleapis.com *.google.com *.google-analytics.com *.changetip.com 'unsafe-eval' 'unsafe-inline' data:;
-          img-src 'self' dota2.photography static.getdotastats.com getdotastats.com media.steampowered.com ajax.googleapis.com cdn.akamai.steamstatic.com cdn.dota2.com *.gstatic.com *.akamaihd.net *.google-analytics.com *.steamusercontent.com steamcdn-a.akamaihd.net montools.com data:;
-          font-src 'self' static.getdotastats.com getdotastats.com data:;
-          frame-src chatwing.com *.youtube.com *.mibbit.com *.changetip.com;
-          object-src 'none';
-          media-src 'none';
-          report-uri ./csp_reports.php;">
+    <?= $csp ?>
     <meta charset="utf-8">
     <meta content="text/html">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -135,11 +123,16 @@ try {
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projekts <span
+                            class="label label-danger">NEW</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Signatures</li>
                         <li><a class="nav-clickable" href="#sig__generator">Generator</a></li>
                         <li><a class="nav-clickable" href="#sig__usage">Trends</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">TI6</li>
+                        <li><a class="nav-clickable" href="#misc__arcana_votes">Arcana Votes <span
+                                    class="label label-danger">NEW</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Halls of Fame</li>
                         <li><a class="nav-clickable" href="#hof__golden_profiles">Golden Profiles</a></li>
