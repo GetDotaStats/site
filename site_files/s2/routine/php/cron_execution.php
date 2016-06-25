@@ -20,6 +20,10 @@ try {
 
     set_time_limit(0);
 
+    // So we can start on tasks that get queued at the same second this is executed
+    // (due to cron scheduling granularity being 1 minute)
+    sleep(2);
+
     $timeStarted = time();
 
     //Grab active tasks
