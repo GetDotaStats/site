@@ -24,7 +24,6 @@ if (!function_exists('modPageHeader')) {
                   ml.`mod_rejected_reason`,
                   ml.`mod_size`,
                   ml.`workshop_updated`,
-                  ml.`mod_maps`,
                   ml.`date_recorded`,
 
                   gu.`user_name`,
@@ -199,11 +198,6 @@ if (!function_exists('modPageHeader')) {
                 }
             }
 
-            //Mod maps
-            $modMaps = !empty($modDetails[0]['mod_maps'])
-                ? implode(", ", json_decode($modDetails[0]['mod_maps'], 1))
-                : 'unknown';
-
             //Status
             if (!empty($modDetails[0]['mod_rejected']) && !empty($modDetails[0]['mod_rejected_reason'])) {
                 $modStatus = '<span class="boldRedText">Rejected:</span> ' . $modDetails[0]['mod_rejected_reason'];
@@ -260,10 +254,6 @@ if (!function_exists('modPageHeader')) {
                             <div class="col-sm-9">' . $developerLink . '</div>
                         </div>' . $teamMembers . $developerEmail . '
                         <div class="row mod_info_panel">
-                            <div class="col-sm-3"><strong>Maps</strong></div>
-                            <div class="col-sm-9">' . $modMaps . '</div>
-                        </div>
-                        <div class="row mod_info_panel">
                             <div class="col-sm-3"><strong>Size</strong></div>
                             <div class="col-sm-9">' . $modSize . '</div>
                         </div>
@@ -291,6 +281,7 @@ if (!function_exists('modPageHeader')) {
         $result .= "<div class='row'>
                         <div class='col-sm-12 text-right'>
                             <a class='nav-clickable btn btn-info' href='#s2__mod?id={$modID}'>Num Games</a>
+                            <a class='nav-clickable btn btn-info' href='#s2__mod_np?id={$modID}'>Num Players</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_ws?id={$modID}'>Workshop</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_schema?mid={$modID}'>Schema</a>
                             <a class='nav-clickable btn btn-info' href='#s2__mod_f?id={$modID}'>Flags</a>
