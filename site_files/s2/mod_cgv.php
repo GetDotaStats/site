@@ -37,7 +37,7 @@ try {
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cmgv');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('cron_match_game_values__' . $modID);
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
