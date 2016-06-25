@@ -1563,11 +1563,14 @@ if (!class_exists('cron_match_game_values')) {
                 $this->get_schema_id();
                 echo "Cleaning up data not attached to most recent schema!<br />";
                 $this->cleanup_old_schemas_from_data();
+
                 $this->count_remaining_values();
                 echo "Get schema definition!<br />";
                 $this->get_schema_definition();
+                echo '----------<br />';
                 echo "Aggregating `Game Values`!<br />";
                 $this->aggregate_game_values();
+                echo '----------<br />';
                 echo "Cleaning up tables!<br />";
                 $this->clean_tables();
             } catch (Exception $e) {
@@ -1742,7 +1745,7 @@ if (!class_exists('cron_match_game_values')) {
                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
             );
 
-            $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_game_values_temp2_sort` (
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values_temp2_sort` (
                         `modID` BIGINT(255) NOT NULL,
                         `fieldOrder` TINYINT(1) NOT NULL,
                         `fieldValue` VARCHAR(100) NOT NULL,
@@ -1844,6 +1847,24 @@ if (!class_exists('cron_match_game_values')) {
             echo "</ul>";
         }
 
+        private function aggregate_game_values_no_group($fieldID)
+        {
+            $customGameValueCombos = $this->db->q(
+                "INSERT INTO `cache_custom_game_values_temp2_sort`
+                                    SELECT
+                                        {$this->modID} AS modID,
+                                        s2mc.`fieldOrder`,
+                                        s2mc.`fieldValue`,
+                                        COUNT(*) AS numGames
+                                    FROM `cache_custom_game_values_temp0_games` s2mc
+                                    WHERE `fieldOrder` = ?
+                                    GROUP BY s2mc.`fieldOrder`, s2mc.`fieldValue`;",
+                'i',
+                array($fieldID)
+            );
+            return $customGameValueCombos;
+        }
+
         private function aggregate_game_values()
         {
             //IF NUMBER OF UNIQUE VALUES IS GREATER THAN 20
@@ -1857,6 +1878,19 @@ if (!class_exists('cron_match_game_values')) {
                 $isGroupable = $value['isGroupable'];
                 $fieldID = $value['fieldOrder'];
                 $fieldName = $value['customValueDisplay'];
+
+                echo "<strong>`{$fieldName}`</strong><br />";
+
+                $valuesWorkingWith = $this->db->q(
+                    "SELECT count(*) AS num_values FROM `cache_custom_game_values_temp0_games` WHERE `fieldOrder` = ?;",
+                    'i',
+                    array($fieldID)
+                );
+                $valuesWorkingWith = !empty($valuesWorkingWith)
+                    ? $valuesWorkingWith[0]['num_values']
+                    : 0;
+
+                echo "<strong>Values:</strong> {$valuesWorkingWith}<br />";
 
                 if ($isGroupable == '1') {
                     //Find if there is data for field
@@ -1900,6 +1934,15 @@ if (!class_exists('cron_match_game_values')) {
                         echo "<li><strong>{$fieldName}</strong></li>";
                         echo "<ul><li>Third quartile not above {$firstGroupMaxCategories} or maximum value not greater than {$firstGroupMaxValue}!</li></ul>";
                         echo '</ul>';
+
+                        $customGameValueCombos = $this->aggregate_game_values_no_group($fieldID);
+
+                        if (!empty($customGameValueCombos)) {
+                            $this->totalGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
+                                ? $customGameValueCombos
+                                : 0;
+                        }
+
                         continue;
                     }
 
@@ -1981,20 +2024,7 @@ if (!class_exists('cron_match_game_values')) {
                             : 0;
                     }
                 } else {
-                    //DO NORMAL GROUPING FOR REMAINING FIELDS IN THE TABLE
-                    $customGameValueCombos = $this->db->q(
-                        "INSERT INTO `cache_custom_game_values_temp2_sort`
-                                    SELECT
-                                        {$this->modID} AS modID,
-                                        s2mc.`fieldOrder`,
-                                        s2mc.`fieldValue`,
-                                        COUNT(*) AS numGames
-                                    FROM `cache_custom_game_values_temp0_games` s2mc
-                                    WHERE `fieldOrder` = ?
-                                    GROUP BY s2mc.`fieldOrder`, s2mc.`fieldValue`;",
-                        'i',
-                        array($fieldID)
-                    );
+                    $customGameValueCombos = $this->aggregate_game_values_no_group($fieldID);
 
                     if (!empty($customGameValueCombos)) {
                         $this->totalGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
