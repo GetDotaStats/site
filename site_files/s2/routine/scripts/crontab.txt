@@ -21,9 +21,10 @@
 * * * * *       /home/www-getdotastats/s2/routine/scripts/cron_execution.sh > /home/www-getdotastats/s2/routine/logs/log_cron_`date +\%Y-\%m-\%d_\%H-\%M-\%S`.html 2>&1
 */10  * * * *   /home/www-getdotastats/s2/routine/scripts/cron_matches_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_matches_scheduler.html 2>&1
 00 01,13 * * *  /home/www-getdotastats/s2/routine/scripts/cron_mod_analysis_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_mod_analysis_scheduler.html 2>&1
+#*/10  * * * *  /home/www-getdotastats/s2/routine/scripts/cron_match_player_count_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_match_player_count_scheduler.html 2>&1
 @hourly         /home/www-getdotastats/s2/routine/scripts/cron_mod_workshop_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_mod_workshop_scheduler.html 2>&1
 @hourly         /home/www-getdotastats/s2/routine/scripts/cron_mod_highscores_scheduler.sh > /home/www-getdotastats/s2/routine/log_cron_mod_highscores_scheduler.html 2>&1
-
+*/30 * * * *   /home/www-getdotastats/s2/routine/scripts/wipe_logs.sh > /home/www-getdotastats/s2/routine/log_wipe_logs.html 2>&1
 
 ####################
 #hall of fame

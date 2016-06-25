@@ -1036,6 +1036,220 @@ if (!class_exists('cron_mod_matches')) {
     }
 }
 
+if (!class_exists('cron_mod_match_player_counts')) {
+    class cron_mod_match_player_counts extends cron_task
+    {
+        private $numPlayersProcessed = 0;
+
+        public function execute($taskID, $taskName)
+        {
+            try {
+                echo '<h2>Mod Match Player Counts</h2>';
+
+                $this->timeStart = time();
+                $this->taskID = $taskID;
+                $this->taskName = $taskName;
+
+                if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+
+                $this->task_update_status($this->taskID, 1);
+
+                echo "Creating tables!<br />";
+                $this->create_tables();
+                echo "Grabbing match data!<br />";
+                $this->populate_match_processing_table();
+                echo "Parsing match data!<br />";
+                $this->process_matches();
+                echo "Updating cache of match summary!<br />";
+                $this->update_cache_table();
+                echo "Displaying match periods updated!<br />";
+                $this->display_match_periods_updated();
+                echo "Cleaning up tables!<br />";
+                $this->cleanup_temp_tables();
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+            } finally {
+                $this->timeEnd = time();
+                $totalRunTime = $this->timeEnd - $this->timeStart;
+                $this->task_update_status($this->taskID, 2, $totalRunTime);
+
+                $this->report_execution_stats(
+                    'MATCH PLAYER COUNT',
+                    NULL,
+                    'cron_match_player_count',
+                    $totalRunTime, 60, 1,
+                    $this->numPlayersProcessed, 10, 0.1, 'unique players'
+                );
+            }
+        }
+
+        public function queue($taskPriority = 2)
+        {
+            $this->task_queue('cron_match_player_count', NULL, NULL, $taskPriority);
+        }
+
+        private function create_tables()
+        {
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_match_player_count_temp0_fix1` (
+                      `modID` INT(255) NOT NULL,
+                      `steamID32` BIGINT(255) NOT NULL,
+                      `connectionState` TINYINT(1) NOT NULL,
+                      `dateRecorded` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+                      KEY `index_mID_sID32_cS` (`modID`, `steamID32`, `connectionState`, `dateRecorded`),
+                      KEY `index_dR` (`dateRecorded`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_match_player_count_temp1_identify` (
+                      `day` INT(2) NOT NULL DEFAULT '0',
+                      `month` INT(2) NOT NULL DEFAULT '0',
+                      `year` INT(4) NOT NULL DEFAULT '0',
+                      `modID` INT(255) NOT NULL,
+                      `connectionState` TINYINT(1) NOT NULL,
+                      `steamID32` BIGINT(255) NOT NULL,
+                      `dateRecorded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      PRIMARY KEY `index_mID_cS_d` (`modID`, `connectionState`, `steamID32`, `year`,`month`,`day`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_match_player_count_temp2_group` (
+                      `day` INT(2) NOT NULL DEFAULT '0',
+                      `month` INT(2) NOT NULL DEFAULT '0',
+                      `year` INT(4) NOT NULL DEFAULT '0',
+                      `modID` INT(255) NOT NULL,
+                      `connectionState` TINYINT(1) NOT NULL,
+                      `uniquePlayers` BIGINT(255) NOT NULL,
+                      `dateRecorded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      PRIMARY KEY (`modID`, `connectionState`, `year`,`month`,`day`),
+                      KEY `index_mID_dR` (`modID`, `dateRecorded`),
+                      KEY `index_dR` (`dateRecorded`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_mod_match_player_count` (
+                      `day` INT(2) NOT NULL DEFAULT '0',
+                      `month` INT(2) NOT NULL DEFAULT '0',
+                      `year` INT(4) NOT NULL DEFAULT '0',
+                      `modID` INT(255) NOT NULL,
+                      `connectionState` TINYINT(1) NOT NULL,
+                      `uniquePlayers` BIGINT(255) NOT NULL,
+                      `dateRecorded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      PRIMARY KEY (`modID`, `connectionState`, `year`,`month`,`day`),
+                      KEY `index_mID_dR` (`modID`, `dateRecorded`),
+                      KEY `index_dR` (`dateRecorded`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q('TRUNCATE `cache_mod_match_player_count_temp0_fix1`;');
+            $this->db->q('TRUNCATE `cache_mod_match_player_count_temp1_identify`;');
+            $this->db->q('TRUNCATE `cache_mod_match_player_count_temp2_group`;');
+        }
+
+        private function populate_match_processing_table()
+        {
+            $numPlayersProcessed = $this->db->q('INSERT INTO `cache_mod_match_player_count_temp0_fix1`
+                    SELECT
+                      s2mp.`modID`,
+                      s2mp.`steamID32`,
+                      s2mp.`connectionState`,
+                      s2m.`dateRecorded`
+                    FROM `s2_match_players` s2mp
+                    LEFT JOIN `s2_match` s2m ON s2mp.`matchID` = s2m.`matchID`
+                    WHERE s2m.`dateRecorded` >=
+                      (
+                          SELECT
+                              DATE_FORMAT (
+                                  IF(
+                                    MAX(`dateRecorded`) >0,
+                                    MAX(`dateRecorded`),
+                                    (SELECT MIN(`dateRecorded`) FROM `s2_match` )
+                                  ),
+                                  "%Y-%m-%d 00:00:00"
+                              ) - INTERVAL 1 DAY
+                          FROM `cache_mod_match_player_count`
+                      )
+                    LIMIT 0,1500000;'
+            );
+
+            if (!empty($numPlayersProcessed)) $this->numPlayersProcessed = $numPlayersProcessed;
+        }
+
+        private function process_matches()
+        {
+            $this->db->q('INSERT IGNORE INTO `cache_mod_match_player_count_temp1_identify`
+                                SELECT
+                                    DAY(`dateRecorded`) AS `day`,
+                                    MONTH(`dateRecorded`) AS `month`,
+                                    YEAR(`dateRecorded`) AS `year`,
+                                    `modID`,
+                                    `connectionState`,
+                                    `steamID32`,
+                                    `dateRecorded`
+                                FROM `cache_mod_match_player_count_temp0_fix1`;'
+            );
+
+            $this->db->q('INSERT INTO `cache_mod_match_player_count_temp2_group`
+                                SELECT
+                                    DAY(`dateRecorded`) AS `day`,
+                                    MONTH(`dateRecorded`) AS `month`,
+                                    YEAR(`dateRecorded`) AS `year`,
+                                    `modID`,
+                                    `connectionState`,
+                                    COUNT(*) AS `uniquePlayers`,
+                                    DATE_FORMAT(MAX(`dateRecorded`), "%Y-%m-%d 00:00:00") AS `dateRecorded`
+                                FROM `cache_mod_match_player_count_temp1_identify`
+                                GROUP BY 4,5,3,2,1
+                                ORDER BY 4 DESC, 5 DESC, 3 DESC, 2 DESC, 1 DESC
+                            ON DUPLICATE KEY UPDATE
+                                `uniquePlayers` = VALUES(`uniquePlayers`);'
+            );
+        }
+
+        private function update_cache_table()
+        {
+            $this->db->q(
+                'INSERT INTO `cache_mod_match_player_count`
+                        SELECT
+                            *
+                        FROM `cache_mod_match_player_count_temp2_group`
+                        ON DUPLICATE KEY UPDATE
+                          `uniquePlayers` = VALUES(`uniquePlayers`);'
+            );
+        }
+
+        private function display_match_periods_updated()
+        {
+            $last_rows = $this->db->q('SELECT * FROM `cache_mod_match_player_count_temp2_group` ORDER BY `dateRecorded` DESC, `modID`, `connectionState`;');
+
+            echo '<table border="1" cellspacing="1">';
+            echo '<tr>
+                        <th>modID</th>
+                        <th>Connection State</th>
+                        <th>Unique Players</th>
+                        <th>Date</th>
+                    </tr>';
+
+            foreach ($last_rows as $key => $value) {
+                echo '<tr>
+                        <td>' . $value['modID'] . '</td>
+                        <td>' . $value['connectionState'] . '</td>
+                        <td>' . $value['uniquePlayers'] . '</td>
+                        <td>' . $value['dateRecorded'] . '</td>
+                    </tr>';
+            }
+
+            echo '</table>';
+        }
+
+        private function cleanup_temp_tables()
+        {
+            $this->db->q('DROP TABLE `cache_mod_match_player_count_temp0_fix1`;');
+            $this->db->q('DROP TABLE `cache_mod_match_player_count_temp1_identify`;');
+            $this->db->q('DROP TABLE `cache_mod_match_player_count_temp2_group`;');
+        }
+    }
+}
+
 if (!class_exists('cron_match_flags')) {
     class cron_match_flags extends cron_task
     {
@@ -1303,3 +1517,505 @@ if (!class_exists('cron_match_flags')) {
         }
     }
 }
+
+if (!class_exists('cron_match_game_values')) {
+    class cron_match_game_values extends cron_task
+    {
+        private $numMatchesToUse = null;
+        private $modID = null;
+        private $modName = null;
+        private $schemaID = null;
+        private $cronNotes = array();
+
+        private $maxMatchID = null;
+        private $minMatchID = null;
+        private $totalGameValues = 0;
+        private $totalGameValueCombos = 0;
+
+        private $schemaFields = array();
+
+        public function execute($taskID, $taskName, $taskParameters)
+        {
+            try {
+                echo '<h2>Mod Game Values</h2>';
+
+                $this->timeStart = time();
+                $this->taskID = $taskID;
+                $this->taskName = $taskName;
+
+                //Check that the task is valid
+                if (!$this->task_validate($this->taskID, $this->taskName)) throw new Exception("Invalid task specified!");
+                //Parse parameters
+                $this->parse_parameters($taskParameters);
+
+                //Update task status
+                $this->task_update_status($this->taskID, 1);
+
+                echo "<h4>{$this->modName}</h4>";
+
+                echo "Getting `matchID` ranges for parsing!<br />";
+                $this->get_match_range($this->numMatchesToUse);
+                echo "Setting up tables!<br />";
+                $this->setup_tables();
+                echo "Grabbing `Game Values` from matches!<br />";
+                $this->grab_game_values_from_matches($this->minMatchID, $this->maxMatchID);
+                echo "Getting `schemaID`!<br />";
+                $this->get_schema_id();
+                echo "Cleaning up data not attached to most recent schema!<br />";
+                $this->cleanup_old_schemas_from_data();
+                $this->count_remaining_values();
+                echo "Get schema definition!<br />";
+                $this->get_schema_definition();
+                echo "Aggregating `Game Values`!<br />";
+                $this->aggregate_game_values();
+                echo "Cleaning up tables!<br />";
+                $this->clean_tables();
+            } catch (Exception $e) {
+                echo '<br />Caught Exception (CRON) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+                $this->cronNotes['Failure'] = basename($e->getFile()) . ':' . $e->getLine() . ' -- ' . $e->getMessage();
+            } finally {
+                $this->timeEnd = time();
+                $totalRunTime = $this->timeEnd - $this->timeStart;
+                $this->task_update_status($this->taskID, 2, $totalRunTime, $this->cronNotes);
+
+                $this->report_execution_stats(
+                    'CMGV',
+                    $this->modName,
+                    'cron_match_game_values__' . $this->modID,
+                    $totalRunTime, 5, 1,
+                    $this->totalGameValues, 10, 0.5, 'game values',
+                    $this->totalGameValueCombos, 10, 0.5, 'game value combos'
+                );
+            }
+        }
+
+        public function queue(int $taskPriority = 0, int $numMatchesToUse = 10000, int $modID = null, string $modName = null, $userID = NULL)
+        {
+            //If we called this function with a specific modID we can send it straight into the queue
+            //otherwise we will call this function for every non-rejected modID
+            $numMatchesToUse = !empty($numMatchesToUse) && is_numeric($numMatchesToUse)
+                ? $numMatchesToUse
+                : 10000;
+
+            if (!empty($modID)) {
+                if (!is_numeric($modID)) throw new Exception("Invalid modID!");
+                if (!isset($modName)) throw new Exception("Invalid modName!");
+                if (isset($userID) && !is_numeric($userID)) throw new Exception("Invalid userID!");
+
+                $this->task_queue(
+                    'cron_match_game_values__' . $modID,
+                    'cron_match_game_values',
+                    array(
+                        'numMatchesToUse' => $numMatchesToUse,
+                        'modID' => $modID,
+                        'modName' => $modName,
+                    ),
+                    $taskPriority,
+                    1,
+                    $userID
+                );
+            } else {
+                $activeMods = $this->db->q(
+                    'SELECT
+                              ml.`mod_id`,
+                              ml.`mod_identifier`,
+                              ml.`mod_name`,
+                              ml.`mod_steam_group`,
+                              ml.`mod_workshop_link`,
+                              ml.`mod_size`,
+                              ml.`workshop_updated`,
+                              ml.`date_recorded`
+                            FROM `mod_list` ml
+                            WHERE ml.`mod_active` = 1;'
+                );
+                if (empty($activeMods)) throw new Exception("No active mods!");
+
+                foreach ($activeMods as $key => $value) {
+                    $this->queue(
+                        $taskPriority,
+                        $numMatchesToUse,
+                        $value['mod_id'],
+                        $value['mod_name']
+                    );
+                }
+            }
+        }
+
+        private function parse_parameters(string $taskParameters)
+        {
+            $taskParameters = json_decode($taskParameters, true);
+
+            //schemaID
+
+            if (!empty($taskParameters['numMatchesToUse']) && is_numeric($taskParameters['numMatchesToUse'])) {
+                $this->numMatchesToUse = $taskParameters['numMatchesToUse'];
+            } else {
+                throw new Exception('Invalid `numMatchesToUse` parsed!');
+            }
+
+            if (!empty($taskParameters['modID']) && is_numeric($taskParameters['modID'])) {
+                $this->modID = $taskParameters['modID'];
+            } else {
+                throw new Exception('Invalid modID parsed!');
+            }
+
+            if (!empty($taskParameters['modName'])) {
+                $this->modName = $taskParameters['modName'];
+            } else {
+                throw new Exception('Invalid modName parsed!');
+            }
+        }
+
+        private function get_match_range($numMatchesToUse)
+        {
+            //MAX
+            $maxSQL = $this->db->q(
+                'SELECT `matchID`, `dateRecorded` FROM `s2_match` WHERE `modID` = ? ORDER BY `dateRecorded` DESC LIMIT 0,1;',
+                'i',
+                $this->modID
+            );
+            if (empty($maxSQL)) throw new Exception('No matches for this modID!');
+
+            $this->maxMatchID = $maxSQL[0]['matchID'];
+            $maxMatchDate = $maxSQL[0]['dateRecorded'];
+            echo "<strong>Max:</strong> {$this->maxMatchID} [{$maxMatchDate}]<br />";
+
+            $this->cronNotes['Max matchID'] = $this->maxMatchID;
+            $this->cronNotes['Max Date'] = $maxMatchDate;
+
+            //MIN
+            $minSQL = $this->db->q(
+                "SELECT `matchID`, `dateRecorded`
+                      FROM
+                        (
+                            SELECT `matchID`, `dateRecorded`
+                            FROM `s2_match`
+                            WHERE
+                              `modID` = ? AND
+                              `dateRecorded` >= (? - INTERVAL 7 DAY)
+                            ORDER BY `dateRecorded` DESC
+                            LIMIT 0,{$numMatchesToUse}
+                        ) t1
+                      ORDER BY `dateRecorded` ASC
+                      LIMIT 0,1;",
+                'is',
+                array($this->modID, $maxMatchDate)
+            );
+            if (empty($minSQL)) throw new Exception('No matches for this modID!');
+
+            $this->minMatchID = $minSQL[0]['matchID'];
+            $minMatchDate = $minSQL[0]['dateRecorded'];
+            echo "<strong>Min:</strong> {$this->minMatchID} [{$minMatchDate}]<br />";
+
+            $this->cronNotes['Min matchID'] = $this->minMatchID;
+            $this->cronNotes['Min Date'] = $minMatchDate;
+        }
+
+        private function setup_tables()
+        {
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp0_games`;');
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp1_grouping`;');
+            $this->db->q('DROP TABLE IF EXISTS `cache_custom_game_values_temp2_sort`;');
+
+            $this->db->q("CREATE TABLE IF NOT EXISTS `cache_custom_game_values` (
+                        `modID` BIGINT(255) NOT NULL,
+                        `fieldOrder` TINYINT(1) NOT NULL,
+                        `fieldValue` VARCHAR(100) NOT NULL,
+                        `numGames` BIGINT(255) NOT NULL,
+                        PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+            $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_game_values_temp0_games` (
+                        `schemaID` INT(255) NOT NULL,
+                        `fieldOrder` TINYINT(1) NOT NULL,
+                        `fieldValue` VARCHAR(100) NOT NULL,
+                        KEY `modID_fO_fV` (`fieldOrder`, `fieldValue`),
+                        KEY (`schemaID`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+            $this->db->q(
+                "CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_game_values_temp1_grouping` (
+                                    `valueGroupingLower` INT(100) NOT NULL,
+                                    `valueGroupingUpper` INT(100) NOT NULL,
+                                    `numGames` INT(100) NOT NULL,
+                                    PRIMARY KEY (`valueGroupingLower`, `numGames`)
+                                ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_game_values_temp2_sort` (
+                        `modID` BIGINT(255) NOT NULL,
+                        `fieldOrder` TINYINT(1) NOT NULL,
+                        `fieldValue` VARCHAR(100) NOT NULL,
+                        `numGames` BIGINT(255) NOT NULL,
+                        PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+            );
+
+            $this->db->q("INSERT INTO `cache_custom_game_values_temp2_sort`(`modID`, `fieldOrder`, `fieldValue`, `numGames`)
+                      SELECT `modID`, `fieldOrder`, `fieldValue`, `numGames`
+                        FROM `cache_custom_game_values`;"
+            );
+
+            $this->db->q("DELETE FROM `cache_custom_game_values_temp2_sort` WHERE `modID` = ?;",
+                'i',
+                array($this->modID)
+            );
+        }
+
+        //ToDO: We may need a new index that is (`modID`, `schemaID`, `matchID`)
+
+        private function grab_game_values_from_matches(int $minMatchID, int $maxMatchID)
+        {
+            if (empty($minMatchID) || empty($maxMatchID) || $maxMatchID <= $minMatchID) throw new Exception('Invalid min or max matchID!');
+
+            $totalGameValues = $this->db->q("INSERT INTO `cache_custom_game_values_temp0_games`(`schemaID`, `fieldOrder`, `fieldValue`)
+                      SELECT `schemaID`, `fieldOrder`, `fieldValue`
+                        FROM `s2_match_custom`
+                        WHERE `matchID` BETWEEN ? AND ? AND `modID` = ?;",
+                'iii',
+                array($minMatchID, $maxMatchID, $this->modID)
+            );
+            if (empty($totalGameValues)) throw new Exception('No game values found for given `modID`');
+
+            $this->totalGameValues = $totalGameValues;
+            echo "<strong>Game Values:</strong> {$this->totalGameValues}<br />";
+        }
+
+        private function get_schema_id()
+        {
+            $activeSchema = $this->db->q(
+                "SELECT MAX(`schemaID`) AS `schemaID`
+                        FROM `s2_mod_custom_schema`
+                        WHERE `schemaApproved` = 1 AND `modID` = ?
+                        LIMIT 0,1;",
+                'i',
+                array($this->modID)
+            );
+            if (empty($activeSchema)) throw new Exception("No active schema found for given `modID`");
+            $this->schemaID = $activeSchema[0]['schemaID'];
+        }
+
+        private function cleanup_old_schemas_from_data()
+        {
+            $this->db->q(
+                'DELETE FROM `cache_custom_game_values_temp0_games` WHERE `schemaID` <> ?;',
+                'i',
+                array($this->schemaID)
+            );
+        }
+
+        private function count_remaining_values()
+        {
+            $customGameValues = $this->db->q(
+                "SELECT COUNT(*) AS `totalGameValues` FROM `cache_custom_game_values_temp0_games`;"
+            );
+
+            $customGameValues = !empty($customGameValues) ? $customGameValues[0]['totalGameValues'] : 0;
+            echo "<strong>Game Values:</strong> {$customGameValues}<br />";
+        }
+
+        private function get_schema_definition()
+        {
+            //FIND OUT WHICH FIELDS ARE GROUPABLE
+            $schemaFields = $this->db->q(
+                'SELECT
+                          s2mcsf.`schemaID`,
+                          s2mcsf.`fieldOrder`,
+                          s2mcsf.`isGroupable`,
+                          s2mcsf.`customValueDisplay`
+                        FROM `s2_mod_custom_schema_fields` s2mcsf
+                        WHERE
+                          s2mcsf.`schemaID` = (
+                            SELECT MAX(`schemaID`) FROM `s2_mod_custom_schema` WHERE `modID` = ? AND `schemaApproved` = 1
+                          ) AND
+                          s2mcsf.`fieldType` = 1;',
+                'i',
+                array($this->modID)
+            );
+            if (empty($schemaFields)) throw new Exception("No schema fields defined for `Game Values` in this mod!");
+            $this->schemaFields = $schemaFields;
+
+            echo "SchemaID: {$this->schemaID}<br />";
+            echo "Schema Fields:<br />";
+            echo "<ul>";
+            foreach ($this->schemaFields as $key => $value) {
+                echo '<li>' . $value['isGroupable'] . ' -- ' . $value['customValueDisplay'] . ' {' . $value['fieldOrder'] . '}</li>';
+            }
+            echo "</ul>";
+        }
+
+        private function aggregate_game_values()
+        {
+            //IF NUMBER OF UNIQUE VALUES IS GREATER THAN 20
+            //SELECT THE DATA SET FOR THE FIELD
+            //FIND: 3rd QUARTILE, RANGE
+            //IF 3rd QUARTILE IS LARGER THAN 10
+            //MAKE 10 GROUPINGS STARTING FROM 0 TO 3rd QUARTILE
+            //THROW REST OF DATA INTO 5 EQUAL GROUPS
+
+            foreach ($this->schemaFields as $key => $value) {
+                $isGroupable = $value['isGroupable'];
+                $fieldID = $value['fieldOrder'];
+                $fieldName = $value['customValueDisplay'];
+
+                if ($isGroupable == '1') {
+                    //Find if there is data for field
+                    $playData = $this->db->q(
+                        'SELECT
+                                    `fieldOrder`,
+                                    `fieldValue`
+                                FROM `cache_custom_game_values_temp0_games`
+                                WHERE `fieldOrder` = ?;',
+                        'i',
+                        array($fieldID)
+                    );
+
+                    //If not data for this groupable field, skip it and do it normally
+                    if (empty($playData)) {
+                        echo "<h4>{$fieldName}</h4>";
+                        echo "No data!<br />";
+                        continue;
+                    }
+
+                    $bigArray = array();
+                    foreach ($playData as $key3 => $value3) {
+                        $bigArray[] = $value3['fieldValue'];
+                    }
+
+                    $statsLibrary = new basicStatsForArrays($bigArray);
+
+                    $quart75 = $statsLibrary->Quartile_75();
+                    $max = $statsLibrary->Max();
+                    $min = $statsLibrary->Min();
+                    $count = $statsLibrary->Count();
+                    $lpad_length = strlen(floor($max));
+
+                    $firstGroupMaxCategories = 30;
+                    $secondGroupMaxCategories = 20;
+                    $firstGroupMaxValue = $firstGroupMaxCategories + 10;
+
+                    //If the amount of values does not warrant splitting, skip it and do it normally
+                    if (($max <= $firstGroupMaxValue) || ($quart75 < $firstGroupMaxCategories)) {
+                        echo '<ul>';
+                        echo "<li><strong>{$fieldName}</strong></li>";
+                        echo "<ul><li>Third quartile not above {$firstGroupMaxCategories} or maximum value not greater than {$firstGroupMaxValue}!</li></ul>";
+                        echo '</ul>';
+                        continue;
+                    }
+
+                    echo '<ul>';
+                    echo "<li><strong>{$fieldName}</strong> [{$fieldID}]</li>";
+                    echo '<ul>';
+                    echo "<li>Count: {$count}</li>";
+                    echo "<li>Range: {$min} - {$max}</li>";
+                    echo "<li>LPAD: {$lpad_length}</li>";
+                    echo "<li>Quartile_75: {$quart75}</li>";
+
+                    $firstGroupBy = floor($quart75 / $firstGroupMaxCategories);
+                    $firstGroupLimit = ($firstGroupBy * $firstGroupMaxCategories);
+
+                    $secondGroupBy = floor(($max - $firstGroupLimit) / $secondGroupMaxCategories);
+
+                    echo "<li>Values [0 - {$firstGroupLimit}] in {$firstGroupMaxCategories} groups with value of {$firstGroupBy}</li>";
+                    echo "<li>Values [{$firstGroupLimit}+] in {$secondGroupMaxCategories} groups with value of {$secondGroupBy}</li>";
+
+                    echo '</ul>';
+                    echo '</ul>';
+
+                    $this->db->q("TRUNCATE `cache_custom_game_values_temp1_grouping`;");
+
+                    $this->db->q(
+                        "INSERT INTO `cache_custom_game_values_temp1_grouping`
+                                    SELECT
+                                      (FLOOR(`fieldValue` / {$firstGroupBy}) * {$firstGroupBy}) AS valueGroupingLower,
+                                      ((FLOOR(`fieldValue` / {$firstGroupBy}) + 1) * {$firstGroupBy}) AS valueGroupingUpper,
+                                      COUNT(*) AS numGames
+                                    FROM `cache_custom_game_values_temp0_games`
+                                    WHERE `fieldOrder` = ? AND `fieldValue` < ?
+                                    GROUP BY valueGroupingLower;",
+                        'ii',
+                        array($fieldID, $firstGroupLimit)
+                    );
+
+                    $this->db->q(
+                        'DELETE FROM `cache_custom_game_values_temp0_games`
+                                    WHERE `fieldOrder` = ? AND `fieldValue` < ?;',
+                        'ii',
+                        array($fieldID, $firstGroupLimit)
+                    );
+
+                    $this->db->q(
+                        "INSERT INTO `cache_custom_game_values_temp1_grouping`
+                                SELECT
+                                  ((FLOOR((`fieldValue` - {$firstGroupLimit}) / {$secondGroupBy}) * {$secondGroupBy}) + {$firstGroupLimit}) AS valueGroupingLower,
+                                  (((FLOOR((`fieldValue` - {$firstGroupLimit}) / {$secondGroupBy}) + 1) * {$secondGroupBy}) + {$firstGroupLimit}) AS valueGroupingUpper,
+                                  COUNT(*) AS numGames
+                                FROM `cache_custom_game_values_temp0_games`
+                                WHERE `fieldOrder` = ?
+                                GROUP BY valueGroupingLower;",
+                        'i',
+                        array($fieldID)
+                    );
+
+                    $this->db->q(
+                        'DELETE FROM `cache_custom_game_values_temp0_games`
+                                    WHERE `fieldOrder` = ?;',
+                        'i',
+                        array($fieldID)
+                    );
+
+                    $customGameValueCombos = $this->db->q(
+                        "INSERT INTO `cache_custom_game_values_temp2_sort`
+                                SELECT
+                                  {$this->modID} AS modID2,
+                                  {$fieldID} AS fieldOrder2,
+                                  CONCAT(LPAD(`valueGroupingLower`,{$lpad_length},'0'), ' - ', LPAD(`valueGroupingUpper`,{$lpad_length},'0')) AS fieldValue2,
+                                  SUM(`numGames`) AS numGames
+                                FROM `cache_custom_game_values_temp1_grouping`
+                                GROUP BY modID2, fieldOrder2, fieldValue2;"
+                    );
+
+                    if (!empty($customGameValueCombos)) {
+                        $this->totalGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
+                            ? $customGameValueCombos
+                            : 0;
+                    }
+                } else {
+                    //DO NORMAL GROUPING FOR REMAINING FIELDS IN THE TABLE
+                    $customGameValueCombos = $this->db->q(
+                        "INSERT INTO `cache_custom_game_values_temp2_sort`
+                                    SELECT
+                                        {$this->modID} AS modID,
+                                        s2mc.`fieldOrder`,
+                                        s2mc.`fieldValue`,
+                                        COUNT(*) AS numGames
+                                    FROM `cache_custom_game_values_temp0_games` s2mc
+                                    WHERE `fieldOrder` = ?
+                                    GROUP BY s2mc.`fieldOrder`, s2mc.`fieldValue`;",
+                        'i',
+                        array($fieldID)
+                    );
+
+                    if (!empty($customGameValueCombos)) {
+                        $this->totalGameValueCombos += $customGameValueCombos = is_numeric($customGameValueCombos)
+                            ? $customGameValueCombos
+                            : 0;
+                    }
+                }
+            }
+
+            echo "<strong>Results:</strong> Game Values: {$this->totalGameValues} || Game Value Combos: {$this->totalGameValueCombos}<br />";
+        }
+
+        private function clean_tables()
+        {
+            $this->db->q("RENAME TABLE `cache_custom_game_values` TO `cache_custom_game_values_old`, `cache_custom_game_values_temp2_sort` TO `cache_custom_game_values`;");
+
+            $this->db->q("DROP TABLE IF EXISTS `cache_custom_game_values_old`;");
+            $this->db->q("DROP TABLE IF EXISTS `cache_custom_game_values_temp0_games`;");
+            $this->db->q("DROP TABLE IF EXISTS `cache_custom_game_values_temp1_grouping`;");
+            $this->db->q("DROP TABLE IF EXISTS `cache_custom_game_values_temp2_sort`;");
+        }
+    }
+}
+

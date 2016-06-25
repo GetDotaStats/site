@@ -147,6 +147,10 @@ try {
                         $cron_mod_matches = new cron_mod_matches($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
                         $cron_mod_matches->execute($value['cron_id'], $value['cron_task']);
                         break;
+                    case 'cron_match_player_count':
+                        $cron_mod_matches = new cron_mod_match_player_counts($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
+                        $cron_mod_matches->execute($value['cron_id'], $value['cron_task']);
+                        break;
                     case 'cron_workshop':
                         //we use API key 6 here, to capture the mods that are friends only to jimmydorry
                         $cron_workshop = new cron_workshop($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key6, $timeStarted);
@@ -159,6 +163,10 @@ try {
                     case 'cron_match_flags':
                         $cron_cron_match_flags = new cron_match_flags($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
                         $cron_cron_match_flags->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
+                        break;
+                    case 'cron_match_game_values':
+                        $cron_cron_game_values = new cron_match_game_values($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
+                        $cron_cron_game_values->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
                         break;
                     default:
                         echo '<h2>Unknown Cron Task</h2>';
@@ -180,11 +188,8 @@ try {
             echo '<hr />';
         }
     }
-
-
 } catch (Exception $e) {
     echo '<br />Caught Exception (MAIN) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
 } finally {
     if (isset($memcached)) $memcached->close();
 }
-
