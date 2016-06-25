@@ -309,8 +309,8 @@ try {
 
             //Iterate over all of the players for this round in the match summary array
             foreach ($value['players'] as $key2 => $value2) {
-                $userAvatar = !empty($value2['user_avatar'])
-                    ? $value2['user_avatar']
+                $userAvatar = !empty($value2['userAvatar'])
+                    ? $value2['userAvatar']
                     : $CDN_image . '/images/misc/steam/blank_avatar.jpg';
                 $userAvatarLink = '<a target="_blank" href="https://steamcommunity.com/profiles/' . $value2['steamID64'] . '"><img src="' . $userAvatar . '" width="14" /></a>';
 
