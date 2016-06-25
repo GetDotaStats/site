@@ -14,7 +14,7 @@ try {
     $cronModMatches->queue(2);
 
 } catch (Exception $e) {
-    echo '<br />Caught Exception (MAIN) -- ' . $e->getFile() . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
+    echo '<br />Caught Exception (MAIN) -- ' . basename($e->getFile()) . ':' . $e->getLine() . '<br />' . $e->getMessage() . '<br /><br />';
 } finally {
     if (isset($memcached)) $memcached->close();
 }
