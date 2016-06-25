@@ -52,11 +52,11 @@ try {
     {
         if (!empty($cronTasksActive)) {
             echo '<div class="row">
-                <div class="col-md-3"><span class="h4">Task</span></div>
+                <div class="col-md-4"><span class="h4">Task</span></div>
                 <div class="col-md-2"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Priority</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Blocking</span></div>
-                <div class="col-md-2"><span class="h4">User</span></div>
+                <div class="col-md-1"><span class="h4">User</span></div>
                 <div class="col-md-2 text-right"><span class="h4">Queued</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Kill</span></div>
             </div>';
@@ -73,11 +73,11 @@ try {
                     : '-';
 
                 echo '<div class="row searchRow">
-                <div class="col-md-3">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
+                <div class="col-md-4">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
                 <div class="col-md-2">' . $group . '</div>
                 <div class="col-md-1 text-center">' . $value['cron_priority'] . '</div>
                 <div class="col-md-1 text-center">' . $value['cron_blocking'] . '</div>
-                <div class="col-md-2">' . $user . '</div>
+                <div class="col-md-1">' . $user . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['cron_date']) . '</div>
                 <div class="col-md-1 text-center">X</div>
             </div>';
@@ -120,11 +120,11 @@ try {
     {
         if (!empty($cronTasksQueued)) {
             echo '<div class="row">
-                <div class="col-md-3"><span class="h4">Task</span></div>
+                <div class="col-md-4"><span class="h4">Task</span></div>
                 <div class="col-md-2"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Priority</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Blocking</span></div>
-                <div class="col-md-2"><span class="h4">User</span></div>
+                <div class="col-md-1"><span class="h4">User</span></div>
                 <div class="col-md-2 text-right"><span class="h4">Queued</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Kill</span></div>
             </div>';
@@ -141,11 +141,11 @@ try {
                     : '-';
 
                 echo '<div class="row searchRow">
-                <div class="col-md-3">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
+                <div class="col-md-4">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
                 <div class="col-md-2">' . $group . '</div>
                 <div class="col-md-1 text-center">' . $value['cron_priority'] . '</div>
                 <div class="col-md-1 text-center">' . $value['cron_blocking'] . '</div>
-                <div class="col-md-2">' . $user . '</div>
+                <div class="col-md-1">' . $user . '</div>
                 <div class="col-md-2 text-right">' . relative_time_v3($value['cron_date']) . '</div>
                 <div class="col-md-1 text-center">X</div>
             </div>';
@@ -189,11 +189,11 @@ try {
     {
         if (!empty($cronTasksCompleted)) {
             echo '<div class="row">
-                <div class="col-md-3"><span class="h4">Task</span></div>
+                <div class="col-md-4"><span class="h4">Task</span></div>
                 <div class="col-md-2"><span class="h4">Group</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Priority</span></div>
                 <div class="col-md-1 text-center"><span class="h4">Blocking</span></div>
-                <div class="col-md-2"><span class="h4">User</span></div>
+                <div class="col-md-1"><span class="h4">User</span></div>
                 <div class="col-md-1 text-right"><span class="h4">Duration</span></div>
                 <div class="col-md-2 text-right"><span class="h4">Queued</span></div>
             </div>';
@@ -209,11 +209,11 @@ try {
                     ? $value['cron_task_group']
                     : '-';
                 echo '<div class="row searchRow">
-                        <div class="col-md-3">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
+                        <div class="col-md-4">' . $value['cron_id'] . ' -- ' . $value['cron_task'] . '</div>
                         <div class="col-md-2">' . $group . '</div>
                         <div class="col-md-1 text-center">' . $value['cron_priority'] . '</div>
                         <div class="col-md-1 text-center">' . $value['cron_blocking'] . '</div>
-                        <div class="col-md-2">' . $user . '</div>
+                        <div class="col-md-1">' . $user . '</div>
                         <div class="col-md-1 text-right">' . $value['cron_duration'] . ' sec</div>
                         <div class="col-md-2 text-right">' . relative_time_v3($value['cron_date']) . '</div>
                     </div>';
