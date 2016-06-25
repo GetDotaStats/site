@@ -23,6 +23,10 @@ try {
         ? adminCheck($_SESSION['user_id64'], 'animufeed')
         : false;
 
+    $emailCheck = !empty($_SESSION['user_id64'])
+        ? adminCheck($_SESSION['user_id64'], 'email')
+        : false;
+
     $csp = generate_csp($CSParray);
     $csp = !empty($csp) ? '<meta http-equiv="Content-Security-Policy" content="' . $csp . '">' : '';
 } catch (Exception $e) {
@@ -179,6 +183,11 @@ try {
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Feeds</li>
                                 <li><a class="nav-clickable" href="#feeds/">Animu</a></li>
+                            <?php } ?>
+                            <?php if (!empty($emailCheck)) { ?>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Emails</li>
+                                <li><a class="nav-clickable" href="#admin__email/">Email Lookup</a></li>
                             <?php } ?>
                         </ul>
                     </li>
