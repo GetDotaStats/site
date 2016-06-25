@@ -31,9 +31,11 @@ try {
     //////////////////
     {
         try {
-            echo '<h3>Custom Player Values</h3>';
+            echo '<div class="alert alert-danger" role="alert"><strong>ANNOUNCEMENT</strong> Custom Player Values coming back soon.</div>';
 
-            echo '<p>Breakdown of custom player values for all games played in the last week. Calculated twice a day. Player values are arbitrary values that the mod assigns per user at the end of the game or round.';
+			echo '<h3>Custom Player Values</h3>';
+
+            echo '<p>Breakdown of custom player values for all games played in the last week. Player values are arbitrary values that the mod assigns per user at the end of the game or round.';
 
             try {
                 $serviceReporting = new serviceReporting($db);
