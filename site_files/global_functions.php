@@ -73,129 +73,131 @@ if (!function_exists('exceptions_error_handler')) {
 
 set_error_handler('exceptions_error_handler');
 
-class Cache
-{
-    private $id;
-    private $obj;
-    private $memcache;
-
-    function __construct($host = 'localhost', $port = 11211, $useMemcache = false, $id = NULL)
+if (!class_exists('Cache')) {
+    class Cache
     {
-        $host = empty($host) ? 'localhost' : $host;
-        $port = empty($port) ? 11211 : $port;
+        private $id;
+        private $obj;
+        private $memcache;
 
-        $this->id = $id;
-        $this->memcache = $useMemcache;
+        function __construct($host = 'localhost', $port = 11211, $useMemcache = false, $id = NULL)
+        {
+            $host = empty($host) ? 'localhost' : $host;
+            $port = empty($port) ? 11211 : $port;
 
-        if ($this->memcache) {
-            $this->obj = new Memcache();
-        } else {
-            $this->obj = new Memcached($id);
-        }
+            $this->id = $id;
+            $this->memcache = $useMemcache;
 
-        return $this->connect($host, $port);
-    }
-
-    public function connect($host, $port)
-    {
-        if ($this->memcache) {
-            return $this->obj->addServer($host, $port);
-        } else {
-            $servers = $this->obj->getServerList();
-            if (is_array($servers)) {
-                foreach ($servers as $server)
-                    if ($server['host'] == $host and $server['port'] == $port)
-                        return true;
+            if ($this->memcache) {
+                $this->obj = new Memcache();
+            } else {
+                $this->obj = new Memcached($id);
             }
-            return $this->obj->addServer($host, $port);
+
+            return $this->connect($host, $port);
         }
-    }
 
-    public function clear_servers()
-    {
-        if (!$this->memcache) {
-            return $this->obj->resetServerList();
+        public function connect($host, $port)
+        {
+            if ($this->memcache) {
+                return $this->obj->addServer($host, $port);
+            } else {
+                $servers = $this->obj->getServerList();
+                if (is_array($servers)) {
+                    foreach ($servers as $server)
+                        if ($server['host'] == $host and $server['port'] == $port)
+                            return true;
+                }
+                return $this->obj->addServer($host, $port);
+            }
         }
-        return false;
-    }
 
-    public function close()
-    {
-        if ($this->memcache) {
-            return $this->obj->close();
-        } else {
-            //we don't need to close the connection if we are just gonna open them again immediately
-            //return $this->obj->quit();
-            return true;
+        public function clear_servers()
+        {
+            if (!$this->memcache) {
+                return $this->obj->resetServerList();
+            }
+            return false;
         }
-    }
 
-    public function get($cache_name)
-    {
-        return $this->obj->get($cache_name);
-    }
-
-    public function set($cache_name, $cache_value, $cache_expiration_secs = 15)
-    {
-        if ($this->memcache) {
-            return $this->obj->set($cache_name, $cache_value, 0, $cache_expiration_secs);
-        } else {
-            return $this->obj->set($cache_name, $cache_value, $cache_expiration_secs);
+        public function close()
+        {
+            if ($this->memcache) {
+                return $this->obj->close();
+            } else {
+                //we don't need to close the connection if we are just gonna open them again immediately
+                //return $this->obj->quit();
+                return true;
+            }
         }
-    }
 
-    public function delete($cache_name, $cache_refusal_secs = 0)
-    {
-        if ($this->memcache) {
-            return $this->obj->delete($cache_name);
-        } else {
-            return $this->obj->delete($cache_name, $cache_refusal_secs);
+        public function get($cache_name)
+        {
+            return $this->obj->get($cache_name);
         }
-    }
 
-    public function replace($cache_name, $cache_value, $cache_expiration_secs = 15)
-    {
-        if ($this->memcache) {
-            return $this->obj->replace($cache_name, $cache_value, 0, $cache_expiration_secs);
-        } else {
-            return $this->obj->replace($cache_name, $cache_value, $cache_expiration_secs);
+        public function set($cache_name, $cache_value, $cache_expiration_secs = 15)
+        {
+            if ($this->memcache) {
+                return $this->obj->set($cache_name, $cache_value, 0, $cache_expiration_secs);
+            } else {
+                return $this->obj->set($cache_name, $cache_value, $cache_expiration_secs);
+            }
         }
-    }
 
-    public function touch($cache_name, $cache_expiration_secs = 15)
-    {
-        if ($this->memcache) {
-            $cache_value = $this->obj->get($cache_name);
-            return $this->obj->set($cache_name, $cache_value, 0, $cache_expiration_secs);
-        } else {
-            return $this->obj->touch($cache_name, $cache_expiration_secs);
+        public function delete($cache_name, $cache_refusal_secs = 0)
+        {
+            if ($this->memcache) {
+                return $this->obj->delete($cache_name);
+            } else {
+                return $this->obj->delete($cache_name, $cache_refusal_secs);
+            }
         }
-    }
 
-    public function decrement($cache_name, $cache_offset = 1, $cache_initial_value = 0, $cache_expiration_secs = 15)
-    {
-        if ($this->memcache) {
-            return $this->obj->decrement($cache_name, $cache_offset);
-        } else {
-            return $this->obj->decrement($cache_name, $cache_offset, $cache_initial_value, $cache_expiration_secs);
+        public function replace($cache_name, $cache_value, $cache_expiration_secs = 15)
+        {
+            if ($this->memcache) {
+                return $this->obj->replace($cache_name, $cache_value, 0, $cache_expiration_secs);
+            } else {
+                return $this->obj->replace($cache_name, $cache_value, $cache_expiration_secs);
+            }
         }
-    }
 
-    public function increment($cache_name, $cache_offset = 1, $cache_initial_value = 0, $cache_expiration_secs = 15)
-    {
-        if ($this->memcache) {
-            return $this->obj->increment($cache_name, $cache_offset);
-        } else {
-            return $this->obj->increment($cache_name, $cache_offset, $cache_initial_value, $cache_expiration_secs);
+        public function touch($cache_name, $cache_expiration_secs = 15)
+        {
+            if ($this->memcache) {
+                $cache_value = $this->obj->get($cache_name);
+                return $this->obj->set($cache_name, $cache_value, 0, $cache_expiration_secs);
+            } else {
+                return $this->obj->touch($cache_name, $cache_expiration_secs);
+            }
         }
-    }
 
-    public function flush($delay = 0)
-    {
-        if ($this->memcache) {
-            return $this->obj->flush();
-        } else {
-            return $this->obj->flush($delay);
+        public function decrement($cache_name, $cache_offset = 1, $cache_initial_value = 0, $cache_expiration_secs = 15)
+        {
+            if ($this->memcache) {
+                return $this->obj->decrement($cache_name, $cache_offset);
+            } else {
+                return $this->obj->decrement($cache_name, $cache_offset, $cache_initial_value, $cache_expiration_secs);
+            }
+        }
+
+        public function increment($cache_name, $cache_offset = 1, $cache_initial_value = 0, $cache_expiration_secs = 15)
+        {
+            if ($this->memcache) {
+                return $this->obj->increment($cache_name, $cache_offset);
+            } else {
+                return $this->obj->increment($cache_name, $cache_offset, $cache_initial_value, $cache_expiration_secs);
+            }
+        }
+
+        public function flush($delay = 0)
+        {
+            if ($this->memcache) {
+                return $this->obj->flush();
+            } else {
+                return $this->obj->flush($delay);
+            }
         }
     }
 }
@@ -235,6 +237,11 @@ if (!class_exists("dbWrapper_v3")) {
             }
             $this->q('SET NAMES utf8;');
             return true;
+        }
+
+        public function __destruct()
+        {
+            $this->close();
         }
 
         public function escape($query)
@@ -327,9 +334,21 @@ if (!class_exists("dbWrapper_v3")) {
         {
             return $this->_mysqli->affected_rows;
         }
+
+        public function close()
+        {
+            if (!empty($this->_mysqli)) {
+                if (gettype($this->_mysqli == 'object')) {
+                    $this->_mysqli->close();
+                } else {
+                    throw new Exception("Couldn't close DB cleanly! Not a object!");
+                }
+            } else {
+                throw new Exception("Couldn't close DB cleanly! Empty!");
+            }
+        }
     }
 }
-
 
 if (!function_exists("curl")) {
     function curl($link, $postfields = '', $cookie = '', $refer = '', $user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1', $timeoutConnect = false, $timeoutExecute = false)
@@ -989,8 +1008,8 @@ if (!function_exists("formatExceptionHandling")) {
             $message = $e->getMessage();
             $messageFormatted = bootstrapMessage('Oh Snap', $message, 'danger');
         } else {
-            $message = 'Caught Exception -- ' . $e->getFile() . ':' . $e->getLine() . '<br /><br />' . $e->getMessage();
-            $messageFormatted = bootstrapMessage('Oh Snap', $message, 'danger');
+            $message = $e->getMessage() . ' (' . basename($e->getFile()) . ':' . $e->getLine() . ')';
+            $messageFormatted = bootstrapMessage('Caught Exception', $message, 'danger');
         }
 
         return $messageFormatted;
@@ -2076,8 +2095,6 @@ if (!class_exists('curl_improved')) {
     class curl_improved
     {
         private $ch = null;
-        private $page = null;
-
         private $isBehindProxy = null;
         private $hasEnabledProxy = false;
 
@@ -2100,28 +2117,34 @@ if (!class_exists('curl_improved')) {
             $this->closeLink();
         }
 
-        public function setLink(string $link)
+        public function setLink(string $link, $GET_fields = array())
         {
+            if (!empty($GET_fields) && is_array($GET_fields)) {
+                $fields = $this->fieldArrayToString($GET_fields);
+                $link .= $fields;
+            }
+
             curl_setopt($this->ch, CURLOPT_URL, $link);
         }
 
         public function getPage()
         {
-            if ($this->isBehindProxy) {
-                if (!$this->hasEnabledProxy) {
+            if ($this->isBehindProxy === true) {
+                if ($this->hasEnabledProxy === false) {
                     throw new Exception('Config says we are behind proxy! We must setProxyDetails() before attempting to grab page!');
                 }
             }
 
-            $this->page = curl_exec($this->ch);
+            $page = curl_exec($this->ch);
 
-            if (empty($this->page) || !$this->page) {
-                $this->page = false;
+            if (empty($page) || !$page) {
+                $page = curl_errno($this->ch);
+                $page .= ' - ' . curl_error($this->ch);
             }
 
             $this->closeLink();
 
-            return $this->page;
+            return $page;
         }
 
         public function closeLink()
@@ -2192,27 +2215,59 @@ if (!class_exists('curl_improved')) {
 
         public function setPostFields($postFields = array())
         {
-            if (is_array($postFields)) {
+            $fields = $this->fieldArrayToString($postFields);
+            $this->setOptions(array(CURLOPT_POST => 1, CURLOPT_POSTFIELDS => $fields));
+        }
+
+        public function fieldArrayToString($fields = array())
+        {
+            if (!empty($fields) && is_array($fields)) {
                 $fields_string = '';
-                foreach ($postFields as $key => $value) {
+                foreach ($fields as $key => $value) {
+                    $value = rtrim($value);
                     $fields_string .= $key . '=' . $value . '&';
                 }
-                rtrim($fields_string, '&');
-                $postFields = $fields_string;
+                //rtrim($fields_string, '&');
+                $fields_string = substr($fields_string, 0, -1);
+
+                $fields = $fields_string;
                 unset($fields_string);
+            } else {
+                throw new Exception('Invalid fields array! Not an array or empty!');
             }
 
-            if (!empty($postFields)) {
-                $this->setOptions(array(CURLOPT_POST => 1, CURLOPT_POSTFIELDS => $postFields));
+            if (!empty($fields)) {
+                return $fields;
             } else {
-                throw new Exception('Attempted to POST with empty postfields!');
+                throw new Exception('Invalid fields array! Empty!');
             }
         }
 
-        public function setCookie($cookie)
+        public function setCookie(string $cookie)
         {
             if (!empty($cookie)) {
                 $this->setOptions(array(CURLOPT_COOKIEJAR => $cookie, CURLOPT_COOKIEFILE => $cookie));
+            } else {
+                throw new Exception('Empty cookie path!');
+            }
+        }
+
+        public function setSSLcert(string $SSLcertPath)
+        {
+            if (!empty($SSLcertPath)) {
+                if (is_file($SSLcertPath)) {
+                    $this->setOptions(
+                        array(
+                            CURLOPT_SSL_VERIFYPEER => true,
+                            CURLOPT_SSL_VERIFYHOST => 2,
+                            CURLOPT_CAINFO => getcwd() . '/' . $SSLcertPath
+                        )
+                    );
+                } else {
+                    throw new Exception('Invalid SSL cert path!');
+                }
+            } else {
+                throw new Exception('Empty SSL cert path!');
             }
         }
 
@@ -2275,5 +2330,65 @@ if (!function_exists('convert_array_bools')) {
 
         array_walk_recursive($data, 'converter');
         return $data;
+    }
+}
+
+if (!function_exists('generateUUIDv4')) {
+    function generateUUIDv4()
+    {
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+
+                // 32 bits for "time_low"
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+
+                // 16 bits for "time_mid"
+                mt_rand(0, 0xffff),
+
+                // 16 bits for "time_hi_and_version",
+                // four most significant bits holds version number 4
+                mt_rand(0, 0x0fff) | 0x4000,
+
+                // 16 bits, 8 bits for "clk_seq_hi_res",
+                // 8 bits for "clk_seq_low",
+                // two most significant bits holds zero and one for variant DCE1.1
+                mt_rand(0, 0x3fff) | 0x8000,
+
+                // 48 bits for "node"
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            );
+        } else {
+            return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+
+                // 32 bits for "time_low"
+                random_int(0, 0xffff), random_int(0, 0xffff),
+
+                // 16 bits for "time_mid"
+                random_int(0, 0xffff),
+
+                // 16 bits for "time_hi_and_version",
+                // four most significant bits holds version number 4
+                random_int(0, 0x0fff) | 0x4000,
+
+                // 16 bits, 8 bits for "clk_seq_hi_res",
+                // 8 bits for "clk_seq_low",
+                // two most significant bits holds zero and one for variant DCE1.1
+                random_int(0, 0x3fff) | 0x8000,
+
+                // 48 bits for "node"
+                random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xffff)
+            );
+        }
+    }
+}
+
+if (!function_exists('random_string')) {
+    function random_string(int $length = 12)
+    {
+        if (!empty($length) && is_numeric($length)) {
+            return bin2hex(random_bytes($length));
+        } else {
+            throw new Exception("Invalid random string length!");
+        }
     }
 }
