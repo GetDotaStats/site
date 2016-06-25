@@ -24,7 +24,7 @@ try {
 
         if (empty($arcanaVotes)) throw new Exception("Couldn't get arcana votes!");
 
-        $memcached->set('d2_arcana_votes', $arcanaVotes, 5 * 60);
+        $memcached->set('d2_arcana_votes', $arcanaVotes, 1 * 60);
     }
 
     $orderedRounds = array();
