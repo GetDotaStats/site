@@ -118,11 +118,10 @@ try {
                             <li class="divider"></li>
                         <?php } ?>
                         <li class="dropdown-header">Resources</li>
-                        <li><a class="nav-clickable" href="#s2__guide_stat_collection">Implementing Stats</a></li>
-                        <li><a class="nav-clickable" href="#s2__schema_matches">Schema stat-collection</a></li>
-                        <li><a class="nav-clickable" href="#s2__schema_highscore">Schema stat-highscore</a></li>
-                        <li><a>Schema stat-rpg <span
-                                    class="label label-danger">SOON</span></a></li>
+                        <li><a class="nav-clickable" href="#docs__implement_stat-collection">Implementing Stats</a></li>
+                        <li><a class="nav-clickable" href="#docs__stat-collection">Schema stat-collection</a></li>
+                        <li><a class="nav-clickable" href="#docs__stat-highscore">Schema stat-highscore</a></li>
+                        <li><a class="nav-clickable" href="#docs__stat-save">Schema stat-save</a></li>
                         <li><a class="nav-clickable" href="#source2__beta_changes">Dota 2 Reborn Changes</a></li>
                     </ul>
                 </li>

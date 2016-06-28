@@ -197,7 +197,7 @@ try {
 
     echo '<div class="text-center">
             <a class="nav-clickable btn btn-default btn-lg" href="#s2__my__mods">My Mods</a>
-            <a class="nav-clickable btn btn-default btn-lg" href="#s2__guide_stat_collection">Implementing Stats</a>
+            <a class="nav-clickable btn btn-default btn-lg" href="#docs__implement_stat-collection">Implementing Stats</a>
         </div>';
 
     echo '<span class="h4">&nbsp;</span>';
