@@ -61,6 +61,13 @@ if (!class_exists('cron_task')) {
                 $taskParameters = json_encode($taskParameters);
             }
 
+            $taskCheck = $this->db->q(
+                "SELECT * FROM `cron_tasks` WHERE (`cron_status` = 0 OR `cron_status` = 1) AND `cron_task` = ? LIMIT 0,1;",
+                's',
+                array($taskName)
+            );
+            if (!empty($taskCheck)) throw new Exception("Task already queued!");
+
             $this->db->q("INSERT INTO `cron_tasks`
                   (
                       `cron_task`,
@@ -2259,18 +2266,18 @@ if (!class_exists('cron_match_player_values')) {
                         `fieldOrder` TINYINT(1) NOT NULL,
                         `fieldValue` VARCHAR(100) NOT NULL,
                         `numGames` BIGINT(255) NOT NULL,
-                        `numWins` bigint(255) NOT NULL,
+                        `numWins` BIGINT(255) NOT NULL,
                         PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
             $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_player_values_temp0_vg` (
-                        `matchID` int(255) NOT NULL,
-                        `roundID` tinyint(1) NOT NULL,
-                        `modID` int(255) NOT NULL,
-                        `schemaID` int(255) NOT NULL,
-                        `userID32` bigint(255) NOT NULL,
-                        `fieldOrder` tinyint(1) NOT NULL,
-                        `fieldValue` varchar(100) NOT NULL,
+                        `matchID` INT(255) NOT NULL,
+                        `roundID` TINYINT(1) NOT NULL,
+                        `modID` INT(255) NOT NULL,
+                        `schemaID` INT(255) NOT NULL,
+                        `userID32` BIGINT(255) NOT NULL,
+                        `fieldOrder` TINYINT(1) NOT NULL,
+                        `fieldValue` VARCHAR(100) NOT NULL,
                         KEY `modID_fO_fV` (`modID`, `fieldOrder`, `fieldValue`),
                         KEY (`schemaID`),
                         KEY `matchID_rI_uI` (`matchID`, `roundID`, `userID32`)
@@ -2278,42 +2285,42 @@ if (!class_exists('cron_match_player_values')) {
 
             $this->db->q(
                 "CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_player_values_temp0_wg` (
-                        `matchID` int(255) NOT NULL,
-                        `roundID` tinyint(1) NOT NULL,
-                        `modID` int(255) NOT NULL,
-                        `userID32` bigint(255) NOT NULL,
-                        `isWinner` tinyint(1) NOT NULL,
+                        `matchID` INT(255) NOT NULL,
+                        `roundID` TINYINT(1) NOT NULL,
+                        `modID` INT(255) NOT NULL,
+                        `userID32` BIGINT(255) NOT NULL,
+                        `isWinner` TINYINT(1) NOT NULL,
                         PRIMARY KEY `matchID_rI_uI` (`matchID`, `roundID`, `userID32`),
                         KEY `modID_uI_iW` (`modID`, `userID32`, `isWinner`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
             );
 
             $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_player_values_temp0_games` (
-                        `modID` int(255) NOT NULL,
-                        `schemaID` int(255) NOT NULL,
-                        `fieldOrder` tinyint(1) NOT NULL,
-                        `fieldValue` varchar(100) NOT NULL,
-                        `isWinner` tinyint(1) NOT NULL,
+                        `modID` INT(255) NOT NULL,
+                        `schemaID` INT(255) NOT NULL,
+                        `fieldOrder` TINYINT(1) NOT NULL,
+                        `fieldValue` VARCHAR(100) NOT NULL,
+                        `isWinner` TINYINT(1) NOT NULL,
                         KEY `modID_fO_fV` (`modID`, `fieldOrder`, `fieldValue`),
                         KEY (`schemaID`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
             );
 
             $this->db->q("CREATE TEMPORARY TABLE IF NOT EXISTS `cache_custom_player_values_temp1_grouping` (
-                                    `valueGroupingLower` int(100) NOT NULL,
-                                    `valueGroupingUpper` int(100) NOT NULL,
-                                    `numGames` bigint(100) NOT NULL,
-                                    `numWins` bigint(100) NOT NULL,
+                                    `valueGroupingLower` INT(100) NOT NULL,
+                                    `valueGroupingUpper` INT(100) NOT NULL,
+                                    `numGames` BIGINT(100) NOT NULL,
+                                    `numWins` BIGINT(100) NOT NULL,
                                     PRIMARY KEY (`valueGroupingLower`, `numGames`)
                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
             );
 
             $this->db->q("CREATE TABLE IF NOT EXISTS `cache_custom_player_values_temp2_sort` (
-                        `modID` bigint(255) NOT NULL,
-                        `fieldOrder` tinyint(1) NOT NULL,
-                        `fieldValue` varchar(100) NOT NULL,
-                        `numGames` bigint(255) NOT NULL,
-                        `numWins` bigint(255) NOT NULL,
+                        `modID` BIGINT(255) NOT NULL,
+                        `fieldOrder` TINYINT(1) NOT NULL,
+                        `fieldValue` VARCHAR(100) NOT NULL,
+                        `numGames` BIGINT(255) NOT NULL,
+                        `numWins` BIGINT(255) NOT NULL,
                         PRIMARY KEY (`modID`, `fieldOrder`, `fieldValue`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
             );
