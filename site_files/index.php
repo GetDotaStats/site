@@ -117,6 +117,10 @@ try {
                             <li><a class="nav-clickable" href="#s2__my__mod_request">Add New Mod</a></li>
                             <li class="divider"></li>
                         <?php } ?>
+                        <li class="dropdown-header">Site Metrics</li>
+                        <li><a class="nav-clickable" href="#site__crons">Scheduled Tasks <span
+                                    class="label label-danger">NEW</span></a></li>
+                        <li class="divider"></li>
                         <li class="dropdown-header">Resources</li>
                         <li><a class="nav-clickable" href="#docs__implement_stat-collection">Implementing Stats</a></li>
                         <li><a class="nav-clickable" href="#docs__stat-collection">Schema stat-collection</a></li>
