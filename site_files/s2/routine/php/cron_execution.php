@@ -172,6 +172,10 @@ try {
                         $cron_cron_game_values = new cron_match_game_values($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
                         $cron_cron_game_values->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
                         break;
+                    case 'cron_match_player_values':
+                        $cron_cron_player_values = new cron_match_player_values($db, $memcached, $localDev, $allowWebhooks, $runningWindows, $behindProxy, $webhook_gds_site_admin, $api_key1, $timeStarted);
+                        $cron_cron_player_values->execute($value['cron_id'], $value['cron_task'], $value['cron_parameters']);
+                        break;
                     default:
                         echo '<h2>Unknown Cron Task</h2>';
                         break;

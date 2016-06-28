@@ -6,6 +6,6 @@ echo "-------------------<br />"
 echo "-------------------<br />"
 ./cron_match_game_values.php
 echo "-------------------<br />"
-#./custom_match_player_values.php
-#echo "-------------------<br />"
+./cron_match_player_values.php
+echo "-------------------<br />"
 echo "Ended at: $(date -u)"
