@@ -37,7 +37,7 @@ try {
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cmpv');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('cron_match_player_values__' . $modID);
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
@@ -49,7 +49,7 @@ try {
 
             $schemaIDtoUse = $db->q(
                 'SELECT
-                        MAX(`schemaID`) as schemaID
+                        MAX(`schemaID`) AS schemaID
                     FROM `s2_mod_custom_schema`
                     WHERE `modID` = ? AND `schemaApproved` = 1;',
                 'i',

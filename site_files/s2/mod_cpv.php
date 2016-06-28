@@ -31,15 +31,13 @@ try {
     //////////////////
     {
         try {
-            echo '<div class="alert alert-danger" role="alert"><strong>ANNOUNCEMENT</strong> Custom Player Values coming back soon.</div>';
-
-			echo '<h3>Custom Player Values</h3>';
+            echo '<h3>Custom Player Values</h3>';
 
             echo '<p>Breakdown of custom player values for all games played in the last week. Player values are arbitrary values that the mod assigns per user at the end of the game or round.';
 
             try {
                 $serviceReporting = new serviceReporting($db);
-                $lastCronUpdateDetails = $serviceReporting->getServiceLog('s2_cron_cmpv');
+                $lastCronUpdateDetails = $serviceReporting->getServiceLog('cron_match_player_values__' . $modID);
                 $lastCronUpdateRunTime = $serviceReporting->getServiceLogRunTime();
                 $lastCronUpdateExecutionTime = $serviceReporting->getServiceLogExecutionTime();
 
@@ -51,7 +49,7 @@ try {
 
             $schemaIDtoUse = $db->q(
                 'SELECT
-                        MAX(`schemaID`) as schemaID
+                        MAX(`schemaID`) AS schemaID
                     FROM `s2_mod_custom_schema`
                     WHERE `modID` = ? AND `schemaApproved` = 1;',
                 'i',
