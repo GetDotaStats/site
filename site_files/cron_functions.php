@@ -1702,7 +1702,7 @@ if (!class_exists('cron_match_game_values')) {
                             FROM `s2_match`
                             WHERE
                               `modID` = ? AND
-                              `dateRecorded` >= (? - INTERVAL 14 DAY)
+                              `dateRecorded` >= (? - INTERVAL 7 DAY)
                             ORDER BY `dateRecorded` DESC
                             LIMIT 0,{$numMatchesToUse}
                         ) t1
@@ -2131,7 +2131,7 @@ if (!class_exists('cron_match_player_values')) {
             }
         }
 
-        public function queue(int $taskPriority = 0, int $numMatchesToUse = 20000, int $modID = null, string $modName = null, $userID = NULL)
+        public function queue(int $taskPriority = 0, int $numMatchesToUse = 10000, int $modID = null, string $modName = null, $userID = NULL)
         {
             //If we called this function with a specific modID we can send it straight into the queue
             //otherwise we will call this function for every non-rejected modID
@@ -2234,7 +2234,7 @@ if (!class_exists('cron_match_player_values')) {
                             FROM `s2_match`
                             WHERE
                               `modID` = ? AND
-                              `dateRecorded` >= (? - INTERVAL 14 DAY)
+                              `dateRecorded` >= (? - INTERVAL 7 DAY)
                             ORDER BY `dateRecorded` DESC
                             LIMIT 0,{$numMatchesToUse}
                         ) t1
