@@ -4,3 +4,4 @@ site_files/dbe/connections/parameters.php
 site_files/sig/images/generated/
 testing
 site_files/s2/highcharts/
+/www-secrets/*
