@@ -138,7 +138,8 @@ try {
                         <li><a class="nav-clickable" href="#sig__usage">Trends</a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">TI6</li>
-                        <li><a class="nav-clickable" href="#misc__arcana_votes">Arcana Votes <span
+                        <li><a class="nav-clickable" href="#misc__arcana_votes">Arcana Votes</a></li>
+                        <li><a class="nav-clickable" href="#misc__arcana_votes_per_round">Arcana Votes Per Round<span
                                     class="label label-danger">NEW</span></a></li>
                         <li class="divider"></li>
                         <li class="dropdown-header">Halls of Fame</li>
@@ -171,12 +172,14 @@ try {
                                         class="label label-danger">NEW</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Tools</li>
-                            <li><a class="nav-clickable" href="#admin__tools__add_site_user">Add User to Site
-                                    Cache <span
-                                        class="label label-success">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__tools__add_site_user">Add User to Site Cache</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Misc.</li>
                             <li><a class="nav-clickable" href="#admin__moderator_list">Moderator List</a></li>
+                            <li><a class="nav-clickable" href="#admin__ti6__matches">TI6 Matches <span
+                                        class="label label-success">NEW</span></a></li>
+                            <li><a class="nav-clickable" href="#admin__ti6__calendar">Calendar Management <span
+                                        class="label label-danger">WIP</span></a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">CSP Reports</li>
                             <li><a class="nav-clickable" href="#admin__csp_reports_filtered_lw">Last Week</a></li>
