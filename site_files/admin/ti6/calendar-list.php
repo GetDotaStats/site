@@ -88,7 +88,8 @@ try {
         //'maxResults' => 10,
         'orderBy' => 'startTime',
         'singleEvents' => TRUE,
-        'timeMin' => date('c'),
+        'timeMin' => date('c', mktime(0, 0, 0, 8, 1, 2016)),
+        //'timeMin' => date('c'),
     );
     $results = $googleCalendar->events->listEvents($calendarId, $optParams);
 

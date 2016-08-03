@@ -95,7 +95,8 @@ try {
         //'maxResults' => 10,
         'orderBy' => 'startTime',
         'singleEvents' => TRUE,
-        'timeMin' => date('c'),
+        'timeMin' => date('c', mktime(0, 0, 0, 8, 1, 2016)),
+        //'timeMin' => date('c'),
     );
     $results = $googleCalendar->events->listEvents($calendarId, $optParams);
 
@@ -171,25 +172,113 @@ try {
             ? $value['team2_name']
             : "TBD";
 
-        $value['stage_name'] = !empty($value['stage_name'])
-            ? str_replace(
-                '#DOTA_TournamentBracket_LB',
-                'LB ',
-                str_replace(
-                    '#DOTA_TournamentBracket_Grand',
-                    'Grand  ',
-                    str_replace(
-                        '#DOTA_TournamentBracket_UB',
-                        'UB ',
-                        str_replace(
-                            '#DOTA_TournamentBracket_LBR',
-                            'LB R',
-                            $value['stage_name']
-                        )
-                    )
-                )
-            )
-            : '??';
+        switch ($value['stage_name']) {
+            case '#DOTA_TournamentBracket_GrandFinals':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_GrandFinals',
+                    'Grand Finals',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LBFinals':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LBFinals',
+                    'Lower Bracket Finals',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_UBFinals':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_UBFinals',
+                    'Upper Bracket Finals',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_UBSemiFinals':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_UBSemiFinals',
+                    'Upper Bracket Semi Finals',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_UBQuarterFinals':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_UBQuarterFinals',
+                    'Upper Bracket Quarter Finals',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LBR1':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LBR1',
+                    'Lower Bracket Round 1',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LBR2':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LBR2',
+                    'Lower Bracket Round 2',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LBR3':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LBR3',
+                    'Lower Bracket Round 3',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LBR4':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LBR4',
+                    'Lower Bracket Round 4',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LBR5':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LBR5',
+                    'Lower Bracket Round 5',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_Group1':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_Group1',
+                    'Group A',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_Group2':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_Group2',
+                    'Group B',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_LosersMatchNew':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_LosersMatchNew',
+                    'WC Losers Match',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_Qualification1':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_Qualification1',
+                    'WC Qualification 1',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_Qualification2':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_Qualification2',
+                    'WC Qualification 2',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_GSL1':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_GSL1',
+                    'GSL Match 1',
+                    $value['stage_name']);
+                break;
+            case '#DOTA_TournamentBracket_GSL2':
+                $value['stage_name'] = str_replace(
+                    '#DOTA_TournamentBracket_GSL2',
+                    'GSL Match 2',
+                    $value['stage_name']);
+                break;
+            default:
+                $value['stage_name'] = 'Unknown Stage';
+                break;
+        }
 
         if (!empty($value['start_time'])) {
             //if (date("jS \a\\t H:i", $value['start_time']) != $lastTime) echo "<hr />";
