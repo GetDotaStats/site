@@ -11,7 +11,7 @@ $requiredSchemaVersionCustom = 1;
 $requiredSchemaVersionPlayerSummary = 1;
 
 /////////////////////////////
-// RESPONSE VERSIONS
+// stat-collection
 /////////////////////////////
 $responseSchemaVersionPhase1 = 4;
 $responseSchemaVersionPhase2 = 4;
@@ -21,7 +21,19 @@ $responseSchemaVersionCustom = 4;
 $responseSchemaVersionPlayerSummary = 1;
 
 /////////////////////////////
-// OTHER APIs
+// stat-save
+/////////////////////////////
+$requiredSchemaVersionSave = 1;
+$responseSchemaVersionSave = 1;
+
+/////////////////////////////
+// stat-highscore
 /////////////////////////////
 $requiredSchemaVersionHighscore = 1;
 $responseSchemaVersionHighscore = 1;
+
+/////////////////////////////
+// mod_list
+/////////////////////////////
+$responseVersionModList = 1;
+
